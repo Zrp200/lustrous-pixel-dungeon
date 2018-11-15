@@ -43,9 +43,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Knuckles;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Boomerang;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Cord;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingStone;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.watabou.utils.Bundle;
 
@@ -167,12 +168,11 @@ public enum HeroClass {
 
 	private static void initHuntress( Hero hero ) {
 
-		(hero.belongings.weapon = new Knuckles()).identify();
-		Boomerang boomerang = new Boomerang();
-		boomerang.identify().collect();
+		(hero.belongings.weapon = new Cord()).identify();
+		Dart dart = new Dart();
+		dart.quantity(2).collect();
 
-		Dungeon.quickslot.setSlot(0, boomerang);
-
+		Dungeon.quickslot.setSlot(0, dart);
 		new VelvetPouch().collect();
 		Dungeon.LimitedDrops.VELVET_POUCH.drop();
 		new PotionOfMindVision().identify();

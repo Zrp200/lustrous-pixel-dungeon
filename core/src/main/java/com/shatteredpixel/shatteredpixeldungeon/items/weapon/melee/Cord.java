@@ -23,17 +23,10 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
-public class Whip extends MeleeWeapon {
-
-	{
-		image = ItemSpriteSheet.WHIP;
-
-		tier = 3;
-		RCH = 3;    //lots of extra reach
-	}
-
-	@Override
-	public int maxBase() {return 3*(tier+1);}
-	public int maxScale() {return 3;}
-
+public class Cord extends Whip {
+    {
+        tier = 1;
+    }
+    @Override
+    public int maxScale() {return 2;}
 }

@@ -32,16 +32,21 @@ public class MeleeWeapon extends Weapon {
 	
 	public int tier;
 
+	public int minScale() {return 1;}
+	public int maxScale() {return tier+1;}
+	public int minBase() {return tier;}
+	public int maxBase() {return (tier+1)*5;}
+
 	@Override
 	public int min(int lvl) {
-		return  tier +  //base
-				lvl;    //level scaling
+		return  minBase() +  //base
+				lvl*minScale();    //level scaling
 	}
 
 	@Override
 	public int max(int lvl) {
-		return  5*(tier+1) +    //base
-				lvl*(tier+1);   //level scaling
+		return  maxBase() +    //base
+				lvl*(maxScale());   //level scaling
 	}
 
 	public int STRReq(int lvl){
