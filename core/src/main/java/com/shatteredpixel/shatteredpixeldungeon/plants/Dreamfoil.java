@@ -34,7 +34,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -42,7 +41,7 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 public class Dreamfoil extends Plant {
 
 	{
-		image = 10;
+		image = 7;
 	}
 
 	@Override
@@ -70,7 +69,6 @@ public class Dreamfoil extends Plant {
 			image = ItemSpriteSheet.SEED_DREAMFOIL;
 
 			plantClass = Dreamfoil.class;
-			alchemyClass = PotionOfPurity.class;
 		}
 	}
 }

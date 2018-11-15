@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.DarkBlock;
 import com.shatteredpixel.shatteredpixeldungeon.effects.EmoIcon;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.IceBlock;
+import com.shatteredpixel.shatteredpixeldungeon.effects.ShieldHalo;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.effects.TorchHalo;
@@ -78,7 +79,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 	protected float shadowOffset    = 0.25f;
 
 	public enum State {
-		BURNING, LEVITATING, INVISIBLE, PARALYSED, FROZEN, ILLUMINATED, CHILLED, DARKENED, MARKED, HEALING
+		BURNING, LEVITATING, INVISIBLE, PARALYSED, FROZEN, ILLUMINATED, CHILLED, DARKENED, MARKED, HEALING, SHIELDED
 	}
 	
 	protected Animation idle;
@@ -100,7 +101,8 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 	
 	protected IceBlock iceBlock;
 	protected DarkBlock darkBlock;
-	protected TorchHalo halo;
+	protected TorchHalo light;
+	protected ShieldHalo shield;
 	protected AlphaTweener invisible;
 	
 	protected EmoIcon emo;
@@ -109,7 +111,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 	private Tweener jumpTweener;
 	private Callback jumpCallback;
 
-	private float flashTime = 0;
+	protected float flashTime = 0;
 	
 	protected boolean sleeping = false;
 
@@ -216,6 +218,12 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 	}
 	
 	public void operate( int cell ) {
+		turnTo( ch.pos, cell );
+		play( operate );
+	}
+	
+	public void operate( int cell, Callback callback ) {
+		animCallback = callback;
 		turnTo( ch.pos, cell );
 		play( operate );
 	}
@@ -331,7 +339,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 				paused = true;
 				break;
 			case ILLUMINATED:
-				GameScene.effect( halo = new TorchHalo( this ) );
+				GameScene.effect( light = new TorchHalo( this ) );
 				break;
 			case CHILLED:
 				chilled = emitter();
@@ -347,6 +355,10 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 			case HEALING:
 				healing = emitter();
 				healing.pour(Speck.factory(Speck.HEALING), 0.5f);
+				break;
+			case SHIELDED:
+				GameScene.effect( shield = new ShieldHalo( this ));
+				break;
 		}
 	}
 	
@@ -382,8 +394,8 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 				paused = false;
 				break;
 			case ILLUMINATED:
-				if (halo != null) {
-					halo.putOut();
+				if (light != null) {
+					light.putOut();
 				}
 				break;
 			case CHILLED:
@@ -408,6 +420,11 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 				if (healing != null){
 					healing.on = false;
 					healing = null;
+				}
+				break;
+			case SHIELDED:
+				if (shield != null){
+					shield.putOut();
 				}
 				break;
 		}

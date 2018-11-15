@@ -94,6 +94,18 @@ public class ItemStatusHandler<T extends Item> {
 			}
 		}
 	}
+	
+	public void saveClassesSelectively( Bundle bundle, ArrayList<Class<?extends Item>> clsToSave ){
+		List<Class<? extends T>> items = Arrays.asList(this.items);
+		for (Class<?extends Item> cls : clsToSave){
+			if (items.contains(cls)){
+				Class<? extends T> toSave = items.get(items.indexOf(cls));
+				String itemName = toSave.toString();
+				bundle.put( itemName + PFX_LABEL, itemLabels.get( toSave ) );
+				bundle.put( itemName + PFX_KNOWN, known.contains( toSave ) );
+			}
+		}
+	}
 
 	private void restore( Bundle bundle, ArrayList<String> labelsLeft  ) {
 
@@ -136,20 +148,54 @@ public class ItemStatusHandler<T extends Item> {
 		}
 	}
 	
+	public boolean contains( T item ){
+		for (Class<?extends Item> i : items){
+			if (item.getClass().equals(i)){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean contains( Class<?extends T> itemCls ){
+		for (Class<?extends Item> i : items){
+			if (itemCls.equals(i)){
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public int image( T item ) {
 		return labelImages.get(label(item));
+	}
+	
+	public int image( Class<?extends T> itemCls ) {
+		return labelImages.get(label(itemCls));
 	}
 	
 	public String label( T item ) {
 		return itemLabels.get(item.getClass());
 	}
 	
+	public String label( Class<?extends T> itemCls ){
+		return itemLabels.get( itemCls );
+	}
+	
 	public boolean isKnown( T item ) {
 		return known.contains( item.getClass() );
 	}
 	
+	public boolean isKnown( Class<?extends T> itemCls ){
+		return known.contains( itemCls );
+	}
+	
 	public void know( T item ) {
 		known.add( (Class<? extends T>)item.getClass() );
+	}
+	
+	public void know( Class<?extends T> itemCls ){
+		known.add( itemCls );
 	}
 	
 	public HashSet<Class<? extends T>> known() {

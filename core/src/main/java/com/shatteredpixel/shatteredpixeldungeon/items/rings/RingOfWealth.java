@@ -22,11 +22,11 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.rings;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.items.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Honeypot;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
@@ -118,7 +118,6 @@ public class RingOfWealth extends Ring {
 		return items;
 	}
 	
-	//caps at a 50% bonus
 	private static float dropProgression( Char target, int tries ){
 		return tries * (float)Math.pow(1.2f, getBonus(target, Wealth.class) -1 );
 	}

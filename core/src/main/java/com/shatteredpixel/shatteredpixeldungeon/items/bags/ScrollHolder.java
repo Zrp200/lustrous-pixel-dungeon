@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.bags;
 
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Spell;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 public class ScrollHolder extends Bag {
@@ -30,12 +31,12 @@ public class ScrollHolder extends Bag {
 	{
 		image = ItemSpriteSheet.HOLDER;
 		
-		size = 12;
+		size = 20;
 	}
 	
 	@Override
 	public boolean grab( Item item ) {
-		return item instanceof Scroll;
+		return item instanceof Scroll || item instanceof Spell;
 	}
 	
 	@Override

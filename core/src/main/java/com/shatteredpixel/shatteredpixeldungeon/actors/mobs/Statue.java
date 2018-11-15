@@ -94,12 +94,12 @@ public class Statue extends Mob {
 	
 	@Override
 	protected float attackDelay() {
-		return weapon.speedFactor( this );
+		return super.attackDelay()*weapon.speedFactor( this );
 	}
 
 	@Override
 	protected boolean canAttack(Char enemy) {
-		return Dungeon.level.distance( pos, enemy.pos ) <= weapon.reachFactor(this);
+		return super.canAttack(enemy) || weapon.canReach(this, enemy.pos);
 	}
 
 	@Override

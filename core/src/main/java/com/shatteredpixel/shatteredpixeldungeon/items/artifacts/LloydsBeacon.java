@@ -159,6 +159,18 @@ public class LloydsBeacon extends Artifact {
 			
 			if (returnDepth == Dungeon.depth) {
 				ScrollOfTeleportation.appear( hero, returnPos );
+				for(Mob m : Dungeon.level.mobs){
+					if (m.pos == hero.pos){
+						//displace mob
+						for(int i : PathFinder.NEIGHBOURS8){
+							if (Actor.findChar(m.pos+i) == null && Dungeon.level.passable[m.pos + i]){
+								m.pos += i;
+								m.sprite.point(m.sprite.worldToCamera(m.pos));
+								break;
+							}
+						}
+					}
+				}
 				Dungeon.level.press( returnPos, hero );
 				Dungeon.observe();
 				GameScene.updateFog();
@@ -260,6 +272,13 @@ public class LloydsBeacon extends Artifact {
 	@Override
 	protected ArtifactBuff passiveBuff() {
 		return new beaconRecharge();
+	}
+	
+	@Override
+	public void charge(Hero target) {
+		if (charge < chargeCap){
+			partialCharge += 0.25f;
+		}
 	}
 
 	@Override

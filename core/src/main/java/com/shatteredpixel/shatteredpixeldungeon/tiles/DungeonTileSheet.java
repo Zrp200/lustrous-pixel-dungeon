@@ -144,6 +144,7 @@ public class DungeonTileSheet {
 		chasmStitcheable.put( Terrain.DOOR,         CHASM_WALL );
 		chasmStitcheable.put( Terrain.OPEN_DOOR,    CHASM_WALL );
 		chasmStitcheable.put( Terrain.LOCKED_DOOR,  CHASM_WALL );
+		chasmStitcheable.put( Terrain.SECRET_DOOR,  CHASM_WALL );
 		chasmStitcheable.put( Terrain.WALL_DECO,    CHASM_WALL );
 
 		//water
@@ -324,7 +325,7 @@ public class DungeonTileSheet {
 	public static final int DOOR_SIDEWAYS_LOCKED        = WALL_OVERHANG+24;
 
 	public static final int STATUE_OVERHANG             = WALL_OVERHANG+26;
-	public static final int ALCHEMY_POT_OVERHAND        = WALL_OVERHANG+27;
+	public static final int ALCHEMY_POT_OVERHANG        = WALL_OVERHANG+27;
 	public static final int BARRICADE_OVERHANG          = WALL_OVERHANG+28;
 	public static final int HIGH_GRASS_OVERHANG         = WALL_OVERHANG+29;
 

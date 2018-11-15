@@ -19,35 +19,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon.items.potions;
+package com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs;
 
-import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 
-public class PotionOfMight extends Potion {
-
-	{
-		initials = 6;
-	}
+public abstract class Elixir extends Potion {
+	
+	public abstract void apply( Hero hero );
 	
 	@Override
-	public void apply( Hero hero ) {
-		setKnown();
-		
-		hero.STR++;
-		hero.HTBoost += 5;
-		hero.updateHT( true );
-		hero.sprite.showStatus( CharSprite.POSITIVE, Messages.get(this, "msg_1") );
-		GLog.p( Messages.get(this, "msg_2") );
-
-		Badges.validateStrengthAttained();
-	}
-	
-	@Override
-	public int price() {
-		return isKnown() ? 100 * quantity : super.price();
+	public boolean isKnown() {
+		return true;
 	}
 }

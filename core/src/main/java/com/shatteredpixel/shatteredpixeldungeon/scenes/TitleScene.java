@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.BuildConfig;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
@@ -122,6 +123,16 @@ public class TitleScene extends PixelScene {
 					ShatteredPixelDungeon.switchNoFade( StartScene.class );
 				}
 			}
+			
+			@Override
+			protected boolean onLongClick() {
+				//making it easier to start runs quickly while debugging
+				if (BuildConfig.DEBUG) {
+					TitleScene.this.add( new WndStartGame(1) );
+					return true;
+				}
+				return super.onLongClick();
+			}
 		};
 		add( btnPlay );
 		
@@ -147,7 +158,7 @@ public class TitleScene extends PixelScene {
 
 		BitmapText version = new BitmapText( "v " + Game.version + "", pixelFont);
 		version.measure();
-		version.hardlight( 0xCCCCCC );
+		version.hardlight( 0x888888 );
 		version.x = w - version.width();
 		version.y = h - version.height();
 		add( version );

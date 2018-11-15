@@ -26,10 +26,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShaftParticle;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
@@ -39,7 +39,7 @@ import com.watabou.utils.Bundle;
 public class Sungrass extends Plant {
 	
 	{
-		image = 4;
+		image = 3;
 	}
 	
 	@Override
@@ -60,7 +60,6 @@ public class Sungrass extends Plant {
 			image = ItemSpriteSheet.SEED_SUNGRASS;
 
 			plantClass = Sungrass.class;
-			alchemyClass = PotionOfHealing.class;
 
 			bones = true;
 		}
@@ -76,6 +75,7 @@ public class Sungrass extends Plant {
 
 		{
 			type = buffType.POSITIVE;
+			announced = true;
 		}
 		
 		@Override
@@ -93,7 +93,12 @@ public class Sungrass extends Plant {
 				partialHeal -= (int)partialHeal;
 				target.sprite.emitter().burst(Speck.factory(Speck.HEALING), 1);
 				
-				if (target.HP > target.HT) target.HP = target.HT;
+				if (target.HP >= target.HT) {
+					target.HP = target.HT;
+					if (target instanceof Hero){
+						((Hero)target).resting = false;
+					}
+				}
 			}
 			
 			if (level <= 0) {
@@ -112,7 +117,7 @@ public class Sungrass extends Plant {
 		
 		@Override
 		public int icon() {
-			return BuffIndicator.HEALING;
+			return BuffIndicator.HERB_HEALING;
 		}
 		
 		@Override

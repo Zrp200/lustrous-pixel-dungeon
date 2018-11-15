@@ -58,12 +58,12 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.SewerBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.SewerLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
+import com.shatteredpixel.shatteredpixeldungeon.mechanics.ShadowCaster;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
 import com.shatteredpixel.shatteredpixeldungeon.utils.BArray;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndAlchemy;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndResurrect;
 import com.watabou.noosa.Game;
 import com.watabou.utils.Bundlable;
@@ -183,6 +183,7 @@ public class Dungeon {
 	public static HashSet<Integer> chapters;
 
 	public static SparseArray<ArrayList<Item>> droppedItems;
+	public static SparseArray<ArrayList<Item>> portedItems;
 
 	public static int version;
 
@@ -218,7 +219,8 @@ public class Dungeon {
 		depth = 0;
 		gold = 0;
 
-		droppedItems = new SparseArray<ArrayList<Item>>();
+		droppedItems = new SparseArray<>();
+		portedItems = new SparseArray<>();
 
 		for (LimitedDrops a : LimitedDrops.values())
 			a.count = 0;
@@ -361,7 +363,7 @@ public class Dungeon {
 	public static void switchLevel( final Level level, int pos ) {
 		
 		if (pos < 0 || pos >= level.length()){
-			pos = level.exit;
+			pos = level.entrance;
 		}
 		
 		PathFinder.setMapSize(level.width(), level.height());
@@ -372,10 +374,22 @@ public class Dungeon {
 		
 		Actor respawner = level.respawner();
 		if (respawner != null) {
-			Actor.add( level.respawner() );
+			Actor.addDelayed( respawner, level.respawnTime() );
 		}
 
 		hero.pos = pos;
+		
+		for(Mob m : level.mobs){
+			if (m.pos == hero.pos){
+				//displace mob
+				for(int i : PathFinder.NEIGHBOURS8){
+					if (Actor.findChar(m.pos+i) == null && level.passable[m.pos + i]){
+						m.pos += i;
+						break;
+					}
+				}
+			}
+		}
 		
 		Light light = hero.buff( Light.class );
 		hero.viewDistance = light == null ? level.viewDistance : Math.max( Light.DISTANCE, level.viewDistance );
@@ -449,6 +463,7 @@ public class Dungeon {
 	private static final String GOLD		= "gold";
 	private static final String DEPTH		= "depth";
 	private static final String DROPPED     = "dropped%d";
+	private static final String PORTED      = "ported%d";
 	private static final String LEVEL		= "level";
 	private static final String LIMDROPS    = "limited_drops";
 	private static final String CHAPTERS	= "chapters";
@@ -469,6 +484,10 @@ public class Dungeon {
 
 			for (int d : droppedItems.keyArray()) {
 				bundle.put(Messages.format(DROPPED, d), droppedItems.get(d));
+			}
+			
+			for (int p : portedItems.keyArray()){
+				bundle.put(Messages.format(PORTED, p), portedItems.get(p));
 			}
 
 			quickslot.storePlaceholders( bundle );
@@ -493,8 +512,6 @@ public class Dungeon {
 			
 			SpecialRoom.storeRoomsInBundle( bundle );
 			SecretRoom.storeRoomsInBundle( bundle );
-
-			WndAlchemy.storeInBundle( bundle );
 			
 			Statistics.storeInBundle( bundle );
 			Notes.storeInBundle( bundle );
@@ -616,7 +633,16 @@ public class Dungeon {
 		hero = null;
 		hero = (Hero)bundle.get( HERO );
 
-		WndAlchemy.restoreFromBundle( bundle, hero );
+		//pre-0.7.0 saves, back when alchemy had a window which could store items
+		if (bundle.contains("alchemy_inputs")){
+			for (Bundlable item : bundle.getCollection("alchemy_inputs")){
+				
+				//try to add normally, force-add otherwise.
+				if (!((Item)item).collect(hero.belongings.backpack)){
+					hero.belongings.backpack.items.add((Item)item);
+				}
+			}
+		}
 		
 		gold = bundle.getInt( GOLD );
 		depth = bundle.getInt( DEPTH );
@@ -625,14 +651,27 @@ public class Dungeon {
 		Generator.restoreFromBundle( bundle );
 
 		droppedItems = new SparseArray<>();
-		for (int i=2; i <= Statistics.deepestFloor + 1; i++) {
-			ArrayList<Item> dropped = new ArrayList<Item>();
+		portedItems = new SparseArray<>();
+		for (int i=1; i <= 26; i++) {
+			
+			//dropped items
+			ArrayList<Item> items = new ArrayList<>();
 			if (bundle.contains(Messages.format( DROPPED, i )))
 				for (Bundlable b : bundle.getCollection( Messages.format( DROPPED, i ) ) ) {
-					dropped.add( (Item)b );
+					items.add( (Item)b );
 				}
-			if (!dropped.isEmpty()) {
-				droppedItems.put( i, dropped );
+			if (!items.isEmpty()) {
+				droppedItems.put( i, items );
+			}
+			
+			//ported items
+			items = new ArrayList<>();
+			if (bundle.contains(Messages.format( PORTED, i )))
+				for (Bundlable b : bundle.getCollection( Messages.format( PORTED, i ) ) ) {
+					items.add( (Item)b );
+				}
+			if (!items.isEmpty()) {
+				portedItems.put( i, items );
 			}
 		}
 	}
@@ -682,15 +721,20 @@ public class Dungeon {
 
 		hero.belongings.identify();
 
-		if (challenges != 0) {
-			Badges.validateChampion();
+		int chCount = 0;
+		for (int ch : Challenges.MASKS){
+			if ((challenges & ch) != 0) chCount++;
+		}
+		
+		if (chCount != 0) {
+			Badges.validateChampion(chCount);
 		}
 
 		Rankings.INSTANCE.submit( true, cause );
 	}
 
 	public static void observe(){
-		observe( hero.viewDistance+1 );
+		observe( ShadowCaster.MAX_DISTANCE+1 );
 	}
 	
 	public static void observe( int dist ) {

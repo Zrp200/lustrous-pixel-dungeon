@@ -40,6 +40,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
@@ -61,7 +62,7 @@ public abstract class Plant implements Bundlable {
 		if (ch instanceof Hero){
 			((Hero) ch).interrupt();
 			if (((Hero)ch).subClass == HeroSubClass.WARDEN) {
-				Buff.affect(ch, Barkskin.class).level(ch.HT / 3);
+				Buff.affect(ch, Barkskin.class).set(ch.HT / 3, 1);
 			}
 		}
 
@@ -132,8 +133,6 @@ public abstract class Plant implements Bundlable {
 		
 		protected Class<? extends Plant> plantClass;
 		
-		public Class<? extends Item> alchemyClass;
-		
 		@Override
 		public ArrayList<String> actions( Hero hero ) {
 			ArrayList<String> actions = super.actions( hero );
@@ -171,7 +170,7 @@ public abstract class Plant implements Bundlable {
 		
 		public Plant couch( int pos, Level level ) {
 			try {
-				if (level.heroFOV != null && level.heroFOV[pos]) {
+				if (level != null && level.heroFOV != null && level.heroFOV[pos]) {
 					Sample.INSTANCE.play(Assets.SND_PLANT);
 				}
 				Plant plant = plantClass.newInstance();
@@ -206,6 +205,23 @@ public abstract class Plant implements Bundlable {
 		@Override
 		public String info() {
 			return Messages.get( Seed.class, "info", desc() );
+		}
+		
+		public static class PlaceHolder extends Seed {
+			
+			{
+				image = ItemSpriteSheet.SEED_HOLDER;
+			}
+			
+			@Override
+			public boolean isSimilar(Item item) {
+				return item instanceof Plant.Seed;
+			}
+			
+			@Override
+			public String info() {
+				return "";
+			}
 		}
 	}
 }

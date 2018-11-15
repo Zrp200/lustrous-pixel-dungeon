@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
+import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
@@ -234,10 +235,10 @@ public class Combo extends Buff implements ActionIndicator.Action {
 					dmg = Math.round(dmg*0.6f);
 					break;
 			}
-
+			
+			dmg = enemy.defenseProc(target, dmg);
 			dmg -= enemy.drRoll();
 			dmg = target.attackProc(enemy, dmg);
-			dmg = enemy.defenseProc(target, dmg);
 			enemy.damage( dmg, this );
 
 			//special effects
@@ -266,7 +267,10 @@ public class Combo extends Buff implements ActionIndicator.Action {
 					}
 					break;
 				case SLAM:
-					target.SHLD = Math.max( target.SHLD, dmg/2);
+					BrokenSeal.WarriorShield shield = Buff.affect(target, BrokenSeal.WarriorShield.class);
+					if (shield != null) {
+						shield.supercharge(dmg / 2);
+					}
 					break;
 				default:
 					//nothing
@@ -277,6 +281,8 @@ public class Combo extends Buff implements ActionIndicator.Action {
 				target.buff(FireImbue.class).proc(enemy);
 			if (target.buff(EarthImbue.class) != null)
 				target.buff(EarthImbue.class).proc(enemy);
+			if (target.buff(FrostImbue.class) != null)
+				target.buff(FrostImbue.class).proc(enemy);
 
 			Sample.INSTANCE.play( Assets.SND_HIT, 1, 1, Random.Float( 0.8f, 1.25f ) );
 			enemy.sprite.bloodBurstA( target.sprite.center(), dmg );

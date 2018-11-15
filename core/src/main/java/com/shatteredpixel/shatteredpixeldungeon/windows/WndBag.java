@@ -29,25 +29,26 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.Recipe;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.PotionBandolier;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.ScrollHolder;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
-import com.shatteredpixel.shatteredpixeldungeon.items.food.Blandfruit;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurse;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Recycle;
+import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfDetectCurse;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Boomerang;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.plants.BlandfruitBush;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Plant.Seed;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -57,18 +58,22 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
 import com.watabou.gltextures.TextureCache;
 import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.ColorBlock;
+import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.RenderedText;
 import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.RectF;
 
 public class WndBag extends WndTabbed {
+	
+	//only one wnditem can appear at a time
+	private static WndBag INSTANCE;
 	
 	//FIXME this is getting cumbersome, there should be a better way to manage this
 	public static enum Mode {
 		ALL,
 		UNIDENTIFED,
-		UNIDED_OR_CURSED,
+		UNCURSABLE,
+		CURSABLE,
 		UPGRADEABLE,
 		QUICKSLOT,
 		FOR_SALE,
@@ -81,8 +86,12 @@ public class WndBag extends WndTabbed {
 		POTION,
 		SCROLL,
 		UNIDED_POTION_OR_SCROLL,
+		CURSE_DETECTABLE,
 		EQUIPMENT,
-		ALCHEMY
+		TRANMSUTABLE,
+		ALCHEMY,
+		RECYCLABLE,
+		NOT_EQUIPPED
 	}
 
 	protected static final int COLS_P    = 4;
@@ -111,6 +120,11 @@ public class WndBag extends WndTabbed {
 	public WndBag( Bag bag, Listener listener, Mode mode, String title ) {
 		
 		super();
+		
+		if( INSTANCE != null ){
+			INSTANCE.hide();
+		}
+		INSTANCE = this;
 		
 		this.listener = listener;
 		this.mode = mode;
@@ -205,20 +219,13 @@ public class WndBag extends WndTabbed {
 		placeItem( stuff.misc1 != null ? stuff.misc1 : new Placeholder( ItemSpriteSheet.RING_HOLDER ) );
 		placeItem( stuff.misc2 != null ? stuff.misc2 : new Placeholder( ItemSpriteSheet.RING_HOLDER ) );
 
-		boolean backpack = (container == Dungeon.hero.belongings.backpack);
-		if (!backpack) {
-			count = nCols;
-			col = 0;
-			row = 1;
-		}
-
 		// Items in the bag
 		for (Item item : container.items.toArray(new Item[0])) {
 			placeItem( item );
 		}
 		
 		// Free Space
-		while (count-(backpack ? 4 : nCols) < container.size) {
+		while ((count - 4) < container.size) {
 			placeItem( null );
 		}
 	}
@@ -256,7 +263,15 @@ public class WndBag extends WndTabbed {
 	@Override
 	protected void onClick( Tab tab ) {
 		hide();
-		GameScene.show( new WndBag( ((BagTab)tab).bag, listener, mode, title ) );
+		Game.scene().addToFront(new WndBag(((BagTab) tab).bag, listener, mode, title));
+	}
+	
+	@Override
+	public void hide() {
+		super.hide();
+		if (INSTANCE == this){
+			INSTANCE = null;
+		}
 	}
 	
 	@Override
@@ -264,55 +279,30 @@ public class WndBag extends WndTabbed {
 		return 20;
 	}
 	
-	private class BagTab extends Tab {
-		
-		private Image icon;
+	private Image icon( Bag bag ) {
+		if (bag instanceof VelvetPouch) {
+			return Icons.get( Icons.SEED_POUCH );
+		} else if (bag instanceof ScrollHolder) {
+			return Icons.get( Icons.SCROLL_HOLDER );
+		} else if (bag instanceof MagicalHolster) {
+			return Icons.get( Icons.WAND_HOLSTER );
+		} else if (bag instanceof PotionBandolier) {
+			return Icons.get( Icons.POTION_BANDOLIER );
+		} else {
+			return Icons.get( Icons.BACKPACK );
+		}
+	}
+	
+	private class BagTab extends IconTab {
 
 		private Bag bag;
 		
 		public BagTab( Bag bag ) {
-			super();
+			super( icon(bag) );
 			
 			this.bag = bag;
-			
-			icon = icon();
-			add( icon );
 		}
 		
-		@Override
-		protected void select( boolean value ) {
-			super.select( value );
-			icon.am = selected ? 1.0f : 0.6f;
-		}
-		
-		@Override
-		protected void layout() {
-			super.layout();
-			
-			icon.copy( icon() );
-			icon.x = x + (width - icon.width) / 2;
-			icon.y = y + (height - icon.height) / 2 - 2 - (selected ? 0 : 1);
-			if (!selected && icon.y < y + CUT) {
-				RectF frame = icon.frame();
-				frame.top += (y + CUT - icon.y) / icon.texture.height;
-				icon.frame( frame );
-				icon.y = y + CUT;
-			}
-		}
-		
-		private Image icon() {
-			if (bag instanceof VelvetPouch) {
-				return Icons.get( Icons.SEED_POUCH );
-			} else if (bag instanceof ScrollHolder) {
-				return Icons.get( Icons.SCROLL_HOLDER );
-			} else if (bag instanceof MagicalHolster) {
-				return Icons.get( Icons.WAND_HOLSTER );
-			} else if (bag instanceof PotionBandolier) {
-				return Icons.get( Icons.POTION_BANDOLIER );
-			} else {
-				return Icons.get( Icons.BACKPACK );
-			}
-		}
 	}
 	
 	public static class Placeholder extends Item {
@@ -383,8 +373,12 @@ public class WndBag extends WndTabbed {
 					bg.ra = +0.3f;
 					bg.ga = -0.15f;
 				} else if (!item.isIdentified()) {
-					bg.ra = 0.2f;
-					bg.ba = 0.2f;
+					if ((item instanceof EquipableItem || item instanceof Wand) && item.cursedKnown){
+						bg.ba = 0.3f;
+					} else {
+						bg.ra = 0.3f;
+						bg.ba = 0.3f;
+					}
 				}
 				
 				if (item.name() == null) {
@@ -394,7 +388,8 @@ public class WndBag extends WndTabbed {
 						mode == Mode.FOR_SALE && !item.unique && (item.price() > 0) && (!item.isEquipped( Dungeon.hero ) || !item.cursed) ||
 						mode == Mode.UPGRADEABLE && item.isUpgradable() ||
 						mode == Mode.UNIDENTIFED && !item.isIdentified() ||
-						mode == Mode.UNIDED_OR_CURSED && ((item instanceof EquipableItem || item instanceof Wand) && (!item.isIdentified() || item.cursed)) ||
+						mode == Mode.UNCURSABLE && ScrollOfRemoveCurse.uncursable(item) ||
+						mode == Mode.CURSABLE && ((item instanceof EquipableItem && !(item instanceof MissileWeapon)) || item instanceof Boomerang || item instanceof Wand) ||
 						mode == Mode.QUICKSLOT && (item.defaultAction != null) ||
 						mode == Mode.WEAPON && (item instanceof MeleeWeapon || item instanceof Boomerang) ||
 						mode == Mode.ARMOR && (item instanceof Armor) ||
@@ -405,21 +400,14 @@ public class WndBag extends WndTabbed {
 						mode == Mode.POTION && (item instanceof Potion) ||
 						mode == Mode.SCROLL && (item instanceof Scroll) ||
 						mode == Mode.UNIDED_POTION_OR_SCROLL && (!item.isIdentified() && (item instanceof Scroll || item instanceof Potion)) ||
+						mode == Mode.CURSE_DETECTABLE && StoneOfDetectCurse.canDetectCurse(item) ||
 						mode == Mode.EQUIPMENT && (item instanceof EquipableItem) ||
-						mode == Mode.ALCHEMY && ((item instanceof Seed && !(item instanceof BlandfruitBush.Seed)) || (item instanceof Blandfruit && ((Blandfruit) item).potionAttrib == null) || (item.getClass() == Dart.class)) ||
+						mode == Mode.ALCHEMY && Recipe.usableInRecipe(item) ||
+						mode == Mode.TRANMSUTABLE && ScrollOfTransmutation.canTransmute(item) ||
+						mode == Mode.NOT_EQUIPPED && !item.isEquipped(Dungeon.hero) ||
+						mode == Mode.RECYCLABLE && Recycle.isRecyclable(item) ||
 						mode == Mode.ALL
 					);
-					//extra logic for cursed weapons or armor
-					if (!active && mode == Mode.UNIDED_OR_CURSED){
-						if (item instanceof Weapon){
-							Weapon w = (Weapon) item;
-							enable(w.hasCurseEnchant());
-						}
-						if (item instanceof Armor){
-							Armor a = (Armor) item;
-							enable(a.hasCurseGlyph());
-						}
-					}
 				}
 			} else {
 				bg.color( NORMAL );
@@ -449,7 +437,7 @@ public class WndBag extends WndTabbed {
 				
 			} else {
 				
-				GameScene.show(new WndItem( WndBag.this, item ) );
+				Game.scene().addToFront(new WndItem( WndBag.this, item ) );
 				
 			}
 		}

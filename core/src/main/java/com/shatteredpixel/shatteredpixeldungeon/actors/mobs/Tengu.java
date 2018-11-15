@@ -88,6 +88,15 @@ public class Tengu extends Mob {
 
 	@Override
 	public void damage(int dmg, Object src) {
+		
+		PrisonBossLevel.State state = ((PrisonBossLevel)Dungeon.level).state();
+		
+		int hpBracket;
+		if (state == PrisonBossLevel.State.FIGHT_START){
+			hpBracket = 12;
+		} else {
+			hpBracket = 20;
+		}
 
 		int beforeHitHP = HP;
 		super.damage(dmg, src);
@@ -95,20 +104,18 @@ public class Tengu extends Mob {
 
 		LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
 		if (lock != null) {
-			int multiple = beforeHitHP > HT/2 ? 1 : 4;
+			int multiple = state == PrisonBossLevel.State.FIGHT_START ? 1 : 4;
 			lock.addTime(dmg*multiple);
 		}
 
 		//phase 2 of the fight is over
-		if (HP == 0 && beforeHitHP <= HT/2) {
+		if (HP == 0 && state == PrisonBossLevel.State.FIGHT_ARENA) {
 			((PrisonBossLevel)Dungeon.level).progress();
 			return;
 		}
-
-		int hpBracket = beforeHitHP > HT/2 ? 12 : 20;
-
+		
 		//phase 1 of the fight is over
-		if (beforeHitHP > HT/2 && HP <= HT/2){
+		if (state == PrisonBossLevel.State.FIGHT_START && HP <= HT/2){
 			HP = (HT/2)-1;
 			yell(Messages.get(this, "interesting"));
 			((PrisonBossLevel)Dungeon.level).progress();
@@ -175,14 +182,16 @@ public class Tengu extends Mob {
 
 		int newPos;
 		//if we're in phase 1, want to warp around within the room
-		if (HP > HT/2) {
+		if (((PrisonBossLevel)Dungeon.level).state() == PrisonBossLevel.State.FIGHT_START) {
 			
 			//place new traps
+			int tries;
 			for (int i=0; i < 4; i++) {
 				int trapPos;
+				tries = 15;
 				do {
 					trapPos = Random.Int( level.length() );
-				} while (level.map[trapPos] != Terrain.INACTIVE_TRAP
+				} while (tries-- > 0 && level.map[trapPos] != Terrain.INACTIVE_TRAP
 						&& level.map[trapPos] != Terrain.TRAP);
 				
 				if (level.map[trapPos] == Terrain.INACTIVE_TRAP) {
@@ -192,7 +201,7 @@ public class Tengu extends Mob {
 				}
 			}
 			
-			int tries = 50;
+			tries = 50;
 			do {
 				newPos = Random.IntRange(3, 7) + 32*Random.IntRange(26, 30);
 			} while ( (level.adjacent(newPos, enemy.pos) || Actor.findChar(newPos) != null)

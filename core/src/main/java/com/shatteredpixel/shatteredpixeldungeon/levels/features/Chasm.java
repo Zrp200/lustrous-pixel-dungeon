@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.FeatherFall;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.WeakFloorRoom;
@@ -76,7 +77,6 @@ public class Chasm {
 		
 		if (Dungeon.hero.isAlive()) {
 			Dungeon.hero.interrupt();
-			Buff.affect(Dungeon.hero, Falling.class);
 			InterlevelScene.mode = InterlevelScene.Mode.FALL;
 			if (Dungeon.level instanceof RegularLevel) {
 				Room room = ((RegularLevel)Dungeon.level).room( pos );
@@ -94,15 +94,22 @@ public class Chasm {
 		
 		Hero hero = Dungeon.hero;
 		
-		hero.sprite.burst( hero.sprite.blood(), 10 );
-		Camera.main.shake( 4, 0.2f );
+		FeatherFall.FeatherBuff b = hero.buff(FeatherFall.FeatherBuff.class);
+		
+		if (b != null){
+			//TODO visuals
+			b.detach();
+			return;
+		}
+		
+		Camera.main.shake( 4, 1f );
 
 		Dungeon.level.press( hero.pos, hero, true );
 		Buff.prolong( hero, Cripple.class, Cripple.DURATION );
 
 		//The lower the hero's HP, the more bleed and the less upfront damage.
 		//Hero has a 50% chance to bleed out at 66% HP, and begins to risk instant-death at 25%
-		Buff.affect( hero, Bleeding.class).set( Math.round(hero.HT / (6f + (6f*(hero.HP/(float)hero.HT)))));
+		Buff.affect( hero, FallBleed.class).set( Math.round(hero.HT / (6f + (6f*(hero.HP/(float)hero.HT)))));
 		hero.damage( Math.max( hero.HP / 2, Random.NormalIntRange( hero.HP / 2, hero.HT / 4 )), new Hero.Doom() {
 			@Override
 			public void onDeath() {
@@ -120,7 +127,7 @@ public class Chasm {
 		((MobSprite)mob.sprite).fall();
 	}
 	
-	public static class Falling extends Buff{
+	public static class Falling extends Buff {
 		
 		{
 			actPriority = VFX_PRIO;
@@ -131,6 +138,14 @@ public class Chasm {
 			heroLand();
 			detach();
 			return true;
+		}
+	}
+	
+	public static class FallBleed extends Bleeding implements Hero.Doom {
+		
+		@Override
+		public void onDeath() {
+			Badges.validateDeathFromFalling();
 		}
 	}
 }

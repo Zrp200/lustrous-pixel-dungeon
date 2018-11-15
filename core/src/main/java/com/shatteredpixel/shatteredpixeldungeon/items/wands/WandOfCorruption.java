@@ -74,7 +74,6 @@ import com.watabou.utils.Random;
 
 import java.util.HashMap;
 
-//TODO final balancing decisions here
 public class WandOfCorruption extends Wand {
 
 	{
@@ -162,7 +161,7 @@ public class WandOfCorruption extends Wand {
 			
 			//cannot re-corrupt or doom an enemy, so give them a major debuff instead
 			if(enemy.buff(Corruption.class) != null || enemy.buff(Doom.class) != null){
-				enemyResist = corruptingPower*.99f;
+				corruptingPower = enemyResist - 0.001f;
 			}
 			
 			if (corruptingPower > enemyResist){
@@ -235,6 +234,8 @@ public class WandOfCorruption extends Wand {
 			if (enemy.EXP > 0 && curUser.lvl <= enemy.maxLvl) {
 				curUser.sprite.showStatus(CharSprite.POSITIVE, Messages.get(enemy, "exp", enemy.EXP));
 				curUser.earnExp(enemy.EXP);
+			} else {
+				curUser.earnExp(0);
 			}
 			enemy.rollToDropLoot();
 		} else {

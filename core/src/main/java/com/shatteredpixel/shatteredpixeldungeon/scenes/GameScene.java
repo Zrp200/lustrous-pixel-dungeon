@@ -62,6 +62,7 @@ import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonWallsTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.FogOfWar;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.GridTileMap;
+import com.shatteredpixel.shatteredpixeldungeon.tiles.RaisedTerrainTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.TerrainFeaturesTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.WallBlockingTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
@@ -118,6 +119,7 @@ public class GameScene extends PixelScene {
 	private DungeonTerrainTilemap tiles;
 	private GridTileMap visualGrid;
 	private TerrainFeaturesTilemap terrainFeatures;
+	private RaisedTerrainTilemap raisedTerrain;
 	private DungeonWallsTilemap walls;
 	private WallBlockingTilemap wallBlocking;
 	private FogOfWar fog;
@@ -158,6 +160,11 @@ public class GameScene extends PixelScene {
 	
 	@Override
 	public void create() {
+		
+		if (Dungeon.hero == null){
+			ShatteredPixelDungeon.switchNoFade(TitleScene.class);
+			return;
+		}
 		
 		Music.INSTANCE.play( Assets.TUNE, true );
 
@@ -237,6 +244,9 @@ public class GameScene extends PixelScene {
 				mob.beckon( Dungeon.hero.pos );
 			}
 		}
+		
+		raisedTerrain = new RaisedTerrainTilemap();
+		add( raisedTerrain );
 
 		walls = new DungeonWallsTilemap();
 		add(walls);
@@ -372,6 +382,22 @@ public class GameScene extends PixelScene {
 				}
 			}
 			Dungeon.droppedItems.remove( Dungeon.depth );
+		}
+		
+		ArrayList<Item> ported = Dungeon.portedItems.get( Dungeon.depth );
+		if (ported != null){
+			//TODO currently items are only ported to boss rooms, so this works well
+			//might want to have a 'near entrance' function if items can be ported elsewhere
+			int pos;
+			do {
+				pos = Dungeon.level.randomRespawnCell();
+			} while (Dungeon.level.heaps.get(pos) != null);
+			for (Item item : ported) {
+				Dungeon.level.drop( item, pos ).type = Heap.Type.CHEST;
+			}
+			Dungeon.level.heaps.get(pos).type = Heap.Type.CHEST;
+			Dungeon.level.heaps.get(pos).sprite.link(); //sprite reset to show chest
+			Dungeon.portedItems.remove( Dungeon.depth );
 		}
 
 		Dungeon.hero.next();
@@ -750,6 +776,7 @@ public class GameScene extends PixelScene {
 			scene.tiles.map(Dungeon.level.map, Dungeon.level.width() );
 			scene.visualGrid.map(Dungeon.level.map, Dungeon.level.width() );
 			scene.terrainFeatures.map(Dungeon.level.map, Dungeon.level.width() );
+			scene.raisedTerrain.map(Dungeon.level.map, Dungeon.level.width() );
 			scene.walls.map(Dungeon.level.map, Dungeon.level.width() );
 		}
 		updateFog();
@@ -761,6 +788,7 @@ public class GameScene extends PixelScene {
 			scene.tiles.updateMap();
 			scene.visualGrid.updateMap();
 			scene.terrainFeatures.updateMap();
+			scene.raisedTerrain.updateMap();
 			scene.walls.updateMap();
 			updateFog();
 		}
@@ -771,6 +799,7 @@ public class GameScene extends PixelScene {
 			scene.tiles.updateMapCell( cell );
 			scene.visualGrid.updateMapCell( cell );
 			scene.terrainFeatures.updateMapCell( cell );
+			scene.raisedTerrain.updateMapCell( cell );
 			scene.walls.updateMapCell( cell );
 			//update adjacent cells too
 			updateFog( cell, 1 );

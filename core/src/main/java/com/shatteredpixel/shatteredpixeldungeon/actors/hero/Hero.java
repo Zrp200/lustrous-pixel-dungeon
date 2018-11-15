@@ -26,9 +26,12 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
+import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Alchemy;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AdrenalineSurge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Awareness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barkskin;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Berserk;
@@ -37,6 +40,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Combo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Drowsy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Foresight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Fury;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
@@ -60,13 +64,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap.Type;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Flow;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Obfuscation;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Stone;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Swiftness;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.AlchemistsToolkit;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.EtherealChains;
@@ -79,9 +79,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.keys.IronKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.Key;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfMight;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
-import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfElements;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEvasion;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfFuror;
@@ -90,7 +88,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfMight;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfTenacity;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicalInfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail;
@@ -101,6 +98,8 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Earthroot;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.AlchemyScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.SurfaceScene;
@@ -109,9 +108,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
-import com.shatteredpixel.shatteredpixeldungeon.utils.BArray;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndAlchemy;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndResurrect;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndTradeItem;
@@ -203,6 +200,11 @@ public class Hero extends Char {
 		int STR = this.STR;
 
 		STR += RingOfMight.strengthBonus( this );
+		
+		AdrenalineSurge buff = buff(AdrenalineSurge.class);
+		if (buff != null){
+			STR += buff.boost();
+		}
 
 		return (buff(Weakness.class) != null) ? STR - 2 : STR;
 	}
@@ -241,8 +243,6 @@ public class Hero extends Char {
 		
 		heroClass = HeroClass.restoreInBundle( bundle );
 		subClass = HeroSubClass.restoreInBundle( bundle );
-		
-		berserk = subClass == HeroSubClass.BERSERKER ? buff(Berserk.class) : null;
 		
 		attackSkill = bundle.getInt( ATTACK );
 		defenseSkill = bundle.getInt( DEFENSE );
@@ -323,28 +323,19 @@ public class Hero extends Char {
 	@Override
 	public int defenseSkill( Char enemy ) {
 		
-		float multiplier = 1f * RingOfEvasion.evasionMultiplier( this );
+		float evasion = defenseSkill;
+		
+		evasion *= RingOfEvasion.evasionMultiplier( this );
 		
 		if (paralysed > 0) {
-			multiplier /= 2;
-		}
-		
-		int aEnc = belongings.armor != null ? belongings.armor.STRReq() - STR() : 10 - STR();
-		
-		if (aEnc > 0) {
-			multiplier /= Math.pow( 1.5, aEnc );
-		}
-		int bonus = 0;
-
-		if (belongings.armor != null && belongings.armor.hasGlyph(Swiftness.class))
-			bonus += 5 + belongings.armor.level()*1.5f;
-		
-		Momentum momentum = buff(Momentum.class);
-		if (momentum != null){
-			bonus += momentum.evasionBonus(Math.max(0, -aEnc));
+			evasion /= 2;
 		}
 
-		return Math.round((defenseSkill * multiplier) + bonus);
+		if (belongings.armor != null) {
+			evasion = belongings.armor.evasionFactor(this, evasion);
+		}
+
+		return Math.round(evasion);
 	}
 	
 	@Override
@@ -353,13 +344,19 @@ public class Hero extends Char {
 		Barkskin bark = buff(Barkskin.class);
 
 		if (belongings.armor != null) {
-			dr += Random.NormalIntRange( belongings.armor.DRMin(), belongings.armor.DRMax());
+			int armDr = Random.NormalIntRange( belongings.armor.DRMin(), belongings.armor.DRMax());
 			if (STR() < belongings.armor.STRReq()){
-				dr -= 2*(belongings.armor.STRReq() - STR());
-				dr = Math.max(dr, 0);
+				armDr -= 2*(belongings.armor.STRReq() - STR());
 			}
+			if (armDr > 0) dr += armDr;
 		}
-		if (belongings.weapon != null)  dr += Random.NormalIntRange( 0 , belongings.weapon.defenseFactor( this ) );
+		if (belongings.weapon != null)  {
+			int wepDr = Random.NormalIntRange( 0 , belongings.weapon.defenseFactor( this ) );
+			if (STR() < ((Weapon)belongings.weapon).STRReq()){
+				wepDr -= 2*(((Weapon)belongings.weapon).STRReq() - STR());
+			}
+			if (wepDr > 0) dr += wepDr;
+		}
 		if (bark != null)               dr += Random.NormalIntRange( 0 , bark.level() );
 
 		return dr;
@@ -376,10 +373,10 @@ public class Hero extends Char {
 			dmg = RingOfForce.damageRoll(this);
 		}
 		if (dmg < 0) dmg = 0;
-		if (subClass == HeroSubClass.BERSERKER){
-			berserk = Buff.affect(this, Berserk.class);
-			dmg = berserk.damageFactor(dmg);
-		}
+		
+		Berserk berserk = buff(Berserk.class);
+		if (berserk != null) dmg = berserk.damageFactor(dmg);
+		
 		return buff( Fury.class ) != null ? (int)(dmg * 1.5f) : dmg;
 	}
 	
@@ -389,20 +386,10 @@ public class Hero extends Char {
 		float speed = super.speed();
 
 		speed *= RingOfHaste.speedMultiplier(this);
-
-		Armor armor = belongings.armor;
-
-		if (armor != null){
-
-			if (armor.hasGlyph(Swiftness.class)) {
-				speed *= (1.1f + 0.01f * belongings.armor.level());
-			} else if (armor.hasGlyph(Flow.class) && Dungeon.level.water[pos]){
-				speed *= (1.5f + 0.05f * belongings.armor.level());
-			}
-		}
 		
-		int aEnc = armor != null ? armor.STRReq() - STR() : 0;
-		if (aEnc > 0) speed /= Math.pow( 1.2, aEnc );
+		if (belongings.armor != null) {
+			speed = belongings.armor.speedFactor(this, speed);
+		}
 		
 		Momentum momentum = buff(Momentum.class);
 		if (momentum != null){
@@ -423,25 +410,19 @@ public class Hero extends Char {
 	}
 
 	public boolean canAttack(Char enemy){
-		if (enemy == null || pos == enemy.pos)
+		if (enemy == null || pos == enemy.pos) {
 			return false;
+		}
 
 		//can always attack adjacent enemies
-		if (Dungeon.level.adjacent(pos, enemy.pos))
+		if (Dungeon.level.adjacent(pos, enemy.pos)) {
 			return true;
+		}
 
 		KindOfWeapon wep = Dungeon.hero.belongings.weapon;
 
-		if (wep != null && Dungeon.level.distance( pos, enemy.pos ) <= wep.reachFactor(this)){
-
-			boolean[] passable = BArray.not(Dungeon.level.solid, null);
-			for (Mob m : Dungeon.level.mobs)
-				passable[m.pos] = false;
-
-			PathFinder.buildDistanceMap(enemy.pos, passable, wep.reachFactor(this));
-
-			return PathFinder.distance[pos] <= wep.reachFactor(this);
-
+		if (wep != null){
+			return wep.canReach(this, enemy.pos);
 		} else {
 			return false;
 		}
@@ -463,12 +444,19 @@ public class Hero extends Char {
 	@Override
 	public void spend( float time ) {
 		justMoved = false;
-		TimekeepersHourglass.timeFreeze buff = buff(TimekeepersHourglass.timeFreeze.class);
-		if (buff != null){
-			buff.processTime(time);
-		} else {
-			super.spend(time);
+		TimekeepersHourglass.timeFreeze freeze = buff(TimekeepersHourglass.timeFreeze.class);
+		if (freeze != null) {
+			freeze.processTime(time);
+			return;
 		}
+		
+		Swiftthistle.TimeBubble bubble = buff(Swiftthistle.TimeBubble.class);
+		if (bubble != null){
+			bubble.processTime(time);
+			return;
+		}
+		
+		super.spend(time);
 	}
 	
 	public void spendAndNext( float time ) {
@@ -677,7 +665,20 @@ public class Hero extends Char {
 		if (Dungeon.level.distance(dst, pos) <= 1) {
 
 			ready();
-			GameScene.show(new WndAlchemy());
+			
+			AlchemistsToolkit.kitEnergy kit = buff(AlchemistsToolkit.kitEnergy.class);
+			if (kit != null && kit.isCursed()){
+				GLog.w( Messages.get(AlchemistsToolkit.class, "cursed"));
+				return false;
+			}
+			
+			Alchemy alch = (Alchemy) Dungeon.level.blobs.get(Alchemy.class);
+			//TODO logic for a well having dried up?
+			if (alch != null) {
+				alch.alchPos = dst;
+				AlchemyScene.setProvider( alch );
+			}
+			ShatteredPixelDungeon.switchScene(AlchemyScene.class);
 			return false;
 
 		} else if (getCloser( dst )) {
@@ -708,8 +709,8 @@ public class Hero extends Char {
 					} else {
 
 						boolean important =
-								((item instanceof ScrollOfUpgrade || item instanceof ScrollOfMagicalInfusion) && ((Scroll)item).isKnown()) ||
-								((item instanceof PotionOfStrength || item instanceof PotionOfMight) && ((Potion)item).isKnown());
+								(item instanceof ScrollOfUpgrade && ((Scroll)item).isKnown()) ||
+								(item instanceof PotionOfStrength && ((Potion)item).isKnown());
 						if (important) {
 							GLog.p( Messages.get(this, "you_now_have", item.name()) );
 						} else {
@@ -766,7 +767,6 @@ public class Hero extends Char {
 					Sample.INSTANCE.play( Assets.SND_UNLOCK );
 				}
 				
-				spend( Key.TIME_TO_UNLOCK );
 				sprite.operate( dst );
 				
 			} else {
@@ -806,7 +806,6 @@ public class Hero extends Char {
 			
 			if (hasKey) {
 				
-				spend( Key.TIME_TO_UNLOCK );
 				sprite.operate( doorCell );
 				
 				Sample.INSTANCE.play( Assets.SND_UNLOCK );
@@ -862,6 +861,7 @@ public class Hero extends Char {
 					GameScene.show( new WndMessage( Messages.get(this, "leave") ) );
 					ready();
 				} else {
+					Badges.silentValidateHappyEnd();
 					Dungeon.win( Amulet.class );
 					Dungeon.deleteGame( GamesInProgress.curSlot, true );
 					Game.switchScene( SurfaceScene.class );
@@ -895,9 +895,7 @@ public class Hero extends Char {
 		enemy = action.target;
 
 		if (enemy.isAlive() && canAttack( enemy ) && !isCharmedBy( enemy )) {
-
-			Invisibility.dispel();
-			spend( attackDelay() );
+			
 			sprite.attack( enemy.pos );
 
 			return false;
@@ -950,13 +948,18 @@ public class Hero extends Char {
 	@Override
 	public int defenseProc( Char enemy, int damage ) {
 		
-		Earthroot.Armor armor = buff( Earthroot.Armor.class );
-		if (armor != null) {
-			damage = armor.absorb( damage );
+		if (damage > 0 && subClass == HeroSubClass.BERSERKER){
+			Berserk berserk = Buff.affect(this, Berserk.class);
+			berserk.damage(damage);
 		}
 		
 		if (belongings.armor != null) {
 			damage = belongings.armor.proc( enemy, this, damage );
+		}
+		
+		Earthroot.Armor armor = buff( Earthroot.Armor.class );
+		if (armor != null) {
+			damage = armor.absorb( damage );
 		}
 		
 		return damage;
@@ -985,13 +988,9 @@ public class Hero extends Char {
 		dmg = (int)Math.ceil(dmg * RingOfTenacity.damageMultiplier( this ));
 
 		//TODO improve this when I have proper damage source logic
-		if (belongings.armor != null && belongings.armor.hasGlyph(AntiMagic.class)
-				&& RingOfElements.RESISTS.contains(src.getClass())){
+		if (belongings.armor != null && belongings.armor.hasGlyph(AntiMagic.class, this)
+				&& AntiMagic.RESISTS.contains(src.getClass())){
 			dmg -= Random.NormalIntRange(belongings.armor.DRMin(), belongings.armor.DRMax())/3;
-		}
-
-		if (subClass == HeroSubClass.BERSERKER && berserk == null){
-			berserk = Buff.affect(this, Berserk.class);
 		}
 
 		super.damage( dmg, src );
@@ -1113,19 +1112,13 @@ public class Hero extends Char {
 		}
 
 		if (step != -1) {
-
-			int moveTime = 1;
-			if (belongings.armor != null && belongings.armor.hasGlyph(Stone.class) &&
-							(Dungeon.level.map[pos] == Terrain.DOOR
-							|| Dungeon.level.map[pos] == Terrain.OPEN_DOOR
-							|| Dungeon.level.map[step] == Terrain.DOOR
-							|| Dungeon.level.map[step] == Terrain.OPEN_DOOR )){
-				moveTime *= 2;
-			}
+			
+			float speed = speed();
+			
 			sprite.move(pos, step);
 			move(step);
 
-			spend( moveTime / speed() );
+			spend( 1 / speed );
 			
 			search(false);
 			
@@ -1218,11 +1211,12 @@ public class Hero extends Char {
 
 		HornOfPlenty.hornRecharge horn = buff(HornOfPlenty.hornRecharge.class);
 		if (horn != null) horn.gainCharge(percent);
-
-		if (subClass == HeroSubClass.BERSERKER){
-			berserk = Buff.affect(this, Berserk.class);
-			berserk.recover(percent);
-		}
+		
+		AlchemistsToolkit.kitEnergy kit = buff(AlchemistsToolkit.kitEnergy.class);
+		if (kit != null) kit.gainCharge(percent);
+		
+		Berserk berserk = buff(Berserk.class);
+		if (berserk != null) berserk.recover(percent);
 		
 		boolean levelUp = false;
 		while (this.exp >= maxExp()) {
@@ -1298,12 +1292,13 @@ public class Hero extends Char {
 	}
 	
 	@Override
-	public int stealth() {
-		int stealth = super.stealth();
+	public float stealth() {
+		float stealth = super.stealth();
 		
-		if (belongings.armor != null && belongings.armor.hasGlyph(Obfuscation.class)){
-			stealth += 1 + belongings.armor.level()/3;
+		if (belongings.armor != null){
+			stealth = belongings.armor.stealthFactor(this, stealth);
 		}
+		
 		return stealth;
 	}
 	
@@ -1422,13 +1417,14 @@ public class Hero extends Char {
 
 	@Override
 	public boolean isAlive() {
-		if (subClass == HeroSubClass.BERSERKER
-				&& berserk != null
-				&& berserk.berserking()
-				&& SHLD > 0){
-			return true;
+		
+		if (HP <= 0){
+			if (berserk == null) berserk = buff(Berserk.class);
+			return berserk != null && berserk.berserking();
+		} else {
+			berserk = null;
+			return super.isAlive();
 		}
-		return super.isAlive();
 	}
 
 	@Override
@@ -1459,6 +1455,9 @@ public class Hero extends Char {
 				if (combo != null) combo.miss();
 			}
 		}
+		
+		Invisibility.dispel();
+		spend( attackDelay() );
 
 		curAction = null;
 
@@ -1484,6 +1483,7 @@ public class Hero extends Char {
 			
 			Level.set( doorCell, door == Terrain.LOCKED_DOOR ? Terrain.DOOR : Terrain.UNLOCKED_EXIT );
 			GameScene.updateMap( doorCell );
+			spend( Key.TIME_TO_UNLOCK );
 			
 		} else if (curAction instanceof HeroAction.OpenChest) {
 
@@ -1497,6 +1497,7 @@ public class Hero extends Char {
 			}
 			GameScene.updateKeyDisplay();
 			heap.open( this );
+			spend( Key.TIME_TO_UNLOCK );
 		}
 		curAction = null;
 
@@ -1510,6 +1511,10 @@ public class Hero extends Char {
 		boolean smthFound = false;
 
 		int distance = heroClass == HeroClass.ROGUE ? 2 : 1;
+		
+		boolean foresight = buff(Foresight.class) != null;
+		
+		if (foresight) distance++;
 		
 		int cx = pos % Dungeon.level.width();
 		int cy = pos / Dungeon.level.width();
@@ -1530,8 +1535,8 @@ public class Hero extends Char {
 			by = Dungeon.level.height() - 1;
 		}
 
-		TalismanOfForesight.Foresight foresight = buff( TalismanOfForesight.Foresight.class );
-		boolean cursed = foresight != null && foresight.isCursed();
+		TalismanOfForesight.Foresight talisman = buff( TalismanOfForesight.Foresight.class );
+		boolean cursed = talisman != null && talisman.isCursed();
 		
 		for (int y = ay; y <= by; y++) {
 			for (int x = ax, p = ax + y * Dungeon.level.width(); x <= bx; x++, p++) {
@@ -1552,6 +1557,10 @@ public class Hero extends Char {
 						//unintentional searches always fail with a cursed talisman
 						} else if (cursed) {
 							chance = 0f;
+							
+						//..and always succeed when affected by foresight buff
+						} else if (foresight){
+							chance = 1f;
 							
 						//unintentional trap detection scales from 40% at floor 0 to 30% at floor 25
 						} else if (Dungeon.level.map[p] == Terrain.SECRET_TRAP) {
@@ -1574,8 +1583,8 @@ public class Hero extends Char {
 							
 							smthFound = true;
 	
-							if (foresight != null && !foresight.isCursed())
-								foresight.charge();
+							if (talisman != null && !talisman.isCursed())
+								talisman.charge();
 						}
 					}
 				}
@@ -1586,11 +1595,13 @@ public class Hero extends Char {
 		if (intentional) {
 			sprite.showStatus( CharSprite.DEFAULT, Messages.get(this, "search") );
 			sprite.operate( pos );
-			if (cursed){
-				GLog.n(Messages.get(this, "search_distracted"));
-				buff(Hunger.class).reduceHunger(TIME_TO_SEARCH - (2*HUNGER_FOR_SEARCH));
-			} else {
-				buff(Hunger.class).reduceHunger(TIME_TO_SEARCH - HUNGER_FOR_SEARCH);
+			if (!Dungeon.level.locked) {
+				if (cursed) {
+					GLog.n(Messages.get(this, "search_distracted"));
+					buff(Hunger.class).reduceHunger(TIME_TO_SEARCH - (2 * HUNGER_FOR_SEARCH));
+				} else {
+					buff(Hunger.class).reduceHunger(TIME_TO_SEARCH - HUNGER_FOR_SEARCH);
+				}
 			}
 			spendAndNext(TIME_TO_SEARCH);
 			

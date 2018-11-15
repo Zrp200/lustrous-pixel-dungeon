@@ -77,7 +77,7 @@ abstract public class MissileWeapon extends Weapon {
 	
 	@Override
 	public int throwPos(Hero user, int dst) {
-		if (hasEnchant(Projecting.class)
+		if (hasEnchant(Projecting.class, user)
 				&& !Dungeon.level.solid[dst] && Dungeon.level.distance(user.pos, dst) <= 4){
 			return dst;
 		} else {
@@ -173,7 +173,7 @@ abstract public class MissileWeapon extends Weapon {
 		float usage = MAX_DURABILITY/10f;
 		
 		if (Dungeon.hero.heroClass == HeroClass.HUNTRESS)   usage /= 1.5f;
-		else if (holster)                                   usage /= MagicalHolster.HOLSTER_DURABILITY_FACTOR;
+		if (holster)                                        usage /= MagicalHolster.HOLSTER_DURABILITY_FACTOR;
 		
 		usage /= RingOfSharpshooting.durabilityMultiplier( Dungeon.hero );
 		
@@ -182,7 +182,7 @@ abstract public class MissileWeapon extends Weapon {
 	
 	@Override
 	public int damageRoll(Char owner) {
-		int damage = imbue.damageFactor(super.damageRoll( owner ));
+		int damage = augment.damageFactor(super.damageRoll( owner ));
 		damage = Math.round( damage * RingOfSharpshooting.damageMultiplier( owner ));
 		
 		if (owner instanceof Hero &&
@@ -253,8 +253,8 @@ abstract public class MissileWeapon extends Weapon {
 		String info = desc();
 		
 		info += "\n\n" + Messages.get( MissileWeapon.class, "stats",
-				Math.round(imbue.damageFactor(min()) * RingOfSharpshooting.damageMultiplier( Dungeon.hero )),
-				Math.round(imbue.damageFactor(max()) * RingOfSharpshooting.damageMultiplier( Dungeon.hero )),
+				Math.round(augment.damageFactor(min()) * RingOfSharpshooting.damageMultiplier( Dungeon.hero )),
+				Math.round(augment.damageFactor(max()) * RingOfSharpshooting.damageMultiplier( Dungeon.hero )),
 				STRReq());
 
 		if (STRReq() > Dungeon.hero.STR()) {
@@ -272,6 +272,8 @@ abstract public class MissileWeapon extends Weapon {
 			info += "\n\n" + Messages.get(Weapon.class, "cursed_worn");
 		} else if (cursedKnown && cursed) {
 			info += "\n\n" + Messages.get(Weapon.class, "cursed");
+		} else if (!isIdentified() && cursedKnown){
+			info += "\n\n" + Messages.get(Weapon.class, "not_cursed");
 		}
 
 		info += "\n\n" + Messages.get(MissileWeapon.class, "distance");

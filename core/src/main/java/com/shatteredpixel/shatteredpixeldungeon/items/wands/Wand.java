@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -77,6 +78,7 @@ public abstract class Wand extends Item {
 	{
 		defaultAction = AC_ZAP;
 		usesTargeting = true;
+		bones = true;
 	}
 	
 	@Override
@@ -144,7 +146,7 @@ public abstract class Wand extends Item {
 	protected void processSoulMark(Char target, int chargesUsed){
 		if (target != Dungeon.hero &&
 				Dungeon.hero.subClass == HeroSubClass.WARLOCK &&
-				Random.Float() < .09f + (level()*chargesUsed*0.06f)){
+				Random.Float() > Math.pow(0.9f, (level()*chargesUsed)+1)){
 			SoulMark.prolong(target, SoulMark.class, SoulMark.DURATION + level());
 		}
 	}
@@ -183,8 +185,11 @@ public abstract class Wand extends Item {
 
 		desc += "\n\n" + statsDesc();
 
-		if (cursed && cursedKnown)
+		if (cursed && cursedKnown) {
 			desc += "\n\n" + Messages.get(Wand.class, "cursed");
+		} else if (!isIdentified() && cursedKnown){
+			desc += "\n\n" + Messages.get(Wand.class, "not_cursed");
+		}
 
 		return desc;
 	}
@@ -365,6 +370,9 @@ public abstract class Wand extends Item {
 				if (target == curUser.pos || cell == curUser.pos) {
 					GLog.i( Messages.get(Wand.class, "self_target") );
 					return;
+				} else if (curUser.buff(MagicImmune.class) != null){
+					GLog.w( Messages.get(Wand.class, "no_magic") );
+					return;
 				}
 
 				curUser.sprite.zap(cell);
@@ -378,11 +386,11 @@ public abstract class Wand extends Item {
 				if (curWand.curCharges >= (curWand.cursed ? 1 : curWand.chargesPerCast())) {
 					
 					curUser.busy();
-
+					Invisibility.dispel();
+					
 					if (curWand.cursed){
 						CursedWand.cursedZap(curWand, curUser, new Ballistica( curUser.pos, target, Ballistica.MAGIC_BOLT));
 						if (!curWand.cursedKnown){
-							curWand.cursedKnown = true;
 							GLog.n(Messages.get(Wand.class, "curse_discover", curWand.name()));
 						}
 					} else {
@@ -393,8 +401,7 @@ public abstract class Wand extends Item {
 							}
 						});
 					}
-					
-					Invisibility.dispel();
+					curWand.cursedKnown = true;
 					
 				} else {
 

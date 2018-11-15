@@ -21,14 +21,18 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blizzard;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ConfusionGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.CorrosiveGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Electricity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Freezing;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Inferno;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ParalyticGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Regrowth;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.SmokeScreen;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.StenchGas;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.StormCloud;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Web;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -36,6 +40,10 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.Image;
 
 public class BlobImmunity extends FlavourBuff {
+	
+	{
+		type = buffType.POSITIVE;
+	}
 	
 	public static final float DURATION	= 20f;
 	
@@ -56,14 +64,18 @@ public class BlobImmunity extends FlavourBuff {
 
 	{
 		//all harmful blobs
+		immunities.add( Blizzard.class );
 		immunities.add( ConfusionGas.class );
 		immunities.add( CorrosiveGas.class );
 		immunities.add( Electricity.class );
 		immunities.add( Fire.class );
 		immunities.add( Freezing.class );
+		immunities.add( Inferno.class );
 		immunities.add( ParalyticGas.class );
 		immunities.add( Regrowth.class );
+		immunities.add( SmokeScreen.class );
 		immunities.add( StenchGas.class );
+		immunities.add( StormCloud.class );
 		immunities.add( ToxicGas.class );
 		immunities.add( Web.class );
 	}

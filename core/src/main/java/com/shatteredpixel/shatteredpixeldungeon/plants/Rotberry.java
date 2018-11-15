@@ -24,13 +24,12 @@ package com.shatteredpixel.shatteredpixeldungeon.plants;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.LeafParticle;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 public class Rotberry extends Plant {
 
 	{
-		image = 7;
+		image = 0;
 	}
 
 	@Override
@@ -54,7 +53,11 @@ public class Rotberry extends Plant {
 			image = ItemSpriteSheet.SEED_ROTBERRY;
 
 			plantClass = Rotberry.class;
-			alchemyClass = PotionOfStrength.class;
+		}
+		
+		@Override
+		public int price() {
+			return 30 * quantity;
 		}
 	}
 }
