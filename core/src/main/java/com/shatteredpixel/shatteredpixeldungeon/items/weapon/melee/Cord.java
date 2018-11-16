@@ -26,5 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 public class Cord extends Whip {
     {
         tier = 1;
+        bones = false;
     }
+    public int maxBase() {return 5;}
 }

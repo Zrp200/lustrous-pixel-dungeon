@@ -41,11 +41,10 @@ public class Bestiary {
 		switch(depth){
 			
 			// Sewers
-			case 1: default:
-				//10x rat
+			case 1: default: // 10 rats.
 				return new ArrayList<Class<? extends Mob>>(Arrays.asList(
-						Rat.class, Rat.class, Rat.class, Rat.class, Rat.class,
-						Rat.class, Rat.class, Rat.class, Rat.class, Rat.class));
+						Rat.class
+				));
 			case 2:
 				//3x rat, 3x gnoll
 				return new ArrayList<>(Arrays.asList(Rat.class, Rat.class, Rat.class,
@@ -72,19 +71,19 @@ public class Bestiary {
 				//3x skeleton, 1x thief, 1x shaman, 1x guard
 				return new ArrayList<>(Arrays.asList(Skeleton.class, Skeleton.class, Skeleton.class,
 						Thief.class,
-						Shaman.class,
+						Shaman.random(),
 						Guard.class));
 			case 8:
 				//3x skeleton, 1x thief, 2x shaman, 2x guard
 				return new ArrayList<>(Arrays.asList(Skeleton.class, Skeleton.class, Skeleton.class,
 						Thief.class,
-						Shaman.class, Shaman.class,
+						Shaman.random(), Shaman.random(),
 						Guard.class, Guard.class));
 			case 9:
 				//3x skeleton, 1x thief, 2x shaman, 3x guard
 				return new ArrayList<>(Arrays.asList(Skeleton.class, Skeleton.class, Skeleton.class,
 						Thief.class,
-						Shaman.class, Shaman.class,
+						Shaman.random(), Shaman.random(),
 						Guard.class, Guard.class, Guard.class));
 				
 			// Caves
@@ -104,16 +103,16 @@ public class Bestiary {
 				return new ArrayList<>(Arrays.asList(
 						Bat.class,
 						Brute.class, Brute.class, Brute.class,
-						Shaman.class,
+						Shaman.random(),
 						Spinner.class));
 			case 14:
 				//1x bat, 3x brute, 1x shaman, 4x spinner
 				return new ArrayList<>(Arrays.asList(
 						Bat.class,
 						Brute.class, Brute.class, Brute.class,
-						Shaman.class,
+						Shaman.random(),
 						Spinner.class, Spinner.class, Spinner.class, Spinner.class));
-				
+
 			// City
 			case 16:
 				//5x elemental, 5x warlock, 1x monk
@@ -179,7 +178,7 @@ public class Bestiary {
 				
 			// Prison
 			case 6:
-				if (Random.Float() < 0.2f)  rotation.add(Shaman.class);
+				if (Random.Float() < 0.2f)  rotation.add(Shaman.random());
 				return;
 			case 8:
 				if (Random.Float() < 0.02f) rotation.add(Bat.class);

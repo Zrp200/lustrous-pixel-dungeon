@@ -28,10 +28,10 @@ import com.watabou.noosa.TextureFilm;
 
 public class ShamanSprite extends MobSprite {
 	
-	public ShamanSprite() {
+	public ShamanSprite(String texture) {
 		super();
 		
-		texture( Assets.SHAMAN );
+		texture( texture );
 		
 		TextureFilm frames = new TextureFilm( texture, 12, 15 );
 		
@@ -58,5 +58,15 @@ public class ShamanSprite extends MobSprite {
 		
 		turnTo( ch.pos, pos );
 		play( zap );
+	}
+	public static class LightningShaman extends ShamanSprite {
+		public LightningShaman() {
+			super(Assets.SHAMAN);
+		}
+	}
+	public class FireboltShaman extends ShamanSprite {
+		public FireboltShaman() {
+			super(Assets.FIRESHAMAN);
+		}
 	}
 }

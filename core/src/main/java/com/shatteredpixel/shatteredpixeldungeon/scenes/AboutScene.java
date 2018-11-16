@@ -41,6 +41,10 @@ import com.watabou.noosa.TouchArea;
 
 public class AboutScene extends PixelScene {
 
+	private static final String TITLE_LPD = "Lustrous Pixel Dungeon";
+
+	private static final String TXT_LPD = "Code: Zrp200 \"Palkia\"";
+
 	private static final String TTL_SHPX = "Shattered Pixel Dungeon";
 
 	private static final String TXT_SHPX =
