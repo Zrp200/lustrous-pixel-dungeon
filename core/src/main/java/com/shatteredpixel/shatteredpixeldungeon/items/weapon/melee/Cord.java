@@ -27,6 +27,4 @@ public class Cord extends Whip {
     {
         tier = 1;
     }
-    @Override
-    public int maxScale() {return 2;}
 }

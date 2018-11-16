@@ -33,7 +33,7 @@ public class Whip extends MeleeWeapon {
 	}
 
 	@Override
-	public int maxBase() {return 3*(tier+1);}
-	public int maxScale() {return 3;}
+	public int maxBase() {return super.maxBase()-5-maxScale();} // equal to non-sword weapon of the tier below; in this case, 12.
+	public int maxScale() {return tier;} // equal to a weapon of the tier below; in this case, 3
 
 }
