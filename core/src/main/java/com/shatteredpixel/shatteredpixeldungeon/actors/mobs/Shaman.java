@@ -23,20 +23,34 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFireblast;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blazing;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShamanSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Camera;
 import com.watabou.utils.Callback;
+import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 public abstract class Shaman extends Mob implements Callback {
 	public static Class<?extends Mob> random() {
-		return Shaman.LightningShaman.class;
+		switch(Random.Int(3)) {
+			case 0:
+				return Shaman.Firebolt.class;
+			default:
+				return Shaman.LightningShaman.class;
+		}
 	}
 	private static final float TIME_TO_ZAP = 1f;
 	{
@@ -71,33 +85,35 @@ public abstract class Shaman extends Mob implements Callback {
 		return new Ballistica(pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos == enemy.pos;
 	}
 
-	abstract protected void applyZap(Char enemy);
+	protected void applyZap(int damage) {
+		enemy.damage(damage, this);
+		if (enemy == Dungeon.hero && !enemy.isAlive()) {
+			Dungeon.fail(getClass());
+			GLog.n(Messages.get(this, "zap_kill"));
+		}
+	}
+	protected abstract void applyZap();
 
-	protected boolean doZap(Char enemy) {
+	protected boolean doZap() {
 		boolean visible = fieldOfView[pos] || fieldOfView[enemy.pos];
 		if (visible) {
 			sprite.zap( enemy.pos );
 		}
 
 		spend( TIME_TO_ZAP );
-
-		if (hit( this, enemy, true )) {
-			applyZap(enemy);
-			if (enemy == Dungeon.hero && !enemy.isAlive()) {
-					Dungeon.fail( getClass() );
-					GLog.n( Messages.get(this, "zap_kill") );
-			}
-		} else
-			enemy.sprite.showStatus( CharSprite.NEUTRAL,  enemy.defenseVerb() );
 		return !visible;
 	}
 	@Override
-	protected boolean doAttack( Char enemy ) {
+	protected boolean doAttack(Char enemy) {
 		if (Dungeon.level.distance( pos, enemy.pos ) <= 1)
 			return super.doAttack( enemy );
-		else return doZap(enemy);
+		else return doZap();
 	}
-	
+	public void onZapComplete() {
+		if (hit(this, enemy, true))
+			applyZap();
+			next();
+	}
 	@Override
 	public void call() {
 		next();
@@ -107,15 +123,30 @@ public abstract class Shaman extends Mob implements Callback {
 			spriteClass = ShamanSprite.LightningShaman.class;
 			properties.add(Property.ELECTRIC);
 		}
-		protected void applyZap(Char enemy ) {
+		protected void applyZap() {
 			int damage = Random.NormalIntRange(4, 12);
 			if (Dungeon.level.water[enemy.pos] && !enemy.flying)
 				damage *= 1.5f;
-			enemy.damage(damage, this);
 			enemy.sprite.centerEmitter().burst( SparkParticle.FACTORY, 3 );
 			enemy.sprite.flash();
 			if(enemy == Dungeon.hero) Camera.main.shake( 2, 0.3f );
+			super.applyZap(damage);
 		}
 	}
-	//public static class FireboltShaman extends Shaman {}
+	public static class Firebolt extends Shaman {
+        {
+            spriteClass = ShamanSprite.Firebolt.class;
+
+            resistances.add(Burning.class);
+            resistances.add(Blazing.class);
+            resistances.add(WandOfFireblast.class);
+            resistances.add(Shaman.Firebolt.class);
+        }
+        protected void applyZap() {
+            enemy.sprite.centerEmitter().burst(FlameParticle.FACTORY, 3);
+			Buff.affect( enemy, Burning.class ).reignite( enemy );
+            GameScene.add( Blob.seed( enemy.pos , 1, Fire.class ) );
+            super.applyZap( Random.NormalIntRange(3,9) );
+        }
+    }
 }

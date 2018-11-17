@@ -23,8 +23,12 @@ package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Shaman;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Warlock;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Lightning;
+import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.watabou.noosa.TextureFilm;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Callback;
 
 public class ShamanSprite extends MobSprite {
 	
@@ -53,9 +57,6 @@ public class ShamanSprite extends MobSprite {
 	}
 	
 	public void zap( int pos ) {
-
-		parent.add( new Lightning( ch.pos, pos, (Shaman)ch ) );
-		
 		turnTo( ch.pos, pos );
 		play( zap );
 	}
@@ -63,10 +64,28 @@ public class ShamanSprite extends MobSprite {
 		public LightningShaman() {
 			super(Assets.SHAMAN);
 		}
+		public void zap(int pos) {
+			parent.add( new Lightning( ch.pos, pos, (Shaman)ch ) );
+			super.zap(pos);
+		}
 	}
-	public class FireboltShaman extends ShamanSprite {
-		public FireboltShaman() {
+	public static class Firebolt extends ShamanSprite {
+		public Firebolt() {
 			super(Assets.FIRESHAMAN);
+		}
+		public void zap(int pos) {
+			super.zap(pos);
+			MagicMissile.boltFromChar( parent,
+					MagicMissile.FIRE,
+					this,
+					pos,
+					new Callback() {
+						@Override
+						public void call() {
+							((Shaman)ch).onZapComplete();
+						}
+					} );
+			Sample.INSTANCE.play( Assets.SND_ZAP );
 		}
 	}
 }
