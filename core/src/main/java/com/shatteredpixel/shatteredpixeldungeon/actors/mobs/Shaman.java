@@ -40,7 +40,6 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ShamanSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Camera;
 import com.watabou.utils.Callback;
-import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 public abstract class Shaman extends Mob implements Callback {
@@ -49,7 +48,7 @@ public abstract class Shaman extends Mob implements Callback {
 			case 0:
 				return Shaman.Firebolt.class;
 			default:
-				return Shaman.LightningShaman.class;
+				return Shaman.Lightning.class;
 		}
 	}
 	private static final float TIME_TO_ZAP = 1f;
@@ -112,15 +111,18 @@ public abstract class Shaman extends Mob implements Callback {
 	public void onZapComplete() {
 		if (hit(this, enemy, true))
 			applyZap();
-			next();
+		else
+			enemy.sprite.showStatus( CharSprite.NEUTRAL,  enemy.defenseVerb() );
+		next();
 	}
 	@Override
 	public void call() {
 		next();
 	}
-	public static class LightningShaman extends Shaman {
+
+	public static class Lightning extends Shaman {
 		{
-			spriteClass = ShamanSprite.LightningShaman.class;
+			spriteClass = ShamanSprite.Lightning.class;
 			properties.add(Property.ELECTRIC);
 		}
 		protected void applyZap() {

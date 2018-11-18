@@ -21,8 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
-
 public class Cord extends Whip {
     {
         tier = 1;

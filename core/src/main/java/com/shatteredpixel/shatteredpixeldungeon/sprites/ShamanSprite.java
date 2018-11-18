@@ -23,8 +23,6 @@ package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Shaman;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Warlock;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Lightning;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.audio.Sample;
@@ -60,12 +58,12 @@ public class ShamanSprite extends MobSprite {
 		turnTo( ch.pos, pos );
 		play( zap );
 	}
-	public static class LightningShaman extends ShamanSprite {
-		public LightningShaman() {
+	public static class Lightning extends ShamanSprite {
+		public Lightning() {
 			super(Assets.SHAMAN);
 		}
 		public void zap(int pos) {
-			parent.add( new Lightning( ch.pos, pos, (Shaman)ch ) );
+			parent.add( new com.shatteredpixel.shatteredpixeldungeon.effects.Lightning( ch.pos, pos, (Shaman)ch ) );
 			super.zap(pos);
 		}
 	}
