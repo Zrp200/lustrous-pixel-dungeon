@@ -115,6 +115,9 @@ public abstract class Shaman extends Mob implements Callback {
 			enemy.sprite.showStatus( CharSprite.NEUTRAL,  enemy.defenseVerb() );
 		next();
 	}
+	public String description() {
+	    return super.description() + "\n\n" + Messages.get(this, "variant_desc");
+    }
 	@Override
 	public void call() {
 		next();
