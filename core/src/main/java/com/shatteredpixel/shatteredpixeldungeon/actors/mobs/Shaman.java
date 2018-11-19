@@ -25,8 +25,10 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Inferno;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
+import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile.*;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
@@ -44,12 +46,9 @@ import com.watabou.utils.Random;
 
 public abstract class Shaman extends Mob implements Callback {
 	public static Class<?extends Mob> random() {
-		switch(Random.Int(3)) {
-			case 0:
-				return Shaman.Firebolt.class;
-			default:
-				return Shaman.Lightning.class;
-		}
+		if(Random.Int(2) == 0) return Shaman.MagicMissile.class;
+		if(Random.Int(3) == 0) return Shaman.Firebolt.class;
+		else return Shaman.Lightning.class;
 	}
 	private static final float TIME_TO_ZAP = 1f;
 	{
@@ -134,8 +133,24 @@ public abstract class Shaman extends Mob implements Callback {
 				damage *= 1.5f;
 			enemy.sprite.centerEmitter().burst( SparkParticle.FACTORY, 3 );
 			enemy.sprite.flash();
-			if(enemy == Dungeon.hero) Camera.main.shake( 2, 0.3f );
-			super.applyZap(damage);
+			if(enemy == Dungeon.hero)
+				Camera.main.shake( 2, 0.3f );
+			applyZap(damage);
+		}
+	}
+	public static class MagicMissile extends Shaman {
+		{
+			spriteClass = ShamanSprite.MM.class;
+		}
+		protected void applyZap() {
+			enemy.sprite.burst(0xFFFFFFFF,2);
+			applyZap(Random.NormalIntRange(3,10));
+		}
+		public void onZapComplete() { // a temporary solution to what I want at the moment, hoping to get a bit more elegant later
+			if (!hit(this, enemy, false)) // if it won't hit without the magic boost
+				super.onZapComplete(); // try again with it.
+			else applyZap();
+			next();
 		}
 	}
 	public static class Firebolt extends Shaman {
@@ -143,15 +158,16 @@ public abstract class Shaman extends Mob implements Callback {
             spriteClass = ShamanSprite.Firebolt.class;
 
             resistances.add(Burning.class);
+            resistances.add(Inferno.class);
             resistances.add(Blazing.class);
             resistances.add(WandOfFireblast.class);
             resistances.add(Shaman.Firebolt.class);
         }
         protected void applyZap() {
             enemy.sprite.centerEmitter().burst(FlameParticle.FACTORY, 3);
+			GameScene.add( Blob.seed( enemy.pos , 1, Fire.class ) );
+            applyZap( Random.NormalIntRange(3,9) );
 			Buff.affect( enemy, Burning.class ).reignite( enemy );
-            GameScene.add( Blob.seed( enemy.pos , 1, Fire.class ) );
-            super.applyZap( Random.NormalIntRange(3,9) );
         }
     }
 }

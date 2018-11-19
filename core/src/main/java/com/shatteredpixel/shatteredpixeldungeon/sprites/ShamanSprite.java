@@ -29,61 +29,76 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Callback;
 
 public class ShamanSprite extends MobSprite {
-	
+	protected int boltType;
 	public ShamanSprite(String texture) {
 		super();
-		
-		texture( texture );
-		
-		TextureFilm frames = new TextureFilm( texture, 12, 15 );
-		
-		idle = new Animation( 2, true );
-		idle.frames( frames, 0, 0, 0, 1, 0, 0, 1, 1 );
-		
-		run = new Animation( 12, true );
-		run.frames( frames, 4, 5, 6, 7 );
-		
-		attack = new Animation( 12, false );
-		attack.frames( frames, 2, 3, 0 );
-		
+
+		texture(texture);
+
+		TextureFilm frames = new TextureFilm(texture, 12, 15);
+
+		idle = new Animation(2, true);
+		idle.frames(frames, 0, 0, 0, 1, 0, 0, 1, 1);
+
+		run = new Animation(12, true);
+		run.frames(frames, 4, 5, 6, 7);
+
+		attack = new Animation(12, false);
+		attack.frames(frames, 2, 3, 0);
+
 		zap = attack.clone();
-		
-		die = new Animation( 12, false );
-		die.frames( frames, 8, 9, 10 );
-		
-		play( idle );
+
+		die = new Animation(12, false);
+		die.frames(frames, 8, 9, 10);
+
+		play(idle);
 	}
-	
-	public void zap( int pos ) {
-		turnTo( ch.pos, pos );
-		play( zap );
+
+	public void playZap(int pos) {
+		turnTo(ch.pos, pos);
+		play(zap);
 	}
+
+	public void zap(int pos, int boltType) {
+		MagicMissile.boltFromChar(parent,
+				boltType,
+				this,
+				pos,
+				new Callback() {
+					@Override
+					public void call() {
+						((Shaman) ch).onZapComplete();
+					}
+				});
+		Sample.INSTANCE.play(Assets.SND_ZAP);
+	}
+
 	public static class Lightning extends ShamanSprite {
 		public Lightning() {
-			super(Assets.SHAMAN);
+			super(Assets.LSHAMAN);
 		}
+
 		public void zap(int pos) {
-			parent.add( new com.shatteredpixel.shatteredpixeldungeon.effects.Lightning( ch.pos, pos, (Shaman)ch ) );
-			super.zap(pos);
+			parent.add(new com.shatteredpixel.shatteredpixeldungeon.effects.Lightning(ch.pos, pos, (Shaman) ch));
+			playZap(pos);
 		}
 	}
+
 	public static class Firebolt extends ShamanSprite {
 		public Firebolt() {
 			super(Assets.FIRESHAMAN);
 		}
+
 		public void zap(int pos) {
-			super.zap(pos);
-			MagicMissile.boltFromChar( parent,
-					MagicMissile.FIRE,
-					this,
-					pos,
-					new Callback() {
-						@Override
-						public void call() {
-							((Shaman)ch).onZapComplete();
-						}
-					} );
-			Sample.INSTANCE.play( Assets.SND_ZAP );
+			playZap(pos);
+			zap(pos, MagicMissile.FIRE);
+		}
+	}
+	public static class MM extends ShamanSprite {
+		public MM() {super(Assets.SHAMAN);}
+		public void zap(int pos) {
+			playZap(pos);
+			zap(pos, MagicMissile.MAGIC_MISSILE);
 		}
 	}
 }
