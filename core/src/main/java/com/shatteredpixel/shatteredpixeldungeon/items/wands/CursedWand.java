@@ -26,9 +26,11 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blizzard;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ConfusionGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Inferno;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ParalyticGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Regrowth;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
@@ -184,7 +186,7 @@ public class CursedWand {
 			case 3:
 				cursedFX(user, bolt, new Callback() {
 					public void call() {
-						switch (Random.Int(3)) {
+						switch (Random.Int(5)) {
 							case 0:
 								GameScene.add( Blob.seed( bolt.collisionPos, 800, ConfusionGas.class ) );
 								break;
@@ -192,6 +194,12 @@ public class CursedWand {
 								GameScene.add( Blob.seed( bolt.collisionPos, 500, ToxicGas.class ) );
 								break;
 							case 2:
+								GameScene.add( Blob.seed( bolt.collisionPos, 400, Inferno.class));
+								break;
+							case 3:
+								GameScene.add( Blob.seed( bolt.collisionPos, 300, Blizzard.class));
+								break;
+							case 4:
 								GameScene.add( Blob.seed( bolt.collisionPos, 200, ParalyticGas.class ) );
 								break;
 						}
@@ -211,7 +219,7 @@ public class CursedWand {
 				cursedFX(user, bolt, new Callback() {
 					public void call() {
 						int pos = bolt.collisionPos;
-						//place the plant infront of an enemy so they walk into it.
+						//place the plant in front of an enemy so they walk into it.
 						if (Actor.findChar(pos) != null && bolt.dist > 1) {
 							pos = bolt.path.get(bolt.dist - 1);
 						}
@@ -364,12 +372,12 @@ public class CursedWand {
 							c == Terrain.EMPTY_DECO ||
 							c == Terrain.GRASS ||
 							c == Terrain.HIGH_GRASS) {
-						GameScene.add( Blob.seed(i, 15, Regrowth.class));
+						GameScene.add( Blob.seed(i, 20, Regrowth.class));
 					}
 				}
 				do {
 					GameScene.add(Blob.seed(Dungeon.level.randomDestination(), 10, Fire.class));
-				} while (Random.Int(5) != 0);
+				} while (Random.Int(6) != 0);
 				new Flare(8, 32).color(0xFFFF66, true).show(user.sprite, 2f);
 				Sample.INSTANCE.play(Assets.SND_TELEPORT);
 				GLog.p(Messages.get(CursedWand.class, "grass"));
@@ -441,7 +449,7 @@ public class CursedWand {
 				Item result;
 				do {
 					result = Generator.random(Random.oneOf(Generator.Category.WEAPON, Generator.Category.ARMOR,
-							Generator.Category.RING, Generator.Category.ARTIFACT));
+							Generator.Category.RING, Generator.Category.ARTIFACT, Generator.Category.WAND));
 				} while (result.cursed);
 				if (result.isUpgradable()) result.upgrade();
 				result.cursed = result.cursedKnown = true;
