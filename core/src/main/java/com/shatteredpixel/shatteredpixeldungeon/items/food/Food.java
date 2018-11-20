@@ -44,12 +44,13 @@ public class Food extends Item {
 	public static final float TIME_TO_EAT	= 3f;
 	
 	public static final String AC_EAT	= "EAT";
-	
+
 	public float energy = Hunger.HUNGRY;
 	public String message = Messages.get(this, "eat_msg");
 	
 	{
 		stackable = true;
+		defaultAction = AC_EAT;
 		image = ItemSpriteSheet.RATION;
 
 		bones = true;

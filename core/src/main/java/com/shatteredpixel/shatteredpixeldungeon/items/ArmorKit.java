@@ -46,7 +46,7 @@ public class ArmorKit extends Item {
 	
 	{
 		image = ItemSpriteSheet.KIT;
-		
+		defaultAction = AC_APPLY;
 		unique = true;
 	}
 	

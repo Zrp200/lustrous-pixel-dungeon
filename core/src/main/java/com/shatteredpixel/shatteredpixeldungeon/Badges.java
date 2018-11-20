@@ -767,9 +767,7 @@ public class Badges {
 	
 	//necessary in order to display the happy end badge in the surface scene
 	public static void silentValidateHappyEnd() {
-		if (!local.contains( Badge.HAPPY_END )){
-			local.add( Badge.HAPPY_END );
-		}
+        local.add( Badge.HAPPY_END );
 	}
 	
 	public static void validateHappyEnd() {

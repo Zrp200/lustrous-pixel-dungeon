@@ -39,8 +39,9 @@ public class Buff extends Actor {
 	}
 
 	//determines how the buff is announced when it is shown.
-	public enum buffType {POSITIVE, NEGATIVE, NEUTRAL};
-	public buffType type = buffType.NEUTRAL;
+	public enum buffType {POSITIVE, NEGATIVE, NEUTRAL}
+
+    public buffType type = buffType.NEUTRAL;
 	
 	//whether or not the buff announces its name
 	public boolean announced = false;
@@ -94,9 +95,9 @@ public class Buff extends Actor {
 
 	public void fx(boolean on) {
 		//do nothing by default
-	};
+	}
 
-	public String heroMessage(){
+    public String heroMessage(){
 		return null;
 	}
 

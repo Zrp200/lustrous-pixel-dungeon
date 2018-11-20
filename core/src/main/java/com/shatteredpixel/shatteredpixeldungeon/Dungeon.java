@@ -81,7 +81,7 @@ public class Dungeon {
 
 	//enum of items which have limited spawns, records how many have spawned
 	//could all be their own separate numbers, but this allows iterating, much nicer for bundling/initializing.
-	public static enum LimitedDrops {
+	public enum LimitedDrops {
 		//limited world drops
 		STRENGTH_POTIONS,
 		UPGRADE_SCROLLS,
@@ -254,12 +254,8 @@ public class Dungeon {
 		depth++;
 		if (depth > Statistics.deepestFloor) {
 			Statistics.deepestFloor = depth;
-			
-			if (Statistics.qualifiedForNoKilling) {
-				Statistics.completedWithNoKilling = true;
-			} else {
-				Statistics.completedWithNoKilling = false;
-			}
+
+			Statistics.completedWithNoKilling = Statistics.qualifiedForNoKilling;
 		}
 		
 		Level level;
@@ -408,7 +404,7 @@ public class Dungeon {
 
 	public static void dropToChasm( Item item ) {
 		int depth = Dungeon.depth + 1;
-		ArrayList<Item> dropped = (ArrayList<Item>)Dungeon.droppedItems.get( depth );
+		ArrayList<Item> dropped = Dungeon.droppedItems.get( depth );
 		if (dropped == null) {
 			Dungeon.droppedItems.put( depth, dropped = new ArrayList<Item>() );
 		}
@@ -426,8 +422,7 @@ public class Dungeon {
 		int targetPOSLeft = 2 - floorThisSet/2;
 		if (floorThisSet % 2 == 1 && Random.Int(2) == 0) targetPOSLeft --;
 
-		if (targetPOSLeft < posLeftThisSet) return true;
-		else return false;
+		return targetPOSLeft < posLeftThisSet;
 
 	}
 	
@@ -470,7 +465,7 @@ public class Dungeon {
 	private static final String QUESTS		= "quests";
 	private static final String BADGES		= "badges";
 	
-	public static void saveGame( int save ) throws IOException {
+	public static void saveGame( int save ) {
 		try {
 			Bundle bundle = new Bundle();
 

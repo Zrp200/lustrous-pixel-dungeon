@@ -41,7 +41,6 @@ public abstract class EquipableItem extends Item {
 	{
 		bones = true;
 	}
-
 	@Override
 	public ArrayList<String> actions(Hero hero ) {
 		ArrayList<String> actions = super.actions( hero );
@@ -51,16 +50,14 @@ public abstract class EquipableItem extends Item {
 
 	@Override
 	public void execute( Hero hero, String action ) {
-
 		super.execute( hero, action );
-
 		if (action.equals( AC_EQUIP )) {
 			//In addition to equipping itself, item reassigns itself to the quickslot
 			//This is a special case as the item is being removed from inventory, but is staying with the hero.
 			int slot = Dungeon.quickslot.getSlot( this );
 			doEquip(hero);
 			if (slot != -1) {
-				Dungeon.quickslot.setSlot( slot, this );
+				Dungeon.quickslot.setSlot(slot, this);
 				updateQuickslot();
 			}
 		} else if (action.equals( AC_UNEQUIP )) {

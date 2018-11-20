@@ -36,9 +36,9 @@ public class Chrome {
 		TAB_SET,
 		TAB_SELECTED,
 		TAB_UNSELECTED
-	};
-	
-	public static NinePatch get( Type type ) {
+	}
+
+    public static NinePatch get( Type type ) {
 		String Asset = Assets.CHROME;
 		switch (type) {
 		case WINDOW:

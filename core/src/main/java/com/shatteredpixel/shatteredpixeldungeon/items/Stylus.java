@@ -43,7 +43,7 @@ public class Stylus extends Item {
 	
 	{
 		image = ItemSpriteSheet.STYLUS;
-		
+		defaultAction = AC_INSCRIBE;
 		stackable = true;
 
 		bones = true;

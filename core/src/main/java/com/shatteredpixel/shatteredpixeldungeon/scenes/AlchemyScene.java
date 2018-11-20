@@ -494,8 +494,9 @@ public class AlchemyScene extends PixelScene {
 				protected void onTouchDown() {
 					bg.brightness( 1.2f );
 					Sample.INSTANCE.play( Assets.SND_CLICK );
-				};
-				@Override
+				}
+
+                @Override
 				protected void onTouchUp() {
 					bg.resetColor();
 				}
@@ -508,9 +509,9 @@ public class AlchemyScene extends PixelScene {
 			add( slot );
 		}
 		
-		protected void onClick() {};
-		
-		@Override
+		protected void onClick() {}
+
+        @Override
 		protected void layout() {
 			super.layout();
 			
@@ -519,9 +520,9 @@ public class AlchemyScene extends PixelScene {
 			bg.size( width, height );
 			
 			slot.setRect( x + 2, y + 2, width - 4, height - 4 );
-		};
-		
-		public void item( Item item ) {
+		}
+
+        public void item( Item item ) {
 			slot.item( this.item = item );
 		}
 	}

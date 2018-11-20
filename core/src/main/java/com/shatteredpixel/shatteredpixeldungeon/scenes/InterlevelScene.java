@@ -390,7 +390,7 @@ public class InterlevelScene extends PixelScene {
 		}
 	}
 	
-	private void resurrect() throws IOException {
+	private void resurrect() {
 		
 		Actor.fixTime();
 		DriedRose.holdGhostHero( Dungeon.level );
@@ -406,7 +406,7 @@ public class InterlevelScene extends PixelScene {
 		}
 	}
 
-	private void reset() throws IOException {
+	private void reset() {
 
 		Actor.fixTime();
 		DriedRose.holdGhostHero( Dungeon.level );

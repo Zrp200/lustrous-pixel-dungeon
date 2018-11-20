@@ -404,10 +404,8 @@ public class Hero extends Char {
 	public boolean canSurpriseAttack(){
 		if (belongings.weapon == null || !(belongings.weapon instanceof Weapon))    return true;
 		if (STR() < ((Weapon)belongings.weapon).STRReq())                           return false;
-		if (belongings.weapon instanceof Flail)                                     return false;
-
-		return true;
-	}
+        return !(belongings.weapon instanceof Flail);
+    }
 
 	public boolean canAttack(Char enemy){
 		if (enemy == null || pos == enemy.pos) {
@@ -675,7 +673,7 @@ public class Hero extends Char {
 			Alchemy alch = (Alchemy) Dungeon.level.blobs.get(Alchemy.class);
 			//TODO logic for a well having dried up?
 			if (alch != null) {
-				alch.alchPos = dst;
+				Alchemy.alchPos = dst;
 				AlchemyScene.setProvider( alch );
 			}
 			ShatteredPixelDungeon.switchScene(AlchemyScene.class);
@@ -1258,7 +1256,7 @@ public class Hero extends Char {
 	}
 	
 	public boolean isStarving() {
-		return buff(Hunger.class) != null && ((Hunger)buff( Hunger.class )).isStarving();
+		return buff(Hunger.class) != null && buff( Hunger.class ).isStarving();
 	}
 	
 	@Override
@@ -1633,7 +1631,7 @@ public class Hero extends Char {
 			super.next();
 	}
 
-	public static interface Doom {
-		public void onDeath();
+	public interface Doom {
+		void onDeath();
 	}
 }

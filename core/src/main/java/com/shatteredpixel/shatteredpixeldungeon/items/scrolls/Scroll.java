@@ -157,9 +157,9 @@ public abstract class Scroll extends Item {
 			image = handler.image(this);
 			rune = handler.label(this);
 		}
-	};
-	
-	@Override
+	}
+
+    @Override
 	public ArrayList<String> actions( Hero hero ) {
 		ArrayList<String> actions = super.actions( hero );
 		actions.add( AC_READ );
@@ -311,14 +311,10 @@ public abstract class Scroll extends Item {
 		
 		@Override
 		public boolean testIngredients(ArrayList<Item> ingredients) {
-			if (ingredients.size() != 1
-					|| !(ingredients.get(0) instanceof Scroll)
-					|| !stones.containsKey(ingredients.get(0).getClass())){
-				return false;
-			}
-			
-			return true;
-		}
+            return ingredients.size() == 1
+                    && ingredients.get(0) instanceof Scroll
+                    && stones.containsKey(ingredients.get(0).getClass());
+        }
 		
 		@Override
 		public int cost(ArrayList<Item> ingredients) {

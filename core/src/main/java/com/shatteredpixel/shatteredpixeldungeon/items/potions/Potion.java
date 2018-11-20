@@ -261,8 +261,8 @@ public class Potion extends Item {
 								if (index == 0) {
 									drink( hero );
 								}
-							};
-						}
+							}
+                        }
 					);
 					
 				} else {
@@ -288,8 +288,8 @@ public class Potion extends Item {
 						if (index == 0) {
 							Potion.super.doThrow( hero );
 						}
-					};
-				}
+					}
+                }
 			);
 			
 		} else {

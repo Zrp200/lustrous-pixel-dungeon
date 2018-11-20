@@ -84,9 +84,7 @@ public class Challenges {
 		}
 
 		if (Dungeon.isChallenged(NO_HERBALISM)){
-			if (item instanceof Dewdrop) {
-				return true;
-			}
+            return item instanceof Dewdrop;
 		}
 
 		return false;
