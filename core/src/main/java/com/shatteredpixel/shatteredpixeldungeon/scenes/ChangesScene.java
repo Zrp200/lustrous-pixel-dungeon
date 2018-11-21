@@ -34,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Stylus;
 import com.shatteredpixel.shatteredpixeldungeon.items.Torch;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.PlateArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.curses.Bulk;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.curses.Volatility;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.AlchemistsToolkit;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
@@ -74,6 +75,7 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ShamanSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Archs;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ExitButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
@@ -94,6 +96,12 @@ import java.util.ArrayList;
 
 //TODO: update this class with relevant info as new versions come out.
 public class ChangesScene extends PixelScene {
+	private ChangeInfo title(String title, boolean isMajor, int color) {
+		ChangeInfo changes = new ChangeInfo(title,isMajor,isMajor ? "" : null);
+		changes.hardlight( color );
+		infos.add(changes);
+		return changes;
+	}
 
 	private final ArrayList<ChangeInfo> infos = new ArrayList<>();
 
@@ -130,21 +138,72 @@ public class ChangesScene extends PixelScene {
 
 			@Override
 			public void onClick(float x, float y) {
-				for (ChangeInfo info : infos){
-					if (info.onClick( x, y )){
-						return;
-					}
-				}
+				for (ChangeInfo info : infos) if (info.onClick( x, y )) return;
 			}
 
 		};
 		add( list );
+ 		ChangeInfo changes;
+		changes = title("Lustrous v0.0.0",true, Window.TITLE_COLOR);
+		//changes = title("New Content",false, CharSprite.POSITIVE);
+		changes.addButtons(
+				new ChangeButton(
+						new Image(Assets.HUNTRESS, 0, 15, 12, 15),
+						"Huntress",
+						"Boomerang removed. Huntress now starts with two darts and a tier 1 whip instead of a knuckleduster"
+				),
+				new ChangeButton(
+						new ShamanSprite.MM(),
+						"New Gnoll Shaman Variant: Magic Missile Shaman",
+						"_-_ 50% of all shamans\n" +
+								 "_-_ 3x accuracy on zaps\n"+
+								 "_-_ zaps do 3-10 damage, with no additional effects"
+				),
+				new ChangeButton(
+					new ShamanSprite.Lightning(),
+					"Lightning Shaman",
+					"_-_ 1/3 of all shamans\n" +
+							"_-_ Identical to previous Gnoll Shamans"
+				),
+				new ChangeButton(
+						new ShamanSprite.Firebolt(),
+						"Firebolt Shaman",
+						"_-_ 1/6 of all shamans\n" +
+								 "_-_ bolts do 3-9 damage and inflict burning\n" +
+								 "_-_ bolts will ignite the tile they are targeted at whether or not they hit their target\n" +
+								 "_-_ Firebolt Shamans resist fire-based attacks and effects."
+				),
+				new ChangeButton(
+						new ItemSprite(ItemSpriteSheet.ARMOR_LEATHER,new Volatility().glowing()),
+						"New Curse: Volatility",
+						"_-_ 5% chance to explode on hit."
+				),
+				new ChangeButton(
+						new ItemSprite(ItemSpriteSheet.BOMB_HOLDER, null),
+						"New Exotic Bomb: Teleportation Bomb",
+						"_-_ Sprite TBD\n" +
+								"-_ Made with Bomb + Scroll of Teleportation (5 energy)\n" +
+								"_-_ Instead of exploding, teleports everything in a 5x5 radius\n" +
+								"_-_ Useful for clearing things from a room; for example, from a pirahna room or a trap room."
+				),
+				new ChangeButton(
+						new ItemSprite(ItemSpriteSheet.WAND_HOLDER, null),
+						"Minor Cursed Wand Changes",
+						"Cursed Wands can now create Inferno and Blizzard, more changes to come"
+				),
+				new ChangeButton(
+						Icons.get(Icons.PREFS),
+						"Misc",
+						"_-_ Food, Arcane Styli, and Tomes of Mastery can now be quickslotted.\n" +
+								"_-_ Cursed wands can now spawn Inferno and Blizzard, more changes to come."
+				)
+		);
 		
 		//**********************
 		//       v0.7.0
 		//**********************
 		
-		ChangeInfo changes = new ChangeInfo("v0.7.0", true, "");
+		changes = new ChangeInfo("v0.7.0", true, "");
 		changes.hardlight( Window.TITLE_COLOR );
 		infos.add(changes);
 		
@@ -2032,6 +2091,9 @@ public class ChangesScene extends PixelScene {
 
 			button.setSize(16, 16);
 			layout();
+		}
+		public void addButtons( ChangeButton... buttons) {
+			for(ChangeButton button : buttons) addButton(button);
 		}
 
 		public boolean onClick( float x, float y ){
