@@ -44,6 +44,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMirrorImag
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRage;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurse;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Languages;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -319,6 +320,8 @@ public class Bomb extends Item {
 			
 			validIngredients.put(PotionOfHealing.class,         RegrowthBomb.class);
 			validIngredients.put(ScrollOfRemoveCurse.class,     HolyBomb.class);
+
+			validIngredients.put(ScrollOfTeleportation.class,			TeleportationBomb.class);
 			
 			validIngredients.put(GooBlob.class,                 ArcaneBomb.class);
 			validIngredients.put(MetalShard.class,              ShrapnelBomb.class);
@@ -334,6 +337,7 @@ public class Bomb extends Item {
 			
 			bombCosts.put(Flashbang.class,      5);
 			bombCosts.put(ShockBomb.class,      5);
+			bombCosts.put(TeleportationBomb.class, 5);
 			
 			bombCosts.put(RegrowthBomb.class,   6);
 			bombCosts.put(HolyBomb.class,       6);
