@@ -107,7 +107,7 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		
 	}
 	
-	private MagesStaff changeStaff( MagesStaff staff ){
+	public static MagesStaff changeStaff( MagesStaff staff ){
 		Class<?extends Wand> wandClass = staff.wandClass();
 		
 		if (wandClass == null){
@@ -124,7 +124,7 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		return staff;
 	}
 	
-	private Weapon changeWeapon(MeleeWeapon w ) {
+	public static Weapon changeWeapon(MeleeWeapon w ) {
 		
 		Weapon n;
 		Generator.Category c = Generator.wepTiers[w.tier-1];
@@ -155,7 +155,7 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		
 	}
 	
-	private Ring changeRing( Ring r ) {
+	public static Ring changeRing( Ring r ) {
 		Ring n;
 		do {
 			n = (Ring)Generator.random( Generator.Category.RING );
@@ -177,7 +177,7 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		return n;
 	}
 	
-	private Artifact changeArtifact( Artifact a ) {
+	public static Artifact changeArtifact( Artifact a ) {
 		Artifact n = Generator.randomArtifact();
 		
 		if (n != null && !Challenges.isItemBlocked(n)){
@@ -191,7 +191,7 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		return null;
 	}
 	
-	private Wand changeWand( Wand w ) {
+	public static Wand changeWand( Wand w ) {
 		
 		Wand n;
 		do {
@@ -208,7 +208,7 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		return n;
 	}
 	
-	private Plant.Seed changeSeed( Plant.Seed s ) {
+	public static Plant.Seed changeSeed( Plant.Seed s ) {
 		
 		Plant.Seed n;
 		
@@ -219,7 +219,7 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		return n;
 	}
 	
-	private Scroll changeScroll( Scroll s ) {
+	public static Scroll changeScroll( Scroll s ) {
 		try {
 			if (s instanceof ExoticScroll) {
 				return ExoticScroll.exoToReg.get(s.getClass()).newInstance();
@@ -232,7 +232,7 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		}
 	}
 	
-	private Potion changePotion( Potion p ) {
+	public static Potion changePotion( Potion p ) {
 		try {
 			if (p instanceof ExoticPotion) {
 				return ExoticPotion.exoToReg.get(p.getClass()).newInstance();

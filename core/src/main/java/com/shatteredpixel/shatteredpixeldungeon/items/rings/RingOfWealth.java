@@ -27,6 +27,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Honeypot;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
@@ -42,7 +45,7 @@ public class RingOfWealth extends Ring {
 	}
 	
 	public static float dropChanceMultiplier( Char target ){
-		return (float)Math.pow(1.15, getBonus(target, Wealth.class));
+		return (float)Math.pow(1.2, getBonus(target, Wealth.class)); // +4.3% compared to shattered
 	}
 	
 	public static ArrayList<Item> tryRareDrop(Char target, int tries ){
@@ -79,17 +82,7 @@ public class RingOfWealth extends Ring {
 		float roll = Random.Float();
 		ArrayList<Item> items = new ArrayList<>();
 		if (roll < 0.6f){
-			switch (Random.Int(3)){
-				case 0:
-					items.add(new Gold().random());
-					break;
-				case 1:
-					items.add(Generator.random(Generator.Category.POTION));
-					break;
-				case 2:
-					items.add(Generator.random(Generator.Category.SCROLL));
-					break;
-			}
+			Generator.random(); // let's make this......interesting ;)
 		} else if (roll < 0.9f){
 			switch (Random.Int(3)){
 				case 0:
@@ -112,14 +105,20 @@ public class RingOfWealth extends Ring {
 		} else {
 			Gold g = new Gold();
 			g.random();
-			g.quantity(g.quantity()*5);
+			g.quantity( g.quantity()*5 );
 			items.add(g);
+		}
+		for(int i = 0; i < items.size(); i++) if(Random.Int(5) == 0) { // 20% chance to get an exotic instead O_O
+			Item item = items.get(i);
+			if(item instanceof Scroll) item = ScrollOfTransmutation.changeScroll( (Scroll) item );
+			else if(item instanceof Potion) item = ScrollOfTransmutation.changePotion( (Potion) item );
+			items.set(i, item);
 		}
 		return items;
 	}
 	
 	private static float dropProgression( Char target, int tries ){
-		return tries * (float)Math.pow(1.2f, getBonus(target, Wealth.class) -1 );
+		return tries * (float)Math.pow(1.2f, getBonus(target, Wealth.class) - 1 );
 	}
 
 	public class Wealth extends RingBuff {

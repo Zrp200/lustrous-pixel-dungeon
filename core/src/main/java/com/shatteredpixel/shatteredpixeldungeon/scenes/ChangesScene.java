@@ -145,7 +145,7 @@ public class ChangesScene extends PixelScene {
 		add( list );
  		ChangeInfo changes;
 		changes = title("Lustrous v0.0.0",true, Window.TITLE_COLOR);
-		//changes = title("New Content",false, CharSprite.POSITIVE);
+		changes = title("Class/Mob Changes",false, CharSprite.POSITIVE);
 		changes.addButtons(
 				new ChangeButton(
 						new Image(Assets.HUNTRESS, 0, 15, 12, 15),
@@ -154,10 +154,11 @@ public class ChangesScene extends PixelScene {
 				),
 				new ChangeButton(
 						new ShamanSprite.MM(),
-						"New Gnoll Shaman Variant: Magic Missile Shaman",
-						"_-_ 50% of all shamans\n" +
-								 "_-_ 3x accuracy on zaps\n"+
-								 "_-_ zaps do 3-10 damage, with no additional effects"
+						"Gnoll Shamans",
+						"Shamans now have variants! The default variant now shoots magic missiles instead of lightning.\n" +
+								"_-_ Makes up 50% of all shamans\n" +
+								"_-_ 3x accuracy on zaps, up from the standard 2x\n"+
+								"_-_ zaps do 3-10 damage, with no additional effects"
 				),
 				new ChangeButton(
 					new ShamanSprite.Lightning(),
@@ -172,32 +173,36 @@ public class ChangesScene extends PixelScene {
 								 "_-_ bolts do 3-9 damage and inflict burning\n" +
 								 "_-_ bolts will ignite the tile they are targeted at whether or not they hit their target\n" +
 								 "_-_ Firebolt Shamans resist fire-based attacks and effects."
-				),
-				new ChangeButton(
+				)
+		);
+		changes = title("Items",false,Window.TITLE_COLOR);
+		changes.addButtons(
+					new ChangeButton(
 						new ItemSprite(ItemSpriteSheet.ARMOR_LEATHER,new Volatility().glowing()),
 						"New Curse: Volatility",
 						"_-_ 5% chance to explode on hit."
-				),
-				new ChangeButton(
-						new ItemSprite(ItemSpriteSheet.BOMB_HOLDER, null),
-						"New Exotic Bomb: Teleportation Bomb",
-						"_-_ Sprite TBD\n" +
-								"-_ Made with Bomb + Scroll of Teleportation (5 energy)\n" +
-								"_-_ Instead of exploding, teleports everything in a 5x5 radius\n" +
-								"_-_ Useful for clearing things from a room; for example, from a pirahna room or a trap room."
-				),
-				new ChangeButton(
-						new ItemSprite(ItemSpriteSheet.WAND_HOLDER, null),
-						"Minor Cursed Wand Changes",
-						"Cursed Wands can now create Inferno and Blizzard, more changes to come"
-				),
-				new ChangeButton(
+					),
+					new ChangeButton(
+							new ItemSprite(ItemSpriteSheet.RING_AMETHYST, null),
+							new RingOfWealth().trueName(),
+							"_-_ Drops are now more varied, can now include equipment and runestones\n" +
+									"_-_ 20% of the scrolls that are dropped as a result of a rare drop will now be exotic!"
+					),
+					new ChangeButton(
+							new ItemSprite(ItemSpriteSheet.BOMB_HOLDER, null),
+							"New Exotic Bomb: Teleportation Bomb",
+							"_-_ Sprite TBD\n" +
+									"_-_ Made with Bomb + Scroll of Teleportation (5 energy)\n" +
+									"_-_ Instead of exploding, teleports everything in a 5x5 radius\n" +
+									"_-_ Useful for clearing things from a room; for example, from a pirahna room or a trap room."
+					),
+					new ChangeButton(
 						Icons.get(Icons.PREFS),
 						"Misc",
 						"_-_ Food, Arcane Styli, and Tomes of Mastery can now be quickslotted.\n" +
 								"_-_ Cursed wands can now spawn Inferno and Blizzard, more changes to come."
-				)
-		);
+					)
+				);
 		
 		//**********************
 		//       v0.7.0
