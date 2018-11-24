@@ -81,6 +81,7 @@ public class ShamanSprite extends MobSprite {
 		public void zap(int pos) {
 			parent.add(new com.shatteredpixel.shatteredpixeldungeon.effects.Lightning(ch.pos, pos, (Shaman) ch));
 			playZap(pos);
+			((Shaman) ch).onZapComplete();
 		}
 	}
 

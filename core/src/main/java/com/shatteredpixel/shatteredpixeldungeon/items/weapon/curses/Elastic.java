@@ -38,7 +38,7 @@ public class Elastic extends Weapon.Enchantment {
 		Ballistica trajectory = new Ballistica(defender.pos, oppositeDefender, Ballistica.MAGIC_BOLT);
 		WandOfBlastWave.throwChar(defender, trajectory, 2);
 		
-		return 0;
+		return damage/6;
 	}
 	
 	@Override

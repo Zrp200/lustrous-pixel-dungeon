@@ -39,6 +39,7 @@ public class ScrollOfEnchantment extends ExoticScroll {
 	
 	{
 		initials = 11;
+		unique = true;
 	}
 	
 	@Override

@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite.Glowing;
@@ -39,13 +40,17 @@ public class Stunning extends Weapon.Enchantment {
 		// lvl 0 - 13%
 		// lvl 1 - 22%
 		// lvl 2 - 30%
-		int level = Math.max( 0, weapon.level() );
+		final int level = Math.max( 0, weapon.level() );
 		
 		if (Random.Int( level + 8 ) >= 7) {
-			
-			Buff.prolong( defender, Paralysis.class, Random.Float( 1, 1.5f + level ) );
-			defender.sprite.emitter().burst(Speck.factory(Speck.LIGHT), 12 );
-
+			new FlavourBuff() {
+				{actPriority = VFX_PRIO;}
+				public boolean act() {
+					Buff.prolong( target, Paralysis.class, Random.Float( 1, 1.5f + level ) );
+					target.sprite.emitter().burst(Speck.factory(Speck.LIGHT), 12 );
+					return super.act();
+				}
+			}.attachTo(defender);
 		}
 
 		return damage;

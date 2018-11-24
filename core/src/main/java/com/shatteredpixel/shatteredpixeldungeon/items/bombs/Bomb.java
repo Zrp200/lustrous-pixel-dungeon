@@ -269,9 +269,9 @@ public class Bomb extends Item {
 						heap.destroy();
 					}
 
+					Actor.remove(this); // Before bomb stuff happens and we know that the bomb is still there.
 					bomb.explode(heap.pos);
 
-					Actor.remove(this);
 					return true;
 				}
 			}
@@ -317,11 +317,11 @@ public class Bomb extends Item {
 			
 			validIngredients.put(PotionOfInvisibility.class,    Flashbang.class);
 			validIngredients.put(ScrollOfRecharging.class,      ShockBomb.class);
+			validIngredients.put(ScrollOfTeleportation.class,			TeleportationBomb.class);
 			
 			validIngredients.put(PotionOfHealing.class,         RegrowthBomb.class);
 			validIngredients.put(ScrollOfRemoveCurse.class,     HolyBomb.class);
 
-			validIngredients.put(ScrollOfTeleportation.class,			TeleportationBomb.class);
 			
 			validIngredients.put(GooBlob.class,                 ArcaneBomb.class);
 			validIngredients.put(MetalShard.class,              ShrapnelBomb.class);

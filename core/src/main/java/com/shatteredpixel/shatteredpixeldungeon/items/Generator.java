@@ -292,7 +292,7 @@ public class Generator {
 					StoneOfFlock.class,
 					StoneOfShock.class
 			};
-			STONE.probs = new float[]{ 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+			STONE.probs = new float[]{ 1, 2, 18, 6, 6, 4, 6, 4, 6, 8, 9, 6 }; // lol that random 18
 			
 			//TODO: add last ones when implemented
 			WAND.classes = new Class<?>[]{
@@ -322,7 +322,7 @@ public class Generator {
 					Dagger.class,
 					MagesStaff.class
 			};
-			WEP_T1.probs = new float[]{ 1, 2, 1, 1, 0 };
+			WEP_T1.probs = new float[]{ 2, 5, 1, 3, 0 };
 			
 			WEP_T2.classes = new Class<?>[]{
 					Shortsword.class,
@@ -450,7 +450,8 @@ public class Generator {
 			{0, 25, 50, 20,  5},
 			{0, 10, 40, 40, 10},
 			{0,  5, 20, 50, 25},
-			{0,  2,  8, 20, 70}
+			{0,  2,  8, 20, 70},
+			{0,  1,  2,  3, 94} // You're getting a t5.
 	};
 	
 	private static HashMap<Category,Float> categoryProbs = new LinkedHashMap<>();

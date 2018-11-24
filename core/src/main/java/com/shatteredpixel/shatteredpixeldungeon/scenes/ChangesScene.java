@@ -43,6 +43,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.UnstableSpellbook;
+import com.shatteredpixel.shatteredpixeldungeon.items.bombs.TeleportationBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Blandfruit;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
@@ -185,11 +186,15 @@ public class ChangesScene extends PixelScene {
 					new ChangeButton(
 							new ItemSprite(ItemSpriteSheet.RING_AMETHYST, null),
 							new RingOfWealth().trueName(),
-							"_-_ Drops are now more varied, can now include equipment and runestones\n" +
-									"_-_ 20% of the scrolls that are dropped as a result of a rare drop will now be exotic!"
+							"I've loved the idea of Sprouted Pixel Dungeon, and Shattered ring of wealth was always so underpowered... " +
+									"well not anymore! This should be a Sprouted lover's wet dream now ;).\n" +
+									"_-_ Base proc requirement reduced by 20% (15-60 --> 12-48)\n" +
+									"_-_ General drop rate boost increased by 4% (1.15 --> 1.2)\n" +
+									"_-_ Drops are now more varied, can now include food, equipment, stones, and the rare ankh.\n" +
+									"_-_ 25% of the scrolls/potions that are dropped as a result of a rare drop will now be exotic!"
 					),
 					new ChangeButton(
-							new ItemSprite(ItemSpriteSheet.BOMB_HOLDER, null),
+							new ItemSprite(new TeleportationBomb().image, null),
 							"New Exotic Bomb: Teleportation Bomb",
 							"_-_ Sprite TBD\n" +
 									"_-_ Made with Bomb + Scroll of Teleportation (5 energy)\n" +
@@ -200,6 +205,10 @@ public class ChangesScene extends PixelScene {
 						Icons.get(Icons.PREFS),
 						"Misc",
 						"_-_ Food, Arcane Styli, and Tomes of Mastery can now be quickslotted.\n" +
+								"_-_ SoU, PoS, Ankhs are now preserved during resurrection\n" +
+								"_-_ Stones now have weighted drop rates, and Enchantment and Transmutation can now drop!\n" +
+								"_-_ Stunning now applies its effect AFTER damage\n" +
+								"_-_ Elastic weapons now deal 1/6 damage, up from 0\n" +
 								"_-_ Cursed wands can now spawn Inferno and Blizzard, more changes to come."
 					)
 				);

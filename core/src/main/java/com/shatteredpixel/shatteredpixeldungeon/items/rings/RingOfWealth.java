@@ -21,19 +21,32 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.rings;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
+import com.shatteredpixel.shatteredpixeldungeon.items.Dewdrop;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Honeypot;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.*;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation;
+import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfEnchantment;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.*;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.NO_FOOD;
 
 public class RingOfWealth extends Ring {
 	
@@ -62,7 +75,7 @@ public class RingOfWealth extends Ring {
 		}
 		
 		//reset (if needed), decrement, and store counts
-		if (triesToDrop <= 0) triesToDrop += Random.NormalIntRange(15, 60);
+		if (triesToDrop <= 0) triesToDrop += Random.NormalIntRange(12, 48); // 20% faster than Shattered
 		triesToDrop -= dropProgression( target, tries );
 		for (Wealth w : buffs){
 			w.triesToDrop(triesToDrop);
@@ -81,16 +94,18 @@ public class RingOfWealth extends Ring {
 	private static ArrayList<Item> generateRareDrop(){
 		float roll = Random.Float();
 		ArrayList<Item> items = new ArrayList<>();
-		if (roll < 0.6f){
-			Generator.random(); // let's make this......interesting ;)
-		} else if (roll < 0.9f){
-			switch (Random.Int(3)){
+		if (roll < 0.6f){ // 60% chance
+			items.add( Generator.random() ); // let's make this......interesting ;)
+		} else if (roll < 0.9f){ // 30% chance
+			switch (Random.Int(4)){ // Overall 7.5% chance for each one.
 				case 0:
-					items.add(Generator.random(Generator.Category.SEED));
-					items.add(Generator.random(Generator.Category.SEED));
-					items.add(Generator.random(Generator.Category.SEED));
-					items.add(Generator.random(Generator.Category.SEED));
-					items.add(Generator.random(Generator.Category.SEED));
+					for(int i = 0; i < 5; i++)
+						items.add(	Generator.random(
+								Random.Int(2) == 0
+									? Generator.Category.SEED
+									: Generator.Category.STONE
+								)
+						);
 					break;
 				case 1:
 					items.add(Generator.random(Random.Int(2) == 0 ? Generator.Category.POTION : Generator.Category.SCROLL ));
@@ -101,14 +116,99 @@ public class RingOfWealth extends Ring {
 					items.add(new Bomb().random());
 					items.add(new Honeypot());
 					break;
+				case 3:
+					if(Dungeon.isChallenged(NO_FOOD))
+						items.add(new SmallRation());
+					else
+						switch(Random.Int(8)) {
+							case 0:
+								items.add(new MeatPie());
+								break;
+							case 1:
+								Blandfruit blandfruit = new Blandfruit();
+								if(Random.Int(2) == 0)
+									blandfruit.cook((Plant.Seed) Generator.random(Generator.Category.SEED));
+								items.add(blandfruit);
+								break;
+							case 2:
+								do { items.add( new Pasty() ); } while(Random.Int(2) == 0);
+								break;
+							case 3:
+								do { items.add( new Food() ); } while(Random.Int(3) < 2);
+								break;
+							case 4:
+								do { items.add( new FrozenCarpaccio() ); } while(Random.Int(4) < 3);
+								break;
+							case 5:
+								do { items.add( new ChargrilledMeat() ); } while(Random.Int(5) < 4);
+								break;
+							case 6:
+								do { items.add( new MysteryMeat() ); } while(Random.Int(6) < 5);
+								break;
+							case 7:
+								do {
+									items.add(new SmallRation());
+								} while(Random.Int(6) < 5);
+								break;
+						}
 			}
-		} else {
-			Gold g = new Gold();
-			g.random();
-			g.quantity( g.quantity()*5 );
-			items.add(g);
+		} else if (roll < 0.99f){
+			switch(2) {
+				case 0:
+					Gold g = new Gold();
+					g.random();
+					g.quantity(g.quantity() * 5);
+					items.add(g);
+					break;
+				case 1:
+					Item item;
+					do {
+						item = Generator.random();
+					} while (!(
+							item.isUpgradable() ||
+									item instanceof Artifact ||
+									item instanceof MissileWeapon
+					));
+					if(Random.Int(2) == 0) { // Prize-ify
+						int floorset = Dungeon.depth / 5;
+						if (item instanceof MissileWeapon) {
+							item = Generator.randomMissile(floorset + 1);
+							items.add(item);
+							break; // Nothing after this point affects it.
+						}
+						if (item instanceof MeleeWeapon)
+							item = Generator.randomWeapon(floorset + 1);
+						if (item instanceof Armor) item = Generator.randomArmor(floorset + 1);
+						item.cursed = false;
+						item.cursedKnown = true;
+						if (item.isUpgradable() && Random.Int(2) == 0) item.upgrade();
+					}
+					items.add(item);
+					break;
+			}
 		}
-		for(int i = 0; i < items.size(); i++) if(Random.Int(5) == 0) { // 20% chance to get an exotic instead O_O
+		else {
+			switch(Random.Int(5)) {
+				case 0:
+					items.add(new Ankh());
+					break;
+				case 1:
+					items.add(new StoneOfEnchantment());
+					break;
+				case 2:
+					items.add(new ScrollOfTransmutation());
+					break;
+				case 3:
+					items.add(new Dewdrop().quantity(20)); // A full heal.
+					break;
+				case 4:
+					Item g = new Gold().random();
+					g.quantity(g.quantity() * 10); // You won the lottery!
+					items.add(g);
+					break;
+			}
+		}
+		for(int i = 0; i < items.size(); i++) if(Random.Int(4) == 0) { // 25% chance to get an exotic instead O_O
 			Item item = items.get(i);
 			if(item instanceof Scroll) item = ScrollOfTransmutation.changeScroll( (Scroll) item );
 			else if(item instanceof Potion) item = ScrollOfTransmutation.changePotion( (Potion) item );
