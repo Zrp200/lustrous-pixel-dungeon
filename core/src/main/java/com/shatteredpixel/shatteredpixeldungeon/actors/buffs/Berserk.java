@@ -135,7 +135,9 @@ public class Berserk extends Buff {
 				: 1.1f;
 	}
 	public void damage(int damage){
-		power = Math.min(maxPower(), power + ( damage/(float)target.HT )/3f );
+		power = Math.min(
+				maxPower(),
+				power + ( damage)/(float)(target.HT*2+target.HP) ); // The Hero's current HP is factored in now, making it a bit easier to get the power.
 		BuffIndicator.refreshHero();
 	}
 
@@ -196,16 +198,18 @@ public class Berserk extends Buff {
 		String desc = new String();
 		float dispDamage = (damageFactor(10000) / 100f) - 100f;
 		switch (state){
-			case BERSERK:
-				return Messages.get(this, "berserk_desc");
+			case BERSERK:	return Messages.get(this, "berserk_desc");
 			case RECOVERING:
 				desc += Messages.get(this, "recovering_desc", levelRecovery);
-				if(power > 0) desc += "\n\n";
-				else return desc;
+				if(power > 0) 	desc += "\n\n";
+				else 			break;
 			case NORMAL: default:
-				desc += Messages.get(this, "angered_desc", Math.floor(power * 100f), dispDamage);
-				return desc;
+				desc += Messages.get(this, "angered_desc");
+				if(state == State.NORMAL) desc += "\n\n" + Messages.get(this, "berserk_active");
+				desc += "\n\n" + Messages.get(this, "rage",Math.floor(power * 100f), dispDamage);
+				break;
 		}
+		return desc;
 		
 	}
 }

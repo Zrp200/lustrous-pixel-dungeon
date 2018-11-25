@@ -173,16 +173,15 @@ public class RingOfWealth extends Ring {
 					));
 					if(Random.Int(2) == 0) { // Prize-ify
 						int floorset = Dungeon.depth / 5;
-						if (item instanceof MissileWeapon) {
-							item = Generator.randomMissile(floorset + 1);
-							items.add(item);
-							break; // Nothing after this point affects it.
-						}
 						if (item instanceof MeleeWeapon)
 							item = Generator.randomWeapon(floorset + 1);
 						if (item instanceof Armor) item = Generator.randomArmor(floorset + 1);
-						item.cursed = false;
-						item.cursedKnown = true;
+						if (item instanceof MissileWeapon) {
+							item = Generator.randomMissile(floorset + 1);
+						} else {
+							item.cursed = false;
+							item.cursedKnown = true;
+						}
 						if (item.isUpgradable() && Random.Int(2) == 0) item.upgrade();
 					}
 					items.add(item);

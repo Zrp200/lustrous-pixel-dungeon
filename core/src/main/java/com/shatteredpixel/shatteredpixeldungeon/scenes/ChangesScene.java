@@ -226,7 +226,8 @@ public class ChangesScene extends PixelScene {
 						"Berserker",
 						"_-_ Can now gain rage up to the extent recovered\n" +
 								"_-_ Berserk now decays 15% slower\n" +
-								"_-_ Damage boost while berserking is now 1.75x"
+								"_-_ Damage boost while berserking is now 1.75x" +
+								"_-_ Being at low health now speeds up rage building"
 				),
 				new ChangeButton(
 						new ItemSprite(ItemSpriteSheet.RING_AMETHYST, null),
