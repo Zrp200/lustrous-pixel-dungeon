@@ -78,21 +78,22 @@ public class TeleportationTrap extends Trap {
 			}
 		}
 
-		Heap heap = Dungeon.level.heaps.get(pos);
-		int respawnCell = Dungeon.level.randomRespawnCell();
-		while(heap != null && respawnCell != -1) {
-			if(heap.type == Heap.Type.HEAP)
-				Dungeon.level.drop(heap.pickUp(), respawnCell);
-			else if(heap.type == Heap.Type.FOR_SALE)
-				break;
-			else {
-				Dungeon.level.heaps.remove(pos);
-				Dungeon.level.heaps.put(respawnCell, heap);
-				heap.pos = respawnCell;
-				heap.sprite.place(respawnCell);
-				break;
+		Heap heap = Dungeon.level.heaps.get(this.pos);
+		int respawn = Dungeon.level.randomRespawnCell();
+		while (heap != null && respawn != -1) {
+			if (heap.type == Heap.Type.FOR_SALE) return;
+			if (heap.type == Heap.Type.HEAP) {
+				Dungeon.level.drop(heap.pickUp(), respawn);
+				heap = Dungeon.level.heaps.get(this.pos);
+				respawn = Dungeon.level.randomRespawnCell();
 			}
-			respawnCell = Dungeon.level.randomRespawnCell();
+			else {
+				Dungeon.level.heaps.remove(this.pos);
+				heap.pos = respawn;
+				Dungeon.level.heaps.put(respawn, heap);
+				heap.sprite.place(respawn);
+				return;
+			}
 		}
 	}
 }

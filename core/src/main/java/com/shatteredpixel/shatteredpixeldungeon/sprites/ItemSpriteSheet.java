@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.items.bombs.TeleportationBomb;
 import com.watabou.noosa.TextureFilm;
 
 public class ItemSpriteSheet {
@@ -158,6 +159,7 @@ public class ItemSpriteSheet {
 	public static final int NOISEMAKER      = BOMBS+9;
 	public static final int ARCANE_BOMB     = BOMBS+10;
 	public static final int SHRAPNEL_BOMB   = BOMBS+11;
+	public static final int TELEPORT_BOMB	= BOMBS+12;
 	
 	static{
 		assignItemRect(BOMB,            10, 13);
@@ -172,6 +174,7 @@ public class ItemSpriteSheet {
 		assignItemRect(NOISEMAKER,      10, 13);
 		assignItemRect(ARCANE_BOMB,     10, 13);
 		assignItemRect(SHRAPNEL_BOMB,   10, 13);
+		assignItemRect(TELEPORT_BOMB,	10, 13);
 	}
 
 	

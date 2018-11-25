@@ -63,12 +63,15 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorrosion;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorruption;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfTransfusion;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Elastic;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Wayward;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Lucky;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Stunning;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Glaive;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greataxe;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Knuckles;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Longsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Quarterstaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RunicBlade;
@@ -145,74 +148,116 @@ public class ChangesScene extends PixelScene {
 		};
 		add( list );
  		ChangeInfo changes;
-		changes = title("Lustrous v0.0.0",true, Window.TITLE_COLOR);
-		changes = title("Class/Mob Changes",false, CharSprite.POSITIVE);
-		changes.addButtons(
+		title("Lustrous v0.0.0", true, Window.TITLE_COLOR);
+		title("New Content", false, Window.TITLE_COLOR).addButtons(
 				new ChangeButton(
 						new Image(Assets.HUNTRESS, 0, 15, 12, 15),
 						"Huntress",
-						"Boomerang removed. Huntress now starts with two darts and a tier 1 whip instead of a knuckleduster"
+						"Boomerang removed. Huntress now starts with two darts and a tier 1 whip " +
+								"instead of a knuckleduster"
 				),
-				new ChangeButton(
-						new ShamanSprite.MM(),
-						"Gnoll Shamans",
-						"Shamans now have variants! The default variant now shoots magic missiles instead of lightning.\n" +
-								"_-_ Makes up 50% of all shamans\n" +
-								"_-_ 3x accuracy on zaps, up from the standard 2x\n"+
-								"_-_ zaps do 3-10 damage, with no additional effects"
-				),
-				new ChangeButton(
-					new ShamanSprite.Lightning(),
-					"Lightning Shaman",
-					"_-_ 1/3 of all shamans\n" +
-							"_-_ Identical to previous Gnoll Shamans"
-				),
+                new ChangeButton(
+                        new ShamanSprite.MM(),
+                        "Gnoll Shamans",
+                        "Shamans now have variants! The default variant now shoots magic missiles " +
+                                "instead of lightning.\n" +
+                                "_-_ Makes up 50% of all shamans\n" +
+                                "_-_ 3x accuracy on zaps, up from the standard 2x\n" +
+                                "_-_ zaps do 3-10 damage, with no additional effects"
+                ),
+                new ChangeButton(
+                        new ShamanSprite.Lightning(),
+                        "Lightning Shaman",
+                        "_-_ 1/3 of all shamans\n" +
+                                "_-_ Identical to previous Gnoll Shamans"
+                ),
 				new ChangeButton(
 						new ShamanSprite.Firebolt(),
 						"Firebolt Shaman",
 						"_-_ 1/6 of all shamans\n" +
-								 "_-_ bolts do 3-9 damage and inflict burning\n" +
-								 "_-_ bolts will ignite the tile they are targeted at whether or not they hit their target\n" +
-								 "_-_ Firebolt Shamans resist fire-based attacks and effects."
-				)
-		);
-		changes = title("Items",false,Window.TITLE_COLOR);
-		changes.addButtons(
-					new ChangeButton(
-						new ItemSprite(ItemSpriteSheet.ARMOR_LEATHER,new Volatility().glowing()),
+								"_-_ bolts do 3-9 damage and inflict burning\n" +
+								"_-_ bolts will ignite the tile they are targeted at whether or not they hit their target\n" +
+								"_-_ Firebolt Shamans resist fire-based attacks and effects."
+				),
+				new ChangeButton(
+						new ItemSprite(
+								ItemSpriteSheet.ARMOR_LEATHER,
+								new Volatility().glowing()
+						),
 						"New Curse: Volatility",
-						"_-_ 5% chance to explode on hit."
-					),
-					new ChangeButton(
-							new ItemSprite(ItemSpriteSheet.RING_AMETHYST, null),
-							new RingOfWealth().trueName(),
-							"I've loved the idea of Sprouted Pixel Dungeon, and Shattered ring of wealth was always so underpowered... " +
-									"well not anymore! This should be a Sprouted lover's wet dream now ;).\n" +
-									"_-_ Base proc requirement reduced by 20% (15-60 --> 12-48)\n" +
-									"_-_ General drop rate boost increased by 4% (1.15 --> 1.2)\n" +
-									"_-_ Drops are now more varied, can now include food, equipment, stones, and the rare ankh.\n" +
-									"_-_ 25% of the scrolls/potions that are dropped as a result of a rare drop will now be exotic!"
-					),
-					new ChangeButton(
-							new ItemSprite(new TeleportationBomb().image, null),
-							"New Exotic Bomb: Teleportation Bomb",
-							"_-_ Sprite TBD\n" +
-									"_-_ Made with Bomb + Scroll of Teleportation (5 energy)\n" +
-									"_-_ Instead of exploding, teleports everything in a 5x5 radius\n" +
-									"_-_ Useful for clearing things from a room; for example, from a pirahna room or a trap room."
-					),
-					new ChangeButton(
+						"Inspired from the ideas of MarshalldotEXE\n" +
+								"_-_ 5% chance to explode on hit.\n" +
+								"_-_ unupgraded armor MAAAY not withstand the explosion ;)"
+				),
+				new ChangeButton(
+						new ItemSprite(new TeleportationBomb().image(), null),
+						"New Exotic Bomb: Teleportation Bomb",
+						"_-_ Made with Bomb + Scroll of Teleportation (5 energy)\n" +
+								"_-_ Instead of exploding, teleports everything in a 5x5 radius, including items\n" +
+								"_-_ Useful for clearing things from a room; for example, from a piranha room or a trap room."
+				),
+				new ChangeButton(
 						Icons.get(Icons.PREFS),
 						"Misc",
-						"_-_ Food, Arcane Styli, and Tomes of Mastery can now be quickslotted.\n" +
-								"_-_ SoU, PoS, Ankhs are now preserved during resurrection\n" +
-								"_-_ Stones now have weighted drop rates, and Enchantment and Transmutation can now drop!\n" +
-								"_-_ Stunning now applies its effect AFTER damage\n" +
-								"_-_ Elastic weapons now deal 1/6 damage, up from 0\n" +
-								"_-_ Cursed wands can now spawn Inferno and Blizzard, more changes to come."
-					)
-				);
-		
+						"_-_ Food, Arcane Styli, and Tomes of Mastery can now be quickslotted. (idea credit s0i)\n" +
+								"_-_ Cursed wands can now spawn Inferno and Blizzard, more changes to come.\n" +
+                                "_-_ Stones now have weighted drop chances, and augmentation and " +
+								"enchantment can drop, albeit rarely.\n" +
+								"_-_ There's now a post-halls tier generation table, so tomb rooms on " +
+								"floors 22-24 are less likely to give low tier armor now.\n" +
+                                "_-_ Weapons that block damage now say how much damage they can block."
+				),
+				new ChangeButton(
+						new Image(
+								Assets.SPINNER,
+								144,
+								0,
+								16,
+								16
+						),
+						"Bugfixes",
+						"_-_ Attacks by Stunning weapons potentially instantly breaking paralysis\n" +
+								"_-_ Progression items getting destroyed by resurrection and explosions"
+				)
+		);
+		title("Buffs", false, CharSprite.POSITIVE).addButtons(
+				new ChangeButton(
+						new ItemSprite(ItemSpriteSheet.RING_AMETHYST, null),
+						new RingOfWealth().trueName(),
+						"I've always liked the idea of Sprouted Pixel Dungeon, and Rings of Wealth " +
+								"were always so underpowered in Shattered..... So I've changed that!\n" +
+								"_-_ Drops are now more varied, and can now include equipment, runestones, " +
+								"food, dew, and even Stones of Enchantment!\n" +
+								"_-_ 20% of the Scrolls and Potions that are dropped as a result of " +
+								"a rare drop will now be exotic!\n" +
+								"_-_ Passive drop rate boost boosted by ~4.3% (1.15 --> 1.2)"
+				),
+				new ChangeButton(
+						new ItemSprite(
+								new Knuckles().image(),
+								null
+						),
+						new Knuckles().trueName(),
+						"While knuckledusters have been effectively removed from the game, " +
+								"they are not REALLY gone. They can be obtained with a high chance " +
+								"when transmuting any tier-1 weapon. In addition, they now block up to " +
+								"1 point of damage!"
+				),
+				new ChangeButton(
+						new ItemSprite(
+								ItemSpriteSheet.SHORTSWORD,
+								new Elastic().glowing()
+						),
+						"Elastic",
+						"Elastic can easily be a run-ender if the hero doesn't have any " +
+								"alternatives to do damage.\nThis change should make these situations " +
+								"less unfair and run-ending:\n" +
+                                "_-_ Elastic weapons now deal 1/6 damage, instead of 0.\n\n" +
+								"With this, bosses should now be beatable with only an Elastic weapon (given enough time)"
+				)
+		);
+
+
 		//**********************
 		//       v0.7.0
 		//**********************

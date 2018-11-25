@@ -31,7 +31,7 @@ public class TeleportationBomb extends Bomb {
 
     {
         //TODO visuals
-        image = ItemSpriteSheet.BOMB_HOLDER;
+        image = ItemSpriteSheet.TELEPORT_BOMB;
     }
 
     @Override
