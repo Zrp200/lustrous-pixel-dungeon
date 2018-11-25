@@ -222,6 +222,13 @@ public class ChangesScene extends PixelScene {
 		);
 		title("Buffs", false, CharSprite.POSITIVE).addButtons(
 				new ChangeButton(
+						new Image(Assets.WARRIOR, 0, 90, 12, 15),
+						"Berserker",
+						"_-_ Can now gain rage up to the extent recovered\n" +
+								"_-_ Berserk now decays 15% slower\n" +
+								"_-_ Damage boost while berserking is now 1.75x"
+				),
+				new ChangeButton(
 						new ItemSprite(ItemSpriteSheet.RING_AMETHYST, null),
 						new RingOfWealth().trueName(),
 						"I've always liked the idea of Sprouted Pixel Dungeon, and Rings of Wealth " +

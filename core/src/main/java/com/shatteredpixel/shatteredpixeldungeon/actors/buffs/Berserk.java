@@ -78,7 +78,7 @@ public class Berserk extends Buff {
 		if (berserking()){
 			WarriorShield buff = target.buff(WarriorShield.class);
 			if (target.HP <= 0) {
-				buff.absorbDamage(1 + (int)Math.ceil(target.shielding() * 0.1f));
+				buff.absorbDamage(1 + (int)Math.ceil(target.shielding() * 0.075f)); //15 turns max, rather than 10.
 				if (target.shielding() <= 0) {
 					target.die(this);
 					if (!target.isAlive()) Dungeon.fail(this.getClass());
@@ -90,11 +90,14 @@ public class Berserk extends Buff {
 				buff.absorbDamage(buff.shielding());
 				power = 0f;
 			}
-		} else if (state == State.NORMAL) {
-			power -= Math.max(0.1f, power) * 0.1f * Math.pow((target.HP/(float)target.HT), 2);
+		} else {
+			power -= Math.max(0.1f, power) * 0.1f * Math.pow((target.HP/(float)target.HT), 2); // -10% rage at full hp
 			
-			if (power <= 0){
-				detach();
+			if (power <= 0) switch(state) {
+				case RECOVERING:
+					power = 0f;
+					break;
+				default: detach();
 			}
 			BuffIndicator.refreshHero();
 		}
@@ -104,7 +107,8 @@ public class Berserk extends Buff {
 
 	public int damageFactor(int dmg){
 		float bonus = Math.min(1.5f, 1f + (power / 2f));
-		return Math.round(dmg * bonus);
+		if(state == State.BERSERK) bonus = 1.75f; // gotta kill those enemies before you're basically helpless. Also insurance for power-based bugs
+			return Math.round(dmg * bonus);
 	}
 
 	public boolean berserking(){
@@ -125,15 +129,18 @@ public class Berserk extends Buff {
 
 		return state == State.BERSERK && target.shielding() > 0;
 	}
-	
+	public float maxPower() {
+		return state == State.RECOVERING
+				? 1f - ( levelRecovery / LEVEL_RECOVER_START ) // a little more generous than Shattered's 0.
+				: 1.1f;
+	}
 	public void damage(int damage){
-		if (state == State.RECOVERING) return;
-		power = Math.min(1.1f, power + (damage/(float)target.HT)/3f );
+		power = Math.min(maxPower(), power + ( damage/(float)target.HT )/3f );
 		BuffIndicator.refreshHero();
 	}
 
 	public void recover(float percent){
-		if (levelRecovery > 0){
+		if (levelRecovery > 0) {
 			levelRecovery -= percent;
 			BuffIndicator.refreshHero();
 			if (levelRecovery <= 0) {
@@ -150,43 +157,54 @@ public class Berserk extends Buff {
 	
 	@Override
 	public void tintIcon(Image icon) {
+		float r = 1, g = 1, b = 1;
 		switch (state){
-			case NORMAL: default:
-				if (power < 0.5f)       icon.hardlight(1f, 1f, 0.5f - (power));
-				else if (power < 1f)    icon.hardlight(1f, 1.5f - power, 0f);
-				else                    icon.hardlight(1f, 0f, 0f);
-				break;
 			case BERSERK:
-				icon.hardlight(1f, 0f, 0f);
+				r = 1;
+				g = b = 0;
 				break;
 			case RECOVERING:
-				icon.hardlight(1f - (levelRecovery*0.5f), 1f - (levelRecovery*0.3f), 1f);
+				r -= levelRecovery*0.5f;
+				g -= levelRecovery*0.3f;
+				if(power <= 0f) break;
+			case NORMAL: default:
+				if(state == State.NORMAL) b = 0.5f;
+				if (power < 0.5f)       b *= 1-(power/100f);
+				else if (power <= 1f) { g *= 1.5f - power; b = 0f; }
+				else                  { r = 1; g = b = 0; } // basically berserking at that point.
 				break;
 		}
+		b = Math.max(0,b);
+		g = Math.max(0,g);
+		icon.hardlight(r,g,b);
 	}
 	
 	@Override
 	public String toString() {
 		switch (state){
-			case NORMAL: default:
-				return Messages.get(this, "angered");
 			case BERSERK:
 				return Messages.get(this, "berserk");
 			case RECOVERING:
 				return Messages.get(this, "recovering");
+			case NORMAL: default:
+				return Messages.get(this, "angered");
 		}
 	}
 
 	@Override
 	public String desc() {
+		String desc = new String();
 		float dispDamage = (damageFactor(10000) / 100f) - 100f;
 		switch (state){
-			case NORMAL: default:
-				return Messages.get(this, "angered_desc", Math.floor(power * 100f), dispDamage);
 			case BERSERK:
 				return Messages.get(this, "berserk_desc");
 			case RECOVERING:
-				return Messages.get(this, "recovering_desc", levelRecovery);
+				desc += Messages.get(this, "recovering_desc", levelRecovery);
+				if(power > 0) desc += "\n\n";
+				else return desc;
+			case NORMAL: default:
+				desc += Messages.get(this, "angered_desc", Math.floor(power * 100f), dispDamage);
+				return desc;
 		}
 		
 	}
