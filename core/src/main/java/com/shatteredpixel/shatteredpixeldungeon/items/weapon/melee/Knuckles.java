@@ -40,6 +40,6 @@ public class Knuckles extends MeleeWeapon {
 		return  (int)(2.5f*(tier+1)) +  //5 base, down from 10
 				lvl*tier;               //+1 per level, down from +2
 	}
-	public int defenseFactor( Char owner ) {return 1;}
+	public int defenseFactor( Char owner, int level ) {return 1;}
 
 }

@@ -68,6 +68,13 @@ public class MeleeWeapon extends Weapon {
 		
 		return damage;
 	}
+
+	public int defenseFactor(Char owner, int level) {
+		return 0;
+	}
+	public int defenseFactor(Char owner) {
+		return defenseFactor(owner, level());
+	}
 	
 	@Override
 	public String info() {
@@ -89,8 +96,18 @@ public class MeleeWeapon extends Weapon {
 		}
 
 		String stats_desc = Messages.get(this, "stats_desc");
-		if (!stats_desc.equals("")) info+= "\n\n" + stats_desc;
-
+		boolean isBlocking = defenseFactor(Dungeon.hero) > 0;
+		if (!stats_desc.equals(""))
+			info+= "\n\n" + stats_desc;
+		else if(isBlocking)
+			info+= "\n";
+		if(isBlocking) {
+			info+="\n";
+			if(defenseFactor(Dungeon.hero,level()+1) != defenseFactor(Dungeon.hero) && !levelKnown) // if the difference would be meaningful and you don't know its level
+				info += Messages.get(MeleeWeapon.class, "typical_block",defenseFactor(Dungeon.hero,0));
+			else
+				info += Messages.get(MeleeWeapon.class, "block", defenseFactor(Dungeon.hero));
+		}
 		switch (augment) {
 			case SPEED:
 				info += "\n\n" + Messages.get(Weapon.class, "faster");

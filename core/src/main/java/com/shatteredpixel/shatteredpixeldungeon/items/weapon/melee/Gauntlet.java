@@ -40,7 +40,7 @@ public class Gauntlet extends MeleeWeapon {
 	}
 	
 	@Override
-	public int defenseFactor( Char owner ) {
+	public int defenseFactor( Char owner, int level ) {
 		return 5;	//5 extra defence
 	}
 }
