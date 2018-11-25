@@ -47,6 +47,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.NO_FOOD;
+import static com.shatteredpixel.shatteredpixeldungeon.Challenges.NO_HERBALISM;
 
 public class RingOfWealth extends Ring {
 	
@@ -75,7 +76,7 @@ public class RingOfWealth extends Ring {
 		}
 		
 		//reset (if needed), decrement, and store counts
-		if (triesToDrop <= 0) triesToDrop += Random.NormalIntRange(12, 48); // 20% faster than Shattered
+		if (triesToDrop <= 0) triesToDrop += Random.NormalIntRange(15, 60); // 20% faster than Shattered
 		triesToDrop -= dropProgression( target, tries );
 		for (Wealth w : buffs){
 			w.triesToDrop(triesToDrop);
@@ -97,7 +98,7 @@ public class RingOfWealth extends Ring {
 		if (roll < 0.6f){ // 60% chance
 			items.add( Generator.random() ); // let's make this......interesting ;)
 		} else if (roll < 0.9f){ // 30% chance
-			switch (Random.Int(4)){ // Overall 7.5% chance for each one.
+			switch (Random.Int(5) - ((Dungeon.isChallenged(NO_HERBALISM)) ? 1 : 0)){
 				case 0:
 					for(int i = 0; i < 5; i++)
 						items.add(	Generator.random(
@@ -118,7 +119,7 @@ public class RingOfWealth extends Ring {
 					break;
 				case 3:
 					if(Dungeon.isChallenged(NO_FOOD))
-						items.add(new SmallRation());
+						items.add(new SmallRation()); // Yeah no 3 rations for you.
 					else
 						switch(Random.Int(8)) {
 							case 0:
@@ -126,31 +127,32 @@ public class RingOfWealth extends Ring {
 								break;
 							case 1:
 								Blandfruit blandfruit = new Blandfruit();
-								if(Random.Int(2) == 0)
+								if(Random.Int(3) == 0)
 									blandfruit.cook((Plant.Seed) Generator.random(Generator.Category.SEED));
 								items.add(blandfruit);
 								break;
 							case 2:
-								do { items.add( new Pasty() ); } while(Random.Int(2) == 0);
+								items.add( new Pasty().quantity( Random.Int(1,2) ) );
 								break;
 							case 3:
-								do { items.add( new Food() ); } while(Random.Int(3) < 2);
+								items.add( new Food().quantity( Random.Int(1,3) ) );
 								break;
 							case 4:
-								do { items.add( new FrozenCarpaccio() ); } while(Random.Int(4) < 3);
+								items.add( new FrozenCarpaccio().quantity( Random.Int(1,4) ) );
 								break;
 							case 5:
-								do { items.add( new ChargrilledMeat() ); } while(Random.Int(5) < 4);
+								items.add( new ChargrilledMeat().quantity( Random.Int(1,5) ) ); // Stronger than small ration because alchemy
 								break;
 							case 6:
-								do { items.add( new MysteryMeat() ); } while(Random.Int(6) < 5);
+								items.add( new MysteryMeat().quantity( Random.Int(1,6) ) );
 								break;
 							case 7:
-								do {
-									items.add(new SmallRation());
-								} while(Random.Int(6) < 5);
+								items.add( new SmallRation().quantity( Random.Int(1,6) ) );
 								break;
 						}
+				case 4:
+					items.add(new Dewdrop().quantity(Random.NormalIntRange(5,15))); // Dew
+                    break;
 			}
 		} else if (roll < 0.99f){
 			switch(2) {
@@ -208,7 +210,7 @@ public class RingOfWealth extends Ring {
 					break;
 			}
 		}
-		for(int i = 0; i < items.size(); i++) if(Random.Int(4) == 0) { // 25% chance to get an exotic instead O_O
+		for(int i = 0; i < items.size(); i++) if(Random.Int(5) == 0) { // 20% chance to get an exotic instead O_O
 			Item item = items.get(i);
 			if(item instanceof Scroll) item = ScrollOfTransmutation.changeScroll( (Scroll) item );
 			else if(item instanceof Potion) item = ScrollOfTransmutation.changePotion( (Potion) item );

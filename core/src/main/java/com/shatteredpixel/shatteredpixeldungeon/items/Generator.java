@@ -147,6 +147,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingHammer;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingSpear;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingStone;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Tomahawk;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Trident;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
@@ -378,9 +379,10 @@ public class Generator {
 			
 			MIS_T1.classes = new Class<?>[]{
 					Dart.class,
+					ThrowingStone.class,
 					ThrowingKnife.class
 			};
-			MIS_T1.probs = new float[]{ 1, 1 };
+			MIS_T1.probs = new float[]{ 1, 4, 3};
 			
 			MIS_T2.classes = new Class<?>[]{
 					FishingSpear.class,
@@ -451,7 +453,7 @@ public class Generator {
 			{0, 10, 40, 40, 10},
 			{0,  5, 20, 50, 25},
 			{0,  2,  8, 20, 70},
-			{0,  1,  2,  3, 94} // You're getting a t5.
+			{0,  1,  2,  3, 94} // You're getting a t5. Deal with it.
 	};
 	
 	private static HashMap<Category,Float> categoryProbs = new LinkedHashMap<>();
