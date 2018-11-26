@@ -23,7 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Enchanting;
+import com.shatteredpixel.shatteredpixeldungeon.effects.ItemChange;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfEnchantment;
@@ -80,7 +80,7 @@ public class ScrollOfEnchantment extends ExoticScroll {
 							
 							Sample.INSTANCE.play( Assets.SND_READ );
 							Invisibility.dispel();
-							Enchanting.show(curUser, item);
+							ItemChange.show(curUser, item);
 						}
 					}
 					
@@ -117,7 +117,7 @@ public class ScrollOfEnchantment extends ExoticScroll {
 							
 							Sample.INSTANCE.play( Assets.SND_READ );
 							Invisibility.dispel();
-							Enchanting.show(curUser, item);
+							ItemChange.show(curUser, item);
 						}
 					}
 					

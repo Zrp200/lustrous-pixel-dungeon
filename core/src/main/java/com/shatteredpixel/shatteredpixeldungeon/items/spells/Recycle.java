@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.spells;
 
+import com.shatteredpixel.shatteredpixeldungeon.effects.ItemChange;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
@@ -59,7 +60,7 @@ public class Recycle extends InventorySpell {
 		item.detach(curUser.belongings.backpack);
 		GLog.p(Messages.get(this, "recycled", result.name()));
 		result.collect();
-		//TODO visuals
+		ItemChange.show(curUser,result);
 	}
 	
 	public static boolean isRecyclable(Item item){

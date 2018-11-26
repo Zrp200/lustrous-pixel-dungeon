@@ -26,7 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.watabou.noosa.Game;
 
-public class Enchanting extends ItemSprite {
+public class ItemChange extends ItemSprite {
 	private static final int SIZE	= 16;
 
 	private enum Phase {
@@ -47,11 +47,11 @@ public class Enchanting extends ItemSprite {
 	private float duration;
 	private float passed;
 
-	public Enchanting( Item item ) {
+	public ItemChange( Item item ) {
 		super( item.image(), null );
 		originToCenter();
 
-		color = item.glowing().color;
+		if(item.glowing() != null) color = item.glowing().color;
 
 		phase = Phase.FADE_IN;
 		duration = FADE_IN_TIME;
@@ -104,7 +104,7 @@ public class Enchanting extends ItemSprite {
 			return;
 		}
 
-		Enchanting sprite = new Enchanting( item );
+		ItemChange sprite = new ItemChange( item );
 		sprite.target = ch;
 		ch.sprite.parent.add( sprite );
 	}
