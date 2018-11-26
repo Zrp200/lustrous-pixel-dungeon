@@ -75,39 +75,32 @@ public class MeleeWeapon extends Weapon {
 	public int defenseFactor(Char owner) {
 		return defenseFactor(owner, level());
 	}
-	
-	@Override
-	public String info() {
 
+	public String baseInfo() {
 		String info = desc();
+		int encumbrance = STRReq(levelKnown ? level() : 0) - Dungeon.hero.STR();
 
 		if (levelKnown) {
 			info += "\n\n" + Messages.get(MeleeWeapon.class, "stats_known", tier, augment.damageFactor(min()), augment.damageFactor(max()), STRReq());
-			if (STRReq() > Dungeon.hero.STR()) {
+			if (encumbrance > 0) {
 				info += " " + Messages.get(Weapon.class, "too_heavy");
-			} else if (Dungeon.hero.STR() > STRReq()){
-				info += " " + Messages.get(Weapon.class, "excess_str", Dungeon.hero.STR() - STRReq());
+			} else if (encumbrance < 0){
+				info += " " + Messages.get(Weapon.class, "excess_str", -encumbrance);
 			}
 		} else {
 			info += "\n\n" + Messages.get(MeleeWeapon.class, "stats_unknown", tier, min(0), max(0), STRReq(0));
-			if (STRReq(0) > Dungeon.hero.STR()) {
+			if (encumbrance > 0) {
 				info += " " + Messages.get(MeleeWeapon.class, "probably_too_heavy");
 			}
 		}
-
 		String stats_desc = Messages.get(this, "stats_desc");
-		boolean isBlocking = defenseFactor(Dungeon.hero) > 0;
 		if (!stats_desc.equals(""))
 			info+= "\n\n" + stats_desc;
-		else if(isBlocking)
-			info+= "\n";
-		if(isBlocking) {
-			info+="\n";
-			if(defenseFactor(Dungeon.hero,level()+1) != defenseFactor(Dungeon.hero) && !levelKnown) // if the difference would be meaningful and you don't know its level
-				info += Messages.get(MeleeWeapon.class, "typical_block",defenseFactor(Dungeon.hero,0));
-			else
-				info += Messages.get(MeleeWeapon.class, "block", defenseFactor(Dungeon.hero));
-		}
+		return info;
+	}
+	@Override
+	public String info() {
+		String info = baseInfo();
 		switch (augment) {
 			case SPEED:
 				info += "\n\n" + Messages.get(Weapon.class, "faster");

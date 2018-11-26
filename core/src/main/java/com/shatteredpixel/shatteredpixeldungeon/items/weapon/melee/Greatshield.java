@@ -21,10 +21,9 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
-import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
-public class Greatshield extends MeleeWeapon {
+public class Greatshield extends BlockingWeapon {
 
 	{
 		image = ItemSpriteSheet.GREATSHIELD;
@@ -39,7 +38,7 @@ public class Greatshield extends MeleeWeapon {
 	}
 
 	@Override
-	public int defenseFactor( Char owner, int level ) {
-		return 10+3*level;    //10 extra defence, plus 3 per level;
+	public int maxBlock(int level) {
+		return 2*tier+3*level;    //10 extra defence, plus 3 per level;
 	}
 }

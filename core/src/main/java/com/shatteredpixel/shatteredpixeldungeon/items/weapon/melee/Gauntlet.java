@@ -21,10 +21,9 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
-import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
-public class Gauntlet extends MeleeWeapon {
+public class Gauntlet extends BlockingWeapon {
 	
 	{
 		image = ItemSpriteSheet.GAUNTLETS;
@@ -37,10 +36,5 @@ public class Gauntlet extends MeleeWeapon {
 	public int max(int lvl) {
 		return  Math.round(2.5f*(tier+1)) +     //15 base, down from 30
 				lvl*Math.round(0.5f*(tier+1));  //+3 per level, down from +6
-	}
-	
-	@Override
-	public int defenseFactor( Char owner, int level ) {
-		return 5;	//5 extra defence
 	}
 }

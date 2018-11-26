@@ -21,10 +21,9 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
-import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
-public class Sai extends MeleeWeapon {
+public class Sai extends BlockingWeapon {
 
 	{
 		image = ItemSpriteSheet.SAI;
@@ -37,10 +36,5 @@ public class Sai extends MeleeWeapon {
 	public int max(int lvl) {
 		return  Math.round(2.5f*(tier+1)) +     //10 base, down from 20
 				lvl*Math.round(0.5f*(tier+1));  //+2 per level, down from +4
-	}
-
-	@Override
-	public int defenseFactor( Char owner, int level ) {
-		return 3;	//3 extra defence
 	}
 }

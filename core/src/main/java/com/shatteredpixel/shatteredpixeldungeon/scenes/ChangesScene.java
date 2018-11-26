@@ -66,7 +66,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfTransfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Elastic;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Wayward;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Lucky;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Stunning;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Glaive;
@@ -249,7 +248,8 @@ public class ChangesScene extends PixelScene {
 						"While knuckledusters have been effectively removed from the game, " +
 								"they are not REALLY gone. They can be obtained with a high chance " +
 								"when transmuting any tier-1 weapon. In addition, they now block up to " +
-								"1 point of damage!"
+								"1 point of damage, and block 1 extra point with each upgrade!\n\n" +
+                                "This blocking scaling has also been extended to weapons of the same category and quarterstaff."
 				),
 				new ChangeButton(
 						new ItemSprite(

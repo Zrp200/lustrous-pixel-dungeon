@@ -21,10 +21,9 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
-import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
-public class Quarterstaff extends MeleeWeapon {
+public class Quarterstaff extends BlockingWeapon{
 
 	{
 		image = ItemSpriteSheet.QUARTERSTAFF;
@@ -38,8 +37,7 @@ public class Quarterstaff extends MeleeWeapon {
 				lvl*(tier+1);   //scaling unchanged
 	}
 
-	@Override
-	public int defenseFactor( Char owner, int level ) {
-		return 3;	//3 extra defence
+	public int maxBlock(int level) {
+		return super.maxBlock(level) + 1; // 1 extra defense, making it block a max of 3 at +0
 	}
 }

@@ -351,10 +351,7 @@ public class Hero extends Char {
 			if (armDr > 0) dr += armDr;
 		}
 		if (belongings.weapon != null)  {
-			int wepDr = Random.NormalIntRange( 0 , belongings.weapon.defenseFactor( this ) );
-			if (STR() < ((Weapon)belongings.weapon).STRReq()){
-				wepDr -= 2*(((Weapon)belongings.weapon).STRReq() - STR());
-			}
+			int wepDr = Random.NormalIntRange( 0 , belongings.weapon.defenseFactor( this ) ); // strength already factored in
 			if (wepDr > 0) dr += wepDr;
 		}
 		if (bark != null)               dr += Random.NormalIntRange( 0 , bark.level() );
