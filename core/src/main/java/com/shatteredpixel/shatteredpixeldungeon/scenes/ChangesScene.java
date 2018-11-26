@@ -70,10 +70,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Glaive;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greataxe;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Knuckles;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Longsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Quarterstaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RunicBlade;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sai;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
@@ -152,8 +152,10 @@ public class ChangesScene extends PixelScene {
 				new ChangeButton(
 						new Image(Assets.HUNTRESS, 0, 15, 12, 15),
 						"Huntress",
-						"Boomerang removed. Huntress now starts with two darts and a tier 1 whip " +
-								"instead of a knuckleduster"
+						"_-_ Boomerang removed.\n" +
+								"_-_ Huntress now starts with two darts and a tier 1 whip instead of " +
+								"a knuckleduster.\n" +
+								"_-_ The Knuckleduster can now be obtained by transmuting any tier 1 weapon! (barring Mage's Staff)"
 				),
                 new ChangeButton(
                         new ShamanSprite.MM(),
@@ -225,8 +227,8 @@ public class ChangesScene extends PixelScene {
 						"Berserker",
 						"_-_ Can now gain rage up to the extent recovered\n" +
 								"_-_ Berserk now decays 15% slower\n" +
-								"_-_ Damage boost while berserking is now 1.75x" +
-								"_-_ Being at low health now speeds up rage building"
+								"_-_ Damage boost while berserking is now 1.75x\n" +
+								"_-_ Being at low health now speeds up rage building."
 				),
 				new ChangeButton(
 						new ItemSprite(ItemSpriteSheet.RING_AMETHYST, null),
@@ -241,15 +243,12 @@ public class ChangesScene extends PixelScene {
 				),
 				new ChangeButton(
 						new ItemSprite(
-								new Knuckles().image(),
+								new Sai().image(),
 								null
 						),
-						new Knuckles().trueName(),
-						"While knuckledusters have been effectively removed from the game, " +
-								"they are not REALLY gone. They can be obtained with a high chance " +
-								"when transmuting any tier-1 weapon. In addition, they now block up to " +
-								"1 point of damage, and block 1 extra point with each upgrade!\n\n" +
-                                "This blocking scaling has also been extended to weapons of the same category and quarterstaff."
+						"Blocking Weapons",
+						"All weapons that grant armor now become more effective at it when upgraded.\n" +
+								"To compensate, Quarterstaff now blocks up to 2 damage at +0, rather than up to 3."
 				),
 				new ChangeButton(
 						new ItemSprite(

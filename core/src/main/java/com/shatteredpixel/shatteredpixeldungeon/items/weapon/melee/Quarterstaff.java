@@ -36,8 +36,4 @@ public class Quarterstaff extends BlockingWeapon{
 		return  4*(tier+1) +    //12 base, down from 15
 				lvl*(tier+1);   //scaling unchanged
 	}
-
-	public int maxBlock(int level) {
-		return super.maxBlock(level) + 1; // 1 extra defense, making it block a max of 3 at +0
-	}
 }

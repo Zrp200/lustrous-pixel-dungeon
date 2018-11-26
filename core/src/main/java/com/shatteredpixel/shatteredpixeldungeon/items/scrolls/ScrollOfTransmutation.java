@@ -34,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Knuckles;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
@@ -132,6 +133,10 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		
 		do {
 			try {
+				if(c == Generator.Category.WEP_T1 && w.getClass() != Knuckles.class) {
+					n = new Knuckles();
+					break;
+				}
 				n = (MeleeWeapon)c.classes[Random.chances(c.probs)].newInstance();
 			} catch (Exception e) {
 				ShatteredPixelDungeon.reportException(e);
