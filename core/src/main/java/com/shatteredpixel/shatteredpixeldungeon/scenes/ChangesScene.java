@@ -206,7 +206,8 @@ public class ChangesScene extends PixelScene {
 								"enchantment can drop, albeit rarely.\n" +
 								"_-_ There's now a post-halls tier generation table, so tomb rooms on " +
 								"floors 22-24 are less likely to give low tier armor now.\n" +
-                                "_-_ Weapons that block damage now say how much damage they can block."
+                                "_-_ Weapons that block damage now say how much damage they can block.\n" +
+								"_-_ Transmutation and Recycle now have a VFX effect!"
 				),
 				new ChangeButton(
 						new Image(
