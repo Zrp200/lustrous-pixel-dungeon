@@ -40,7 +40,6 @@ public class StoneOfAugmentation extends InventoryStone {
 	{
 		mode = WndBag.Mode.ENCHANTABLE;
 		image = ItemSpriteSheet.STONE_AUGMENTATION;
-		unique = true;
 	}
 	
 	@Override

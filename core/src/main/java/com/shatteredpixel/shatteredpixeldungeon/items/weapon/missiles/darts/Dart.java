@@ -34,6 +34,8 @@ public class Dart extends MissileWeapon {
 
 	{
 		image = ItemSpriteSheet.DART;
+		unique = true; // Because losing your darts to explosions is stupid.
+		bones = false; // Because Huntress starts with some now.
 	}
 
 	@Override

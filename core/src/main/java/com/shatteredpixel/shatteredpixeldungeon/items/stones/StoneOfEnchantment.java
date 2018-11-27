@@ -36,7 +36,6 @@ public class StoneOfEnchantment extends InventoryStone {
 	{
 		mode = WndBag.Mode.ENCHANTABLE;
 		image = ItemSpriteSheet.STONE_ENCHANT;
-		unique = true;
 	}
 	
 	@Override
