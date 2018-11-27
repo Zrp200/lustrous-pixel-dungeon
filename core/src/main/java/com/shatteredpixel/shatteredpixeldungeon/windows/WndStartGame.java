@@ -29,6 +29,8 @@ import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Cord;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Journal;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
@@ -333,9 +335,9 @@ public class WndStartGame extends Window {
 							heroMisc.icon(Icons.get(Icons.DEPTH));
 							break;
 						case HUNTRESS:
-							heroItem.icon(new ItemSprite(ItemSpriteSheet.BOOMERANG, null));
-							heroLoadout.icon(new ItemSprite(ItemSpriteSheet.KNUCKLEDUSTER, null));
-							heroMisc.icon(new ItemSprite(ItemSpriteSheet.DART, null));
+							heroItem.icon( new ItemSprite( new Dart().image(), null ) );
+							heroLoadout.icon( new ItemSprite( new Cord().image(), null ) );
+							heroMisc.icon( Icons.get( Icons.HUNTRESS ) );
 							break;
 					}
 					
