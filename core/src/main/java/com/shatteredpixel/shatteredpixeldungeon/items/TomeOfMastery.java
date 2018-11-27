@@ -65,9 +65,8 @@ public class TomeOfMastery extends Item {
 		if (action.equals( AC_READ )) {
 			
 			curUser = hero;
-			
-			HeroSubClass way1 = null;
-			HeroSubClass way2 = null;
+			HeroSubClass[] subclasses = hero.heroClass.subClasses();
+			HeroSubClass way1, way2;
 			switch (hero.heroClass) {
 			case WARRIOR:
 				way1 = HeroSubClass.GLADIATOR;
@@ -86,7 +85,7 @@ public class TomeOfMastery extends Item {
 				way2 = HeroSubClass.WARDEN;
 				break;
 			}
-			GameScene.show( new WndChooseWay( this, way1, way2 ) );
+			GameScene.show( new WndChooseWay( this, subclasses[0], subclasses[1] ) );
 			
 		}
 	}
