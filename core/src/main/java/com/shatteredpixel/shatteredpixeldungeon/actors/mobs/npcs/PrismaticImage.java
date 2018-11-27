@@ -22,13 +22,9 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.CorrosiveGas;
-import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PrismaticGuard;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -41,26 +37,18 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
-public class PrismaticImage extends NPC {
+public class PrismaticImage extends MirrorImage {
 	
 	{
 		spriteClass = PrismaticSprite.class;
 		
 		HP = HT = 8;
-		defenseSkill = 1;
-		
-		alignment = Alignment.ALLY;
-		state = HUNTING;
 		
 		WANDERING = new Wandering();
-		
-		//before other mobs
-		actPriority = MOB_PRIO + 1;
 	}
 	
 	private Hero hero;
 	private int heroID;
-	public int armTier;
 	
 	private int deathTimer = -1;
 	
@@ -95,11 +83,6 @@ public class PrismaticImage extends NPC {
 			}
 		}
 		
-		if (hero.tier() != armTier){
-			armTier = hero.tier();
-			((PrismaticSprite)sprite).updateArmor( armTier );
-		}
-		
 		return super.act();
 	}
 	
@@ -117,45 +100,24 @@ public class PrismaticImage extends NPC {
 	@Override
 	public void storeInBundle( Bundle bundle ) {
 		super.storeInBundle( bundle );
-		bundle.put( HEROID, heroID );
 		bundle.put( TIMER, deathTimer );
 	}
 	
 	@Override
 	public void restoreFromBundle( Bundle bundle ) {
 		super.restoreFromBundle( bundle );
-		heroID = bundle.getInt( HEROID );
 		deathTimer = bundle.getInt( TIMER );
 	}
 	
 	public void duplicate( Hero hero, int HP ) {
-		this.hero = hero;
-		heroID = this.hero.id();
 		this.HP = HP;
 		HT = PrismaticGuard.maxHP( hero );
+		super.duplicate(hero);
 	}
 	
 	@Override
 	public int damageRoll() {
 		return Random.NormalIntRange( 1 + hero.lvl/8, 4 + hero.lvl/2 );
-	}
-	
-	@Override
-	public int attackSkill( Char target ) {
-		return hero.attackSkill(target);
-	}
-	
-	@Override
-	public int defenseSkill(Char enemy) {
-		if (hero != null) {
-			int baseEvasion = 4 + hero.lvl;
-			int heroEvasion = hero.defenseSkill(enemy);
-			
-			//if the hero has more/less evasion, 50% of it is applied
-			return super.defenseSkill(enemy) * (baseEvasion + heroEvasion) / 2;
-		} else {
-			return 0;
-		}
 	}
 	
 	@Override
@@ -195,43 +157,7 @@ public class PrismaticImage extends NPC {
 		return super.attackProc( enemy, damage );
 	}
 	
-	@Override
-	public CharSprite sprite() {
-		CharSprite s = super.sprite();
-		
-		hero = (Hero)Actor.findById(heroID);
-		if (hero != null) {
-			armTier = hero.tier();
-		}
-		((PrismaticSprite)s).updateArmor( armTier );
-		return s;
-	}
-	
-	@Override
-	public boolean interact() {
-		
-		if (!Dungeon.level.passable[pos]){
-			return true;
-		}
-		
-		int curPos = pos;
-		
-		moveSprite( pos, Dungeon.hero.pos );
-		move( Dungeon.hero.pos );
-		
-		Dungeon.hero.sprite.move( Dungeon.hero.pos, curPos );
-		Dungeon.hero.move( curPos );
-		
-		Dungeon.hero.spend( 1 / Dungeon.hero.speed() );
-		Dungeon.hero.busy();
-		
-		return true;
-	}
-	
 	{
-		immunities.add( ToxicGas.class );
-		immunities.add( CorrosiveGas.class );
-		immunities.add( Burning.class );
 		immunities.add( Corruption.class );
 	}
 	

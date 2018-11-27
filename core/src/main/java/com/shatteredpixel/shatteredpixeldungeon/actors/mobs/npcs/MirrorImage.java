@@ -58,16 +58,16 @@ public class MirrorImage extends NPC {
 	
 	@Override
 	protected boolean act() {
-		
-		if ( hero == null ){
-			hero = (Hero)Actor.findById(heroID);
-			if ( hero == null ){
-				die(null);
-				sprite.killAndErase();
-				return true;
+		if(!(this instanceof PrismaticImage)) {
+			if (hero == null) {
+				hero = (Hero) Actor.findById(heroID);
+				if (hero == null) {
+					die(null);
+					sprite.killAndErase();
+					return true;
+				}
 			}
 		}
-		
 		if (hero.tier() != armTier){
 			armTier = hero.tier();
 			((MirrorSprite)sprite).updateArmor( armTier );
@@ -93,7 +93,7 @@ public class MirrorImage extends NPC {
 	public void duplicate( Hero hero ) {
 		this.hero = hero;
 		heroID = this.hero.id();
-		Buff.affect(this, MirrorInvis.class, Short.MAX_VALUE);
+		if(!(this instanceof PrismaticImage)) Buff.affect(this, MirrorInvis.class, Short.MAX_VALUE); // Slightly messy.
 	}
 	
 	@Override
@@ -147,6 +147,7 @@ public class MirrorImage extends NPC {
 	@Override
 	public int attackProc( Char enemy, int damage ) {
 		damage = super.attackProc( enemy, damage );
+		if(this instanceof PrismaticImage) return damage; // Catch that.
 		
 		MirrorInvis buff = buff(MirrorInvis.class);
 		if (buff != null){
@@ -182,19 +183,19 @@ public class MirrorImage extends NPC {
 
 	@Override
 	public boolean interact() {
-		
+
 		if (!Dungeon.level.passable[pos]){
 			return true;
 		}
-		
+
 		int curPos = pos;
-		
+
 		moveSprite( pos, Dungeon.hero.pos );
 		move( Dungeon.hero.pos );
-		
+
 		Dungeon.hero.sprite.move( Dungeon.hero.pos, curPos );
 		Dungeon.hero.move( curPos );
-		
+
 		Dungeon.hero.spend( 1 / Dungeon.hero.speed() );
 		Dungeon.hero.busy();
 
