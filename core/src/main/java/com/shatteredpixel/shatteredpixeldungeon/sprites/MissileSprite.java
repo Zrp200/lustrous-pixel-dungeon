@@ -129,8 +129,10 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 		}
 		
 		float speed = SPEED;
+		if(item instanceof Dart || item instanceof Shuriken)
+			speed *= 1.5f; // those weapons that you flick
 		if (item instanceof Dart && Dungeon.hero.belongings.weapon instanceof Crossbow){
-			speed *= 3f;
+			speed *= 2f;
 		}
 		PosTweener tweener = new PosTweener( this, to, d.length() / speed );
 		tweener.listener = this;

@@ -307,6 +307,7 @@ public class ChangesScene extends PixelScene {
 								"_-_ Cursed wands can now spawn Inferno and Blizzard\n\n" +
 								"_-_ Weapons that block damage now say how much damage they can block.\n" +
 								"_-_ Transmutation and Recycle now have a VFX effect!\n" +
+								"_-_ Darts and Shurikens now have a faster throw animation.\n" +
 								"_-_ Some descriptions reworded."
 				),
 				new ChangeButton(
