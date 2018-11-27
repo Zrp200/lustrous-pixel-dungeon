@@ -70,10 +70,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Glaive;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greataxe;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Knuckles;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Longsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Quarterstaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RunicBlade;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sai;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
@@ -115,7 +115,7 @@ public class ChangesScene extends PixelScene {
 		int w = Camera.main.width;
 		int h = Camera.main.height;
 
-		RenderedText title = PixelScene.renderText( Messages.get(this, "title"), 9 );
+		RenderedText title = PixelScene.renderText(Messages.get(this, "title"), 9);
 		title.hardlight(Window.TITLE_COLOR);
 		title.x = (w - title.width()) / 2f;
 		title.y = (16 - title.baseLine()) / 2f;
@@ -123,62 +123,86 @@ public class ChangesScene extends PixelScene {
 		add(title);
 
 		ExitButton btnExit = new ExitButton();
-		btnExit.setPos( Camera.main.width - btnExit.width(), 0 );
-		add( btnExit );
+		btnExit.setPos(Camera.main.width - btnExit.width(), 0);
+		add(btnExit);
 
 		NinePatch panel = Chrome.get(Chrome.Type.TOAST);
 
 		int pw = 135 + panel.marginLeft() + panel.marginRight() - 2;
 		int ph = h - 16;
 
-		panel.size( pw, ph );
+		panel.size(pw, ph);
 		panel.x = (w - pw) / 2f;
 		panel.y = title.y + title.height();
-		align( panel );
-		add( panel );
+		align(panel);
+		add(panel);
 
-		ScrollPane list = new ScrollPane( new Component() ){
+		ScrollPane list = new ScrollPane(new Component()) {
 
 			@Override
 			public void onClick(float x, float y) {
-				for (ChangeInfo info : infos) if (info.onClick( x, y )) return;
+				for (ChangeInfo info : infos) if (info.onClick(x, y)) return;
 			}
 
 		};
-		add( list );
- 		ChangeInfo changes;
+		add(list);
+		ChangeInfo changes;
 		title("Lustrous v0.0.0", true, Window.TITLE_COLOR);
 		title("New Content", false, Window.TITLE_COLOR).addButtons(
 				new ChangeButton(
 						new Image(Assets.HUNTRESS, 0, 15, 12, 15),
-						"Huntress",
-						"_-_ Boomerang removed.\n" +
-								"_-_ Huntress now starts with two darts and a tier 1 whip instead of " +
-								"a knuckleduster.\n" +
-								"_-_ The Knuckleduster can now be obtained by transmuting any tier 1 weapon! (barring Mage's Staff)"
+						"Huntress (Base)",
+
+						"I've always felt that the Huntress's potential was being wasted by the boomerang. " +
+								"By dumping into the Boomerang, the player wastes her ranged weapon durability boost, " +
+								"her 'x-ray vision' (for the most part), and her natural synergies with wands and the Whip " +
+								"(however the subclasses are also to blame for that). Because the Boomerang itself " +
+								"practically a melee weapon while simultaneously outclassing all other missile weapons, it's " +
+								"arguable that using it wastes the perk from which the Huntress benefits from excess " +
+								"strength when using missile weapons as well.\n" +
+								"\nTo address this, I have made the following changes:\n\n" +
+								"_-_ Boomerang removed from the game.\n" +
+								"_-_ Huntress now starts with two Darts and a tier-1 Whip (a Cord) instead of a Knuckleduster.\n" +
+								"_	-_ The Darts illustrate her ability to benefit from having bonus strength when throwing missile weapons.\n" +
+								"_	-_ The Cord gives her semi-reliable range through sewers.\n" +
+								"_	-_ The Cord also illustrates her x-ray vision by allowing otherwise impossible attacks."
 				),
-                new ChangeButton(
-                        new ShamanSprite.MM(),
-                        "Gnoll Shamans",
-                        "Shamans now have variants! The default variant now shoots magic missiles " +
-                                "instead of lightning.\n" +
-                                "_-_ Makes up 50% of all shamans\n" +
-                                "_-_ 3x accuracy on zaps, up from the standard 2x\n" +
-                                "_-_ zaps do 3-10 damage, with no additional effects"
-                ),
-                new ChangeButton(
-                        new ShamanSprite.Lightning(),
-                        "Lightning Shaman",
-                        "_-_ 1/3 of all shamans\n" +
-                                "_-_ Identical to previous Gnoll Shamans"
-                ),
+				new ChangeButton(
+						new Image(Assets.HUNTRESS, 0, 90, 12, 15),
+						"Huntress (Mastery)",
+						"Because the Huntress subclasses contributed so much to make this class" +
+								"one-dimensional, they have been removed for the time being.\n" +
+								"Instead," +
+								"the Huntress now has access to the _Freerunner_ and _Warlock_ subclasses!\n" +
+								"[challenge users rejoice now]\n\n" +
+								"I realize that this may feel wrong in the beginning, but I think that these " +
+								"subclasses will at the very least bring out more of the Huntress's natural versatility. " +
+								"I may yet reintroduce them at a later date, or simply dream up brand new " +
+								"subclasses for her."
+				),
+				new ChangeButton(
+						new ShamanSprite.MM(),
+						"Gnoll Shamans",
+						"Shamans now have variants! The default variant now shoots magic missiles " +
+								"instead of lightning.\n" +
+								"_-_ Makes up 50% of all shamans\n" +
+								"_-_ 3x accuracy on zaps, up from the standard 2x\n" +
+								"_-_ zaps still do 4-10 damage"
+				),
+				new ChangeButton(
+						new ShamanSprite.Lightning(),
+						"Lightning Shaman",
+						"_-_ 1/3 of all shamans\n" +
+								"_-_ zaps now do 5-11 right off the bat to compensate for new rarity."
+				),
 				new ChangeButton(
 						new ShamanSprite.Firebolt(),
 						"Firebolt Shaman",
 						"_-_ 1/6 of all shamans\n" +
-								"_-_ bolts do 3-9 damage and inflict burning\n" +
+								"_-_ bolts do 6-12 damage and inflict burning\n" +
 								"_-_ bolts will ignite the tile they are targeted at whether or not they hit their target\n" +
-								"_-_ Firebolt Shamans resist fire-based attacks and effects."
+								"_-_ Firebolt Shamans resist fire-based attacks and effects." +
+								"_-_ You probably shouldn't be letting these shoot at you."
 				),
 				new ChangeButton(
 						new ItemSprite(
@@ -196,40 +220,35 @@ public class ChangesScene extends PixelScene {
 						"_-_ Made with Bomb + Scroll of Teleportation (5 energy)\n" +
 								"_-_ Instead of exploding, teleports everything in a 5x5 radius, including items\n" +
 								"_-_ Useful for clearing things from a room; for example, from a piranha room or a trap room."
-				),
-				new ChangeButton(
-						Icons.get(Icons.PREFS),
-						"Misc",
-						"_-_ Food, Arcane Styli, and Tomes of Mastery can now be quickslotted. (idea credit s0i)\n" +
-								"_-_ Cursed wands can now spawn Inferno and Blizzard, more changes to come.\n" +
-                                "_-_ Stones now have weighted drop chances, and augmentation and " +
-								"enchantment can drop, albeit rarely.\n" +
-								"_-_ There's now a post-halls tier generation table, so tomb rooms on " +
-								"floors 22-24 are less likely to give low tier armor now.\n" +
-                                "_-_ Weapons that block damage now say how much damage they can block.\n" +
-								"_-_ Transmutation and Recycle now have a VFX effect!"
-				),
-				new ChangeButton(
-						new Image(
-								Assets.SPINNER,
-								144,
-								0,
-								16,
-								16
-						),
-						"Bugfixes",
-						"_-_ Attacks by Stunning weapons potentially instantly breaking paralysis\n" +
-								"_-_ Progression items getting destroyed by resurrection and explosions"
 				)
 		);
 		title("Buffs", false, CharSprite.POSITIVE).addButtons(
 				new ChangeButton(
+						new Image(Assets.WARRIOR, 0, 15, 12, 15),
+						"Warrior",
+						"The Warrior now gains 1/5 of his max HP from eating rather than a flat 5. " +
+								"This should help his end-game quite a bit, especially in challenges."
+				),
+				new ChangeButton(
 						new Image(Assets.WARRIOR, 0, 90, 12, 15),
 						"Berserker",
-						"_-_ Can now gain rage up to the extent recovered\n" +
+						"_-_ A recovering Berserker can now gain Rage up to the extent recovered\n" +
 								"_-_ Berserk now decays 15% slower\n" +
 								"_-_ Damage boost while berserking is now 1.75x\n" +
-								"_-_ Being at low health now speeds up rage building."
+								"_-_ Being at low health now speeds up Rage building by up to 1/3."
+				),
+				new ChangeButton(
+						new ItemSprite(new Ankh().image()),
+						new Ankh().trueName(),
+						"More items are now preserved through resurrection! In addition, they can no longer be sold to a shop, " +
+								"disintegrated, destroyed by explosions, or stolen by crazy thieves.\n\n" +
+								"_-_ Scrolls of Upgrade and Enchantment\n" +
+								"_-_ Scrolls of Transmutation and Polymorph\n" +
+								"_-_ Potions of Strength and Adrenaline Surge\n" +
+								"_-_ Elixir of Might\n" +
+								"_-_ Magical Infusion\n" +
+								"_-_ Darts\n" +
+								"_-_ Ankhs"
 				),
 				new ChangeButton(
 						new ItemSprite(ItemSpriteSheet.RING_AMETHYST, null),
@@ -244,12 +263,19 @@ public class ChangesScene extends PixelScene {
 				),
 				new ChangeButton(
 						new ItemSprite(
-								new Sai().image(),
+								new Quarterstaff().image(),
 								null
 						),
-						"Blocking Weapons",
-						"All weapons that grant armor now become more effective at it when upgraded.\n" +
-								"To compensate, Quarterstaff now blocks up to 2 damage at +0, rather than up to 3."
+						"Quarterstaff",
+						"Quarterstaff's block now scales by +0/+1! Base block is now 2, however."
+				),
+				new ChangeButton(
+						new ItemSprite( new Knuckles().image() ),
+						new Knuckles().trueName(),
+						"While no heroes now start with the knuckleduster now, that does not mean it is no longer in the game!\n" +
+								"_-_ Transmuting any tier-1 weapon (aside from Mage's Staff) will yield a Knuckleduster.\n" +
+								"_-_ Transmuting a Knuckleduster will yield a random non-Knuckleduster tier-1 weapon like normal.\n" +
+								"_-_ The Knuckleduster now blocks up to 1 point of damage!"
 				),
 				new ChangeButton(
 						new ItemSprite(
@@ -260,8 +286,46 @@ public class ChangesScene extends PixelScene {
 						"Elastic can easily be a run-ender if the hero doesn't have any " +
 								"alternatives to do damage.\nThis change should make these situations " +
 								"less unfair and run-ending:\n" +
-                                "_-_ Elastic weapons now deal 1/6 damage, instead of 0.\n\n" +
+								"_-_ Elastic weapons now deal 1/6 damage, instead of 0.\n\n" +
 								"With this, bosses should now be beatable with only an Elastic weapon (given enough time)"
+				)
+		);
+		title("Changes", false, CharSprite.WARNING).addButtons(
+				new ChangeButton(
+						new ItemSprite(ItemSpriteSheet.STONE_HOLDER),
+						"Stone generation changes",
+						"_-_ Runestone generation is now weighted based on its base scroll rarity and its alchemical scroll-stone ratio\n" +
+								"_-_ Stones of Augmentation and Enchantment can now drop as rare stones."
+				),
+				new ChangeButton(
+						Icons.get(Icons.PREFS),
+						"Misc Changes",
+						"_-_ There's now a post-halls tier generation table, so crypt rooms in " +
+								"floors 22-24 are even less likely to give low tier armor now.\n\n" +
+								"_-_ Challenges and Huntress are now enabled by default.\n" +
+								"_-_ Food, Arcane Styli, and Tomes of Mastery can now be quickslotted. (idea credit s0i)\n\n" +
+								"_-_ Cursed wands can now spawn Inferno and Blizzard\n\n" +
+								"_-_ Weapons that block damage now say how much damage they can block.\n" +
+								"_-_ Transmutation and Recycle now have a VFX effect!\n" +
+								"_-_ Some descriptions reworded."
+				),
+				new ChangeButton(
+						new Image(
+								Assets.SPINNER,
+								144,
+								0,
+								16,
+								16
+						),
+						"Bugfixes",
+						"_-_ Attacks by Stunning weapons potentially instantly breaking paralysis"
+				),
+				new ChangeButton(
+						Icons.get(Icons.LANGS),
+						"Removed Translations",
+						"The ability to play the game in other languages than English has been " +
+								"removed for the time being. This mod is not on transifex, and thus has no" +
+								"way to obtain new translations for any content changes."
 				)
 		);
 

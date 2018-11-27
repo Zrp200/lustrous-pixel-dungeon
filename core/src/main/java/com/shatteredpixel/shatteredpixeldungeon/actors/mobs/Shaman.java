@@ -28,7 +28,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Inferno;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
-import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile.*;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
@@ -128,7 +127,7 @@ public abstract class Shaman extends Mob implements Callback {
 			properties.add(Property.ELECTRIC);
 		}
 		protected void applyZap() {
-			int damage = Random.NormalIntRange(4, 12);
+			int damage = Random.NormalIntRange(5, 11);
 			if (Dungeon.level.water[enemy.pos] && !enemy.flying)
 				damage *= 1.5f;
 			enemy.sprite.centerEmitter().burst( SparkParticle.FACTORY, 3 );
@@ -144,7 +143,7 @@ public abstract class Shaman extends Mob implements Callback {
 		}
 		protected void applyZap() {
 			enemy.sprite.burst(0xFFFFFFFF,2);
-			applyZap(Random.NormalIntRange(3,10));
+			applyZap(Random.NormalIntRange(4,10));
 		}
 		public void onZapComplete() { // a temporary solution to what I want at the moment, hoping to get a bit more elegant later
 			if (!hit(this, enemy, false)) // if it won't hit without the magic boost
@@ -166,7 +165,7 @@ public abstract class Shaman extends Mob implements Callback {
         protected void applyZap() {
             enemy.sprite.centerEmitter().burst(FlameParticle.FACTORY, 3);
 			GameScene.add( Blob.seed( enemy.pos , 1, Fire.class ) );
-            applyZap( Random.NormalIntRange(3,9) );
+            applyZap( Random.NormalIntRange(6,12) );
 			Buff.affect( enemy, Burning.class ).reignite( enemy );
         }
     }
