@@ -98,7 +98,7 @@ public class Food extends Item {
 		switch (hero.heroClass) {
 			case WARRIOR:
 				if (hero.HP < hero.HT) {
-					hero.HP += hero.HT / 5; // 1/5 max hp, so 4+level basically.
+					hero.HP += hero.HT / 5;
 					if(hero.HP > hero.HT) hero.HP = hero.HT;
 					hero.sprite.emitter().burst( Speck.factory( Speck.HEALING ), 1 );
 				}

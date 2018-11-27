@@ -224,12 +224,6 @@ public class ChangesScene extends PixelScene {
 		);
 		title("Buffs", false, CharSprite.POSITIVE).addButtons(
 				new ChangeButton(
-						new Image(Assets.WARRIOR, 0, 15, 12, 15),
-						"Warrior",
-						"The Warrior now gains 1/5 of his max HP from eating rather than a flat 5. " +
-								"This should help his end-game quite a bit, especially in challenges."
-				),
-				new ChangeButton(
 						new Image(Assets.WARRIOR, 0, 90, 12, 15),
 						"Berserker",
 						"_-_ A recovering Berserker can now gain Rage up to the extent recovered\n" +

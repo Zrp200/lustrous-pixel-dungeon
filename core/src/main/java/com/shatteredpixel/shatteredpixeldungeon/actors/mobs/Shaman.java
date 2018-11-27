@@ -23,15 +23,19 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blizzard;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Freezing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Inferno;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFireblast;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFrost;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blazing;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -169,4 +173,19 @@ public abstract class Shaman extends Mob implements Callback {
 			Buff.affect( enemy, Burning.class ).reignite( enemy );
         }
     }
+    public static class Frost extends Shaman {
+		{
+			resistances.add(Chill.class);
+			resistances.add(Shaman.Frost.class);
+			resistances.add(WandOfFrost.class);
+			resistances.add(Blizzard.class);
+			resistances.add(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost.class);
+			resistances.add(Freezing.class);
+		}
+		protected void applyZap() {
+			enemy.sprite.burst( 0xFF99CCFF, 3 );
+			applyZap( Random.NormalIntRange(4,9));
+			Buff.prolong(enemy, Chill.class, Random.Float(5));
+		}
+	}
 }

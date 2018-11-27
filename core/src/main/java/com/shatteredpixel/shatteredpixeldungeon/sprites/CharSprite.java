@@ -81,7 +81,9 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 	public enum State {
 		BURNING, LEVITATING, INVISIBLE, PARALYSED, FROZEN, ILLUMINATED, CHILLED, DARKENED, MARKED, HEALING, SHIELDED
 	}
-	
+
+	protected String textureFile; //perhaps this can save a few lines in the future
+
 	protected Animation idle;
 	protected Animation run;
 	protected Animation attack;

@@ -30,12 +30,13 @@ import com.watabou.utils.Callback;
 
 public class ShamanSprite extends MobSprite {
 	protected int boltType;
-	public ShamanSprite(String texture) {
+
+	public ShamanSprite() {
 		super();
 
-		texture(texture);
+		texture(textureFile);
 
-		TextureFilm frames = new TextureFilm(texture, 12, 15);
+		TextureFilm frames = new TextureFilm(textureFile, 12, 15);
 
 		idle = new Animation(2, true);
 		idle.frames(frames, 0, 0, 0, 1, 0, 0, 1, 1);
@@ -59,7 +60,8 @@ public class ShamanSprite extends MobSprite {
 		play(zap);
 	}
 
-	public void zap(int pos, int boltType) {
+	public void zap(int pos) {
+		playZap(pos);
 		MagicMissile.boltFromChar(parent,
 				boltType,
 				this,
@@ -74,9 +76,7 @@ public class ShamanSprite extends MobSprite {
 	}
 
 	public static class Lightning extends ShamanSprite {
-		public Lightning() {
-			super(Assets.LSHAMAN);
-		}
+		{ textureFile = Assets.LSHAMAN; }
 
 		public void zap(int pos) {
 			parent.add(new com.shatteredpixel.shatteredpixeldungeon.effects.Lightning(ch.pos, pos, (Shaman) ch));
@@ -86,20 +86,21 @@ public class ShamanSprite extends MobSprite {
 	}
 
 	public static class Firebolt extends ShamanSprite {
-		public Firebolt() {
-			super(Assets.FIRESHAMAN);
-		}
+		{
+			textureFile = Assets.FIRESHAMAN;
+			boltType = MagicMissile.FIRE;
 
-		public void zap(int pos) {
-			playZap(pos);
-			zap(pos, MagicMissile.FIRE);
 		}
 	}
 	public static class MM extends ShamanSprite {
-		public MM() {super(Assets.SHAMAN);}
-		public void zap(int pos) {
-			playZap(pos);
-			zap(pos, MagicMissile.MAGIC_MISSILE);
+		{
+			textureFile = Assets.SHAMAN;
+			boltType = MagicMissile.MAGIC_MISSILE;
+		}
+	}
+	public static class Frost extends ShamanSprite {
+		{
+			boltType = MagicMissile.MAGIC_MISSILE;
 		}
 	}
 }
