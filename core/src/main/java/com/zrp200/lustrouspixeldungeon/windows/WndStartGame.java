@@ -195,11 +195,11 @@ public class WndStartGame extends Window {
 		public void update() {
 			super.update();
 			if (cl != GamesInProgress.selectedClass){
-				if (cl == HeroClass.HUNTRESS && !Badges.isUnlocked(Badges.Badge.BOSS_SLAIN_3)){
+			//	if (cl == HeroClass.HUNTRESS && !Badges.isUnlocked(Badges.Badge.BOSS_SLAIN_3)){
 			//		hero.brightness( 0f );
-				} else {
+			//	} else {
 					hero.brightness(0.6f);
-				}
+			//	}
 			} else {
 				hero.brightness(1f);
 			}
