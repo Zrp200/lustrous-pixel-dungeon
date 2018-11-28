@@ -31,7 +31,7 @@ import com.zrp200.lustrouspixeldungeon.effects.MagicMissile;
 public class ShamanSprite extends MobSprite {
 	protected int boltType;
 
-	public ShamanSprite() {
+	public ShamanSprite(String textureFile) {
 		super();
 
 		texture(textureFile);
@@ -78,6 +78,7 @@ public class ShamanSprite extends MobSprite {
 	public static class Lightning extends ShamanSprite {
 		{ textureFile = Assets.LSHAMAN; }
 
+		public Lightning() {super(Assets.LSHAMAN);}
 		public void zap(int pos) {
 			parent.add(new com.zrp200.lustrouspixeldungeon.effects.Lightning(ch.pos, pos, (Shaman) ch));
 			playZap(pos);
@@ -86,21 +87,21 @@ public class ShamanSprite extends MobSprite {
 	}
 
 	public static class Firebolt extends ShamanSprite {
-		{
-			textureFile = Assets.FIRESHAMAN;
+		public Firebolt(){
+			super(Assets.FIRESHAMAN);
 			boltType = MagicMissile.FIRE;
-
 		}
 	}
 	public static class MM extends ShamanSprite {
-		{
-			textureFile = Assets.SHAMAN;
+		public MM(){
+			super(Assets.SHAMAN);
 			boltType = MagicMissile.MAGIC_MISSILE;
 		}
 	}
 	public static class Frost extends ShamanSprite {
-		{
-			boltType = MagicMissile.MAGIC_MISSILE;
+		public Frost() {
+			super(Assets.SHAMAN_F);
+			boltType = MagicMissile.FROST;
 		}
 	}
 }

@@ -101,7 +101,7 @@ public class BuffIndicator extends Component {
 	private LinkedHashMap<Buff, BuffIcon> buffIcons = new LinkedHashMap<>();
 	private boolean needsRefresh;
 	private Char ch;
-	
+
 	public BuffIndicator( Char ch ) {
 		super();
 		
@@ -169,7 +169,7 @@ public class BuffIndicator extends Component {
 				buffIcons.remove( buff );
 			}
 		}
-		
+
 		//add new icons
 		for (Buff buff : newBuffs) {
 			if (!buffIcons.containsKey(buff)) {
@@ -178,7 +178,7 @@ public class BuffIndicator extends Component {
 				buffIcons.put( buff, icon );
 			}
 		}
-		
+
 		//layout
 		int pos = 0;
 		for (BuffIcon icon : buffIcons.values()){
@@ -202,7 +202,7 @@ public class BuffIndicator extends Component {
 			icon.frame( film.get( buff.icon() ) );
 			add( icon );
 		}
-		
+
 		public void updateIcon(){
 			icon.frame( film.get( buff.icon() ) );
 			buff.tintIcon(icon);
@@ -221,7 +221,7 @@ public class BuffIndicator extends Component {
 				GameScene.show(new WndInfoBuff(buff));
 		}
 	}
-	
+
 	public static void refreshHero() {
 		if (heroInstance != null) {
 			heroInstance.needsRefresh = true;

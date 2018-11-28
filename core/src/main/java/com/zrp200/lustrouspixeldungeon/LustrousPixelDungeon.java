@@ -51,7 +51,7 @@ public class LustrousPixelDungeon extends Game {
 	public static final int v0_7_0  = 303;
 
 
-	public static final int v0_0_0 = 1;
+	public static final int v0_0_0 = 400;
 	
 	public LustrousPixelDungeon() {
 		super(WelcomeScene.class);

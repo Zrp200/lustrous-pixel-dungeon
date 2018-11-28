@@ -333,7 +333,10 @@ public abstract class Char extends Actor {
 		}
 		Charm c = buff(Charm.class);
 		if (c != null){
-			c.recover();
+			if(src instanceof Actor) {
+				if( ((Actor) src).id() == c.object)
+					c.recover();
+			}
 		}
 		if (this.buff(Frost.class) != null){
 			Buff.detach( this, Frost.class );

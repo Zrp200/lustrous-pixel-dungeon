@@ -37,6 +37,7 @@ import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.armor.curses.Volatility;
 import com.zrp200.lustrouspixeldungeon.items.bombs.TeleportationBomb;
 import com.zrp200.lustrouspixeldungeon.items.rings.RingOfWealth;
+import com.zrp200.lustrouspixeldungeon.items.wands.WandOfFireblast;
 import com.zrp200.lustrouspixeldungeon.items.wands.WandOfTransfusion;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Elastic;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Knuckles;
@@ -105,38 +106,39 @@ public class ChangesScene extends PixelScene {
 
 		};
 		add(list);
-		addSection("Lustrous v0.0.0", true, Window.TITLE_COLOR);
+		addSection("v0.0.0", true, Window.TITLE_COLOR);
 		addSection("New Content", false, Window.TITLE_COLOR).addButtons(
 				new ChangeButton(
 						new Image(Assets.HUNTRESS, 0, 15, 12, 15),
 						"Huntress (Base)",
 
-						"I've always felt that the Huntress's potential was being wasted by the boomerang. " +
-								"By dumping into the Boomerang, the player wastes her ranged weapon durability boost, " +
-								"her 'x-ray vision' (for the most part), and her natural synergies with wands and the Whip " +
-								"(however the subclasses are also to blame for that). Because the Boomerang itself " +
-								"practically a melee weapon while simultaneously outclassing all other missile weapons, it's " +
-								"arguable that using it wastes the perk from which the Huntress benefits from excess " +
-								"strength when using missile weapons as well.\n" +
+						"The Huntress's potential is being wasted by the Boomerang. " +
+								"By dumping into the Boomerang, the player wastes the majority of her natural versatility, " +
+								"so much so that she is turned into a class that tends to have very repetitive gameplay.\n" +
 								"\nTo address this, I have made the following changes:\n\n" +
 								"_-_ Boomerang removed from the game.\n" +
 								"_-_ Huntress now starts with two Darts and a tier-1 Whip (a Cord) instead of a Knuckleduster.\n" +
-								"_	-_ The Darts illustrate her ability to benefit from having bonus strength when throwing missile weapons.\n" +
-								"_	-_ The Cord gives her semi-reliable range through sewers.\n" +
-								"_	-_ The Cord also illustrates her x-ray vision by allowing otherwise impossible attacks."
+						//		"    _-_ The Darts illustrate her ability to benefit from having bonus strength when throwing missile weapons.\n" +
+						//		"    _-_ The Cord gives her semi-reliable range throughout sewers.\n" +
+						//		"    _-_ The Cord also illustrates her x-ray vision by allowing otherwise impossible attacks.\n" +
+								"\n" +
+								"The idea is for the player to use the Huntress's natural perks, which naturally incentivize the player to adopt " +
+								"a ranged build, whether it be through missile weapons, wands, or weapons with reach. The bonus durability perk further " +
+								"makes missile weapons viable by causing them to last longer and thus have a more defined presence in a run."
 				),
 				new ChangeButton(
 						new Image(Assets.HUNTRESS, 0, 90, 12, 15),
 						"Huntress (Mastery)",
 						"Because the Huntress subclasses contributed so much to make this class" +
 								"one-dimensional, they have been removed for the time being.\n" +
-								"Instead," +
+								"Instead, " +
 								"the Huntress now has access to the _Freerunner_ and _Warlock_ subclasses!\n" +
-								"[challenge users rejoice now]\n\n" +
-								"I realize that this may feel wrong in the beginning, but I think that these " +
-								"subclasses will at the very least bring out more of the Huntress's natural versatility. " +
-								"I may yet reintroduce them at a later date, or simply dream up brand new " +
-								"subclasses for her."
+								"\n[challenge users rejoice now]\n\n" +
+								"These subclasses were chosen to further illustrate the contrast between her and the Warrior. " +
+								"I realize that this may feel wrong in the beginning, but I think that ultimately these " +
+								"subclasses will at the very least put on display the Huntress's natural versatility. " +
+								"I may yet reintroduce them at a later date if Evan impresses me with v0.7.1. Alternatively, " +
+								"I may simply dream up brand new subclasses for our ranged friend."
 				),
 				new ChangeButton(
 						new ShamanSprite.MM(),
@@ -150,17 +152,25 @@ public class ChangesScene extends PixelScene {
 				new ChangeButton(
 						new ShamanSprite.Lightning(),
 						"Lightning Shaman",
-						"_-_ 1/3 of all shamans\n" +
+						"_-_ 1/4 of all shamans\n" +
 								"_-_ zaps now do 5-11 right off the bat to compensate for new rarity."
 				),
 				new ChangeButton(
 						new ShamanSprite.Firebolt(),
 						"Firebolt Shaman",
-						"_-_ 1/6 of all shamans\n" +
+						"_-_ 1/8 of all shamans\n" +
 								"_-_ bolts do 6-12 damage and inflict burning\n" +
 								"_-_ bolts will ignite the tile they are targeted at whether or not they hit their target\n" +
-								"_-_ Firebolt Shamans resist fire-based attacks and effects." +
+								"_-_ Firebolt Shamans resist fire-based attacks and effects.\n" +
 								"_-_ You probably shouldn't be letting these shoot at you."
+				),
+				new ChangeButton(
+						new ShamanSprite.Frost(),
+						"Frost Shaman",
+						"_-_ 1/8 of all shamans\n" +
+								"_-_ bolts do 4-12 damage and inflict 1-5 turns of chilling\n" +
+								"_-_ They resist appropriate sources.\n" +
+								"_-_ Bolts will freeze items if they happen to land on them."
 				),
 				new ChangeButton(
 						new ItemSprite(
@@ -219,7 +229,8 @@ public class ChangesScene extends PixelScene {
 								null
 						),
 						"Quarterstaff",
-						"Quarterstaff's block now scales by +0/+1! Base block is now 2, however."
+						"_-_ Quarterstaff's block now scales by +0/+1\n" +
+								"_-_ Base block reduced by 33% (3 -- > 2)"
 				),
 				new ChangeButton(
 						new ItemSprite( new Knuckles().image() ),
@@ -232,8 +243,25 @@ public class ChangesScene extends PixelScene {
 				new ChangeButton(
 				        new ItemSprite( new WandOfTransfusion().image() ),
                         "Wand of Transfusion",
-                        "_-_ Charm now scales by 2 (was 1)"
+                        "_-_ Charm now scales by 2 (was 1)\n" +
+								"_-_ Staff effect base proc rate boosted by 25% (1/10 --> 1/8)"
                 ),
+				new ChangeButton(
+						new ItemSprite( new WandOfFireblast().image() ),
+						"Wand of Fireblast",
+						"_-_ When consuming 3 charges at once, now applies both paralysis and cripple"
+				),
+				new ChangeButton(
+						new Image(
+								Assets.BUFFS_LARGE,
+								80,
+								16,
+								16,
+								16
+						),
+						"Charm",
+						"Charm now only recovers if hit by whoever applied it (I think)"
+				),
 				new ChangeButton(
 						new ItemSprite(
 								ItemSpriteSheet.SHORTSWORD,

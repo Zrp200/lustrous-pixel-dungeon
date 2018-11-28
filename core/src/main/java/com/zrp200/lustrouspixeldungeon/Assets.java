@@ -67,6 +67,7 @@ public class Assets {
 	public static final String SHAMAN	= "shaman.png";
 	public static final String FIRESHAMAN = "shaman-fire.png";
 	public static final String LSHAMAN  = "shaman-l.png";
+	public static final String SHAMAN_F = "frost-shaman.png";
 	public static final String THIEF	= "thief.png";
 	public static final String TENGU	= "tengu.png";
 	public static final String SHEEP	= "sheep.png";

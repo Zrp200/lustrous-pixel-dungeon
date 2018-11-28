@@ -37,6 +37,7 @@ import com.zrp200.lustrouspixeldungeon.actors.buffs.Chill;
 import com.zrp200.lustrouspixeldungeon.effects.particles.FlameParticle;
 import com.zrp200.lustrouspixeldungeon.effects.particles.SparkParticle;
 import com.zrp200.lustrouspixeldungeon.items.Generator;
+import com.zrp200.lustrouspixeldungeon.items.Heap;
 import com.zrp200.lustrouspixeldungeon.items.wands.WandOfFireblast;
 import com.zrp200.lustrouspixeldungeon.items.wands.WandOfFrost;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Blazing;
@@ -50,8 +51,10 @@ import com.zrp200.lustrouspixeldungeon.utils.GLog;
 public abstract class Shaman extends Mob implements Callback {
 	public static Class<?extends Mob> random() {
 		if(Random.Int(2) == 0) return Shaman.MagicMissile.class;
-		if(Random.Int(3) == 0) return Shaman.Firebolt.class;
-		else return Shaman.Lightning.class;
+		if(Random.Int(2) == 0) return Shaman.Lightning.class;
+		return Random.Int(2) == 0
+				? Shaman.Firebolt.class
+				: Shaman.Frost.class;
 	}
 	private static final float TIME_TO_ZAP = 1f;
 	{
@@ -175,6 +178,8 @@ public abstract class Shaman extends Mob implements Callback {
     }
     public static class Frost extends Shaman {
 		{
+			spriteClass = ShamanSprite.Frost.class;
+
 			resistances.add(Chill.class);
 			resistances.add(Shaman.Frost.class);
 			resistances.add(WandOfFrost.class);
@@ -184,8 +189,10 @@ public abstract class Shaman extends Mob implements Callback {
 		}
 		protected void applyZap() {
 			enemy.sprite.burst( 0xFF99CCFF, 3 );
-			applyZap( Random.NormalIntRange(4,9));
-			Buff.prolong(enemy, Chill.class, Random.Float(5));
+			applyZap( Random.NormalIntRange(4,8));
+			Buff.prolong( enemy, Chill.class, Random.Float(1,5) );
+			Heap heap = Dungeon.level.heaps.get(enemy.pos);
+			if(heap != null) heap.freeze();
 		}
 	}
 }

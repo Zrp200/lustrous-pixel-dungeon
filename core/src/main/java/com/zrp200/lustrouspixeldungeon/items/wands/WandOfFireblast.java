@@ -93,10 +93,10 @@ public class WandOfFireblast extends DamageWand {
 				switch(chargesPerCast()){
 					case 1:
 						break; //no effects
-					case 2:
-						Buff.affect(ch, Cripple.class, 4f); break;
 					case 3:
 						Buff.affect(ch, Paralysis.class, 4f); break;
+					case 2:
+						Buff.affect(ch, Cripple.class, 4f); break;
 				}
 			}
 		}
