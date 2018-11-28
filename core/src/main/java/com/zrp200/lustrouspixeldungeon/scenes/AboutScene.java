@@ -30,6 +30,7 @@ import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.RenderedText;
 import com.watabou.noosa.TouchArea;
+import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.LustSettings;
 import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
 import com.zrp200.lustrouspixeldungeon.effects.Flare;
@@ -69,17 +70,23 @@ public class AboutScene extends PixelScene {
 		final float colTop = (Camera.main.height / 2) - (LustSettings.landscape() ? 30 : 100);
 		final float wataOffset = LustSettings.landscape() ? colWidth : 0;
 
+		Image palkia = new Image(Assets.PALKIA);
+		palkia.x = (colWidth - palkia.width()) / 2;
+		palkia.y = colTop;
+		align(palkia);
+		add( palkia );
+
 		RenderedText lustTitle = renderText( TITLE_LPD, 8);
 		add(lustTitle);
 		lustTitle.x = (colWidth - lustTitle.width()) / 2;
-		lustTitle.y = colTop;
+		lustTitle.y = palkia.y + palkia.height + 5;
 		align(lustTitle);
 
 		RenderedTextMultiline lust = renderMultiline( TXT_LPD, 8 );
 		lust.maxWidth((int)Math.min(colWidth, 120));
 		add( lust );
 
-		lust.setPos((colWidth - lust.width()) / 2, lustTitle.y + lustTitle.height() + 12);
+		lust.setPos((colWidth - lust.width()) / 2, lustTitle.y + lustTitle.height() + 10);
 		align(lust);
 
 
@@ -87,7 +94,7 @@ public class AboutScene extends PixelScene {
 		shpx.x = (colWidth - shpx.width()) / 2;
 		shpx.y = LustSettings.landscape() ?
 				colTop:
-				lust.top() + lust.height() + 20;
+				lust.top() + lust.height() + 15;
 		align(shpx);
 		add( shpx );
 
@@ -95,54 +102,48 @@ public class AboutScene extends PixelScene {
 
 		RenderedText shpxtitle = renderText( TTL_SHPX, 8 );
 		shpxtitle.hardlight( Window.SHPX_COLOR );
+		align(shpxtitle);
 		add( shpxtitle );
 
 		shpxtitle.x = (colWidth - shpxtitle.width()) / 2;
 		shpxtitle.y = shpx.y + shpx.height + 5;
 		align(shpxtitle);
 
-		RenderedTextMultiline shpxtext = renderMultiline( TXT_SHPX, 8 );
-		shpxtext.maxWidth((int)Math.min(colWidth, 120));
-		add( shpxtext );
-
-		shpxtext.setPos((colWidth - shpxtext.width()) / 2, shpxtitle.y + shpxtitle.height() + 12);
-		align(shpxtext);
-
-		RenderedTextMultiline shpxlink = renderMultiline( LNK_SHPX, 8 );
-		shpxlink.maxWidth(shpxtext.maxWidth());
-		shpxlink.hardlight( Window.SHPX_COLOR );
-		add( shpxlink );
-
-		shpxlink.setPos((colWidth - shpxlink.width()) / 2, shpxtext.bottom() + 6);
-		align(shpxlink);
-
-		TouchArea shpxhotArea = new TouchArea( shpxlink.left(), shpxlink.top(), shpxlink.width(), shpxlink.height() ) {
+		TouchArea shpxhotArea = new TouchArea( shpxtitle.x, shpxtitle.y, shpxtitle.width(), shpxtitle.height() ) {
 			@Override
 			protected void onClick( Touch touch ) {
 				Intent intent = new Intent( Intent.ACTION_VIEW, Uri.parse( "http://" + LNK_SHPX ) );
 				Game.instance.startActivity( intent );
 			}
 		};
-		add( shpxhotArea );
+		add(shpxhotArea);
+
+		RenderedTextMultiline shpxtext = renderMultiline( TXT_SHPX, 8 );
+		shpxtext.maxWidth((int)Math.min(colWidth, 120));
+		add( shpxtext );
+
+		shpxtext.setPos((colWidth - shpxtext.width()) / 2, shpxtitle.y + shpxtitle.height() + 10);
+		align(shpxtext);
 
 		Image wata = Icons.WATA.get();
 		wata.x = wataOffset + (colWidth - wata.width()) / 2;
 		wata.y = LustSettings.landscape() ?
 						colTop:
-						shpxlink.top() + wata.height + 15;
+						shpxtext.top() + wata.height + 15;
 		align(wata);
 		add( wata );
 
 		new Flare( 7, 64 ).color( 0x112233, true ).show( wata, 0 ).angularSpeed = +20;
 
-		RenderedTextMultiline wataTitle = renderMultiline( TTL_WATA, 8 );
+		RenderedText wataTitle = renderText( TTL_WATA, 8 );
 		wataTitle.hardlight(Window.TITLE_COLOR);
 		add( wataTitle );
 
-		wataTitle.setPos((colWidth - wataTitle.width()) / 3,wata.y + wata.height() + 11);
+		wataTitle.x = (colWidth - wataTitle.width()) / 2;
+		wataTitle.y = wata.y + wata.height() + 10;
 		align(wataTitle);
 
-		TouchArea hotArea = new TouchArea( wataTitle.left(), wataTitle.top(), wataTitle.width(), wataTitle.height() ) {
+		TouchArea hotArea = new TouchArea( wataTitle.x, wataTitle.y, wataTitle.width(), wataTitle.height() ) {
 			@Override
 			protected void onClick( Touch touch ) {
 				Intent intent = new Intent( Intent.ACTION_VIEW, Uri.parse( "http://" + LNK_WATA ) );
@@ -155,7 +156,7 @@ public class AboutScene extends PixelScene {
 		wataText.maxWidth((int)Math.min(colWidth, 120));
 		add( wataText );
 
-		wataText.setPos(wataOffset + (colWidth - wataText.width()) / 2, wataTitle.top() + wataTitle.height() + 12);
+		wataText.setPos(wataOffset + (colWidth - wataText.width()) / 2, wataTitle.y + wataTitle.height() + 10);
 		align(wataText);
 		
 		Archs archs = new Archs();
