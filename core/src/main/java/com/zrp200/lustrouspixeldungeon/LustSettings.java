@@ -29,8 +29,6 @@ import com.watabou.utils.GameSettings;
 import com.zrp200.lustrouspixeldungeon.messages.Languages;
 import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
 
-import java.util.Locale;
-
 public class LustSettings extends GameSettings {
 	
 	//Version info
@@ -238,12 +236,13 @@ public class LustSettings extends GameSettings {
 	}
 	
 	public static Languages language() {
-		String code = getString(KEY_LANG, null);
-		if (code == null){
-			return Languages.matchLocale(Locale.getDefault());
-		} else {
-			return Languages.matchCode(code);
-		}
+		return Languages.ENGLISH;
+		//String code = getString(KEY_LANG, null);
+		//if (code == null){
+		//	return Languages.matchLocale(Locale.getDefault());
+		//} else {
+		//	return Languages.matchCode(code);
+		//}
 	}
 	
 	public static void systemFont(boolean value){
