@@ -19,36 +19,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon.items.food;
+package com.zrp200.lustrouspixeldungeon.items.food;
 
-import com.shatteredpixel.shatteredpixeldungeon.Challenges;
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.Recipe;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfFrost;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHaste;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfInvisibility;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLevitation;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfMindVision;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfParalyticGas;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfToxicGas;
-import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
-import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.plants.Plant.Seed;
-import com.shatteredpixel.shatteredpixeldungeon.plants.Sungrass;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Bundle;
+import com.zrp200.lustrouspixeldungeon.Challenges;
+import com.zrp200.lustrouspixeldungeon.Dungeon;
+import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.Hunger;
+import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
+import com.zrp200.lustrouspixeldungeon.items.Item;
+import com.zrp200.lustrouspixeldungeon.items.Recipe;
+import com.zrp200.lustrouspixeldungeon.items.potions.Potion;
+import com.zrp200.lustrouspixeldungeon.items.potions.PotionOfExperience;
+import com.zrp200.lustrouspixeldungeon.items.potions.PotionOfFrost;
+import com.zrp200.lustrouspixeldungeon.items.potions.PotionOfHaste;
+import com.zrp200.lustrouspixeldungeon.items.potions.PotionOfHealing;
+import com.zrp200.lustrouspixeldungeon.items.potions.PotionOfInvisibility;
+import com.zrp200.lustrouspixeldungeon.items.potions.PotionOfLevitation;
+import com.zrp200.lustrouspixeldungeon.items.potions.PotionOfLiquidFlame;
+import com.zrp200.lustrouspixeldungeon.items.potions.PotionOfMindVision;
+import com.zrp200.lustrouspixeldungeon.items.potions.PotionOfParalyticGas;
+import com.zrp200.lustrouspixeldungeon.items.potions.PotionOfPurity;
+import com.zrp200.lustrouspixeldungeon.items.potions.PotionOfStrength;
+import com.zrp200.lustrouspixeldungeon.items.potions.PotionOfToxicGas;
+import com.zrp200.lustrouspixeldungeon.levels.Terrain;
+import com.zrp200.lustrouspixeldungeon.messages.Messages;
+import com.zrp200.lustrouspixeldungeon.plants.Plant.Seed;
+import com.zrp200.lustrouspixeldungeon.plants.Sungrass;
+import com.zrp200.lustrouspixeldungeon.sprites.ItemSprite;
+import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
+import com.zrp200.lustrouspixeldungeon.utils.GLog;
 
 import java.util.ArrayList;
 
@@ -126,7 +126,7 @@ public class Blandfruit extends Food {
 		try {
 			return imbuePotion(Potion.SeedToPotion.types.get(seed.getClass()).newInstance());
 		} catch (Exception e) {
-			ShatteredPixelDungeon.reportException(e);
+			LustrousPixelDungeon.reportException(e);
 			return null;
 		}
 

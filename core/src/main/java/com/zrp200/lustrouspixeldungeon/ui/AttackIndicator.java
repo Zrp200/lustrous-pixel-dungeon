@@ -19,16 +19,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon.ui;
+package com.zrp200.lustrouspixeldungeon.ui;
 
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.watabou.noosa.Game;
 import com.watabou.utils.Random;
+import com.zrp200.lustrouspixeldungeon.Dungeon;
+import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
+import com.zrp200.lustrouspixeldungeon.actors.Char;
+import com.zrp200.lustrouspixeldungeon.actors.mobs.Mob;
+import com.zrp200.lustrouspixeldungeon.scenes.PixelScene;
+import com.zrp200.lustrouspixeldungeon.sprites.CharSprite;
 
 import java.util.ArrayList;
 
@@ -146,7 +146,7 @@ public class AttackIndicator extends Tag {
 			PixelScene.align(sprite);
 			
 		} catch (Exception e) {
-			ShatteredPixelDungeon.reportException(e);
+			LustrousPixelDungeon.reportException(e);
 		}
 	}
 	

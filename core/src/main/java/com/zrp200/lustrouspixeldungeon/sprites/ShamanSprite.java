@@ -19,14 +19,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon.sprites;
+package com.zrp200.lustrouspixeldungeon.sprites;
 
-import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Shaman;
-import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Callback;
+import com.zrp200.lustrouspixeldungeon.Assets;
+import com.zrp200.lustrouspixeldungeon.actors.mobs.Shaman;
+import com.zrp200.lustrouspixeldungeon.effects.MagicMissile;
 
 public class ShamanSprite extends MobSprite {
 	protected int boltType;
@@ -79,7 +79,7 @@ public class ShamanSprite extends MobSprite {
 		{ textureFile = Assets.LSHAMAN; }
 
 		public void zap(int pos) {
-			parent.add(new com.shatteredpixel.shatteredpixeldungeon.effects.Lightning(ch.pos, pos, (Shaman) ch));
+			parent.add(new com.zrp200.lustrouspixeldungeon.effects.Lightning(ch.pos, pos, (Shaman) ch));
 			playZap(pos);
 			((Shaman) ch).onZapComplete();
 		}

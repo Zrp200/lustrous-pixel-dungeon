@@ -19,13 +19,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon.windows;
+package com.zrp200.lustrouspixeldungeon.windows;
 
-import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
-import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
-import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextMultiline;
-import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.zrp200.lustrouspixeldungeon.LustSettings;
+import com.zrp200.lustrouspixeldungeon.scenes.PixelScene;
+import com.zrp200.lustrouspixeldungeon.ui.RedButton;
+import com.zrp200.lustrouspixeldungeon.ui.RenderedTextMultiline;
+import com.zrp200.lustrouspixeldungeon.ui.Window;
 
 public class WndOptions extends Window {
 
@@ -38,7 +38,7 @@ public class WndOptions extends Window {
 	public WndOptions( String title, String message, String... options ) {
 		super();
 
-		int width = SPDSettings.landscape() ? WIDTH_L : WIDTH_P;
+		int width = LustSettings.landscape() ? WIDTH_L : WIDTH_P;
 
 		RenderedTextMultiline tfTitle = PixelScene.renderMultiline( title, 9 );
 		tfTitle.hardlight( TITLE_COLOR );

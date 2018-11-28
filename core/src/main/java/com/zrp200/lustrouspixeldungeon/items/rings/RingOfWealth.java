@@ -19,35 +19,41 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon.items.rings;
+package com.zrp200.lustrouspixeldungeon.items.rings;
 
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
-import com.shatteredpixel.shatteredpixeldungeon.items.Dewdrop;
-import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
-import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
-import com.shatteredpixel.shatteredpixeldungeon.items.Honeypot;
-import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
-import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
-import com.shatteredpixel.shatteredpixeldungeon.items.food.*;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation;
-import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfEnchantment;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.*;
-import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
 import com.watabou.utils.Random;
+import com.zrp200.lustrouspixeldungeon.Dungeon;
+import com.zrp200.lustrouspixeldungeon.actors.Char;
+import com.zrp200.lustrouspixeldungeon.items.Ankh;
+import com.zrp200.lustrouspixeldungeon.items.Dewdrop;
+import com.zrp200.lustrouspixeldungeon.items.Generator;
+import com.zrp200.lustrouspixeldungeon.items.Gold;
+import com.zrp200.lustrouspixeldungeon.items.Honeypot;
+import com.zrp200.lustrouspixeldungeon.items.Item;
+import com.zrp200.lustrouspixeldungeon.items.armor.Armor;
+import com.zrp200.lustrouspixeldungeon.items.artifacts.Artifact;
+import com.zrp200.lustrouspixeldungeon.items.bombs.Bomb;
+import com.zrp200.lustrouspixeldungeon.items.food.Blandfruit;
+import com.zrp200.lustrouspixeldungeon.items.food.ChargrilledMeat;
+import com.zrp200.lustrouspixeldungeon.items.food.Food;
+import com.zrp200.lustrouspixeldungeon.items.food.FrozenCarpaccio;
+import com.zrp200.lustrouspixeldungeon.items.food.MeatPie;
+import com.zrp200.lustrouspixeldungeon.items.food.MysteryMeat;
+import com.zrp200.lustrouspixeldungeon.items.food.Pasty;
+import com.zrp200.lustrouspixeldungeon.items.food.SmallRation;
+import com.zrp200.lustrouspixeldungeon.items.potions.Potion;
+import com.zrp200.lustrouspixeldungeon.items.scrolls.Scroll;
+import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfTransmutation;
+import com.zrp200.lustrouspixeldungeon.items.stones.StoneOfEnchantment;
+import com.zrp200.lustrouspixeldungeon.items.weapon.melee.MeleeWeapon;
+import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.MissileWeapon;
+import com.zrp200.lustrouspixeldungeon.plants.Plant;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.NO_FOOD;
-import static com.shatteredpixel.shatteredpixeldungeon.Challenges.NO_HERBALISM;
+import static com.zrp200.lustrouspixeldungeon.Challenges.NO_FOOD;
+import static com.zrp200.lustrouspixeldungeon.Challenges.NO_HERBALISM;
 
 public class RingOfWealth extends Ring {
 	

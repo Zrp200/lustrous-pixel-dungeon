@@ -19,23 +19,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon.levels;
+package com.zrp200.lustrouspixeldungeon.levels;
 
-import com.shatteredpixel.shatteredpixeldungeon.Bones;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Goo;
-import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
-import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.levels.builders.Builder;
-import com.shatteredpixel.shatteredpixeldungeon.levels.builders.LoopBuilder;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.RatKingRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.EmptyRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.SewerBossEntranceRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.StandardRoom;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
+import com.zrp200.lustrouspixeldungeon.Bones;
+import com.zrp200.lustrouspixeldungeon.actors.Actor;
+import com.zrp200.lustrouspixeldungeon.actors.mobs.Goo;
+import com.zrp200.lustrouspixeldungeon.items.Heap;
+import com.zrp200.lustrouspixeldungeon.items.Item;
+import com.zrp200.lustrouspixeldungeon.levels.builders.Builder;
+import com.zrp200.lustrouspixeldungeon.levels.builders.LoopBuilder;
+import com.zrp200.lustrouspixeldungeon.levels.rooms.Room;
+import com.zrp200.lustrouspixeldungeon.levels.rooms.secret.RatKingRoom;
+import com.zrp200.lustrouspixeldungeon.levels.rooms.standard.EmptyRoom;
+import com.zrp200.lustrouspixeldungeon.levels.rooms.standard.SewerBossEntranceRoom;
+import com.zrp200.lustrouspixeldungeon.levels.rooms.standard.StandardRoom;
+import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
 
 import java.util.ArrayList;
 

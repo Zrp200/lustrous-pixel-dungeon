@@ -19,35 +19,35 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon.actors.hero;
+package com.zrp200.lustrouspixeldungeon.actors.hero;
 
-import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Badges;
-import com.shatteredpixel.shatteredpixeldungeon.Challenges;
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
-import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
-import com.shatteredpixel.shatteredpixeldungeon.items.bags.PotionBandolier;
-import com.shatteredpixel.shatteredpixeldungeon.items.bags.ScrollHolder;
-import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
-import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
-import com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfMindVision;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Cord;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingStone;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
-import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.watabou.utils.Bundle;
+import com.zrp200.lustrouspixeldungeon.Assets;
+import com.zrp200.lustrouspixeldungeon.Badges;
+import com.zrp200.lustrouspixeldungeon.Challenges;
+import com.zrp200.lustrouspixeldungeon.Dungeon;
+import com.zrp200.lustrouspixeldungeon.items.BrokenSeal;
+import com.zrp200.lustrouspixeldungeon.items.Item;
+import com.zrp200.lustrouspixeldungeon.items.armor.ClothArmor;
+import com.zrp200.lustrouspixeldungeon.items.artifacts.CloakOfShadows;
+import com.zrp200.lustrouspixeldungeon.items.bags.PotionBandolier;
+import com.zrp200.lustrouspixeldungeon.items.bags.ScrollHolder;
+import com.zrp200.lustrouspixeldungeon.items.bags.VelvetPouch;
+import com.zrp200.lustrouspixeldungeon.items.food.Food;
+import com.zrp200.lustrouspixeldungeon.items.food.SmallRation;
+import com.zrp200.lustrouspixeldungeon.items.potions.PotionOfHealing;
+import com.zrp200.lustrouspixeldungeon.items.potions.PotionOfMindVision;
+import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfMagicMapping;
+import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfUpgrade;
+import com.zrp200.lustrouspixeldungeon.items.wands.WandOfMagicMissile;
+import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Cord;
+import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Dagger;
+import com.zrp200.lustrouspixeldungeon.items.weapon.melee.MagesStaff;
+import com.zrp200.lustrouspixeldungeon.items.weapon.melee.WornShortsword;
+import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.ThrowingKnife;
+import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.ThrowingStone;
+import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.darts.Dart;
+import com.zrp200.lustrouspixeldungeon.messages.Messages;
 
 public enum HeroClass {
 

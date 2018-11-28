@@ -19,9 +19,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon.items.keys;
+package com.zrp200.lustrouspixeldungeon.items.keys;
 
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
 
 public class CrystalKey extends Key {
 	

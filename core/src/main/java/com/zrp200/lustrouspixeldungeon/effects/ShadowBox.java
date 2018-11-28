@@ -19,11 +19,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon.effects;
+package com.zrp200.lustrouspixeldungeon.effects;
 
-import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.watabou.gltextures.SmartTexture;
 import com.watabou.noosa.NinePatch;
+import com.zrp200.lustrouspixeldungeon.Assets;
 
 public class ShadowBox extends NinePatch {
 

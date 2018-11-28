@@ -19,12 +19,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon.utils;
+package com.zrp200.lustrouspixeldungeon.utils;
 
 import android.util.Log;
 
-import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.watabou.utils.Signal;
+import com.zrp200.lustrouspixeldungeon.messages.Messages;
 
 public class GLog {
 

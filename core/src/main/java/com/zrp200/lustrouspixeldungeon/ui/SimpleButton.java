@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon.ui;
+package com.zrp200.lustrouspixeldungeon.ui;
 
 import com.watabou.input.Touchscreen.Touch;
 import com.watabou.noosa.Image;

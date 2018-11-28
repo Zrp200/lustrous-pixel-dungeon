@@ -19,12 +19,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon.levels.builders;
+package com.zrp200.lustrouspixeldungeon.levels.builders;
 
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.connection.ConnectionRoom;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
+import com.zrp200.lustrouspixeldungeon.levels.rooms.Room;
+import com.zrp200.lustrouspixeldungeon.levels.rooms.connection.ConnectionRoom;
 
 import java.util.ArrayList;
 

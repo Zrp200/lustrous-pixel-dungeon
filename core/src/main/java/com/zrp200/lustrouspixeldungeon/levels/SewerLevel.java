@@ -19,28 +19,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon.levels;
+package com.zrp200.lustrouspixeldungeon.levels;
 
-import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Ripple;
-import com.shatteredpixel.shatteredpixeldungeon.items.DewVial;
-import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
-import com.shatteredpixel.shatteredpixeldungeon.levels.painters.SewerPainter;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.AlarmTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ChillingTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ConfusionTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.FlockTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.OozeTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ShockingTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.SummoningTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.TeleportationTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ToxicTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WornDartTrap;
-import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.particles.Emitter;
@@ -48,6 +28,26 @@ import com.watabou.noosa.particles.PixelParticle;
 import com.watabou.utils.ColorMath;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
+import com.zrp200.lustrouspixeldungeon.Assets;
+import com.zrp200.lustrouspixeldungeon.Dungeon;
+import com.zrp200.lustrouspixeldungeon.actors.mobs.npcs.Ghost;
+import com.zrp200.lustrouspixeldungeon.effects.Ripple;
+import com.zrp200.lustrouspixeldungeon.items.DewVial;
+import com.zrp200.lustrouspixeldungeon.levels.painters.Painter;
+import com.zrp200.lustrouspixeldungeon.levels.painters.SewerPainter;
+import com.zrp200.lustrouspixeldungeon.levels.traps.AlarmTrap;
+import com.zrp200.lustrouspixeldungeon.levels.traps.ChillingTrap;
+import com.zrp200.lustrouspixeldungeon.levels.traps.ConfusionTrap;
+import com.zrp200.lustrouspixeldungeon.levels.traps.FlockTrap;
+import com.zrp200.lustrouspixeldungeon.levels.traps.OozeTrap;
+import com.zrp200.lustrouspixeldungeon.levels.traps.ShockingTrap;
+import com.zrp200.lustrouspixeldungeon.levels.traps.SummoningTrap;
+import com.zrp200.lustrouspixeldungeon.levels.traps.TeleportationTrap;
+import com.zrp200.lustrouspixeldungeon.levels.traps.ToxicTrap;
+import com.zrp200.lustrouspixeldungeon.levels.traps.WornDartTrap;
+import com.zrp200.lustrouspixeldungeon.messages.Messages;
+import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
+import com.zrp200.lustrouspixeldungeon.tiles.DungeonTilemap;
 
 public class SewerLevel extends RegularLevel {
 

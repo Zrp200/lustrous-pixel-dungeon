@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon.items.rings;
+package com.zrp200.lustrouspixeldungeon.items.rings;
 
 public class RingOfEnergy extends Ring {
 	

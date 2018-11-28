@@ -19,80 +19,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon.scenes;
+package com.zrp200.lustrouspixeldungeon.scenes;
 
-import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Badges;
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
-import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
-import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.effects.BannerSprites;
-import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
-import com.shatteredpixel.shatteredpixeldungeon.effects.EmoIcon;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
-import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Ripple;
-import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
-import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
-import com.shatteredpixel.shatteredpixeldungeon.items.Honeypot;
-import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
-import com.shatteredpixel.shatteredpixeldungeon.items.bags.PotionBandolier;
-import com.shatteredpixel.shatteredpixeldungeon.items.bags.ScrollHolder;
-import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
-import com.shatteredpixel.shatteredpixeldungeon.journal.Journal;
-import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
-import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.DiscardedItemSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
-import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTiledVisual;
-import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTerrainTilemap;
-import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTileSheet;
-import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
-import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonWallsTilemap;
-import com.shatteredpixel.shatteredpixeldungeon.tiles.FogOfWar;
-import com.shatteredpixel.shatteredpixeldungeon.tiles.GridTileMap;
-import com.shatteredpixel.shatteredpixeldungeon.tiles.RaisedTerrainTilemap;
-import com.shatteredpixel.shatteredpixeldungeon.tiles.TerrainFeaturesTilemap;
-import com.shatteredpixel.shatteredpixeldungeon.tiles.WallBlockingTilemap;
-import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
-import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
-import com.shatteredpixel.shatteredpixeldungeon.ui.Banner;
-import com.shatteredpixel.shatteredpixeldungeon.ui.BusyIndicator;
-import com.shatteredpixel.shatteredpixeldungeon.ui.CharHealthIndicator;
-import com.shatteredpixel.shatteredpixeldungeon.ui.GameLog;
-import com.shatteredpixel.shatteredpixeldungeon.ui.LootIndicator;
-import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
-import com.shatteredpixel.shatteredpixeldungeon.ui.ResumeIndicator;
-import com.shatteredpixel.shatteredpixeldungeon.ui.StatusPane;
-import com.shatteredpixel.shatteredpixeldungeon.ui.TargetHealthIndicator;
-import com.shatteredpixel.shatteredpixeldungeon.ui.Toast;
-import com.shatteredpixel.shatteredpixeldungeon.ui.Toolbar;
-import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndBag;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndBag.Mode;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndGame;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndHero;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndInfoCell;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndInfoItem;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndInfoMob;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndInfoPlant;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndInfoTrap;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndStory;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndTradeItem;
 import com.watabou.glwrap.Blending;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
@@ -106,6 +34,78 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.GameMath;
 import com.watabou.utils.Random;
+import com.zrp200.lustrouspixeldungeon.Assets;
+import com.zrp200.lustrouspixeldungeon.Badges;
+import com.zrp200.lustrouspixeldungeon.Dungeon;
+import com.zrp200.lustrouspixeldungeon.LustSettings;
+import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
+import com.zrp200.lustrouspixeldungeon.Statistics;
+import com.zrp200.lustrouspixeldungeon.actors.Actor;
+import com.zrp200.lustrouspixeldungeon.actors.blobs.Blob;
+import com.zrp200.lustrouspixeldungeon.actors.mobs.Mob;
+import com.zrp200.lustrouspixeldungeon.effects.BannerSprites;
+import com.zrp200.lustrouspixeldungeon.effects.BlobEmitter;
+import com.zrp200.lustrouspixeldungeon.effects.EmoIcon;
+import com.zrp200.lustrouspixeldungeon.effects.Flare;
+import com.zrp200.lustrouspixeldungeon.effects.FloatingText;
+import com.zrp200.lustrouspixeldungeon.effects.Ripple;
+import com.zrp200.lustrouspixeldungeon.effects.SpellSprite;
+import com.zrp200.lustrouspixeldungeon.items.Heap;
+import com.zrp200.lustrouspixeldungeon.items.Honeypot;
+import com.zrp200.lustrouspixeldungeon.items.Item;
+import com.zrp200.lustrouspixeldungeon.items.bags.MagicalHolster;
+import com.zrp200.lustrouspixeldungeon.items.bags.PotionBandolier;
+import com.zrp200.lustrouspixeldungeon.items.bags.ScrollHolder;
+import com.zrp200.lustrouspixeldungeon.items.bags.VelvetPouch;
+import com.zrp200.lustrouspixeldungeon.items.potions.Potion;
+import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.zrp200.lustrouspixeldungeon.journal.Journal;
+import com.zrp200.lustrouspixeldungeon.levels.RegularLevel;
+import com.zrp200.lustrouspixeldungeon.levels.traps.Trap;
+import com.zrp200.lustrouspixeldungeon.messages.Messages;
+import com.zrp200.lustrouspixeldungeon.plants.Plant;
+import com.zrp200.lustrouspixeldungeon.sprites.CharSprite;
+import com.zrp200.lustrouspixeldungeon.sprites.DiscardedItemSprite;
+import com.zrp200.lustrouspixeldungeon.sprites.HeroSprite;
+import com.zrp200.lustrouspixeldungeon.sprites.ItemSprite;
+import com.zrp200.lustrouspixeldungeon.tiles.CustomTiledVisual;
+import com.zrp200.lustrouspixeldungeon.tiles.DungeonTerrainTilemap;
+import com.zrp200.lustrouspixeldungeon.tiles.DungeonTileSheet;
+import com.zrp200.lustrouspixeldungeon.tiles.DungeonTilemap;
+import com.zrp200.lustrouspixeldungeon.tiles.DungeonWallsTilemap;
+import com.zrp200.lustrouspixeldungeon.tiles.FogOfWar;
+import com.zrp200.lustrouspixeldungeon.tiles.GridTileMap;
+import com.zrp200.lustrouspixeldungeon.tiles.RaisedTerrainTilemap;
+import com.zrp200.lustrouspixeldungeon.tiles.TerrainFeaturesTilemap;
+import com.zrp200.lustrouspixeldungeon.tiles.WallBlockingTilemap;
+import com.zrp200.lustrouspixeldungeon.ui.ActionIndicator;
+import com.zrp200.lustrouspixeldungeon.ui.AttackIndicator;
+import com.zrp200.lustrouspixeldungeon.ui.Banner;
+import com.zrp200.lustrouspixeldungeon.ui.BusyIndicator;
+import com.zrp200.lustrouspixeldungeon.ui.CharHealthIndicator;
+import com.zrp200.lustrouspixeldungeon.ui.GameLog;
+import com.zrp200.lustrouspixeldungeon.ui.LootIndicator;
+import com.zrp200.lustrouspixeldungeon.ui.QuickSlotButton;
+import com.zrp200.lustrouspixeldungeon.ui.ResumeIndicator;
+import com.zrp200.lustrouspixeldungeon.ui.StatusPane;
+import com.zrp200.lustrouspixeldungeon.ui.TargetHealthIndicator;
+import com.zrp200.lustrouspixeldungeon.ui.Toast;
+import com.zrp200.lustrouspixeldungeon.ui.Toolbar;
+import com.zrp200.lustrouspixeldungeon.ui.Window;
+import com.zrp200.lustrouspixeldungeon.utils.GLog;
+import com.zrp200.lustrouspixeldungeon.windows.WndBag;
+import com.zrp200.lustrouspixeldungeon.windows.WndBag.Mode;
+import com.zrp200.lustrouspixeldungeon.windows.WndGame;
+import com.zrp200.lustrouspixeldungeon.windows.WndHero;
+import com.zrp200.lustrouspixeldungeon.windows.WndInfoCell;
+import com.zrp200.lustrouspixeldungeon.windows.WndInfoItem;
+import com.zrp200.lustrouspixeldungeon.windows.WndInfoMob;
+import com.zrp200.lustrouspixeldungeon.windows.WndInfoPlant;
+import com.zrp200.lustrouspixeldungeon.windows.WndInfoTrap;
+import com.zrp200.lustrouspixeldungeon.windows.WndMessage;
+import com.zrp200.lustrouspixeldungeon.windows.WndOptions;
+import com.zrp200.lustrouspixeldungeon.windows.WndStory;
+import com.zrp200.lustrouspixeldungeon.windows.WndTradeItem;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -162,16 +162,16 @@ public class GameScene extends PixelScene {
 	public void create() {
 		
 		if (Dungeon.hero == null){
-			ShatteredPixelDungeon.switchNoFade(TitleScene.class);
+			LustrousPixelDungeon.switchNoFade(TitleScene.class);
 			return;
 		}
 		
 		Music.INSTANCE.play( Assets.TUNE, true );
 
-		SPDSettings.lastClass(Dungeon.hero.heroClass.ordinal());
+		LustSettings.lastClass(Dungeon.hero.heroClass.ordinal());
 		
 		super.create();
-		Camera.main.zoom( GameMath.gate(minZoom, defaultZoom + SPDSettings.zoom(), maxZoom));
+		Camera.main.zoom( GameMath.gate(minZoom, defaultZoom + LustSettings.zoom(), maxZoom));
 
 		scene = this;
 
@@ -453,7 +453,7 @@ public class GameScene extends PixelScene {
 				try {
 					GameScene.class.wait(5000);
 				} catch (InterruptedException e) {
-					ShatteredPixelDungeon.reportException(e);
+					LustrousPixelDungeon.reportException(e);
 				}
 				synchronized (actorThread) {
 					if (Actor.processing()) {
@@ -481,7 +481,7 @@ public class GameScene extends PixelScene {
 			Badges.saveGlobal();
 			Journal.saveGlobal();
 		} catch (IOException e) {
-			ShatteredPixelDungeon.reportException(e);
+			LustrousPixelDungeon.reportException(e);
 		}
 	}
 
@@ -551,9 +551,9 @@ public class GameScene extends PixelScene {
 
 		if (scene == null) return;
 
-		float tagLeft = SPDSettings.flipTags() ? 0 : uiCamera.width - scene.attack.width();
+		float tagLeft = LustSettings.flipTags() ? 0 : uiCamera.width - scene.attack.width();
 
-		if (SPDSettings.flipTags()) {
+		if (LustSettings.flipTags()) {
 			scene.log.setRect(scene.attack.width(), scene.toolbar.top(), uiCamera.width - scene.attack.width(), 0);
 		} else {
 			scene.log.setRect(0, scene.toolbar.top(), uiCamera.width - scene.attack.width(),  0 );

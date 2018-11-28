@@ -19,12 +19,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.connection;
+package com.zrp200.lustrouspixeldungeon.levels.rooms.connection;
 
-import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
-import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
-import com.shatteredpixel.shatteredpixeldungeon.levels.features.Maze;
-import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
+import com.zrp200.lustrouspixeldungeon.levels.Level;
+import com.zrp200.lustrouspixeldungeon.levels.Terrain;
+import com.zrp200.lustrouspixeldungeon.levels.features.Maze;
+import com.zrp200.lustrouspixeldungeon.levels.painters.Painter;
 
 public class MazeConnectionRoom extends ConnectionRoom {
 	

@@ -19,38 +19,38 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon.items.scrolls;
+package com.zrp200.lustrouspixeldungeon.items.scrolls;
 
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.ItemStatusHandler;
-import com.shatteredpixel.shatteredpixeldungeon.items.Recipe;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.UnstableSpellbook;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfAntiMagic;
-import com.shatteredpixel.shatteredpixeldungeon.items.stones.Runestone;
-import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAffection;
-import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression;
-import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAugmentation;
-import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfBlast;
-import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfBlink;
-import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfClairvoyance;
-import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfDeepenedSleep;
-import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfDetectCurse;
-import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfEnchantment;
-import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfFlock;
-import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfIntuition;
-import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfShock;
-import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
-import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Bundle;
+import com.zrp200.lustrouspixeldungeon.Dungeon;
+import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.Blindness;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.MagicImmune;
+import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
+import com.zrp200.lustrouspixeldungeon.items.Item;
+import com.zrp200.lustrouspixeldungeon.items.ItemStatusHandler;
+import com.zrp200.lustrouspixeldungeon.items.Recipe;
+import com.zrp200.lustrouspixeldungeon.items.artifacts.UnstableSpellbook;
+import com.zrp200.lustrouspixeldungeon.items.scrolls.exotic.ExoticScroll;
+import com.zrp200.lustrouspixeldungeon.items.scrolls.exotic.ScrollOfAntiMagic;
+import com.zrp200.lustrouspixeldungeon.items.stones.Runestone;
+import com.zrp200.lustrouspixeldungeon.items.stones.StoneOfAffection;
+import com.zrp200.lustrouspixeldungeon.items.stones.StoneOfAggression;
+import com.zrp200.lustrouspixeldungeon.items.stones.StoneOfAugmentation;
+import com.zrp200.lustrouspixeldungeon.items.stones.StoneOfBlast;
+import com.zrp200.lustrouspixeldungeon.items.stones.StoneOfBlink;
+import com.zrp200.lustrouspixeldungeon.items.stones.StoneOfClairvoyance;
+import com.zrp200.lustrouspixeldungeon.items.stones.StoneOfDeepenedSleep;
+import com.zrp200.lustrouspixeldungeon.items.stones.StoneOfDetectCurse;
+import com.zrp200.lustrouspixeldungeon.items.stones.StoneOfEnchantment;
+import com.zrp200.lustrouspixeldungeon.items.stones.StoneOfFlock;
+import com.zrp200.lustrouspixeldungeon.items.stones.StoneOfIntuition;
+import com.zrp200.lustrouspixeldungeon.items.stones.StoneOfShock;
+import com.zrp200.lustrouspixeldungeon.journal.Catalog;
+import com.zrp200.lustrouspixeldungeon.messages.Messages;
+import com.zrp200.lustrouspixeldungeon.sprites.HeroSprite;
+import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
+import com.zrp200.lustrouspixeldungeon.utils.GLog;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -332,7 +332,7 @@ public abstract class Scroll extends Item {
 			try{
 				return stones.get(s.getClass()).newInstance().quantity(amnts.get(s.getClass()));
 			} catch (Exception e) {
-				ShatteredPixelDungeon.reportException(e);
+				LustrousPixelDungeon.reportException(e);
 				return null;
 			}
 		}
@@ -345,7 +345,7 @@ public abstract class Scroll extends Item {
 				Scroll s = (Scroll) ingredients.get(0);
 				return stones.get(s.getClass()).newInstance().quantity(amnts.get(s.getClass()));
 			} catch (Exception e) {
-				ShatteredPixelDungeon.reportException(e);
+				LustrousPixelDungeon.reportException(e);
 				return null;
 			}
 		}

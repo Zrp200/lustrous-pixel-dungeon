@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon.windows;
+package com.zrp200.lustrouspixeldungeon.windows;
 
 import android.app.Activity;
 import android.text.InputFilter;
@@ -34,14 +34,14 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
-import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
-import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
-import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextMultiline;
-import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.RenderedText;
+import com.zrp200.lustrouspixeldungeon.LustSettings;
+import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
+import com.zrp200.lustrouspixeldungeon.scenes.PixelScene;
+import com.zrp200.lustrouspixeldungeon.ui.RedButton;
+import com.zrp200.lustrouspixeldungeon.ui.RenderedTextMultiline;
+import com.zrp200.lustrouspixeldungeon.ui.Window;
 
 //This class makes use of the android EditText component to handle text input
 public class WndTextInput extends Window {
@@ -66,20 +66,20 @@ public class WndTextInput extends Window {
 		super();
 
 		//need to offset to give space for the soft keyboard
-		if (SPDSettings.landscape()) {
+		if (LustSettings.landscape()) {
 			offset( multiLine ? -45 : -45 );
 		} else {
 			offset( multiLine ? -60 : -45 );
 		}
 
 		final int width;
-		if (SPDSettings.landscape() && multiLine){
+		if (LustSettings.landscape() && multiLine){
 			width = W_LAND_MULTI; //more editing space for landscape users
 		} else {
 			width = WIDTH;
 		}
 
-		ShatteredPixelDungeon.instance.runOnUiThread(new Runnable() {
+		LustrousPixelDungeon.instance.runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
 				RenderedTextMultiline txtTitle = PixelScene.renderMultiline( title, 9 );
@@ -90,7 +90,7 @@ public class WndTextInput extends Window {
 
 				float pos = txtTitle.bottom() + MARGIN;
 
-				textInput = new EditText(ShatteredPixelDungeon.instance);
+				textInput = new EditText(LustrousPixelDungeon.instance);
 				textInput.setText( initialValue );
 				textInput.setTypeface( RenderedText.getFont() );
 				textInput.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxLength)});
@@ -179,7 +179,7 @@ public class WndTextInput extends Window {
 						(int)(inputHeight * scaledZoom),
 						Gravity.CENTER_HORIZONTAL);
 				layout.setMargins(0, inputTop, 0, 0);
-				ShatteredPixelDungeon.instance.addContentView(textInput, layout);
+				LustrousPixelDungeon.instance.addContentView(textInput, layout);
 			}
 		});
 	}
@@ -194,18 +194,18 @@ public class WndTextInput extends Window {
 	public void destroy() {
 		super.destroy();
 		if (textInput != null){
-			ShatteredPixelDungeon.instance.runOnUiThread(new Runnable() {
+			LustrousPixelDungeon.instance.runOnUiThread(new Runnable() {
 				@Override
 				public void run() {
 					//make sure we remove the edit text and soft keyboard
 					((ViewGroup) textInput.getParent()).removeView(textInput);
 
-					InputMethodManager imm = (InputMethodManager)ShatteredPixelDungeon
+					InputMethodManager imm = (InputMethodManager)LustrousPixelDungeon
 									.instance.getSystemService(Activity.INPUT_METHOD_SERVICE);
 					imm.hideSoftInputFromWindow(textInput.getWindowToken(), 0);
 
 					//Soft keyboard sometimes triggers software buttons, so make sure to reassert immersive
-					ShatteredPixelDungeon.updateSystemUI();
+					LustrousPixelDungeon.updateSystemUI();
 
 					textInput = null;
 				}

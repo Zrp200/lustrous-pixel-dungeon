@@ -19,29 +19,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts;
+package com.zrp200.lustrouspixeldungeon.items.weapon.missiles.darts;
 
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PinCushion;
-import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
-import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.Recipe;
-import com.shatteredpixel.shatteredpixeldungeon.plants.Blindweed;
-import com.shatteredpixel.shatteredpixeldungeon.plants.Dreamfoil;
-import com.shatteredpixel.shatteredpixeldungeon.plants.Earthroot;
-import com.shatteredpixel.shatteredpixeldungeon.plants.Fadeleaf;
-import com.shatteredpixel.shatteredpixeldungeon.plants.Firebloom;
-import com.shatteredpixel.shatteredpixeldungeon.plants.Icecap;
-import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
-import com.shatteredpixel.shatteredpixeldungeon.plants.Rotberry;
-import com.shatteredpixel.shatteredpixeldungeon.plants.Sorrowmoss;
-import com.shatteredpixel.shatteredpixeldungeon.plants.Starflower;
-import com.shatteredpixel.shatteredpixeldungeon.plants.Stormvine;
-import com.shatteredpixel.shatteredpixeldungeon.plants.Sungrass;
-import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
+import com.zrp200.lustrouspixeldungeon.Dungeon;
+import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
+import com.zrp200.lustrouspixeldungeon.actors.Char;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.PinCushion;
+import com.zrp200.lustrouspixeldungeon.items.Generator;
+import com.zrp200.lustrouspixeldungeon.items.Item;
+import com.zrp200.lustrouspixeldungeon.items.Recipe;
+import com.zrp200.lustrouspixeldungeon.plants.Blindweed;
+import com.zrp200.lustrouspixeldungeon.plants.Dreamfoil;
+import com.zrp200.lustrouspixeldungeon.plants.Earthroot;
+import com.zrp200.lustrouspixeldungeon.plants.Fadeleaf;
+import com.zrp200.lustrouspixeldungeon.plants.Firebloom;
+import com.zrp200.lustrouspixeldungeon.plants.Icecap;
+import com.zrp200.lustrouspixeldungeon.plants.Plant;
+import com.zrp200.lustrouspixeldungeon.plants.Rotberry;
+import com.zrp200.lustrouspixeldungeon.plants.Sorrowmoss;
+import com.zrp200.lustrouspixeldungeon.plants.Starflower;
+import com.zrp200.lustrouspixeldungeon.plants.Stormvine;
+import com.zrp200.lustrouspixeldungeon.plants.Sungrass;
+import com.zrp200.lustrouspixeldungeon.plants.Swiftthistle;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -101,7 +101,7 @@ public abstract class TippedDart extends Dart {
 		try{
 			return (TippedDart) types.get(s.getClass()).newInstance().quantity(2);
 		} catch (Exception e) {
-			ShatteredPixelDungeon.reportException(e);
+			LustrousPixelDungeon.reportException(e);
 			return null;
 		}
 		
@@ -155,7 +155,7 @@ public abstract class TippedDart extends Dart {
 			try{
 				return types.get(ingredients.get(1).getClass()).newInstance().quantity(produced);
 			} catch (Exception e) {
-				ShatteredPixelDungeon.reportException(e);
+				LustrousPixelDungeon.reportException(e);
 				return null;
 			}
 			
@@ -169,7 +169,7 @@ public abstract class TippedDart extends Dart {
 				int produced = Math.min(2, ingredients.get(0).quantity());
 				return types.get(ingredients.get(1).getClass()).newInstance().quantity( produced );
 			} catch (Exception e) {
-				ShatteredPixelDungeon.reportException(e);
+				LustrousPixelDungeon.reportException(e);
 				return null;
 			}
 		}

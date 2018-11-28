@@ -19,21 +19,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon.scenes;
+package com.zrp200.lustrouspixeldungeon.scenes;
 
-import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.BuildConfig;
-import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
-import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
-import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
-import com.shatteredpixel.shatteredpixeldungeon.effects.BannerSprites;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Fireball;
-import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.ui.Archs;
-import com.shatteredpixel.shatteredpixeldungeon.ui.ChangesButton;
-import com.shatteredpixel.shatteredpixeldungeon.ui.ExitButton;
-import com.shatteredpixel.shatteredpixeldungeon.ui.PrefsButton;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndStartGame;
 import com.watabou.glwrap.Blending;
 import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.Camera;
@@ -43,6 +30,19 @@ import com.watabou.noosa.RenderedText;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.ui.Button;
+import com.zrp200.lustrouspixeldungeon.Assets;
+import com.zrp200.lustrouspixeldungeon.BuildConfig;
+import com.zrp200.lustrouspixeldungeon.GamesInProgress;
+import com.zrp200.lustrouspixeldungeon.LustSettings;
+import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
+import com.zrp200.lustrouspixeldungeon.effects.BannerSprites;
+import com.zrp200.lustrouspixeldungeon.effects.Fireball;
+import com.zrp200.lustrouspixeldungeon.messages.Messages;
+import com.zrp200.lustrouspixeldungeon.ui.Archs;
+import com.zrp200.lustrouspixeldungeon.ui.ChangesButton;
+import com.zrp200.lustrouspixeldungeon.ui.ExitButton;
+import com.zrp200.lustrouspixeldungeon.ui.PrefsButton;
+import com.zrp200.lustrouspixeldungeon.windows.WndStartGame;
 
 public class TitleScene extends PixelScene {
 	
@@ -68,7 +68,7 @@ public class TitleScene extends PixelScene {
 		float topRegion = Math.max(95f, h*0.45f);
 
 		title.x = (w - title.width()) / 2f;
-		if (SPDSettings.landscape())
+		if (LustSettings.landscape())
 			title.y = (topRegion - title.height()) / 2f;
 		else
 			title.y = 16 + (topRegion - title.height() - 16) / 2f;
@@ -100,7 +100,7 @@ public class TitleScene extends PixelScene {
 		DashboardItem btnBadges = new DashboardItem( Messages.get(this, "badges"), 3 ) {
 			@Override
 			protected void onClick() {
-				ShatteredPixelDungeon.switchNoFade( BadgesScene.class );
+				LustrousPixelDungeon.switchNoFade( BadgesScene.class );
 			}
 		};
 		add(btnBadges);
@@ -108,7 +108,7 @@ public class TitleScene extends PixelScene {
 		DashboardItem btnAbout = new DashboardItem( Messages.get(this, "about"), 1 ) {
 			@Override
 			protected void onClick() {
-				ShatteredPixelDungeon.switchNoFade( AboutScene.class );
+				LustrousPixelDungeon.switchNoFade( AboutScene.class );
 			}
 		};
 		add( btnAbout );
@@ -119,7 +119,7 @@ public class TitleScene extends PixelScene {
 				if (GamesInProgress.checkAll().size() == 0){
 					TitleScene.this.add( new WndStartGame(1) );
 				} else {
-					ShatteredPixelDungeon.switchNoFade( StartScene.class );
+					LustrousPixelDungeon.switchNoFade( StartScene.class );
 				}
 			}
 			
@@ -138,12 +138,12 @@ public class TitleScene extends PixelScene {
 		DashboardItem btnRankings = new DashboardItem( Messages.get(this, "rankings"), 2 ) {
 			@Override
 			protected void onClick() {
-				ShatteredPixelDungeon.switchNoFade( RankingsScene.class );
+				LustrousPixelDungeon.switchNoFade( RankingsScene.class );
 			}
 		};
 		add( btnRankings );
 
-		if (SPDSettings.landscape()) {
+		if (LustSettings.landscape()) {
 			btnRankings     .setPos( w / 2 - btnRankings.width(), topRegion );
 			btnBadges       .setPos( w / 2, topRegion );
 			btnPlay         .setPos( btnRankings.left() - btnPlay.width(), topRegion );

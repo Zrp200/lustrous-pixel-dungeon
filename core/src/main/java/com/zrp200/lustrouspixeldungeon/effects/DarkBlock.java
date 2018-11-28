@@ -19,10 +19,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon.effects;
+package com.zrp200.lustrouspixeldungeon.effects;
 
-import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.watabou.noosa.Gizmo;
+import com.zrp200.lustrouspixeldungeon.sprites.CharSprite;
 
 public class DarkBlock extends Gizmo{
 

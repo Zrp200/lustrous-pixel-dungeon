@@ -19,10 +19,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon.windows;
+package com.zrp200.lustrouspixeldungeon.windows;
 
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
-import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.zrp200.lustrouspixeldungeon.actors.mobs.npcs.NPC;
+import com.zrp200.lustrouspixeldungeon.messages.Messages;
 
 public class WndQuest extends WndTitledMessage {
 

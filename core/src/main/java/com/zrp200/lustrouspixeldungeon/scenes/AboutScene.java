@@ -19,25 +19,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon.scenes;
+package com.zrp200.lustrouspixeldungeon.scenes;
 
 import android.content.Intent;
 import android.net.Uri;
 
-import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
-import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
-import com.shatteredpixel.shatteredpixeldungeon.ui.Archs;
-import com.shatteredpixel.shatteredpixeldungeon.ui.ExitButton;
-import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
-import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextMultiline;
-import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.input.Touchscreen.Touch;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.RenderedText;
 import com.watabou.noosa.TouchArea;
+import com.zrp200.lustrouspixeldungeon.LustSettings;
+import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
+import com.zrp200.lustrouspixeldungeon.effects.Flare;
+import com.zrp200.lustrouspixeldungeon.ui.Archs;
+import com.zrp200.lustrouspixeldungeon.ui.ExitButton;
+import com.zrp200.lustrouspixeldungeon.ui.Icons;
+import com.zrp200.lustrouspixeldungeon.ui.RenderedTextMultiline;
+import com.zrp200.lustrouspixeldungeon.ui.Window;
 
 public class AboutScene extends PixelScene {
 
@@ -65,9 +65,9 @@ public class AboutScene extends PixelScene {
 	public void create() {
 		super.create();
 
-		final float colWidth = Camera.main.width / (SPDSettings.landscape() ? 2 : 1);
-		final float colTop = (Camera.main.height / 2) - (SPDSettings.landscape() ? 30 : 100);
-		final float wataOffset = SPDSettings.landscape() ? colWidth : 0;
+		final float colWidth = Camera.main.width / (LustSettings.landscape() ? 2 : 1);
+		final float colTop = (Camera.main.height / 2) - (LustSettings.landscape() ? 30 : 100);
+		final float wataOffset = LustSettings.landscape() ? colWidth : 0;
 
 		RenderedText lustTitle = renderText( TITLE_LPD, 8);
 		add(lustTitle);
@@ -85,7 +85,7 @@ public class AboutScene extends PixelScene {
 
 		Image shpx = Icons.SHPX.get();
 		shpx.x = (colWidth - shpx.width()) / 2;
-		shpx.y = SPDSettings.landscape() ?
+		shpx.y = LustSettings.landscape() ?
 				colTop:
 				lust.top() + lust.height() + 20;
 		align(shpx);
@@ -127,7 +127,7 @@ public class AboutScene extends PixelScene {
 
 		Image wata = Icons.WATA.get();
 		wata.x = wataOffset + (colWidth - wata.width()) / 2;
-		wata.y = SPDSettings.landscape() ?
+		wata.y = LustSettings.landscape() ?
 						colTop:
 						shpxlink.top() + wata.height + 15;
 		align(wata);
@@ -171,6 +171,6 @@ public class AboutScene extends PixelScene {
 	
 	@Override
 	protected void onBackPressed() {
-		ShatteredPixelDungeon.switchNoFade(TitleScene.class);
+		LustrousPixelDungeon.switchNoFade(TitleScene.class);
 	}
 }

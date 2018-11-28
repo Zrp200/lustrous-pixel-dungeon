@@ -19,38 +19,38 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon.levels;
+package com.zrp200.lustrouspixeldungeon.levels;
 
-import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.items.Torch;
-import com.shatteredpixel.shatteredpixeldungeon.levels.painters.HallsPainter;
-import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.BlazingTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.CorrosionTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.CursingTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.DisarmingTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.DisintegrationTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.DistortionTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ExplosiveTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.FlashingTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.FrostTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GrimTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GuardianTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.PitfallTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.RockfallTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.StormTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.SummoningTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WarpingTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WeakeningTrap;
-import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.watabou.glwrap.Blending;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.particles.PixelParticle;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
+import com.zrp200.lustrouspixeldungeon.Assets;
+import com.zrp200.lustrouspixeldungeon.Dungeon;
+import com.zrp200.lustrouspixeldungeon.items.Torch;
+import com.zrp200.lustrouspixeldungeon.levels.painters.HallsPainter;
+import com.zrp200.lustrouspixeldungeon.levels.painters.Painter;
+import com.zrp200.lustrouspixeldungeon.levels.traps.BlazingTrap;
+import com.zrp200.lustrouspixeldungeon.levels.traps.CorrosionTrap;
+import com.zrp200.lustrouspixeldungeon.levels.traps.CursingTrap;
+import com.zrp200.lustrouspixeldungeon.levels.traps.DisarmingTrap;
+import com.zrp200.lustrouspixeldungeon.levels.traps.DisintegrationTrap;
+import com.zrp200.lustrouspixeldungeon.levels.traps.DistortionTrap;
+import com.zrp200.lustrouspixeldungeon.levels.traps.ExplosiveTrap;
+import com.zrp200.lustrouspixeldungeon.levels.traps.FlashingTrap;
+import com.zrp200.lustrouspixeldungeon.levels.traps.FrostTrap;
+import com.zrp200.lustrouspixeldungeon.levels.traps.GrimTrap;
+import com.zrp200.lustrouspixeldungeon.levels.traps.GuardianTrap;
+import com.zrp200.lustrouspixeldungeon.levels.traps.PitfallTrap;
+import com.zrp200.lustrouspixeldungeon.levels.traps.RockfallTrap;
+import com.zrp200.lustrouspixeldungeon.levels.traps.StormTrap;
+import com.zrp200.lustrouspixeldungeon.levels.traps.SummoningTrap;
+import com.zrp200.lustrouspixeldungeon.levels.traps.WarpingTrap;
+import com.zrp200.lustrouspixeldungeon.levels.traps.WeakeningTrap;
+import com.zrp200.lustrouspixeldungeon.messages.Messages;
+import com.zrp200.lustrouspixeldungeon.tiles.DungeonTilemap;
 
 public class HallsLevel extends RegularLevel {
 

@@ -19,44 +19,44 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon.items.weapon;
+package com.zrp200.lustrouspixeldungeon.items.weapon;
 
-import com.shatteredpixel.shatteredpixeldungeon.Badges;
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
-import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfFuror;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Annoying;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Displacing;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Elastic;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Exhausting;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Fragile;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Friendly;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Sacrificial;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Wayward;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blazing;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Chilling;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Dazzling;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Eldritch;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Lucky;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Projecting;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Shocking;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Stunning;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Unstable;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Vampiric;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Venomous;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Vorpal;
-import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
+import com.zrp200.lustrouspixeldungeon.Badges;
+import com.zrp200.lustrouspixeldungeon.Dungeon;
+import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
+import com.zrp200.lustrouspixeldungeon.actors.Char;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.MagicImmune;
+import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
+import com.zrp200.lustrouspixeldungeon.items.Item;
+import com.zrp200.lustrouspixeldungeon.items.KindOfWeapon;
+import com.zrp200.lustrouspixeldungeon.items.rings.RingOfFuror;
+import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Annoying;
+import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Displacing;
+import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Elastic;
+import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Exhausting;
+import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Fragile;
+import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Friendly;
+import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Sacrificial;
+import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Wayward;
+import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Blazing;
+import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Chilling;
+import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Dazzling;
+import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Eldritch;
+import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Grim;
+import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Lucky;
+import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Projecting;
+import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Shocking;
+import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Stunning;
+import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Unstable;
+import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Vampiric;
+import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Venomous;
+import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Vorpal;
+import com.zrp200.lustrouspixeldungeon.messages.Messages;
+import com.zrp200.lustrouspixeldungeon.sprites.ItemSprite;
+import com.zrp200.lustrouspixeldungeon.utils.GLog;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -346,7 +346,7 @@ abstract public class Weapon extends KindOfWeapon {
 					return (Enchantment) Random.element(enchants).newInstance();
 				}
 			} catch (Exception e) {
-				ShatteredPixelDungeon.reportException(e);
+				LustrousPixelDungeon.reportException(e);
 				return null;
 			}
 		}
@@ -362,7 +362,7 @@ abstract public class Weapon extends KindOfWeapon {
 					return (Enchantment) Random.element(enchants).newInstance();
 				}
 			} catch (Exception e) {
-				ShatteredPixelDungeon.reportException(e);
+				LustrousPixelDungeon.reportException(e);
 				return null;
 			}
 		}
@@ -378,7 +378,7 @@ abstract public class Weapon extends KindOfWeapon {
 					return (Enchantment) Random.element(enchants).newInstance();
 				}
 			} catch (Exception e) {
-				ShatteredPixelDungeon.reportException(e);
+				LustrousPixelDungeon.reportException(e);
 				return null;
 			}
 		}
@@ -394,7 +394,7 @@ abstract public class Weapon extends KindOfWeapon {
 					return (Enchantment) Random.element(enchants).newInstance();
 				}
 			} catch (Exception e) {
-				ShatteredPixelDungeon.reportException(e);
+				LustrousPixelDungeon.reportException(e);
 				return null;
 			}
 		}

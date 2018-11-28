@@ -19,11 +19,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon.messages;
+package com.zrp200.lustrouspixeldungeon.messages;
 
-import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
-import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.watabou.utils.DeviceCompat;
+import com.zrp200.lustrouspixeldungeon.LustSettings;
+import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
 
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -62,19 +62,19 @@ public class Messages {
 	 */
 
 	private static String[] prop_files = new String[]{
-			"com.shatteredpixel.shatteredpixeldungeon.messages.actors.actors",
-			"com.shatteredpixel.shatteredpixeldungeon.messages.items.items",
-			"com.shatteredpixel.shatteredpixeldungeon.messages.journal.journal",
-			"com.shatteredpixel.shatteredpixeldungeon.messages.levels.levels",
-			"com.shatteredpixel.shatteredpixeldungeon.messages.plants.plants",
-			"com.shatteredpixel.shatteredpixeldungeon.messages.scenes.scenes",
-			"com.shatteredpixel.shatteredpixeldungeon.messages.ui.ui",
-			"com.shatteredpixel.shatteredpixeldungeon.messages.windows.windows",
-			"com.shatteredpixel.shatteredpixeldungeon.messages.misc.misc"
+			"com.zrp200.lustrouspixeldungeon.messages.actors.actors",
+			"com.zrp200.lustrouspixeldungeon.messages.items.items",
+			"com.zrp200.lustrouspixeldungeon.messages.journal.journal",
+			"com.zrp200.lustrouspixeldungeon.messages.levels.levels",
+			"com.zrp200.lustrouspixeldungeon.messages.plants.plants",
+			"com.zrp200.lustrouspixeldungeon.messages.scenes.scenes",
+			"com.zrp200.lustrouspixeldungeon.messages.ui.ui",
+			"com.zrp200.lustrouspixeldungeon.messages.windows.windows",
+			"com.zrp200.lustrouspixeldungeon.messages.misc.misc"
 	};
 
 	static{
-		setup(SPDSettings.language());
+		setup(LustSettings.language());
 	}
 
 	public static void setup( Languages lang ){
@@ -93,7 +93,7 @@ public class Messages {
 					try {
 						value = new String(value.getBytes("ISO-8859-1"), "UTF-8");
 					} catch (Exception e) {
-						ShatteredPixelDungeon.reportException(e);
+						LustrousPixelDungeon.reportException(e);
 					}
 				}
 
@@ -119,7 +119,7 @@ public class Messages {
 	public static String get(Class c, String k, Object...args){
 		String key;
 		if (c != null){
-			key = c.getName().replace("com.shatteredpixel.shatteredpixeldungeon.", "");
+			key = c.getName().replace("com.zrp200.lustrouspixeldungeon.", "");
 			key += "." + k;
 		} else
 			key = k;

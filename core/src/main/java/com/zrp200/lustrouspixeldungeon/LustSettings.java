@@ -19,19 +19,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon;
+package com.zrp200.lustrouspixeldungeon;
 
-import com.shatteredpixel.shatteredpixeldungeon.messages.Languages;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.RenderedText;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.GameSettings;
+import com.zrp200.lustrouspixeldungeon.messages.Languages;
+import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
 
 import java.util.Locale;
 
-public class SPDSettings extends GameSettings {
+public class LustSettings extends GameSettings {
 	
 	//Version info
 	
@@ -58,10 +58,10 @@ public class SPDSettings extends GameSettings {
 	public static void fullscreen( boolean value ) {
 		put( KEY_FULLSCREEN, value );
 		
-		ShatteredPixelDungeon.instance.runOnUiThread( new Runnable() {
+		LustrousPixelDungeon.instance.runOnUiThread( new Runnable() {
 			@Override
 			public void run() {
-				ShatteredPixelDungeon.updateSystemUI();
+				LustrousPixelDungeon.updateSystemUI();
 			}
 		} );
 	}
@@ -72,7 +72,7 @@ public class SPDSettings extends GameSettings {
 	
 	public static void landscape( boolean value ){
 		put( KEY_LANDSCAPE, value );
-		((ShatteredPixelDungeon)ShatteredPixelDungeon.instance).updateDisplaySize();
+		((LustrousPixelDungeon)LustrousPixelDungeon.instance).updateDisplaySize();
 	}
 	
 	//FIXME in certain multi-window cases this can disagree with the actual screen size
@@ -83,7 +83,7 @@ public class SPDSettings extends GameSettings {
 	
 	public static void powerSaver( boolean value ){
 		put( KEY_POWER_SAVER, value );
-		((ShatteredPixelDungeon)ShatteredPixelDungeon.instance).updateDisplaySize();
+		((LustrousPixelDungeon)LustrousPixelDungeon.instance).updateDisplaySize();
 	}
 	
 	public static boolean powerSaver(){
@@ -152,7 +152,7 @@ public class SPDSettings extends GameSettings {
 	}
 	
 	public static String toolbarMode() {
-		return getString(KEY_BARMODE, !SPDSettings.landscape() ? "SPLIT" : "GROUP");
+		return getString(KEY_BARMODE, !LustSettings.landscape() ? "SPLIT" : "GROUP");
 	}
 	
 	//Game State

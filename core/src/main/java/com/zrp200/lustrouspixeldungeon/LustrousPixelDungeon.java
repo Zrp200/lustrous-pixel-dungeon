@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon;
+package com.zrp200.lustrouspixeldungeon;
 
 import android.content.pm.ActivityInfo;
 import android.os.Build;
@@ -27,17 +27,17 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 
-import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.WelcomeScene;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.RenderedText;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.DeviceCompat;
+import com.zrp200.lustrouspixeldungeon.scenes.PixelScene;
+import com.zrp200.lustrouspixeldungeon.scenes.WelcomeScene;
 
 import javax.microedition.khronos.opengles.GL10;
 
-public class ShatteredPixelDungeon extends Game {
+public class LustrousPixelDungeon extends Game {
 	
 	//variable constants for specific older versions of shattered, used for data conversion
 	//versions older than v0.6.0b are no longer supported, and data from them is ignored
@@ -53,7 +53,7 @@ public class ShatteredPixelDungeon extends Game {
 
 	public static final int v0_0_0 = 1;
 	
-	public ShatteredPixelDungeon() {
+	public LustrousPixelDungeon() {
 		super(WelcomeScene.class);
 	}
 
@@ -63,12 +63,12 @@ public class ShatteredPixelDungeon extends Game {
 		super.onCreate(savedInstanceState);
 
 		updateSystemUI();
-		SPDSettings.landscape ( SPDSettings.landscape() );
+		LustSettings.landscape ( LustSettings.landscape() );
 		
-		Music.INSTANCE.enable( SPDSettings.music() );
-		Music.INSTANCE.volume( SPDSettings.musicVol()/10f );
-		Sample.INSTANCE.enable( SPDSettings.soundFx() );
-		Sample.INSTANCE.volume( SPDSettings.SFXVol()/10f );
+		Music.INSTANCE.enable( LustSettings.music() );
+		Music.INSTANCE.volume( LustSettings.musicVol()/10f );
+		Sample.INSTANCE.enable( LustSettings.soundFx() );
+		Sample.INSTANCE.volume( LustSettings.SFXVol()/10f );
 		
 		Music.setMuteListener();
 
@@ -122,7 +122,7 @@ public class ShatteredPixelDungeon extends Game {
 				Assets.SND_DEGRADE,
 				Assets.SND_MIMIC );
 
-		if (!SPDSettings.systemFont()) {
+		if (!LustSettings.systemFont()) {
 			RenderedText.setFont("pixelfont.ttf");
 		} else {
 			RenderedText.setFont( null );
@@ -162,7 +162,7 @@ public class ShatteredPixelDungeon extends Game {
 	}
 
 	public void updateDisplaySize(){
-		boolean landscape = SPDSettings.landscape();
+		boolean landscape = LustSettings.landscape();
 		
 		if (landscape != (width > height)) {
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
@@ -189,9 +189,9 @@ public class ShatteredPixelDungeon extends Game {
 
 		//force power saver in this case as all devices must run at at least 2x scale.
 		if (dispWidth < renderWidth*2 || dispHeight < renderHeight*2)
-			SPDSettings.put( SPDSettings.KEY_POWER_SAVER, true );
+			LustSettings.put( LustSettings.KEY_POWER_SAVER, true );
 
-		if (SPDSettings.powerSaver()){
+		if (LustSettings.powerSaver()){
 
 			int maxZoom = (int)Math.min(dispWidth/renderWidth, dispHeight/renderHeight);
 
@@ -240,7 +240,7 @@ public class ShatteredPixelDungeon extends Game {
 		}
 
 		if (DeviceCompat.supportsFullScreen()){
-			if (fullscreen && SPDSettings.fullscreen()) {
+			if (fullscreen && LustSettings.fullscreen()) {
 				instance.getWindow().getDecorView().setSystemUiVisibility(
 						View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
 						View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY |

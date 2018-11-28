@@ -19,9 +19,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon.items.potions;
+package com.zrp200.lustrouspixeldungeon.items.potions;
 
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 
 public class PotionOfExperience extends Potion {
 

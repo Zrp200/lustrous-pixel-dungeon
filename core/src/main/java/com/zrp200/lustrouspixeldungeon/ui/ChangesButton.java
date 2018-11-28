@@ -19,14 +19,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon.ui;
+package com.zrp200.lustrouspixeldungeon.ui;
 
-import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.ui.Button;
+import com.zrp200.lustrouspixeldungeon.Assets;
+import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
+import com.zrp200.lustrouspixeldungeon.scenes.ChangesScene;
 
 public class ChangesButton extends Button {
 
@@ -68,6 +68,6 @@ public class ChangesButton extends Button {
 
 	@Override
 	protected void onClick() {
-		ShatteredPixelDungeon.switchNoFade(ChangesScene.class);
+		LustrousPixelDungeon.switchNoFade(ChangesScene.class);
 	}
 }

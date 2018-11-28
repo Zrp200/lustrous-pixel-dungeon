@@ -19,63 +19,63 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon.ui;
+package com.zrp200.lustrouspixeldungeon.ui;
 
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
-import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
-import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.Recipe;
-import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
-import com.shatteredpixel.shatteredpixeldungeon.items.food.Blandfruit;
-import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
-import com.shatteredpixel.shatteredpixeldungeon.items.food.MeatPie;
-import com.shatteredpixel.shatteredpixeldungeon.items.food.MysteryMeat;
-import com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty;
-import com.shatteredpixel.shatteredpixeldungeon.items.food.StewedMeat;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.BlizzardBrew;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.CausticBrew;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.FrigidBrew;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.FrostfireBrew;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.InfernalBrew;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.ShockingBrew;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.WickedBrew;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfAquaticRejuvenation;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfDragonsBlood;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfHoneyedHealing;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfIcyTouch;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfRestoration;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfToxicEssence;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfVitality;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.Alchemize;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.AquaBlast;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.BeaconOfReturning;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.CurseInfusion;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.FeatherFall;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalInfusion;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalPorter;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.PhaseShift;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.ReclaimTrap;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.Recycle;
-import com.shatteredpixel.shatteredpixeldungeon.items.stones.Runestone;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.TippedDart;
-import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.AlchemyScene;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndBag;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndInfoItem;
 import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.ui.Component;
+import com.zrp200.lustrouspixeldungeon.Dungeon;
+import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
+import com.zrp200.lustrouspixeldungeon.items.Generator;
+import com.zrp200.lustrouspixeldungeon.items.Item;
+import com.zrp200.lustrouspixeldungeon.items.Recipe;
+import com.zrp200.lustrouspixeldungeon.items.bombs.Bomb;
+import com.zrp200.lustrouspixeldungeon.items.food.Blandfruit;
+import com.zrp200.lustrouspixeldungeon.items.food.Food;
+import com.zrp200.lustrouspixeldungeon.items.food.MeatPie;
+import com.zrp200.lustrouspixeldungeon.items.food.MysteryMeat;
+import com.zrp200.lustrouspixeldungeon.items.food.Pasty;
+import com.zrp200.lustrouspixeldungeon.items.food.StewedMeat;
+import com.zrp200.lustrouspixeldungeon.items.potions.Potion;
+import com.zrp200.lustrouspixeldungeon.items.potions.brews.BlizzardBrew;
+import com.zrp200.lustrouspixeldungeon.items.potions.brews.CausticBrew;
+import com.zrp200.lustrouspixeldungeon.items.potions.brews.FrigidBrew;
+import com.zrp200.lustrouspixeldungeon.items.potions.brews.FrostfireBrew;
+import com.zrp200.lustrouspixeldungeon.items.potions.brews.InfernalBrew;
+import com.zrp200.lustrouspixeldungeon.items.potions.brews.ShockingBrew;
+import com.zrp200.lustrouspixeldungeon.items.potions.brews.WickedBrew;
+import com.zrp200.lustrouspixeldungeon.items.potions.elixirs.ElixirOfAquaticRejuvenation;
+import com.zrp200.lustrouspixeldungeon.items.potions.elixirs.ElixirOfDragonsBlood;
+import com.zrp200.lustrouspixeldungeon.items.potions.elixirs.ElixirOfHoneyedHealing;
+import com.zrp200.lustrouspixeldungeon.items.potions.elixirs.ElixirOfIcyTouch;
+import com.zrp200.lustrouspixeldungeon.items.potions.elixirs.ElixirOfMight;
+import com.zrp200.lustrouspixeldungeon.items.potions.elixirs.ElixirOfRestoration;
+import com.zrp200.lustrouspixeldungeon.items.potions.elixirs.ElixirOfToxicEssence;
+import com.zrp200.lustrouspixeldungeon.items.potions.elixirs.ElixirOfVitality;
+import com.zrp200.lustrouspixeldungeon.items.potions.exotic.ExoticPotion;
+import com.zrp200.lustrouspixeldungeon.items.scrolls.Scroll;
+import com.zrp200.lustrouspixeldungeon.items.scrolls.exotic.ExoticScroll;
+import com.zrp200.lustrouspixeldungeon.items.spells.Alchemize;
+import com.zrp200.lustrouspixeldungeon.items.spells.AquaBlast;
+import com.zrp200.lustrouspixeldungeon.items.spells.BeaconOfReturning;
+import com.zrp200.lustrouspixeldungeon.items.spells.CurseInfusion;
+import com.zrp200.lustrouspixeldungeon.items.spells.FeatherFall;
+import com.zrp200.lustrouspixeldungeon.items.spells.MagicalInfusion;
+import com.zrp200.lustrouspixeldungeon.items.spells.MagicalPorter;
+import com.zrp200.lustrouspixeldungeon.items.spells.PhaseShift;
+import com.zrp200.lustrouspixeldungeon.items.spells.ReclaimTrap;
+import com.zrp200.lustrouspixeldungeon.items.spells.Recycle;
+import com.zrp200.lustrouspixeldungeon.items.stones.Runestone;
+import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.darts.Dart;
+import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.darts.TippedDart;
+import com.zrp200.lustrouspixeldungeon.messages.Messages;
+import com.zrp200.lustrouspixeldungeon.plants.Plant;
+import com.zrp200.lustrouspixeldungeon.scenes.AlchemyScene;
+import com.zrp200.lustrouspixeldungeon.scenes.PixelScene;
+import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
+import com.zrp200.lustrouspixeldungeon.windows.WndBag;
+import com.zrp200.lustrouspixeldungeon.windows.WndInfoItem;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -104,7 +104,7 @@ public class QuickRecipe extends Component {
 			curr = new ItemSlot(in) {
 				@Override
 				protected void onClick() {
-					ShatteredPixelDungeon.scene().addToFront(new WndInfoItem(in));
+					LustrousPixelDungeon.scene().addToFront(new WndInfoItem(in));
 				}
 			};
 			
@@ -131,7 +131,7 @@ public class QuickRecipe extends Component {
 		}
 		if (hasInputs) {
 			arrow.icon.tint(1, 1, 0, 1);
-			if (!(ShatteredPixelDungeon.scene() instanceof AlchemyScene)) {
+			if (!(LustrousPixelDungeon.scene() instanceof AlchemyScene)) {
 				arrow.enable(false);
 			}
 		} else {
@@ -144,7 +144,7 @@ public class QuickRecipe extends Component {
 		this.output = new ItemSlot(output){
 			@Override
 			protected void onClick() {
-				ShatteredPixelDungeon.scene().addToFront(new WndInfoItem(output));
+				LustrousPixelDungeon.scene().addToFront(new WndInfoItem(output));
 			}
 		};
 		if (!hasInputs){
@@ -228,7 +228,7 @@ public class QuickRecipe extends Component {
 				}
 			}
 			
-			((AlchemyScene)ShatteredPixelDungeon.scene()).populate(ingredients, Dungeon.hero.belongings);
+			((AlchemyScene)LustrousPixelDungeon.scene()).populate(ingredients, Dungeon.hero.belongings);
 		}
 		
 		public void hardlightText(int color ){
@@ -261,7 +261,7 @@ public class QuickRecipe extends Component {
 						ArrayList<Item> in = new ArrayList<Item>(Arrays.asList(scroll));
 						result.add(new QuickRecipe( r, in, r.sampleOutput(in)));
 					} catch (Exception e){
-						ShatteredPixelDungeon.reportException(e);
+						LustrousPixelDungeon.reportException(e);
 					}
 				}
 				return result;
@@ -273,7 +273,7 @@ public class QuickRecipe extends Component {
 						ArrayList<Item> in = new ArrayList<>(Arrays.asList(seed, new Dart()));
 						result.add(new QuickRecipe( r, in, r.sampleOutput(in)));
 					} catch (Exception e){
-						ShatteredPixelDungeon.reportException(e);
+						LustrousPixelDungeon.reportException(e);
 					}
 				}
 				return result;
@@ -285,7 +285,7 @@ public class QuickRecipe extends Component {
 						ArrayList<Item> in = new ArrayList<>(Arrays.asList(pot, new Plant.Seed.PlaceHolder().quantity(2)));
 						result.add(new QuickRecipe( r, in, r.sampleOutput(in)));
 					} catch (Exception e){
-						ShatteredPixelDungeon.reportException(e);
+						LustrousPixelDungeon.reportException(e);
 					}
 				}
 				return result;
@@ -297,7 +297,7 @@ public class QuickRecipe extends Component {
 						ArrayList<Item> in = new ArrayList<>(Arrays.asList(scroll, new Runestone.PlaceHolder().quantity(2)));
 						result.add(new QuickRecipe( r, in, r.sampleOutput(in)));
 					} catch (Exception e){
-						ShatteredPixelDungeon.reportException(e);
+						LustrousPixelDungeon.reportException(e);
 					}
 				}
 				return result;
@@ -339,7 +339,7 @@ public class QuickRecipe extends Component {
 						result.add(new QuickRecipe( r, in, r.sampleOutput(in)));
 						i++;
 					} catch (Exception e){
-						ShatteredPixelDungeon.reportException(e);
+						LustrousPixelDungeon.reportException(e);
 					}
 				}
 				return result;

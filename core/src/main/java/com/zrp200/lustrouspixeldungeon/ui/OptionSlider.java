@@ -19,10 +19,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon.ui;
+package com.zrp200.lustrouspixeldungeon.ui;
 
-import com.shatteredpixel.shatteredpixeldungeon.Chrome;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.watabou.input.Touchscreen;
 import com.watabou.noosa.ColorBlock;
 import com.watabou.noosa.NinePatch;
@@ -31,6 +29,8 @@ import com.watabou.noosa.TouchArea;
 import com.watabou.noosa.ui.Component;
 import com.watabou.utils.GameMath;
 import com.watabou.utils.PointF;
+import com.zrp200.lustrouspixeldungeon.Chrome;
+import com.zrp200.lustrouspixeldungeon.scenes.PixelScene;
 
 public abstract class OptionSlider extends Component {
 

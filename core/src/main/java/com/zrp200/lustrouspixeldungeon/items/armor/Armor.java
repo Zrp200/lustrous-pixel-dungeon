@@ -19,53 +19,53 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon.items.armor;
+package com.zrp200.lustrouspixeldungeon.items.armor;
 
-import com.shatteredpixel.shatteredpixeldungeon.Badges;
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Momentum;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
-import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
-import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
-import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.curses.AntiEntropy;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.curses.Bulk;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.curses.Corrosion;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.curses.Displacement;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.curses.Metabolism;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.curses.Multiplicity;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.curses.Overgrowth;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.curses.Stench;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.curses.Volatility;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Affection;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Brimstone;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Camouflage;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Entanglement;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Flow;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Obfuscation;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Potential;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Repulsion;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Stone;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Swiftness;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Thorns;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
-import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
-import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
+import com.zrp200.lustrouspixeldungeon.Badges;
+import com.zrp200.lustrouspixeldungeon.Dungeon;
+import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
+import com.zrp200.lustrouspixeldungeon.actors.Actor;
+import com.zrp200.lustrouspixeldungeon.actors.Char;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.MagicImmune;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.Momentum;
+import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
+import com.zrp200.lustrouspixeldungeon.effects.Speck;
+import com.zrp200.lustrouspixeldungeon.items.BrokenSeal;
+import com.zrp200.lustrouspixeldungeon.items.EquipableItem;
+import com.zrp200.lustrouspixeldungeon.items.Item;
+import com.zrp200.lustrouspixeldungeon.items.armor.curses.AntiEntropy;
+import com.zrp200.lustrouspixeldungeon.items.armor.curses.Bulk;
+import com.zrp200.lustrouspixeldungeon.items.armor.curses.Corrosion;
+import com.zrp200.lustrouspixeldungeon.items.armor.curses.Displacement;
+import com.zrp200.lustrouspixeldungeon.items.armor.curses.Metabolism;
+import com.zrp200.lustrouspixeldungeon.items.armor.curses.Multiplicity;
+import com.zrp200.lustrouspixeldungeon.items.armor.curses.Overgrowth;
+import com.zrp200.lustrouspixeldungeon.items.armor.curses.Stench;
+import com.zrp200.lustrouspixeldungeon.items.armor.curses.Volatility;
+import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.Affection;
+import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.AntiMagic;
+import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.Brimstone;
+import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.Camouflage;
+import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.Entanglement;
+import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.Flow;
+import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.Obfuscation;
+import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.Potential;
+import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.Repulsion;
+import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.Stone;
+import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.Swiftness;
+import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.Thorns;
+import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.Viscosity;
+import com.zrp200.lustrouspixeldungeon.levels.Terrain;
+import com.zrp200.lustrouspixeldungeon.messages.Messages;
+import com.zrp200.lustrouspixeldungeon.sprites.HeroSprite;
+import com.zrp200.lustrouspixeldungeon.sprites.ItemSprite;
+import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
+import com.zrp200.lustrouspixeldungeon.utils.GLog;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -599,7 +599,7 @@ public class Armor extends EquipableItem {
 					return (Glyph) Random.element(glyphs).newInstance();
 				}
 			} catch (Exception e) {
-				ShatteredPixelDungeon.reportException(e);
+				LustrousPixelDungeon.reportException(e);
 				return null;
 			}
 		}
@@ -615,7 +615,7 @@ public class Armor extends EquipableItem {
 					return (Glyph) Random.element(glyphs).newInstance();
 				}
 			} catch (Exception e) {
-				ShatteredPixelDungeon.reportException(e);
+				LustrousPixelDungeon.reportException(e);
 				return null;
 			}
 		}
@@ -631,7 +631,7 @@ public class Armor extends EquipableItem {
 					return (Glyph) Random.element(glyphs).newInstance();
 				}
 			} catch (Exception e) {
-				ShatteredPixelDungeon.reportException(e);
+				LustrousPixelDungeon.reportException(e);
 				return null;
 			}
 		}
@@ -647,7 +647,7 @@ public class Armor extends EquipableItem {
 					return (Glyph) Random.element(glyphs).newInstance();
 				}
 			} catch (Exception e) {
-				ShatteredPixelDungeon.reportException(e);
+				LustrousPixelDungeon.reportException(e);
 				return null;
 			}
 		}

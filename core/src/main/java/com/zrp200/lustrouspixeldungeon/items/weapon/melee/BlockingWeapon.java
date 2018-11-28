@@ -1,9 +1,9 @@
-package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
+package com.zrp200.lustrouspixeldungeon.items.weapon.melee;
 
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.zrp200.lustrouspixeldungeon.Dungeon;
+import com.zrp200.lustrouspixeldungeon.actors.Char;
+import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
+import com.zrp200.lustrouspixeldungeon.messages.Messages;
 
 public class BlockingWeapon extends MeleeWeapon {
     public int maxBlock(int level) {

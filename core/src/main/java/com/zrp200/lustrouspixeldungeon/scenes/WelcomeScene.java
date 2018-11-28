@@ -19,22 +19,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon.scenes;
+package com.zrp200.lustrouspixeldungeon.scenes;
 
-import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Badges;
-import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
-import com.shatteredpixel.shatteredpixeldungeon.Rankings;
-import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
-import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
-import com.shatteredpixel.shatteredpixeldungeon.effects.BannerSprites;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Fireball;
-import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
-import com.shatteredpixel.shatteredpixeldungeon.journal.Journal;
-import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
-import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextMultiline;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndStartGame;
 import com.watabou.glwrap.Blending;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
@@ -42,19 +28,33 @@ import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.FileUtils;
+import com.zrp200.lustrouspixeldungeon.Assets;
+import com.zrp200.lustrouspixeldungeon.Badges;
+import com.zrp200.lustrouspixeldungeon.GamesInProgress;
+import com.zrp200.lustrouspixeldungeon.LustSettings;
+import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
+import com.zrp200.lustrouspixeldungeon.Rankings;
+import com.zrp200.lustrouspixeldungeon.effects.BannerSprites;
+import com.zrp200.lustrouspixeldungeon.effects.Fireball;
+import com.zrp200.lustrouspixeldungeon.journal.Document;
+import com.zrp200.lustrouspixeldungeon.journal.Journal;
+import com.zrp200.lustrouspixeldungeon.messages.Messages;
+import com.zrp200.lustrouspixeldungeon.ui.RedButton;
+import com.zrp200.lustrouspixeldungeon.ui.RenderedTextMultiline;
+import com.zrp200.lustrouspixeldungeon.windows.WndStartGame;
 
 public class WelcomeScene extends PixelScene {
 
-	private static int LATEST_UPDATE = ShatteredPixelDungeon.v0_7_0;
+	private static int LATEST_UPDATE = LustrousPixelDungeon.v0_7_0;
 
 	@Override
 	public void create() {
 		super.create();
 
-		final int previousVersion = SPDSettings.version();
+		final int previousVersion = LustSettings.version();
 
-		if (ShatteredPixelDungeon.versionCode == previousVersion) {
-			ShatteredPixelDungeon.switchNoFade(TitleScene.class);
+		if (LustrousPixelDungeon.versionCode == previousVersion) {
+			LustrousPixelDungeon.switchNoFade(TitleScene.class);
 			return;
 		}
 
@@ -70,7 +70,7 @@ public class WelcomeScene extends PixelScene {
 		float topRegion = Math.max(95f, h*0.45f);
 
 		title.x = (w - title.width()) / 2f;
-		if (SPDSettings.landscape())
+		if (LustSettings.landscape())
 			title.y = (topRegion - title.height()) / 2f;
 		else
 			title.y = 16 + (topRegion - title.height() - 16) / 2f;
@@ -101,11 +101,11 @@ public class WelcomeScene extends PixelScene {
 			protected void onClick() {
 				super.onClick();
 				if (previousVersion == 0){
-					SPDSettings.version(ShatteredPixelDungeon.versionCode);
+					LustSettings.version(LustrousPixelDungeon.versionCode);
 					WelcomeScene.this.add(new WndStartGame(1));
 				} else {
 					updateVersion(previousVersion);
-					ShatteredPixelDungeon.switchScene(TitleScene.class);
+					LustrousPixelDungeon.switchScene(TitleScene.class);
 				}
 			}
 		};
@@ -116,7 +116,7 @@ public class WelcomeScene extends PixelScene {
 				protected void onClick() {
 					super.onClick();
 					updateVersion(previousVersion);
-					ShatteredPixelDungeon.switchScene(ChangesScene.class);
+					LustrousPixelDungeon.switchScene(ChangesScene.class);
 				}
 			};
 			okay.setRect(title.x, h-20, (title.width()/2)-2, 16);
@@ -136,7 +136,7 @@ public class WelcomeScene extends PixelScene {
 		String message;
 		if (previousVersion == 0) {
 			message = Messages.get(this, "welcome_msg");
-		} else if (previousVersion <= ShatteredPixelDungeon.versionCode) {
+		} else if (previousVersion <= LustrousPixelDungeon.versionCode) {
 			if (previousVersion < LATEST_UPDATE){
 				message = Messages.get(this, "update_intro");
 				message += "\n\n" + Messages.get(this, "update_msg");
@@ -171,7 +171,7 @@ public class WelcomeScene extends PixelScene {
 			}
 		}
 		
-		if (previousVersion < ShatteredPixelDungeon.v0_7_0){
+		if (previousVersion < LustrousPixelDungeon.v0_7_0){
 			Journal.loadGlobal();
 			Document.ALCHEMY_GUIDE.addPage("Potions");
 			Document.ALCHEMY_GUIDE.addPage("Stones");
@@ -180,7 +180,7 @@ public class WelcomeScene extends PixelScene {
 		}
 		
 		//convert game saves from the old format
-		if (previousVersion <= ShatteredPixelDungeon.v0_6_2e){
+		if (previousVersion <= LustrousPixelDungeon.v0_6_2e){
 			//old save file names for warrior, mage, rogue, huntress
 			String[] classes = new String[]{"warrior", "mage", "game", "ranger"};
 			for (int i = 1; i <= classes.length; i++){
@@ -208,7 +208,7 @@ public class WelcomeScene extends PixelScene {
 		}
 		
 		//remove changed badges
-		if (previousVersion <= ShatteredPixelDungeon.v0_6_0b){
+		if (previousVersion <= LustrousPixelDungeon.v0_6_0b){
 			Badges.disown(Badges.Badge.ALL_WANDS_IDENTIFIED);
 			Badges.disown(Badges.Badge.ALL_RINGS_IDENTIFIED);
 			Badges.disown(Badges.Badge.ALL_SCROLLS_IDENTIFIED);
@@ -217,7 +217,7 @@ public class WelcomeScene extends PixelScene {
 			Badges.saveGlobal();
 		}
 		
-		SPDSettings.version(ShatteredPixelDungeon.versionCode);
+		LustSettings.version(LustrousPixelDungeon.versionCode);
 	}
 
 	private void placeTorch( float x, float y ) {

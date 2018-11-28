@@ -19,19 +19,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon.ui;
+package com.zrp200.lustrouspixeldungeon.ui;
 
-import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
-import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
-import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTerrainTilemap;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndBag;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndJournal;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Gizmo;
@@ -40,6 +29,17 @@ import com.watabou.noosa.ui.Button;
 import com.watabou.noosa.ui.Component;
 import com.watabou.utils.Point;
 import com.watabou.utils.PointF;
+import com.zrp200.lustrouspixeldungeon.Assets;
+import com.zrp200.lustrouspixeldungeon.Dungeon;
+import com.zrp200.lustrouspixeldungeon.LustSettings;
+import com.zrp200.lustrouspixeldungeon.items.Item;
+import com.zrp200.lustrouspixeldungeon.messages.Messages;
+import com.zrp200.lustrouspixeldungeon.scenes.CellSelector;
+import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
+import com.zrp200.lustrouspixeldungeon.sprites.ItemSprite;
+import com.zrp200.lustrouspixeldungeon.tiles.DungeonTerrainTilemap;
+import com.zrp200.lustrouspixeldungeon.windows.WndBag;
+import com.zrp200.lustrouspixeldungeon.windows.WndJournal;
 
 public class Toolbar extends Component {
 
@@ -153,7 +153,7 @@ public class Toolbar extends Component {
 	protected void layout() {
 
 		int[] visible = new int[4];
-		int slots = SPDSettings.quickSlots();
+		int slots = LustSettings.quickSlots();
 
 		for(int i = 0; i <= 3; i++)
 			visible[i] = (int)((slots > i) ? y+2 : y+25);
@@ -163,8 +163,8 @@ public class Toolbar extends Component {
 			//decides on quickslot layout, depending on available screen size.
 			if (slots == 4 && width < 152){
 				if (width < 138){
-					if ((SPDSettings.flipToolbar() && i == 3) ||
-							(!SPDSettings.flipToolbar() && i == 0)) {
+					if ((LustSettings.flipToolbar() && i == 3) ||
+							(!LustSettings.flipToolbar() && i == 0)) {
 						btnQuick[i].border(0, 0);
 						btnQuick[i].frame(88, 0, 17, 24);
 					} else {
@@ -172,12 +172,12 @@ public class Toolbar extends Component {
 						btnQuick[i].frame(88, 0, 18, 24);
 					}
 				} else {
-					if (i == 0 && !SPDSettings.flipToolbar() ||
-						i == 3 && SPDSettings.flipToolbar()){
+					if (i == 0 && !LustSettings.flipToolbar() ||
+						i == 3 && LustSettings.flipToolbar()){
 						btnQuick[i].border(0, 2);
 						btnQuick[i].frame(106, 0, 19, 24);
-					} else if (i == 0 && SPDSettings.flipToolbar() ||
-							i == 3 && !SPDSettings.flipToolbar()){
+					} else if (i == 0 && LustSettings.flipToolbar() ||
+							i == 3 && !LustSettings.flipToolbar()){
 						btnQuick[i].border(2, 1);
 						btnQuick[i].frame(86, 0, 20, 24);
 					} else {
@@ -193,7 +193,7 @@ public class Toolbar extends Component {
 		}
 
 		float right = width;
-		switch(Mode.valueOf(SPDSettings.toolbarMode())){
+		switch(Mode.valueOf(LustSettings.toolbarMode())){
 			case SPLIT:
 				btnWait.setPos(x, y);
 				btnSearch.setPos(btnWait.right(), y);
@@ -227,7 +227,7 @@ public class Toolbar extends Component {
 		}
 		right = width;
 
-		if (SPDSettings.flipToolbar()) {
+		if (LustSettings.flipToolbar()) {
 
 			btnWait.setPos( (right - btnWait.right()), y);
 			btnSearch.setPos( (right - btnSearch.right()), y);

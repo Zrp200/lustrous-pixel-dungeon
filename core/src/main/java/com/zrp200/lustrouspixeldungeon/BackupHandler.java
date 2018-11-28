@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon;
+package com.zrp200.lustrouspixeldungeon;
 
 import android.annotation.TargetApi;
 import android.app.backup.BackupAgent;
@@ -28,8 +28,8 @@ import android.app.backup.BackupDataOutput;
 import android.app.backup.FullBackupDataOutput;
 import android.os.ParcelFileDescriptor;
 
-import com.shatteredpixel.shatteredpixeldungeon.journal.Journal;
 import com.watabou.utils.FileUtils;
+import com.zrp200.lustrouspixeldungeon.journal.Journal;
 
 import java.io.File;
 
@@ -49,7 +49,7 @@ public class BackupHandler extends BackupAgent {
 		//does not backup runs in progress, to prevent cheating.
 		
 		//store shared preferences
-		fullBackupFile(new File(getFilesDir().getParent() + "/shared_prefs/"+ ShatteredPixelDungeon.class.getCanonicalName() + ".xml"), data);
+		fullBackupFile(new File(getFilesDir().getParent() + "/shared_prefs/"+ LustrousPixelDungeon.class.getCanonicalName() + ".xml"), data);
 		
 		//store game data
 		fullBackupFile(FileUtils.getFile( getFilesDir(), Rankings.RANKINGS_FILE ), data);

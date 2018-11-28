@@ -19,10 +19,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon.actors.hero;
+package com.zrp200.lustrouspixeldungeon.actors.hero;
 
-import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.watabou.utils.Bundle;
+import com.zrp200.lustrouspixeldungeon.messages.Messages;
 
 public enum HeroSubClass {
 

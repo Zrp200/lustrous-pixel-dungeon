@@ -19,10 +19,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
+package com.zrp200.lustrouspixeldungeon.actors.buffs;
 
-import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.watabou.utils.Bundle;
+import com.zrp200.lustrouspixeldungeon.actors.Char;
 
 public abstract class ShieldBuff extends Buff {
 	
