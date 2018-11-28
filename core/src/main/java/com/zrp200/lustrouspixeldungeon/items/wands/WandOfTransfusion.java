@@ -141,7 +141,7 @@ public class WandOfTransfusion extends Wand {
 		// lvl 0 - 10%
 		// lvl 1 - 18%
 		// lvl 2 - 25%
-		if (Random.Int( level() + 10 ) >= 9){
+		if (Random.Int( level() + 8 ) >= 7){
 			//grants a free use of the staff
 			freeCharge = true;
 			GLog.p( Messages.get(this, "charged") );
