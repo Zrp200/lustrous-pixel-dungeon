@@ -129,7 +129,7 @@ public class ChangesScene extends PixelScene {
 				new ChangeButton(
 						new Image(Assets.HUNTRESS, 0, 90, 12, 15),
 						"Huntress (Mastery)",
-						"Because the Huntress subclasses contributed so much to make this class" +
+						"Because the Huntress subclasses contributed so much to make this class " +
 								"one-dimensional, they have been removed for the time being.\n" +
 								"Instead, " +
 								"the Huntress now has access to the _Freerunner_ and _Warlock_ subclasses!\n" +
@@ -147,13 +147,13 @@ public class ChangesScene extends PixelScene {
 								"instead of lightning.\n" +
 								"_-_ Makes up 50% of all shamans\n" +
 								"_-_ 3x accuracy on zaps, up from the standard 2x\n" +
-								"_-_ zaps still do 4-10 damage"
+								"_-_ zaps do 6-10 damage, up from 4-10"
 				),
 				new ChangeButton(
 						new ShamanSprite.Lightning(),
 						"Lightning Shaman",
 						"_-_ 1/4 of all shamans\n" +
-								"_-_ zaps now do 5-11 right off the bat to compensate for new rarity."
+								"_-_ zaps now do 6-12 right off the bat to compensate for new rarity."
 				),
 				new ChangeButton(
 						new ShamanSprite.Firebolt(),
@@ -168,7 +168,7 @@ public class ChangesScene extends PixelScene {
 						new ShamanSprite.Frost(),
 						"Frost Shaman",
 						"_-_ 1/8 of all shamans\n" +
-								"_-_ bolts do 4-12 damage and inflict 1-5 turns of chilling\n" +
+								"_-_ bolts do 6-10 damage and inflict 1-5 turns of chilling\n" +
 								"_-_ They resist appropriate sources.\n" +
 								"_-_ Bolts will freeze items if they happen to land on them."
 				),
@@ -177,14 +177,14 @@ public class ChangesScene extends PixelScene {
 								ItemSpriteSheet.ARMOR_LEATHER,
 								new Volatility().glowing()
 						),
-						"New Curse: Volatility",
+						"Volatility",
 						"Inspired from the ideas of MarshalldotEXE\n" +
 								"_-_ 5% chance to explode on hit.\n" +
 								"_-_ unupgraded armor MAAAY not withstand the explosion ;)"
 				),
 				new ChangeButton(
 						new ItemSprite(new TeleportationBomb().image(), null),
-						"New Exotic Bomb: Teleportation Bomb",
+						"Teleportation Bomb",
 						"_-_ Made with Bomb + Scroll of Teleportation (5 energy)\n" +
 								"_-_ Instead of exploding, teleports everything in a 5x5 radius, including items\n" +
 								"_-_ Useful for clearing things from a room; for example, from a piranha room or a trap room."
@@ -230,7 +230,7 @@ public class ChangesScene extends PixelScene {
 						),
 						"Quarterstaff",
 						"_-_ Quarterstaff's block now scales by +0/+1\n" +
-								"_-_ Base block reduced by 33% (3 -- > 2)"
+								"_-_ Base block reduced by 1/3 (3 -- > 2)"
 				),
 				new ChangeButton(
 						new ItemSprite( new Knuckles().image() ),
@@ -260,7 +260,7 @@ public class ChangesScene extends PixelScene {
 								16
 						),
 						"Charm",
-						"Charm now only recovers if hit by whoever applied it (I think)"
+						"Charm now only recovers if hit by whoever applied it."
 				),
 				new ChangeButton(
 						new ItemSprite(
@@ -283,11 +283,27 @@ public class ChangesScene extends PixelScene {
 								"_-_ Stones of Augmentation and Enchantment can now drop as rare stones."
 				),
 				new ChangeButton(
+						Icons.get(Icons.DEPTH),
+						"Mob Spawn Changes",
+						"_-_ Shamans now spawn on floors 11 and 12 (1) \n\n" +
+								"Rare Mob spawns adjusted:\n" +
+								"_-_ MM shamans now spawn on floor 4 (0 --> 0.05) \n" +
+								"_-_ MM shaman spawn rate boosted (0.05 --> 0.5)\n" +
+								"_-_ Fire Elementals now also spawn on floor 12\n" +
+								"_-_ Dwarf Warlocks now spawn on floors 13 and 14 (0 --> 0.01)\n" +
+								"_-_ Monk spawn rate reduced on floor 14 (0.01 --> 0.005)\n" +
+								"_-_ Monks now spawn on floor 16 (0.2)\n" +
+								"_-_ Golems now spawn on floor 17 (0.2)\n" +
+								"_-_ Succubus now spawn on floor 18 (0.02)\n" +
+								"_-_ Evil Eyes now spawn on floor 19 (0.01)\n"
+				),
+				new ChangeButton(
 						Icons.get(Icons.PREFS),
 						"Misc Changes",
 						"_-_ There's now a post-halls tier generation table, so crypt rooms in " +
-								"floors 22-24 are even less likely to give low tier armor now.\n\n" +
-								"_-_ Challenges and Huntress are now enabled by default.\n" +
+								"floors 22-24 are even less likely to give low tier armor now.\n" +
+								"_-_ Adjusted rare mobs. They will now spawn earlier and have a bit more variety.\n" +
+								"_-_ Huntress, Journal Pages, and Challenges are now enabled by default.\n" +
 								"_-_ Food, Arcane Styli, and Tomes of Mastery can now be quickslotted. (idea credit s0i)\n\n" +
 								"_-_ Cursed wands can now spawn Inferno and Blizzard\n\n" +
 								"_-_ Weapons that block damage now say how much damage they can block.\n" +
@@ -310,7 +326,7 @@ public class ChangesScene extends PixelScene {
 						Icons.get(Icons.LANGS),
 						"Removed Translations",
 						"The ability to play the game in other languages than English has been " +
-								"removed for the time being. This mod is not on transifex, and thus has no" +
+								"removed for the time being. This mod is not on transifex, and thus has no " +
 								"way to obtain new translations for any content changes."
 				)
 		);

@@ -88,16 +88,16 @@ public class Bestiary {
 				
 			// Caves
 			case 11:
-				//5x bat, 1x brute
+				//5x bat, 1x brute, 1x shaman
 				return new ArrayList<>(Arrays.asList(
 						Bat.class, Bat.class, Bat.class, Bat.class, Bat.class,
-						Brute.class));
+						Brute.class, Shaman.random()));
 			case 12:
-				//5x bat, 5x brute, 1x spinner
+				//5x bat, 5x brute, 1x spinner, 1x shaman
 				return new ArrayList<>(Arrays.asList(
 						Bat.class, Bat.class, Bat.class, Bat.class, Bat.class,
 						Brute.class, Brute.class, Brute.class, Brute.class, Brute.class,
-						Spinner.class));
+						Spinner.class, Shaman.random()));
 			case 13:
 				//1x bat, 3x brute, 1x shaman, 1x spinner
 				return new ArrayList<>(Arrays.asList(
@@ -172,33 +172,42 @@ public class Bestiary {
 			default:
 				return;
 			case 4:
+				if (Random.Float() < 0.05f) rotation.add(Shaman.MagicMissile.class);
 				if (Random.Float() < 0.01f) rotation.add(Skeleton.class);
 				if (Random.Float() < 0.01f) rotation.add(Thief.class);
 				return;
 				
 			// Prison
 			case 6:
+				if (Random.Float() < 0.45f)	rotation.add(Shaman.MagicMissile.class);
 				if (Random.Float() < 0.2f)  rotation.add(Shaman.random());
 				return;
+			case 9:
+				if (Random.Float() < 0.01f) rotation.add(Brute.class);
 			case 8:
 				if (Random.Float() < 0.02f) rotation.add(Bat.class);
 				return;
-			case 9:
-				if (Random.Float() < 0.02f) rotation.add(Bat.class);
-				if (Random.Float() < 0.01f) rotation.add(Brute.class);
-				return;
 				
 			// Caves
-			case 13:
-				if (Random.Float() < 0.02f) rotation.add(Elemental.class);
-				return;
 			case 14:
+				if (Random.Float() < 0.005f) rotation.add(Monk.class);
+			case 13:
+				if (Random.Float() < 0.01f) rotation.add(Warlock.class); // Because I'm evil.
+			case 12:
 				if (Random.Float() < 0.02f) rotation.add(Elemental.class);
-				if (Random.Float() < 0.01f) rotation.add(Monk.class);
 				return;
 				
 			// City
+			case 16:
+				if (Random.Float() < 0.2f) rotation.add(Monk.class);
+				return;
+			case 17:
+				if (Random.Float() < 0.2f) rotation.add(Golem.class);
+				return;
+
 			case 19:
+				if (Random.Float() < 0.01f ) rotation.add(Eye.class); // BWAHAHAHAHA
+			case 18:
 				if (Random.Float() < 0.02f) rotation.add(Succubus.class);
 				return;
 		}

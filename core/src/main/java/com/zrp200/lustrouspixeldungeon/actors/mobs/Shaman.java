@@ -52,9 +52,8 @@ public abstract class Shaman extends Mob implements Callback {
 	public static Class<?extends Mob> random() {
 		if(Random.Int(2) == 0) return Shaman.MagicMissile.class;
 		if(Random.Int(2) == 0) return Shaman.Lightning.class;
-		return Random.Int(2) == 0
-				? Shaman.Firebolt.class
-				: Shaman.Frost.class;
+		if(Random.Int(2) == 0) return Shaman.Frost.class;
+		return Shaman.Firebolt.class;
 	}
 	private static final float TIME_TO_ZAP = 1f;
 	{
@@ -134,7 +133,7 @@ public abstract class Shaman extends Mob implements Callback {
 			properties.add(Property.ELECTRIC);
 		}
 		protected void applyZap() {
-			int damage = Random.NormalIntRange(5, 11);
+			int damage = Random.NormalIntRange(6, 12);
 			if (Dungeon.level.water[enemy.pos] && !enemy.flying)
 				damage *= 1.5f;
 			enemy.sprite.centerEmitter().burst( SparkParticle.FACTORY, 3 );
@@ -150,7 +149,7 @@ public abstract class Shaman extends Mob implements Callback {
 		}
 		protected void applyZap() {
 			enemy.sprite.burst(0xFFFFFFFF,2);
-			applyZap(Random.NormalIntRange(4,10));
+			applyZap(Random.NormalIntRange(4,12));
 		}
 		public void onZapComplete() { // a temporary solution to what I want at the moment, hoping to get a bit more elegant later
 			if (!hit(this, enemy, false)) // if it won't hit without the magic boost
@@ -163,6 +162,7 @@ public abstract class Shaman extends Mob implements Callback {
         {
             spriteClass = ShamanSprite.Firebolt.class;
 
+            resistances.add(Fire.class);
             resistances.add(Burning.class);
             resistances.add(Inferno.class);
             resistances.add(Blazing.class);
@@ -189,7 +189,7 @@ public abstract class Shaman extends Mob implements Callback {
 		}
 		protected void applyZap() {
 			enemy.sprite.burst( 0xFF99CCFF, 3 );
-			applyZap( Random.NormalIntRange(4,8));
+			applyZap( Random.NormalIntRange(6,10));
 			Buff.prolong( enemy, Chill.class, Random.Float(1,5) );
 			Heap heap = Dungeon.level.heaps.get(enemy.pos);
 			if(heap != null) heap.freeze();
