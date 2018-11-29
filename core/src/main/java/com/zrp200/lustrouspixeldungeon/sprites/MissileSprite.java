@@ -115,7 +115,7 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 			}
 		}
 		
-		angle = 135 - (float)(Math.atan2( d.x, d.y ) / 3.1415926 * 180);
+		angle = 135 - (float)(Math.atan2( d.x, d.y ) / Math.PI * 180);
 		
 		if (d.x >= 0){
 			flipHorizontal = false;
@@ -129,11 +129,10 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 		}
 		
 		float speed = SPEED;
-		if(item instanceof Dart || item instanceof Shuriken)
-			speed *= 1.5f; // those weapons that you flick
-		if (item instanceof Dart && Dungeon.hero.belongings.weapon instanceof Crossbow){
-			speed *= 2f;
-		}
+		if (item instanceof Dart && Dungeon.hero.belongings.weapon instanceof Crossbow)
+			speed *= 3f;
+		else if(item instanceof Dart || item instanceof Shuriken)
+			speed *= 1.25f; // those weapons that you flick
 		PosTweener tweener = new PosTweener( this, to, d.length() / speed );
 		tweener.listener = this;
 		parent.add( tweener );
