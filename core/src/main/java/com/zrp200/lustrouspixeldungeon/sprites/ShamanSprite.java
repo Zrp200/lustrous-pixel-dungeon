@@ -25,6 +25,7 @@ import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Callback;
 import com.zrp200.lustrouspixeldungeon.Assets;
+import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.Shaman;
 import com.zrp200.lustrouspixeldungeon.effects.MagicMissile;
 
@@ -55,17 +56,12 @@ public class ShamanSprite extends MobSprite {
 		play(idle);
 	}
 
-	public void playZap(int pos) {
-		turnTo(ch.pos, pos);
-		play(zap);
-	}
-
-	public void zap(int pos) {
-		playZap(pos);
+	public void zapChar(Char enemy) {
+		zap(enemy.pos);
 		MagicMissile.boltFromChar(parent,
 				boltType,
 				this,
-				pos,
+				enemy.pos,
 				new Callback() {
 					@Override
 					public void call() {
@@ -79,9 +75,9 @@ public class ShamanSprite extends MobSprite {
 		{ textureFile = Assets.LSHAMAN; }
 
 		public Lightning() {super(Assets.LSHAMAN);}
-		public void zap(int pos) {
-			parent.add(new com.zrp200.lustrouspixeldungeon.effects.Lightning(ch.pos, pos, (Shaman) ch));
-			playZap(pos);
+		public void zapChar(Char enemy) {
+			parent.add(new com.zrp200.lustrouspixeldungeon.effects.Lightning(ch.pos, enemy.pos, (Shaman) ch));
+			zap(enemy.pos);
 			((Shaman) ch).onZapComplete();
 		}
 	}
