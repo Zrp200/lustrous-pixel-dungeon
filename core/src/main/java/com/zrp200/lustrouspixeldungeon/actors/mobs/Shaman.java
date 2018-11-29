@@ -100,7 +100,7 @@ public abstract class Shaman extends Mob implements Callback {
 	protected boolean doZap() {
 		boolean visible = fieldOfView[pos] || fieldOfView[enemy.pos];
 		if (visible) {
-			( (ShamanSprite) sprite ).zapChar( enemy );
+			( (ShamanSprite) sprite ).zapEnemy();
 		}
 
 		spend( TIME_TO_ZAP );

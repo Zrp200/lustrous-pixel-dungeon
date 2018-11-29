@@ -97,12 +97,16 @@ public abstract class Mob extends Char {
 	protected boolean enemySeen;
 	protected boolean alerted = false;
 
+	public Char getEnemy() {
+		return enemy;
+	}
+
 	protected static final float TIME_TO_WAKE_UP = 1f;
 	
 	private static final String STATE	= "state";
 	private static final String SEEN	= "seen";
 	private static final String TARGET	= "target";
-	
+
 	@Override
 	public void storeInBundle( Bundle bundle ) {
 		

@@ -56,7 +56,8 @@ public class ShamanSprite extends MobSprite {
 		play(idle);
 	}
 
-	public void zapChar(Char enemy) {
+	public void zapEnemy() {
+		Char enemy = ((Shaman) ch).getEnemy();
 		zap(enemy.pos);
 		MagicMissile.boltFromChar(parent,
 				boltType,
@@ -75,10 +76,12 @@ public class ShamanSprite extends MobSprite {
 		{ textureFile = Assets.LSHAMAN; }
 
 		public Lightning() {super(Assets.LSHAMAN);}
-		public void zapChar(Char enemy) {
-			parent.add(new com.zrp200.lustrouspixeldungeon.effects.Lightning(ch.pos, enemy.pos, (Shaman) ch));
+		public void zapEnemy() {
+			Shaman shaman = (Shaman) ch;
+			Char enemy = shaman.getEnemy();
+			parent.add(new com.zrp200.lustrouspixeldungeon.effects.Lightning(shaman.pos, enemy.pos, shaman));
 			zap(enemy.pos);
-			((Shaman) ch).onZapComplete();
+			shaman.onZapComplete();
 		}
 	}
 
