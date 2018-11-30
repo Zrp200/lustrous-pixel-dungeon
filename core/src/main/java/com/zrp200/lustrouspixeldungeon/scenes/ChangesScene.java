@@ -32,6 +32,7 @@ import com.watabou.noosa.ui.Component;
 import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.Chrome;
 import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
+import com.zrp200.lustrouspixeldungeon.actors.hero.HeroClass;
 import com.zrp200.lustrouspixeldungeon.items.Ankh;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.armor.curses.Volatility;
@@ -44,6 +45,7 @@ import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Knuckles;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Quarterstaff;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.sprites.CharSprite;
+import com.zrp200.lustrouspixeldungeon.sprites.HeroSprite;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSprite;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
 import com.zrp200.lustrouspixeldungeon.sprites.ShamanSprite;
@@ -116,8 +118,9 @@ public class ChangesScene extends PixelScene {
 								"By dumping into the Boomerang, the player wastes the majority of her natural versatility, " +
 								"so much so that she is turned into a class that tends to have very repetitive gameplay.\n" +
 								"\nTo address this, I have made the following changes:\n\n" +
-								"_-_ Boomerang removed from the game.\n" +
-								"_-_ Huntress now starts with two Darts and a tier-1 Whip (a Cord) instead of a Knuckleduster.\n" +
+								"_-_ _Boomerang_ removed from the game.\n" +
+								"_-_ Huntress now starts with _two darts_ and a _tier-1 whip_ (a Cord) instead of a _knuckleduster._\n" +
+								"_-_ Huntress now starts with the _magical holster_ instead of the _seed pouch._" +
 						//		"    _-_ The Darts illustrate her ability to benefit from having bonus strength when throwing missile weapons.\n" +
 						//		"    _-_ The Cord gives her semi-reliable range throughout sewers.\n" +
 						//		"    _-_ The Cord also illustrates her x-ray vision by allowing otherwise impossible attacks.\n" +
@@ -127,10 +130,10 @@ public class ChangesScene extends PixelScene {
 								"makes missile weapons viable by causing them to last longer and thus have a more defined presence in a run."
 				),
 				new ChangeButton(
-						new Image(Assets.HUNTRESS, 0, 90, 12, 15),
+						HeroSprite.avatar(HeroClass.HUNTRESS,6), //Assets.HUNTRESS, 0, 90, 12, 15),
 						"Huntress (Mastery)",
 						"Because the Huntress subclasses contributed so much to make this class " +
-								"one-dimensional, they have been removed for the time being.\n" +
+								"one-dimensional, they have been _removed_ for the time being.\n" +
 								"Instead, " +
 								"the Huntress now has access to the _Freerunner_ and _Warlock_ subclasses!\n" +
 								"\n[challenge users rejoice now]\n\n" +

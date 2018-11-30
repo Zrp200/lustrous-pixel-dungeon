@@ -288,7 +288,7 @@ public class GameScene extends PixelScene {
 		
 		add( emoicons );
 		
-		hero = new HeroSprite();
+		hero = new HeroSprite(Dungeon.hero);
 		hero.place( Dungeon.hero.pos );
 		hero.updateArmor();
 		mobs.add( hero );

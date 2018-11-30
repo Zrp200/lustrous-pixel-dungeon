@@ -135,7 +135,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 		}
 	}
 	
-	public void link(Char ch ) {
+	public void link( Char ch ) {
 		this.ch = ch;
 		ch.sprite = this;
 		

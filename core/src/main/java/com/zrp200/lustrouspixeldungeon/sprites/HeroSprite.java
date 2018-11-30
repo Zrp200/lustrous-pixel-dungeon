@@ -30,12 +30,11 @@ import com.watabou.utils.Callback;
 import com.watabou.utils.PointF;
 import com.watabou.utils.RectF;
 import com.zrp200.lustrouspixeldungeon.Assets;
-import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.actors.hero.HeroClass;
 
 public class HeroSprite extends CharSprite {
-	
+
 	private static final int FRAME_WIDTH	= 12;
 	private static final int FRAME_HEIGHT	= 15;
 	
@@ -46,23 +45,27 @@ public class HeroSprite extends CharSprite {
 	private Animation fly;
 	private Animation read;
 
-	public HeroSprite() {
+	public HeroSprite(Hero hero) {
 		super();
 		
-		texture( Dungeon.hero.heroClass.spritesheet() );
-		updateArmor();
+		texture( hero.heroClass.spritesheet() );
 		
-		link( Dungeon.hero );
+		link( hero );
+
+		updateArmor(hero);
 
 		if (ch.isAlive())
 			idle();
 		else
 			die();
 	}
-	
-	public void updateArmor() {
 
-		TextureFilm film = new TextureFilm( tiers(), Dungeon.hero.tier(), FRAME_WIDTH, FRAME_HEIGHT );
+	public void updateArmor() {
+		updateArmor((Hero) ch);
+	}
+	private void updateArmor(Hero hero) {
+
+		TextureFilm film = new TextureFilm( tiers(), hero.tier(), FRAME_WIDTH, FRAME_HEIGHT );
 		
 		idle = new Animation( 1, true );
 		idle.frames( film, 0, 0, 0, 1, 0, 0, 1, 1 );
@@ -87,7 +90,7 @@ public class HeroSprite extends CharSprite {
 		read = new Animation( 20, false );
 		read.frames( film, 19, 20, 20, 20, 20, 20, 20, 20, 20, 19 );
 		
-		if (Dungeon.hero.isAlive())
+		if (hero.isAlive())
 			idle();
 		else
 			die();
