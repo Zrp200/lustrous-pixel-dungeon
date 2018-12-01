@@ -55,7 +55,10 @@ import com.zrp200.lustrouspixeldungeon.ui.ScrollPane;
 import com.zrp200.lustrouspixeldungeon.ui.Window;
 import com.zrp200.lustrouspixeldungeon.windows.WndTitledMessage;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 //TODO: update this class with relevant info as new versions come out.
 public class ChangesScene extends PixelScene {
@@ -65,7 +68,36 @@ public class ChangesScene extends PixelScene {
 		infos.add(changes);
 		return changes;
 	}
+	public enum Version {
+		SHPD070("Shattered v0.7.0", 10,18,2018),
+		LUST000("Lustrous v0.0.0", 12,1,2018);
 
+		private String name;
+		private Date releaseDate;
+
+		Version(String name, int releaseMonth, int releaseDay, int releaseYear) {
+			GregorianCalendar calender = new GregorianCalendar();
+			calender.set(releaseYear,releaseMonth-1,releaseDay);
+
+			this.name = name;
+			this.releaseDate = calender.getTime();
+		}
+	}
+	private static ChangeButton addDeveloperCommentary(Version release, String commentary,Version...eventsToCompare) {
+		StringBuilder message = new StringBuilder();
+		DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
+		message.append("_-_ Released on " + dateFormat.format(release.releaseDate));
+		message.append("\n");
+		if(eventsToCompare != null) for(Version event : eventsToCompare)
+			message.append("_-_ " + (release.releaseDate.getTime() - event.releaseDate.getTime()) / 86400000 + " days after " + event.name + "\n");
+		message.append("\n");
+		message.append(commentary == null ? "Dev commentary will be added here in the future." : commentary);
+		return new ChangeButton(
+				new Image(Assets.ZRP200),
+				"Developer Commentary",
+				message.toString()
+		);
+	}
 	private final ArrayList<ChangeInfo> infos = new ArrayList<>();
 
 	@Override
@@ -108,6 +140,10 @@ public class ChangesScene extends PixelScene {
 		add(list);
 		addSection("v0.0.0", true, Window.TITLE_COLOR);
 		addSection("New Content", false, Window.TITLE_COLOR).addButtons(
+				addDeveloperCommentary( Version.LUST000,
+						"I'm honestly just happy to have figured this out. As of this moment, " +
+								"I'm waiting on Shattered 0.7.1 to be released so I can implement it.",
+						Version.SHPD070),
 				new ChangeButton(
 						new Image(Assets.HUNTRESS, 0, 15, 12, 15),
 						"Huntress (Base)",
@@ -285,17 +321,17 @@ public class ChangesScene extends PixelScene {
 				new ChangeButton(
 						Icons.get(Icons.DEPTH),
 						"Mob Spawn Changes",
-						"_-_ Shamans now spawn on floors 11 and 12 _(1)_ \n\n" +
+						"_-_ Shamans now spawn on floors 11 and 12 (0 --> 1) \n\n" +
 								"Rare Mob spawns adjusted:\n" +
-								"_-_ MM shamans now spawn on floor 4\n" +
-								"_-_ MM shaman spawn rate is 10x on floor 6\n" +
-								"_-_ Fire Elementals now also spawn on floor 12 (0.02)\n" +
-								"_-_ Dwarf Warlocks now spawn on floors 13 and 14 (0.01) \n" +
-								"_-_ Monk spawn rate halved on floor 14 _(0.01 --> 0.005)_ \n" +
-								"_-_ Monks now spawn on floor 16 (0.2) \n" +
-								"_-_ Golems now spawn on floor 17 (0.2) \n" +
-								"_-_ Succubus now spawn on floor 18 (0.02) \n" +
-								"_-_ Evil Eyes now spawn on floor 19 (0.01) \n"
+								"_-_ MM shamans now spawn on floor 4 (0 --> 0.05)\n" +
+								"_-_ MM shaman spawn rate 10x more than normal on floor 6\n" +
+								"_-_ Fire Elementals now also spawn on floor 12 (0 --> 0.02)\n" +
+								"_-_ Dwarf Warlocks now spawn on floors 13 and 14 (0 --> 0.01) \n" +
+								"_-_ Monk spawn rate halved on floor 14 (0.01 --> 0.005) \n" +
+								"_-_ Monks now spawn on floor 16 (0 --> 0.2) \n" +
+								"_-_ Golems now spawn on floor 17 (0 --> 0.2) \n" +
+								"_-_ Succubus now spawn on floor 18 (0 --> 0.02) \n" +
+								"_-_ Evil Eyes now spawn on floor 19 (0 --> 0.01) \n"
 				),
 				new ChangeButton(
 						Icons.get(Icons.PREFS),

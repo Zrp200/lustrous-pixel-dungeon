@@ -70,16 +70,17 @@ public class AboutScene extends PixelScene {
 		final float colTop = (Camera.main.height / 2) - (LustSettings.landscape() ? 30 : 100);
 		final float wataOffset = LustSettings.landscape() ? colWidth : 0;
 
-		Image palkia = new Image(Assets.PALKIA);
-		palkia.x = (colWidth - palkia.width()) / 2;
-		palkia.y = colTop;
-		align(palkia);
-		add( palkia );
+		Image zrp = new Image(Assets.ZRP200);
+		zrp.x = (colWidth - zrp.width()) / 2;
+		zrp.y = colTop;
+		align(zrp);
+		add( zrp );
+		new Flare( 7, 36 ).color( 0x9b57b6, true ).show( zrp, 0 ).angularSpeed = 20;
 
 		RenderedText lustTitle = renderText( TITLE_LPD, 8);
 		add(lustTitle);
 		lustTitle.x = (colWidth - lustTitle.width()) / 2;
-		lustTitle.y = palkia.y + palkia.height + 5;
+		lustTitle.y = zrp.y + zrp.height + 5;
 		align(lustTitle);
 
 		RenderedTextMultiline lust = renderMultiline( TXT_LPD, 8 );
