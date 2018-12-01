@@ -78,7 +78,7 @@ public class Berserk extends Buff {
 		if (berserking()){
 			WarriorShield buff = target.buff(WarriorShield.class);
 			if (target.HP <= 0) {
-				buff.absorbDamage(1 + (int)Math.ceil(target.shielding() * 0.075f)); //15 turns max, rather than 10.
+				buff.absorbDamage((int)Math.ceil(target.shielding() * 0.075f)); //15 turns max, rather than 10.
 				if (target.shielding() <= 0) {
 					target.die(this);
 					if (!target.isAlive()) Dungeon.fail(this.getClass());
@@ -91,7 +91,7 @@ public class Berserk extends Buff {
 				power = 0f;
 			}
 		} else {
-			power -= Math.max(0.1f, power) * 0.1f * Math.pow((target.HP/(float)target.HT), 2); // -10% rage at full hp
+			power -= Math.max(0.1f, power) * 0.1f * Math.pow( (target.HP/(float)target.HT ), 2); // -10% rage per turn at full hp
 			
 			if (power <= 0) switch(state) {
 				case RECOVERING:
@@ -105,10 +105,11 @@ public class Berserk extends Buff {
 		return true;
 	}
 
-	public int damageFactor(int dmg){
-		float bonus = Math.min(1.5f, 1f + (power / 2f));
-		if(state == State.BERSERK) bonus = 1.75f; // gotta kill those enemies before you're basically helpless. Also insurance for power-based bugs
-			return Math.round(dmg * bonus);
+	public int damageFactor(int dmg) {
+		float bonus = Math.min(power, 1) * 1.5f;
+		if (state == State.BERSERK)
+			bonus = 1.75f; // gotta kill those enemies before you're basically helpless. Also insurance for power-based bugs
+		return Math.round(dmg * bonus);
 	}
 
 	public boolean berserking(){
@@ -169,7 +170,7 @@ public class Berserk extends Buff {
 				r -= levelRecovery*0.5f;
 				g -= levelRecovery*0.3f;
 				if(power <= 0f) break;
-			case NORMAL: default:
+			default:
 				if(state == State.NORMAL) b = 0.5f;
 				if (power < 0.5f)       b *= 1-(power/100f);
 				else if (power <= 1f) { g *= 1.5f - power; b = 0f; }

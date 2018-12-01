@@ -35,51 +35,50 @@ public class WndChooseWay extends Window {
 	private static final int WIDTH		= 120;
 	private static final int BTN_HEIGHT	= 18;
 	private static final float GAP		= 2;
+	private static final float CHOICE_WIDTH = (WIDTH - GAP)/2;
 	
-	public WndChooseWay( final TomeOfMastery tome, final HeroSubClass way1, final HeroSubClass way2 ) {
-		
+	public WndChooseWay( final TomeOfMastery tome, final HeroSubClass... subclasses ) {
+
 		super();
 
 		IconTitle titlebar = new IconTitle();
-		titlebar.icon( new ItemSprite( tome.image(), null ) );
-		titlebar.label( tome.name() );
-		titlebar.setRect( 0, 0, WIDTH, 0 );
-		add( titlebar );
+		titlebar.icon(new ItemSprite(tome.image(), null));
+		titlebar.label(tome.name());
+		titlebar.setRect(0, 0, WIDTH, 0);
+		add(titlebar);
 
-		RenderedTextMultiline hl = PixelScene.renderMultiline( 6 );
-		hl.text( way1.desc() + "\n\n" + way2.desc() + "\n\n" + Messages.get(this, "message"), WIDTH );
-		hl.setPos( titlebar.left(), titlebar.bottom() + GAP );
-		add( hl );
-		
-		RedButton btnWay1 = new RedButton( way1.title().toUpperCase() ) {
-			@Override
-			protected void onClick() {
-				hide();
-				tome.choose( way1 );
-			}
-		};
-		btnWay1.setRect( 0, hl.bottom() + GAP, (WIDTH - GAP) / 2, BTN_HEIGHT );
-		add( btnWay1 );
-		
-		RedButton btnWay2 = new RedButton( way2.title().toUpperCase() ) {
-			@Override
-			protected void onClick() {
-				hide();
-				tome.choose( way2 );
-			}
-		};
-		btnWay2.setRect( btnWay1.right() + GAP, btnWay1.top(), btnWay1.width(), BTN_HEIGHT );
-		add( btnWay2 );
+		RenderedTextMultiline hl = PixelScene.renderMultiline(6);
+		StringBuilder subclass_desc = new StringBuilder();
+		for (HeroSubClass way : subclasses) subclass_desc.append(way.desc() + "\n\n");
+		hl.text(subclass_desc + Messages.get(this, "message"), WIDTH);
+		hl.setPos(titlebar.left(), titlebar.bottom() + GAP);
+		add(hl);
+		RedButton[] btnWay = new RedButton[subclasses.length];
+		for (int i = 0; i < subclasses.length; i++) {
+			final HeroSubClass subclass = subclasses[i];
+			btnWay[i] = new RedButton(subclasses[i].title().toUpperCase()) {
+				@Override
+				protected void onClick() {
+					hide();
+					tome.choose(subclass);
+				}
+			};
+			btnWay[i].setRect(
+					i%2==1 ? btnWay[i-1].right() : 0,
+					i>0 ? btnWay[i-1].top() + (BTN_HEIGHT + GAP) * (i/2) : hl.bottom() + GAP, // this should force two buttons per line
+					/*i+1==subclasses.length && i%2==0 ? WIDTH :*/ CHOICE_WIDTH,
+					BTN_HEIGHT
+			);
+			add(btnWay[i]);
+		}
 		
 		RedButton btnCancel = new RedButton( Messages.get(this, "cancel") ) {
-			@Override
-			protected void onClick() {
-				hide();
-			}
+			@Override protected void onClick() {  hide(); }
 		};
-		btnCancel.setRect( 0, btnWay2.bottom() + GAP, WIDTH, BTN_HEIGHT );
+		RedButton lastBtn = btnWay[btnWay.length - 1];
+		if(subclasses.length%2==1) 	btnCancel.setRect(lastBtn.right(), lastBtn.top(), CHOICE_WIDTH, BTN_HEIGHT);
+		else 						btnCancel.setRect( 0, btnWay[btnWay.length-1].bottom() + GAP, WIDTH, BTN_HEIGHT );
 		add( btnCancel );
-		
 		resize( WIDTH, (int)btnCancel.bottom() );
 	}
 }

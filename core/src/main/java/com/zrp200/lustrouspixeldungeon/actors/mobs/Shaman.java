@@ -48,12 +48,20 @@ import com.zrp200.lustrouspixeldungeon.sprites.CharSprite;
 import com.zrp200.lustrouspixeldungeon.sprites.ShamanSprite;
 import com.zrp200.lustrouspixeldungeon.utils.GLog;
 
+import java.util.HashMap;
+
 public abstract class Shaman extends Mob implements Callback {
+    private static HashMap<Class<?extends Shaman>, Float> probs = new HashMap();
+    static {
+        probs.put(  Shaman.MagicMissile.class,    5f   );
+        probs.put(  Shaman.Lightning.class,       3f   );
+        probs.put(  Shaman.Firebolt.class,        1f   );
+        probs.put(  Shaman.Frost.class,           1f   );
+
+    }
+
 	public static Class<?extends Mob> random() {
-		if(Random.Int(2) == 0) return Shaman.MagicMissile.class;
-		if(Random.Int(2) == 0) return Shaman.Lightning.class;
-		if(Random.Int(2) == 0) return Shaman.Frost.class;
-		return Shaman.Firebolt.class;
+        return Random.chances(probs);
 	}
 	private static final float TIME_TO_ZAP = 1f;
 	{
@@ -135,7 +143,7 @@ public abstract class Shaman extends Mob implements Callback {
 		protected void applyZap() {
 			int damage = Random.NormalIntRange(6, 12);
 			if (Dungeon.level.water[enemy.pos] && !enemy.flying)
-				damage *= 1.5f;
+				damage *= 1.25f;
 			enemy.sprite.centerEmitter().burst( SparkParticle.FACTORY, 3 );
 			enemy.sprite.flash();
 			if(enemy == Dungeon.hero)

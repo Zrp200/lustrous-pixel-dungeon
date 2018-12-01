@@ -38,8 +38,6 @@ import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.armor.curses.Volatility;
 import com.zrp200.lustrouspixeldungeon.items.bombs.TeleportationBomb;
 import com.zrp200.lustrouspixeldungeon.items.rings.RingOfWealth;
-import com.zrp200.lustrouspixeldungeon.items.wands.WandOfFireblast;
-import com.zrp200.lustrouspixeldungeon.items.wands.WandOfTransfusion;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Elastic;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Knuckles;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Quarterstaff;
@@ -120,7 +118,7 @@ public class ChangesScene extends PixelScene {
 								"\nTo address this, I have made the following changes:\n\n" +
 								"_-_ _Boomerang_ removed from the game.\n" +
 								"_-_ Huntress now starts with _two darts_ and a _tier-1 whip_ (a Cord) instead of a _knuckleduster._\n" +
-								"_-_ Huntress now starts with the _magical holster_ instead of the _seed pouch._" +
+								"_-_ Huntress now starts with the _magical holster_ instead of the _seed pouch._ \n" +
 						//		"    _-_ The Darts illustrate her ability to benefit from having bonus strength when throwing missile weapons.\n" +
 						//		"    _-_ The Cord gives her semi-reliable range throughout sewers.\n" +
 						//		"    _-_ The Cord also illustrates her x-ray vision by allowing otherwise impossible attacks.\n" +
@@ -148,15 +146,16 @@ public class ChangesScene extends PixelScene {
 						"Gnoll Shamans",
 						"Shamans now have variants! The default variant now shoots magic missiles " +
 								"instead of lightning.\n" +
-								"_-_ Makes up 50% of all shamans\n" +
+								"_-_ Makes up most shamans\n" +
 								"_-_ 3x accuracy on zaps, up from the standard 2x\n" +
-								"_-_ zaps do 6-10 damage, up from 4-10"
+								"_-_ zaps do 4-12 damage, up from 4-10"
 				),
 				new ChangeButton(
 						new ShamanSprite.Lightning(),
 						"Lightning Shaman",
-						"_-_ 1/4 of all shamans\n" +
-								"_-_ zaps now do 6-12 right off the bat to compensate for new rarity."
+						"_-_ second most common shamans\n" +
+								"_-_ zaps now do 6-12 right off the bat to compensate for new rarity." +
+								"_-_ zaps now do +25% bonus damage in water, down from +50%"
 				),
 				new ChangeButton(
 						new ShamanSprite.Firebolt(),
@@ -244,15 +243,13 @@ public class ChangesScene extends PixelScene {
 								"_-_ The Knuckleduster now blocks up to 1 point of damage!"
 				),
 				new ChangeButton(
-				        new ItemSprite( new WandOfTransfusion().image() ),
-                        "Wand of Transfusion",
-                        "_-_ Charm now scales by 2 (was 1)\n" +
-								"_-_ Staff effect base proc rate boosted by 25% (1/10 --> 1/8)"
-                ),
-				new ChangeButton(
-						new ItemSprite( new WandOfFireblast().image() ),
-						"Wand of Fireblast",
-						"_-_ When consuming 3 charges at once, now applies both paralysis and cripple"
+						new ItemSprite(ItemSpriteSheet.WAND_TRANSFUSION),
+						"Wands",
+						"Wand of Transfusion:\n" +
+								"_-_ Charm now scales by 2 (was 1)\n" +
+								"_-_ Battlemage effect's proc rate boosted by 25% (1/10 --> 1/8)\n" +
+								"\nWand of Fireblast:\n" +
+								"_-_ When consuming 3 charges at once, now applies both paralysis and cripple"
 				),
 				new ChangeButton(
 						new Image(
@@ -288,17 +285,17 @@ public class ChangesScene extends PixelScene {
 				new ChangeButton(
 						Icons.get(Icons.DEPTH),
 						"Mob Spawn Changes",
-						"_-_ Shamans now spawn on floors 11 and 12 (1) \n\n" +
+						"_-_ Shamans now spawn on floors 11 and 12 _(1)_ \n\n" +
 								"Rare Mob spawns adjusted:\n" +
-								"_-_ MM shamans now spawn on floor 4 (0 --> 0.05) \n" +
-								"_-_ MM shaman spawn rate boosted (0.05 --> 0.5)\n" +
-								"_-_ Fire Elementals now also spawn on floor 12\n" +
-								"_-_ Dwarf Warlocks now spawn on floors 13 and 14 (0 --> 0.01)\n" +
-								"_-_ Monk spawn rate reduced on floor 14 (0.01 --> 0.005)\n" +
-								"_-_ Monks now spawn on floor 16 (0.2)\n" +
-								"_-_ Golems now spawn on floor 17 (0.2)\n" +
-								"_-_ Succubus now spawn on floor 18 (0.02)\n" +
-								"_-_ Evil Eyes now spawn on floor 19 (0.01)\n"
+								"_-_ MM shamans now spawn on floor 4\n" +
+								"_-_ MM shaman spawn rate is 10x on floor 6\n" +
+								"_-_ Fire Elementals now also spawn on floor 12 (0.02)\n" +
+								"_-_ Dwarf Warlocks now spawn on floors 13 and 14 (0.01) \n" +
+								"_-_ Monk spawn rate halved on floor 14 _(0.01 --> 0.005)_ \n" +
+								"_-_ Monks now spawn on floor 16 (0.2) \n" +
+								"_-_ Golems now spawn on floor 17 (0.2) \n" +
+								"_-_ Succubus now spawn on floor 18 (0.02) \n" +
+								"_-_ Evil Eyes now spawn on floor 19 (0.01) \n"
 				),
 				new ChangeButton(
 						Icons.get(Icons.PREFS),

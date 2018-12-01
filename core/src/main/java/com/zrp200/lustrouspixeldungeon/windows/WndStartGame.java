@@ -275,7 +275,11 @@ public class WndStartGame extends Window {
 				@Override
 				protected void onClick() {
 					if (cl == null) return;
-					String msg = Messages.get(cl, cl.name() + "_desc_subclasses");
+					String msg = Messages.get(
+							cl,
+							"desc_subclasses",
+							Messages.capitalize( cl.title() ),
+							cl.subClasses().length);
 					for (HeroSubClass sub : cl.subClasses()){
 						msg += "\n\n" + sub.desc();
 					}
@@ -302,11 +306,12 @@ public class WndStartGame extends Window {
 			name.x = x + (avatar.width() - name.width())/2f;
 			name.y = avatar.y + avatar.height() + 2;
 			PixelScene.align(name);
-			
-			heroItem.setPos(x + width - BTN_SIZE, y);
-			heroLoadout.setPos(x + width - BTN_SIZE, heroItem.bottom());
-			heroMisc.setPos(x + width - BTN_SIZE, heroLoadout.bottom());
-			heroSubclass.setPos(x + width - BTN_SIZE, heroMisc.bottom());
+
+			float btnX =  x + width - BTN_SIZE;
+			heroItem.setPos(btnX, y);
+			heroLoadout.setPos(btnX, heroItem.bottom());
+			heroMisc.setPos(btnX, heroLoadout.bottom());
+			heroSubclass.setPos(btnX, heroMisc.bottom());
 		}
 		
 		@Override
