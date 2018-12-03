@@ -26,6 +26,7 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
+import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.effects.SpellSprite;
 import com.zrp200.lustrouspixeldungeon.items.BrokenSeal.WarriorShield;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
@@ -34,9 +35,7 @@ import com.zrp200.lustrouspixeldungeon.ui.BuffIndicator;
 
 public class Berserk extends Buff {
 
-	private enum State{
-		NORMAL, BERSERK, RECOVERING
-    }
+	private enum State { NORMAL, BERSERK, RECOVERING }
 	private State state = State.NORMAL;
 
 	private static final float LEVEL_RECOVER_START = 2f;
@@ -113,7 +112,7 @@ public class Berserk extends Buff {
 	}
 
 	public boolean berserking(){
-		if (target.HP == 0 && state == State.NORMAL && power >= 1f){
+		if (target.HP == 0 && state == State.NORMAL && power >= 1f && target instanceof Hero){
 
 			WarriorShield shield = target.buff(WarriorShield.class);
 			if (shield != null){
@@ -206,7 +205,7 @@ public class Berserk extends Buff {
 				else 			break;
 			case NORMAL: default:
 				desc += Messages.get(this, "angered_desc");
-				if(state == State.NORMAL) desc += "\n\n" + Messages.get(this, "berserk_active");
+				if(state == State.NORMAL && target instanceof Hero) desc += "\n\n" + Messages.get(this, "berserk_active");
 				desc += "\n\n" + Messages.get(this, "rage",Math.floor(power * 100f), dispDamage);
 				break;
 		}
