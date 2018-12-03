@@ -36,7 +36,7 @@ public class MagicalHolster extends Bag {
 	}
 
 	public static final float HOLSTER_SCALE_FACTOR = 0.85f;
-	public static final float HOLSTER_DURABILITY_FACTOR = 1.2f;
+	public static final float HOLSTER_DURABILITY_FACTOR = 4/3f;
 	
 	@Override
 	public boolean grab( Item item ) {

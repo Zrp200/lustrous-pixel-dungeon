@@ -36,8 +36,10 @@ import com.zrp200.lustrouspixeldungeon.actors.hero.HeroClass;
 import com.zrp200.lustrouspixeldungeon.items.Ankh;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.armor.curses.Volatility;
+import com.zrp200.lustrouspixeldungeon.items.bags.MagicalHolster;
 import com.zrp200.lustrouspixeldungeon.items.bombs.TeleportationBomb;
 import com.zrp200.lustrouspixeldungeon.items.rings.RingOfWealth;
+import com.zrp200.lustrouspixeldungeon.items.wands.WandOfCorruption;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Elastic;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Knuckles;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Quarterstaff;
@@ -86,10 +88,13 @@ public class ChangesScene extends PixelScene {
 	private static ChangeButton addDeveloperCommentary(Version release, String commentary,Version...eventsToCompare) {
 		StringBuilder message = new StringBuilder();
 		DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
-		message.append("_-_ Released on " + dateFormat.format(release.releaseDate));
-		message.append("\n");
+		if(release != null) message.append("_-_ Released on " + dateFormat.format(release.releaseDate) + "\n");
 		if(eventsToCompare != null) for(Version event : eventsToCompare)
-			message.append("_-_ " + (release.releaseDate.getTime() - event.releaseDate.getTime()) / 86400000 + " days after " + event.name + "\n");
+			message.append(
+					"_-_ " +
+					( release.releaseDate.getTime() - event.releaseDate.getTime() ) / 86400000 +
+					" days after " + event.name + "\n"
+			);
 		message.append("\n");
 		message.append(commentary == null ? "Dev commentary will be added here in the future." : commentary);
 		return new ChangeButton(
@@ -139,6 +144,24 @@ public class ChangesScene extends PixelScene {
 		};
 		add(list);
 		addSection("v0.0.0", true, Window.TITLE_COLOR);
+		addSection("0.0.0a",false,Window.TITLE_COLOR).addButtons(
+				new ChangeButton(
+						new ItemSprite(new MagicalHolster().image()),
+						new MagicalHolster().trueName(),
+						"_-_ missile weapon durability boost buffed (1.2 --> 4/3)"
+				),
+				new ChangeButton(
+						new ItemSprite(new MagicalHolster().image()),
+						new WandOfCorruption().trueName(),
+						"_-_ Can no longer inflict cripple\n" +
+								"_-_ Instead inflicts vertigo at a reduced chance\n" +
+								"_-_ Minor debuffs now have weights:\n" +
+								"    _*_ Weaken   : 4\n" +
+								"    _*_ Blindness: 3\n" +
+								"    _*_ Terror   : 2\n" +
+								"    _*_ Vertigo  : 1"
+				)
+		);
 		addSection("New Content", false, Window.TITLE_COLOR).addButtons(
 				addDeveloperCommentary( Version.LUST000,
 						"I'm honestly just happy to have figured this out. As of this moment, " +
