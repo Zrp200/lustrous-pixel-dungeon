@@ -44,7 +44,7 @@ public class Eldritch extends Weapon.Enchantment {
 		
 		if (Random.Int( level + 5 ) >= 4) {
 
-			if (defender == Dungeon.hero) {
+			if (defender == Dungeon.hero || defender.isImmune(Terror.class)) {
 				Buff.affect( defender, Vertigo.class, Vertigo.DURATION );
 			} else {
 				//damage will reduce by 5 turns, so effectively 10 turns of terror

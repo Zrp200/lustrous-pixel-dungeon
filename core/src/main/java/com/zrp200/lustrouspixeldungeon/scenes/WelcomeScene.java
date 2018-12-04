@@ -26,18 +26,13 @@ import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Bundle;
 import com.watabou.utils.FileUtils;
 import com.zrp200.lustrouspixeldungeon.Assets;
-import com.zrp200.lustrouspixeldungeon.Badges;
-import com.zrp200.lustrouspixeldungeon.GamesInProgress;
 import com.zrp200.lustrouspixeldungeon.LustSettings;
 import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
 import com.zrp200.lustrouspixeldungeon.Rankings;
 import com.zrp200.lustrouspixeldungeon.effects.BannerSprites;
 import com.zrp200.lustrouspixeldungeon.effects.Fireball;
-import com.zrp200.lustrouspixeldungeon.journal.Document;
-import com.zrp200.lustrouspixeldungeon.journal.Journal;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.ui.RedButton;
 import com.zrp200.lustrouspixeldungeon.ui.RenderedTextMultiline;
@@ -45,7 +40,7 @@ import com.zrp200.lustrouspixeldungeon.windows.WndStartGame;
 
 public class WelcomeScene extends PixelScene {
 
-	private static int LATEST_UPDATE = LustrousPixelDungeon.v0_0_0a;
+	private static int LATEST_UPDATE = LustrousPixelDungeon.v001;
 
 	@Override
 	public void create() {
@@ -169,52 +164,6 @@ public class WelcomeScene extends PixelScene {
 				//if we encounter a fatal error, then just clear the rankings
 				FileUtils.deleteFile( Rankings.RANKINGS_FILE );
 			}
-		}
-		
-		if (previousVersion < LustrousPixelDungeon.v0_7_0){
-			Journal.loadGlobal();
-			Document.ALCHEMY_GUIDE.addPage("Potions");
-			Document.ALCHEMY_GUIDE.addPage("Stones");
-			Document.ALCHEMY_GUIDE.addPage("Darts");
-			Journal.saveGlobal();
-		}
-		
-		//convert game saves from the old format
-		if (previousVersion <= LustrousPixelDungeon.v0_6_2e){
-			//old save file names for warrior, mage, rogue, huntress
-			String[] classes = new String[]{"warrior", "mage", "game", "ranger"};
-			for (int i = 1; i <= classes.length; i++){
-				String name = classes[i-1];
-				if (FileUtils.fileExists(name + ".dat")){
-					try {
-						Bundle gamedata = FileUtils.bundleFromFile(name + ".dat");
-						FileUtils.bundleToFile(GamesInProgress.gameFile(i), gamedata);
-						FileUtils.deleteFile(name + ".dat");
-						
-						//rogue's safe files have a different name
-						if (name.equals("game")) name = "depth";
-						
-						int depth = 1;
-						while (FileUtils.fileExists(name + depth + ".dat")) {
-							gamedata = FileUtils.bundleFromFile(name + depth + ".dat");
-							FileUtils.bundleToFile(GamesInProgress.depthFile(i, depth), gamedata);
-							FileUtils.deleteFile(name + depth + ".dat");
-							depth++;
-						}
-					} catch (Exception e){
-					}
-				}
-			}
-		}
-		
-		//remove changed badges
-		if (previousVersion <= LustrousPixelDungeon.v0_6_0b){
-			Badges.disown(Badges.Badge.ALL_WANDS_IDENTIFIED);
-			Badges.disown(Badges.Badge.ALL_RINGS_IDENTIFIED);
-			Badges.disown(Badges.Badge.ALL_SCROLLS_IDENTIFIED);
-			Badges.disown(Badges.Badge.ALL_POTIONS_IDENTIFIED);
-			Badges.disown(Badges.Badge.ALL_ITEMS_IDENTIFIED);
-			Badges.saveGlobal();
 		}
 		
 		LustSettings.version(LustrousPixelDungeon.versionCode);

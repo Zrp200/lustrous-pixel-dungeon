@@ -38,22 +38,10 @@ import com.zrp200.lustrouspixeldungeon.scenes.WelcomeScene;
 import javax.microedition.khronos.opengles.GL10;
 
 public class LustrousPixelDungeon extends Game {
-	
-	//variable constants for specific older versions of shattered, used for data conversion
-	//versions older than v0.6.0b are no longer supported, and data from them is ignored
-	public static final int v0_6_0b = 185;
-	public static final int v0_6_1b = 209;
-	public static final int v0_6_2e = 229;
-	public static final int v0_6_3b = 245;
-	public static final int v0_6_4a = 252;
-	public static final int v0_6_5c = 264;
-	
-	public static final int v0_7_0  = 303;
-
 
 	public static final int
-			v0_0_0 =  400,
-			v0_0_0a = 401;
+			v000 =  400,
+			v001 =	410;
 	
 	public LustrousPixelDungeon() {
 		super(WelcomeScene.class);
