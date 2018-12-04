@@ -33,6 +33,7 @@ import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.Chrome;
 import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
 import com.zrp200.lustrouspixeldungeon.actors.hero.HeroClass;
+import com.zrp200.lustrouspixeldungeon.actors.mobs.Shielded;
 import com.zrp200.lustrouspixeldungeon.items.Ankh;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.armor.curses.Volatility;
@@ -49,6 +50,7 @@ import com.zrp200.lustrouspixeldungeon.sprites.HeroSprite;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSprite;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
 import com.zrp200.lustrouspixeldungeon.sprites.ShamanSprite;
+import com.zrp200.lustrouspixeldungeon.sprites.ShieldedSprite;
 import com.zrp200.lustrouspixeldungeon.ui.Archs;
 import com.zrp200.lustrouspixeldungeon.ui.ExitButton;
 import com.zrp200.lustrouspixeldungeon.ui.Icons;
@@ -64,6 +66,7 @@ import java.util.GregorianCalendar;
 
 //TODO: update this class with relevant info as new versions come out.
 public class ChangesScene extends PixelScene {
+	static final Image BUGFIX = new Image( Assets.SPINNER, 144, 0, 16, 16);
 	private ChangeInfo addSection(String title, boolean isMajor, int color) {
 		ChangeInfo changes = new ChangeInfo(title,isMajor,isMajor ? "" : null);
 		changes.hardlight( color );
@@ -71,8 +74,8 @@ public class ChangesScene extends PixelScene {
 		return changes;
 	}
 	public enum Version {
-		SHPD070("Shattered v0.7.0", 10,18,2018),
-		LUST000("Lustrous v0.0.0", 12,1,2018);
+		SHPD070("Shattered v0.7.0",	10,18,2018),
+		LUST000("Lustrous v0.0.0",	12, 1,2018);
 
 		private String name;
 		private Date releaseDate;
@@ -90,18 +93,13 @@ public class ChangesScene extends PixelScene {
 		DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
 		if(release != null) message.append("_-_ Released on " + dateFormat.format(release.releaseDate) + "\n");
 		if(eventsToCompare != null) for(Version event : eventsToCompare)
-			message.append(
-					"_-_ " +
+			message.append( "_-_ " +
 					( release.releaseDate.getTime() - event.releaseDate.getTime() ) / 86400000 +
 					" days after " + event.name + "\n"
 			);
 		message.append("\n");
 		message.append(commentary == null ? "Dev commentary will be added here in the future." : commentary);
-		return new ChangeButton(
-				new Image(Assets.ZRP200),
-				"Developer Commentary",
-				message.toString()
-		);
+		return new ChangeButton( new Image(Assets.ZRP200),"Developer Commentary", message.toString() );
 	}
 	private final ArrayList<ChangeInfo> infos = new ArrayList<>();
 
@@ -109,8 +107,8 @@ public class ChangesScene extends PixelScene {
 	public void create() {
 		super.create();
 
-		int w = Camera.main.width;
-		int h = Camera.main.height;
+		int w = Camera.main.width,
+            h = Camera.main.height;
 
 		RenderedText title = PixelScene.renderText(Messages.get(this, "title"), 9);
 		title.hardlight(Window.TITLE_COLOR);
@@ -125,8 +123,8 @@ public class ChangesScene extends PixelScene {
 
 		NinePatch panel = Chrome.get(Chrome.Type.TOAST);
 
-		int pw = 135 + panel.marginLeft() + panel.marginRight() - 2;
-		int ph = h - 16;
+        int pw = 135 + panel.marginLeft() + panel.marginRight() - 2,
+            ph = h - 16;
 
 		panel.size(pw, ph);
 		panel.x = (w - pw) / 2f;
@@ -144,11 +142,11 @@ public class ChangesScene extends PixelScene {
 		};
 		add(list);
 		addSection("v0.0.0", true, Window.TITLE_COLOR);
-		addSection("0.0.0a",false,Window.TITLE_COLOR).addButtons(
+		addSection("v0.0.1 INDEV",false,Window.TITLE_COLOR).addButtons(
 				new ChangeButton(
 						new ItemSprite(new MagicalHolster().image()),
 						new MagicalHolster().trueName(),
-						"_-_ missile weapon durability boost buffed (1.2 --> 4/3)"
+						"_-_ missile weapon durability boost buffed (1.2 --> 1.3333)"
 				),
 				new ChangeButton(
 						new ItemSprite(new MagicalHolster().image()),
@@ -160,6 +158,19 @@ public class ChangesScene extends PixelScene {
 								"    _*_ Blindness: 3\n" +
 								"    _*_ Terror   : 2\n" +
 								"    _*_ Vertigo  : 1"
+				),
+                new ChangeButton(
+                        new ShieldedSprite(),
+                        new Shielded().name,
+                        "_-_ Now also gains rage.\n" +
+                                "_-_ Gets up to 6 shielding just like a warrior with plate."
+                ),
+				new ChangeButton(
+						BUGFIX, "Bugfixes",
+						"_-_ Paralytic Darts potentially breaking paralysis\n" +
+								"_-_ Fatal attacks visually breaking paralysis and terror\n" +
+								"_-_ Slow and Chill not stacking\n" +
+								"_-_ Taking 0 damage weakening charm and terror and breaking magical sleep and frost"
 				)
 		);
 		addSection("New Content", false, Window.TITLE_COLOR).addButtons(
@@ -284,18 +295,11 @@ public class ChangesScene extends PixelScene {
 								"a rare drop will now be exotic!\n" +
 								"_-_ Passive drop rate boost boosted by ~4.3% (1.15 --> 1.2)"
 				),
-				new ChangeButton(
-						new ItemSprite(
-								new Quarterstaff().image(),
-								null
-						),
-						"Quarterstaff",
+				new ChangeButton( new Quarterstaff(),
 						"_-_ Quarterstaff's block now scales by +0/+1\n" +
 								"_-_ Base block reduced by 1/3 (3 -- > 2)"
 				),
-				new ChangeButton(
-						new ItemSprite( new Knuckles().image() ),
-						new Knuckles().trueName(),
+				new ChangeButton( new Knuckles(),
 						"While no heroes now start with the knuckleduster now, that does not mean it is no longer in the game!\n" +
 								"_-_ Transmuting any tier-1 weapon (aside from Mage's Staff) will yield a Knuckleduster.\n" +
 								"_-_ Transmuting a Knuckleduster will yield a random non-Knuckleduster tier-1 weapon like normal.\n" +
@@ -370,15 +374,7 @@ public class ChangesScene extends PixelScene {
 								"_-_ Darts and Shurikens now have a faster throw animation.\n" +
 								"_-_ Some descriptions reworded."
 				),
-				new ChangeButton(
-						new Image(
-								Assets.SPINNER,
-								144,
-								0,
-								16,
-								16
-						),
-						"Bugfixes",
+				new ChangeButton( BUGFIX, "Bugfixes",
 						"_-_ Attacks by Stunning weapons potentially instantly breaking paralysis"
 				),
 				new ChangeButton(
@@ -584,7 +580,7 @@ public class ChangesScene extends PixelScene {
 		}
 
 		public ChangeButton( Item item, String message ){
-			this( new ItemSprite(item), item.name(), message);
+			this( new ItemSprite(item), item.trueName(), message);
 		}
 
 		protected void onClick() {

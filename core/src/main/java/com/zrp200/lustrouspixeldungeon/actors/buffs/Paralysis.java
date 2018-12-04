@@ -49,7 +49,7 @@ public class Paralysis extends FlavourBuff {
 	}
 	
 	public void processDamage( int damage ){
-		if (target == null) return;
+		if (target == null || !target.isAlive()) return;
 		ParalysisResist resist = target.buff(ParalysisResist.class);
 		if (resist == null){
 			resist = Buff.affect(target, ParalysisResist.class);

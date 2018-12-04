@@ -23,6 +23,7 @@ package com.zrp200.lustrouspixeldungeon.items.weapon.missiles.darts;
 
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.FlavourBuff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Paralysis;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
 
@@ -34,7 +35,13 @@ public class ParalyticDart extends TippedDart {
 	
 	@Override
 	public int proc( Char attacker, Char defender, int damage ) {
-		Buff.prolong( defender, Paralysis.class, 5f );
+		new FlavourBuff() {
+			{ actPriority = VFX_PRIO; }
+			public boolean act() {
+				Buff.prolong( target, Paralysis.class, 5f );
+				return super.act();
+			}
+		}.attachTo(defender);
 		return super.proc( attacker, defender, damage );
 	}
 	

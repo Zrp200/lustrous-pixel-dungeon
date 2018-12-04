@@ -323,63 +323,43 @@ public abstract class Char extends Actor {
 	}
 	
 	public void damage( int dmg, Object src ) {
-		
-		if (!isAlive() || dmg < 0) {
-			return;
-		}
-		Terror t = buff(Terror.class);
-		if (t != null){
-			t.recover();
-		}
-		Charm c = buff(Charm.class);
-		if (c != null){
-			if(src instanceof Actor) {
-				if( ((Actor) src).id() == c.object)
-					c.recover();
-			}
-		}
-		if (this.buff(Frost.class) != null){
-			Buff.detach( this, Frost.class );
-		}
-		if (this.buff(MagicalSleep.class) != null){
-			Buff.detach(this, MagicalSleep.class);
-		}
-		if (this.buff(Doom.class) != null){
-			dmg *= 2;
-		}
-		
+		if (!isAlive() || dmg < 0) return;
+		if (this.buff(Doom.class) != null) dmg *= 2; // The first thing that happens
 		Class<?> srcClass = src.getClass();
-		if (isImmune( srcClass )) {
-			dmg = 0;
-		} else {
-			dmg = Math.round( dmg * resist( srcClass ));
-		}
-		
-		if (buff( Paralysis.class ) != null) {
-			buff( Paralysis.class ).processDamage(dmg);
-		}
-
+		dmg = isImmune( srcClass ) ? 0 : Math.round( dmg * resist( srcClass ) );
 		int shielded = dmg;
 		//FIXME: when I add proper damage properties, should add an IGNORES_SHIELDS property to use here.
-		if (!(src instanceof Hunger)){
-			for (ShieldBuff s : buffs(ShieldBuff.class)){
-				dmg = s.absorbDamage(dmg);
-				if (dmg == 0) break;
-			}
+		if ( !( src instanceof Hunger ) ) for ( ShieldBuff s : buffs(ShieldBuff.class) ) {
+			dmg = s.absorbDamage(dmg);
+			if (dmg == 0) break;
 		}
 		shielded -= dmg;
 		HP -= dmg;
-		
-		sprite.showStatus( HP > HT / 2 ?
-			CharSprite.WARNING :
-			CharSprite.NEGATIVE,
-			Integer.toString( dmg + shielded ) );
+		sprite.showStatus(
+			HP > HT / 2 ? CharSprite.WARNING : CharSprite.NEGATIVE,
+			Integer.toString( dmg + shielded )
+		);
+		if( shielded+dmg==0 ) return;
 
 		if (HP < 0) HP = 0;
 
 		if (!isAlive()) {
 			die( src );
+			return;
 		}
+
+		Terror t = buff(Terror.class);
+		if (t != null)
+			t.recover();
+		Charm c = buff(Charm.class);
+		if (c != null && src instanceof Char && isCharmedBy( (Char) src) )
+			c.recover();
+		if (this.buff(Frost.class) != null)
+			Buff.detach( this, Frost.class );
+		if (this.buff(MagicalSleep.class) != null)
+			Buff.detach(this, MagicalSleep.class);
+		if (buff( Paralysis.class ) != null)
+			buff( Paralysis.class ).processDamage(dmg);
 	}
 	
 	public void destroy() {
@@ -400,10 +380,9 @@ public abstract class Char extends Actor {
 	protected void spend( float time ) {
 		
 		float timeScale = 1f;
-		if (buff( Slow.class ) != null) {
+		if (buff( Slow.class ) != null)
 			timeScale *= 0.5f;
-			//slowed and chilled do not stack
-		} else if (buff( Chill.class ) != null) {
+		if (buff( Chill.class ) != null) {
 			timeScale *= buff( Chill.class ).speedFactor();
 		}
 		if (buff( Speed.class ) != null) {
