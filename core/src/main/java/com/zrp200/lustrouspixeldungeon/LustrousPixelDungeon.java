@@ -40,8 +40,7 @@ import javax.microedition.khronos.opengles.GL10;
 public class LustrousPixelDungeon extends Game {
 
 	public static final int
-			v000 =  400,
-			v001 =	410;
+			v000 =  400;
 	
 	public LustrousPixelDungeon() {
 		super(WelcomeScene.class);

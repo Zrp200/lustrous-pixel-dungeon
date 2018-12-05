@@ -42,7 +42,9 @@ import com.zrp200.lustrouspixeldungeon.items.bombs.TeleportationBomb;
 import com.zrp200.lustrouspixeldungeon.items.rings.RingOfWealth;
 import com.zrp200.lustrouspixeldungeon.items.wands.WandOfCorruption;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Elastic;
+import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Chilling;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Knuckles;
+import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Longsword;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Quarterstaff;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.sprites.CharSprite;
@@ -66,16 +68,19 @@ import java.util.GregorianCalendar;
 
 //TODO: update this class with relevant info as new versions come out.
 public class ChangesScene extends PixelScene {
-	static final Image BUGFIX = new Image( Assets.SPINNER, 144, 0, 16, 16);
 	private ChangeInfo addSection(String title, boolean isMajor, int color) {
 		ChangeInfo changes = new ChangeInfo(title,isMajor,isMajor ? "" : null);
 		changes.hardlight( color );
 		infos.add(changes);
 		return changes;
 	}
+	private ChangeInfo addSection(String title, boolean isMajor) {
+		return addSection(title, isMajor, Window.TITLE_COLOR);
+	}
 	public enum Version {
-		SHPD070("Shattered v0.7.0",	10,18,2018),
-		LUST000("Lustrous v0.0.0",	12, 1,2018);
+		SHPD070 ("Shattered v0.7.0",	10,18,2018),
+		LUST000 ("Lustrous v0.0.0",	12, 1,2018),
+		LUST000a("Lustrous v0.0.0a",  12, 4,2018);
 
 		private String name;
 		private Date releaseDate;
@@ -105,6 +110,8 @@ public class ChangesScene extends PixelScene {
 
 	@Override
 	public void create() {
+		Image bugfix = new Image( Assets.SPINNER, 144, 0, 16, 16);
+
 		super.create();
 
 		int w = Camera.main.width,
@@ -133,7 +140,6 @@ public class ChangesScene extends PixelScene {
 		add(panel);
 
 		ScrollPane list = new ScrollPane(new Component()) {
-
 			@Override
 			public void onClick(float x, float y) {
 				for (ChangeInfo info : infos) if (info.onClick(x, y)) return;
@@ -141,23 +147,28 @@ public class ChangesScene extends PixelScene {
 
 		};
 		add(list);
-		addSection("v0.0.0", true, Window.TITLE_COLOR);
-		addSection("v0.0.1 INDEV",false,Window.TITLE_COLOR).addButtons(
-				new ChangeButton(
-						new ItemSprite(new MagicalHolster().image()),
-						new MagicalHolster().trueName(),
-						"_-_ missile weapon durability boost buffed (1.2 --> 1.3333)"
-				),
-				new ChangeButton(
-						new ItemSprite(new MagicalHolster().image()),
-						new WandOfCorruption().trueName(),
-						"_-_ Can no longer inflict cripple\n" +
-								"_-_ Instead inflicts vertigo at a reduced chance\n" +
-								"_-_ Minor debuffs now have weights:\n" +
-								"    _*_ Weaken   : 4\n" +
-								"    _*_ Blindness: 3\n" +
-								"    _*_ Terror   : 2\n" +
-								"    _*_ Vertigo  : 1"
+		addSection("v0.0.0", true);
+        addSection("v0.0.0a",false).addButtons(
+                new ChangeButton(
+                        new MagicalHolster(),
+                        "_-_ Missile weapon durability boost buffed (2/5 -> 1/3)\n" +
+								"\nThis should make its integration with huntress a bit more " +
+								"intuitive; with the change the huntress effectively gets double " +
+								"durability on missile weapons."
+                ),
+                new ChangeButton(
+                        new WandOfCorruption(),
+                        "_-_ Can no longer inflict cripple\n" +
+                                "_-_ Instead inflicts vertigo at a reduced chance\n" +
+                                "_-_ Minor debuffs now have weights:\n" +
+                                "    _*_ Weaken   : 4\n" +
+                                "    _*_ Blindness: 3\n" +
+                                "    _*_ Terror   : 2\n" +
+                                "    _*_ Vertigo  : 1"
+                ),
+                new ChangeButton(new ItemSprite(new Longsword().enchant(new Chilling())), "Enchantments",
+						"_-_ Chilling now stacks chill\n" +
+								"_-_ Venomous now scales a bit better with levels."
 				),
                 new ChangeButton(
                         new ShieldedSprite(),
@@ -165,15 +176,15 @@ public class ChangesScene extends PixelScene {
                         "_-_ Now also gains rage.\n" +
                                 "_-_ Gets up to 6 shielding just like a warrior with plate."
                 ),
-				new ChangeButton(
-						BUGFIX, "Bugfixes",
-						"_-_ Paralytic Darts potentially breaking paralysis\n" +
-								"_-_ Fatal attacks visually breaking paralysis and terror\n" +
-								"_-_ Slow and Chill not stacking\n" +
-								"_-_ Taking 0 damage weakening charm and terror and breaking magical sleep and frost"
-				)
-		);
-		addSection("New Content", false, Window.TITLE_COLOR).addButtons(
+                new ChangeButton(new Image(bugfix), "Bugfixes",
+                        "_-_ Paralytic Darts potentially breaking paralysis\n" +
+                                "_-_ Fatal attacks visually breaking paralysis and terror\n" +
+                                "_-_ Slow and Chill not stacking\n" +
+                                "_-_ Taking 0 damage weakening charm and terror and breaking magical sleep and frost\n" +
+                                "_-_ Changelog typos"
+                )
+        );
+		addSection("New Content", false).addButtons(
 				addDeveloperCommentary( Version.LUST000,
 						"I'm honestly just happy to have figured this out. As of this moment, " +
 								"I'm waiting on Shattered 0.7.1 to be released so I can implement it.",
@@ -224,7 +235,7 @@ public class ChangesScene extends PixelScene {
 						new ShamanSprite.Lightning(),
 						"Lightning Shaman",
 						"_-_ second most common shamans\n" +
-								"_-_ zaps now do 6-12 right off the bat to compensate for new rarity." +
+								"_-_ zaps now do 6-12 right off the bat to compensate for new rarity.\n" +
 								"_-_ zaps now do +25% bonus damage in water, down from +50%"
 				),
 				new ChangeButton(
@@ -310,7 +321,7 @@ public class ChangesScene extends PixelScene {
 						"Wands",
 						"Wand of Transfusion:\n" +
 								"_-_ Charm now scales by 2 (was 1)\n" +
-								"_-_ Battlemage effect's proc rate boosted by 25% (1/10 --> 1/8)\n" +
+								"_-_ Battlemage effect's proc rate boosted by 25% (1/10 -> 1/8)\n" +
 								"\nWand of Fireblast:\n" +
 								"_-_ When consuming 3 charges at once, now applies both paralysis and cripple"
 				),
@@ -323,7 +334,8 @@ public class ChangesScene extends PixelScene {
 								16
 						),
 						"Charm",
-						"Charm now only recovers if hit by whoever applied it."
+						"_-_ Charm now only recovers if hit by whoever applied it.\n" +
+								"\nThis is both a buff to charm in general and a nerf to viscosity."
 				),
 				new ChangeButton(
 						new ItemSprite(
@@ -348,17 +360,17 @@ public class ChangesScene extends PixelScene {
 				new ChangeButton(
 						Icons.get(Icons.DEPTH),
 						"Mob Spawn Changes",
-						"_-_ Shamans now spawn on floors 11 and 12 (0 --> 1) \n\n" +
+						"_-_ Shamans now spawn on floors 11 and 12 (0 -> 1) \n\n" +
 								"Rare Mob spawns adjusted:\n" +
-								"_-_ MM shamans now spawn on floor 4 (0 --> 0.05)\n" +
+								"_-_ MM shamans now spawn on floor 4 (0 -> .05)\n" +
 								"_-_ MM shaman spawn rate 10x more than normal on floor 6\n" +
-								"_-_ Fire Elementals now also spawn on floor 12 (0 --> 0.02)\n" +
-								"_-_ Dwarf Warlocks now spawn on floors 13 and 14 (0 --> 0.01) \n" +
-								"_-_ Monk spawn rate halved on floor 14 (0.01 --> 0.005) \n" +
-								"_-_ Monks now spawn on floor 16 (0 --> 0.2) \n" +
-								"_-_ Golems now spawn on floor 17 (0 --> 0.2) \n" +
-								"_-_ Succubus now spawn on floor 18 (0 --> 0.02) \n" +
-								"_-_ Evil Eyes now spawn on floor 19 (0 --> 0.01) \n"
+								"_-_ Fire Elementals now also spawn on floor 12 (0 -> .02)\n" +
+								"_-_ Dwarf Warlocks now spawn on floors 13 and 14 (0 -> 0.01) \n" +
+								"_-_ Monk spawn rate halved on floor 14 (.01 -> .005) \n" +
+								"_-_ Monks now spawn on floor 16 (0 -> .2) \n" +
+								"_-_ Golems now spawn on floor 17 (0 -> .2) \n" +
+								"_-_ Succubus now spawn on floor 18 (0 --> .02) \n" +
+								"_-_ Evil Eyes now spawn on floor 19 (0 --> .01) \n"
 				),
 				new ChangeButton(
 						Icons.get(Icons.PREFS),
@@ -374,7 +386,7 @@ public class ChangesScene extends PixelScene {
 								"_-_ Darts and Shurikens now have a faster throw animation.\n" +
 								"_-_ Some descriptions reworded."
 				),
-				new ChangeButton( BUGFIX, "Bugfixes",
+				new ChangeButton( bugfix, "Bugfixes",
 						"_-_ Attacks by Stunning weapons potentially instantly breaking paralysis"
 				),
 				new ChangeButton(

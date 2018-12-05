@@ -102,11 +102,6 @@ public class GamesInProgress {
 				info = new Info();
 				info.slot = slot;
 				Dungeon.preview(info, bundle);
-				
-				//saves from before 0.6.0b are not supported
-				if (info.version < LustrousPixelDungeon.v0_6_0b) {
-					info = null;
-				}
 
 			} catch (IOException e) {
 				info = null;

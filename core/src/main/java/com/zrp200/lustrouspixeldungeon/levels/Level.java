@@ -33,7 +33,6 @@ import com.watabou.utils.SparseArray;
 import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.Challenges;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
-import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
 import com.zrp200.lustrouspixeldungeon.Statistics;
 import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
@@ -298,11 +297,6 @@ public abstract class Level implements Bundlable {
 	public void restoreFromBundle( Bundle bundle ) {
 
 		version = bundle.getInt( VERSION );
-		
-		//saves from before 0.6.0b are not supported
-		if (version < LustrousPixelDungeon.v0_6_0b){
-			throw new RuntimeException("old save");
-		}
 
 		setSize( bundle.getInt(WIDTH), bundle.getInt(HEIGHT));
 		
@@ -323,11 +317,6 @@ public abstract class Level implements Bundlable {
 		exit		= bundle.getInt( EXIT );
 
 		locked      = bundle.getBoolean( LOCKED );
-
-		// pre-0.6.1 saves
-		if (version <= LustrousPixelDungeon.v0_6_0b){
-			map = Terrain.convertTilesFrom0_6_0b( map );
-		}
 		
 		Collection<Bundlable> collection = bundle.getCollection( HEAPS );
 		for (Bundlable h : collection) {

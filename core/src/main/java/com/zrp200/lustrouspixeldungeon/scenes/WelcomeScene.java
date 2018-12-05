@@ -40,7 +40,7 @@ import com.zrp200.lustrouspixeldungeon.windows.WndStartGame;
 
 public class WelcomeScene extends PixelScene {
 
-	private static int LATEST_UPDATE = LustrousPixelDungeon.v001;
+	private static int LATEST_UPDATE = LustrousPixelDungeon.v000;
 
 	@Override
 	public void create() {
