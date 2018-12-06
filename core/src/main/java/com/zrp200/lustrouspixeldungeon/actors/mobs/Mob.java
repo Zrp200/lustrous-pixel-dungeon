@@ -691,23 +691,25 @@ public abstract class Mob extends Char {
 		return enemySeen && (target == Dungeon.hero.pos);
 	}
 
-	public interface AiState {
-		boolean act( boolean justAlerted );
-		boolean hasNoticedEnemy();
+	public class AiState {
+		boolean act( boolean justAlerted ) {
+			return enemySeen = hasNoticedEnemy();
+		}
+		boolean hasNoticedEnemy() {
+			return enemyInFOV();
+		}
 	}
 
-	protected class Sleeping implements AiState {
+	protected class Sleeping extends AiState {
 		public static final String TAG	= "SLEEPING";
 
 		public boolean hasNoticedEnemy() {
-			return enemyInFOV() && Random.Float( distance( enemy ) + enemy.stealth() + (enemy.flying ? 2 : 0) ) < 1;
+			return super.hasNoticedEnemy() && Random.Float( distance( enemy ) + enemy.stealth() + (enemy.flying ? 2 : 0) ) < 1;
 		}
 
 		@Override
 		public boolean act( boolean justAlerted ) {
-			if (hasNoticedEnemy()) {
-				enemySeen = true;
-
+			if (super.act(justAlerted)) {
 				notice();
 				state = HUNTING;
 				target = enemy.pos;
@@ -723,28 +725,21 @@ public abstract class Mob extends Char {
 				spend( TIME_TO_WAKE_UP );
 
 			} else {
-
-				enemySeen = false;
-
 				spend( TICK );
-
 			}
 			return true;
 		}
 	}
 
-	protected class Wandering implements AiState {
+	protected class Wandering extends AiState {
 
 		public static final String TAG	= "WANDERING";
 		public boolean hasNoticedEnemy() {
-			return enemyInFOV() && (Random.Float( distance( enemy ) / 2f + enemy.stealth() ) < 1);
+			return super.hasNoticedEnemy() && (Random.Float( distance( enemy ) / 2f + enemy.stealth() ) < 1);
 		}
 		@Override
 		public boolean act( boolean justAlerted ) {
-			if (hasNoticedEnemy()) {
-
-				enemySeen = true;
-
+			if ( super.act(justAlerted) ) {
 				notice();
 				alerted = true;
 				state = HUNTING;
@@ -759,9 +754,6 @@ public abstract class Mob extends Char {
 				}
 
 			} else {
-
-				enemySeen = false;
-
 				int oldPos = pos;
 				if (target != -1 && getCloser( target )) {
 					spend( 1 / speed() );
@@ -776,22 +768,15 @@ public abstract class Mob extends Char {
 		}
 	}
 
-	protected class Hunting implements AiState {
+	protected class Hunting extends AiState {
 
 		public static final String TAG	= "HUNTING";
 
 		@Override
-		public boolean hasNoticedEnemy() {
-			return enemyInFOV();
-		}
-
-		@Override
 		public boolean act( boolean justAlerted ) {
-			enemySeen = enemyInFOV();
-			if (enemySeen && !isCharmedBy( enemy ) && canAttack( enemy )) {
+			if (super.act(justAlerted) && !isCharmedBy( enemy ) && canAttack( enemy )) {
 				return doAttack( enemy );
 			} else {
-
 				if (enemySeen) {
 					target = enemy.pos;
 				} else if (enemy == null) {
@@ -819,18 +804,13 @@ public abstract class Mob extends Char {
 		}
 	}
 
-	protected class Fleeing implements AiState {
+	protected class Fleeing extends AiState {
 
 		public static final String TAG	= "FLEEING";
 
 		@Override
-		public boolean hasNoticedEnemy() {
-			return enemyInFOV();
-		}
-
-		@Override
 		public boolean act( boolean justAlerted ) {
-			enemySeen = hasNoticedEnemy();
+			super.act(justAlerted);
 			//loses target when 0-dist rolls a 6 or greater.
 			if (enemy == null || !enemySeen && 1 + Random.Int(Dungeon.level.distance(pos, target)) >= 6){
 				target = -1;
@@ -856,11 +836,11 @@ public abstract class Mob extends Char {
 		}
 
 		protected void nowhereToRun() {
-		    if(buff(Terror.class) != null) buff(Terror.class).detach();
+		    if(buff(Terror.class) != null) buff(Terror.class).recover(); //you'd think that would have an impact.
 		}
 	}
 
-	protected class Passive implements AiState {
+	protected class Passive extends AiState {
 
 		public static final String TAG	= "PASSIVE";
 
@@ -871,7 +851,7 @@ public abstract class Mob extends Char {
 
 		@Override
 		public boolean act( boolean justAlerted ) {
-			enemySeen = hasNoticedEnemy();
+			super.act(justAlerted);
 			spend( TICK );
 			return true;
 		}

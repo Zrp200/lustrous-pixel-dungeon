@@ -78,15 +78,16 @@ public class ChangesScene extends PixelScene {
 	private ChangeInfo addSection(String title, boolean isMajor) {
 		return addSection(title, isMajor, Window.TITLE_COLOR);
 	}
-	public enum Version {
+	public enum Milestone {
 		SHPD070 ("Shattered v0.7.0",	10,18,2018),
-		LUST000 ("Lustrous v0.0.0",	12, 1,2018),
-		LUST000a("Lustrous v0.0.0a",  12, 4,2018);
+		LUST000 ("Lustrous v0.0.0",		12, 1,2018),
+		LUST000a("Lustrous v0.0.0a",  	12, 4,2018),
+		LUST000b("Lustrous v0.0.0b",	12, 6,2018);
 
 		private String name;
 		private Date releaseDate;
 
-		Version(String name, int releaseMonth, int releaseDay, int releaseYear) {
+		Milestone(String name, int releaseMonth, int releaseDay, int releaseYear) {
 			GregorianCalendar calender = new GregorianCalendar();
 			calender.set(releaseYear,releaseMonth-1,releaseDay);
 
@@ -94,13 +95,13 @@ public class ChangesScene extends PixelScene {
 			this.releaseDate = calender.getTime();
 		}
 	}
-	private static ChangeButton addDeveloperCommentary(Version release, String commentary,Version...eventsToCompare) {
+	private static ChangeButton addDeveloperCommentary(Milestone release, String commentary,Milestone...eventsToCompare) {
 		StringBuilder message = new StringBuilder();
 		DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
 		if(release != null) message.append("_-_ Released on " + dateFormat.format(release.releaseDate) + "\n");
-		if(eventsToCompare != null) for(Version event : eventsToCompare)
+		if(eventsToCompare != null) for(Milestone event : eventsToCompare)
 			message.append( "_-_ " +
-					( release.releaseDate.getTime() - event.releaseDate.getTime() ) / 86400000 +
+					( release.releaseDate.getTime() - event.releaseDate.getTime() ) / 86400000 + // get the time difference in days
 					" days after " + event.name + "\n"
 			);
 		message.append("\n");
@@ -150,11 +151,20 @@ public class ChangesScene extends PixelScene {
 		add(list);
 		addSection("v0.0.0", true);
 		addSection("v0.0.0b", false).addButtons(
-				new ChangeButton(new WandOfCorruption(),"_-_ Reverted cripple --> vertigo change"),
-				new ChangeButton(new ItemSprite(new Longsword().image(), new Eldritch().glowing()),"Eldrich",
+				new ChangeButton(new WandOfCorruption(),
+						"It's extremely obvious that giving wands of corruption the ability to " +
+								"inflict vertigo was the wrong decision. Terror + Vertigo is extremely " +
+								"powerful, and the wand corruption was already an amazing wand.\n\n" +
+								"_-_ Reverted cripple --> vertigo change"),
+				new ChangeButton(new ItemSprite(new Longsword().image(), new Eldritch().glowing()),"Eldritch",
 						"_-_ Now inflicts brief vertigo on targets immune to terror (4+level)\n" +
 								"_-_ Base Terror duration halved (10 -> 5)\n" +
 								"_-_ Terror duration now scales with level (+2.5/level)"
+				),
+				new ChangeButton(
+						new Image(Assets.BUFFS_LARGE,160,0,16,16),
+						"Terror",
+						"Terrified enemies now recover faster when cornered."
 				),
 				new ChangeButton(new Image(bugfix),"Bugfixes",
 						"_-_ More changelog mistakes\n" +
@@ -199,10 +209,10 @@ public class ChangesScene extends PixelScene {
                 )
         );
 		addSection("New Content", false).addButtons(
-				addDeveloperCommentary( Version.LUST000,
+				addDeveloperCommentary( Milestone.LUST000,
 						"I'm honestly just happy to have figured this out. As of this moment, " +
 								"I'm waiting on Shattered 0.7.1 to be released so I can implement it.",
-						Version.SHPD070),
+						Milestone.SHPD070),
 				new ChangeButton(
 						new Image(Assets.HUNTRESS, 0, 15, 12, 15),
 						"Huntress (Base)",
