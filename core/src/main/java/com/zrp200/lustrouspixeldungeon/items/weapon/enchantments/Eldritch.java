@@ -45,7 +45,7 @@ public class Eldritch extends Weapon.Enchantment {
 		if (Random.Int( level + 5 ) >= 4) {
 
 			if (defender == Dungeon.hero || defender.isImmune(Terror.class)) {
-				Buff.affect( defender, Vertigo.class, 2+level );
+				Buff.affect( defender, Vertigo.class, 3+level );
 			} else {
 				//damage will reduce by 5 turns, so effectively 1+0.5*level free hits
 				Buff.affect( defender, Terror.class, 2.5f * (4+level) ).object = attacker.id();

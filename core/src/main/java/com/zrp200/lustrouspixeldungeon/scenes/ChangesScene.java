@@ -152,7 +152,7 @@ public class ChangesScene extends PixelScene {
 		addSection("v0.0.0b", false).addButtons(
 				new ChangeButton(new WandOfCorruption(),"_-_ Reverted cripple --> vertigo change"),
 				new ChangeButton(new ItemSprite(new Longsword().image(), new Eldritch().glowing()),"Eldrich",
-						"_-_ Now inflicts brief vertigo on targets immune to terror (5+level)\n" +
+						"_-_ Now inflicts brief vertigo on targets immune to terror (4+level)\n" +
 								"_-_ Base Terror duration halved (10 -> 5)\n" +
 								"_-_ Terror duration now scales with level (+2.5/level)"
 				),
