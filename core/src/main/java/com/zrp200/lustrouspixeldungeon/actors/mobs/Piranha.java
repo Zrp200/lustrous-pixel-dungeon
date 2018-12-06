@@ -137,8 +137,8 @@ public class Piranha extends Mob {
 	private class Hunting extends Mob.Hunting{
 		
 		@Override
-		public boolean act(boolean enemyInFOV, boolean justAlerted) {
-			boolean result = super.act(enemyInFOV, justAlerted);
+		public boolean act(boolean justAlerted) {
+			boolean result = super.act(justAlerted);
 			//this causes piranha to move away when a door is closed on them in a pool room.
 			if (state == WANDERING && Dungeon.level instanceof RegularLevel){
 				Room curRoom = ((RegularLevel)Dungeon.level).room(pos);

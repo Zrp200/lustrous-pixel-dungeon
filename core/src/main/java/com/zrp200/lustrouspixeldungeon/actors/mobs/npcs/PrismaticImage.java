@@ -164,8 +164,8 @@ public class PrismaticImage extends MirrorImage {
 	private class Wandering extends Mob.Wandering{
 		
 		@Override
-		public boolean act(boolean enemyInFOV, boolean justAlerted) {
-			if (!enemyInFOV){
+		public boolean act(boolean justAlerted) {
+			if (!enemyInFOV()){
 				Buff.affect(hero, PrismaticGuard.class).set( HP );
 				destroy();
 				CellEmitter.get(pos).start( Speck.factory(Speck.LIGHT), 0.2f, 3 );
@@ -173,7 +173,7 @@ public class PrismaticImage extends MirrorImage {
 				Sample.INSTANCE.play( Assets.SND_TELEPORT );
 				return true;
 			} else {
-				return super.act(enemyInFOV, justAlerted);
+				return super.act(justAlerted);
 			}
 		}
 		

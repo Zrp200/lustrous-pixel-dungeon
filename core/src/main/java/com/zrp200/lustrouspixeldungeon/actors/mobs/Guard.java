@@ -163,11 +163,9 @@ public class Guard extends Mob {
 	
 	private class Hunting extends Mob.Hunting{
 		@Override
-		public boolean act( boolean enemyInFOV, boolean justAlerted ) {
-			enemySeen = enemyInFOV;
-			
+		public boolean act( boolean justAlerted ) {
 			if (!chainsUsed
-					&& enemyInFOV
+					&& enemyInFOV()
 					&& !isCharmedBy( enemy )
 					&& !canAttack( enemy )
 					&& Dungeon.level.distance( pos, enemy.pos ) < 5
@@ -176,7 +174,7 @@ public class Guard extends Mob {
 					&& chain(enemy.pos)){
 				return false;
 			} else {
-				return super.act( enemyInFOV, justAlerted );
+				return super.act( justAlerted );
 			}
 			
 		}

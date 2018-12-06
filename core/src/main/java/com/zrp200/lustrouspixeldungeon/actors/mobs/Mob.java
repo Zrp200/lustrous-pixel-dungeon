@@ -182,10 +182,12 @@ public abstract class Mob extends Char {
 		}
 		
 		enemy = chooseEnemy();
-		
-		boolean enemyInFOV = enemy != null && enemy.isAlive() && fieldOfView[enemy.pos] && enemy.invisible <= 0;
 
-		return state.act( enemyInFOV, justAlerted );
+		return state.act( justAlerted );
+	}
+
+	public boolean enemyInFOV() {
+		return enemy != null && enemy.isAlive() && fieldOfView[enemy.pos] && enemy.invisible <= 0;
 	}
 	
 	protected Char chooseEnemy() {
@@ -494,10 +496,14 @@ public abstract class Mob extends Char {
 		}
 		return damage;
 	}
+
+	public boolean enemySeen() { // just double checks things
+		return enemySeen && enemyInFOV();
+	}
 	
 	@Override
 	public int defenseSkill( Char enemy ) {
-		boolean seen = (enemySeen && enemy.invisible == 0);
+		boolean seen = (enemySeen() && enemy.invisible == 0);
 		if (enemy == Dungeon.hero && !Dungeon.hero.canSurpriseAttack()) seen = true;
 		if ( seen
 				&& paralysed == 0
@@ -539,7 +545,7 @@ public abstract class Mob extends Char {
 	}
 
 	public boolean surprisedBy( Char enemy ){
-		return !enemySeen && enemy == Dungeon.hero;
+		return !enemySeen();
 	}
 
 	public void aggro( Char ch ) {
@@ -686,17 +692,20 @@ public abstract class Mob extends Char {
 	}
 
 	public interface AiState {
-		boolean act( boolean enemyInFOV, boolean justAlerted );
+		boolean act( boolean justAlerted );
+		boolean hasNoticedEnemy();
 	}
 
 	protected class Sleeping implements AiState {
-
 		public static final String TAG	= "SLEEPING";
 
-		@Override
-		public boolean act( boolean enemyInFOV, boolean justAlerted ) {
-			if (enemyInFOV && Random.Float( distance( enemy ) + enemy.stealth() + (enemy.flying ? 2 : 0) ) < 1) {
+		public boolean hasNoticedEnemy() {
+			return enemyInFOV() && Random.Float( distance( enemy ) + enemy.stealth() + (enemy.flying ? 2 : 0) ) < 1;
+		}
 
+		@Override
+		public boolean act( boolean justAlerted ) {
+			if (hasNoticedEnemy()) {
 				enemySeen = true;
 
 				notice();
@@ -727,10 +736,12 @@ public abstract class Mob extends Char {
 	protected class Wandering implements AiState {
 
 		public static final String TAG	= "WANDERING";
-
+		public boolean hasNoticedEnemy() {
+			return enemyInFOV() && (Random.Float( distance( enemy ) / 2f + enemy.stealth() ) < 1);
+		}
 		@Override
-		public boolean act( boolean enemyInFOV, boolean justAlerted ) {
-			if (enemyInFOV && (justAlerted || Random.Float( distance( enemy ) / 2f + enemy.stealth() ) < 1)) {
+		public boolean act( boolean justAlerted ) {
+			if (hasNoticedEnemy()) {
 
 				enemySeen = true;
 
@@ -770,15 +781,18 @@ public abstract class Mob extends Char {
 		public static final String TAG	= "HUNTING";
 
 		@Override
-		public boolean act( boolean enemyInFOV, boolean justAlerted ) {
-			enemySeen = enemyInFOV;
-			if (enemyInFOV && !isCharmedBy( enemy ) && canAttack( enemy )) {
+		public boolean hasNoticedEnemy() {
+			return enemyInFOV();
+		}
 
+		@Override
+		public boolean act( boolean justAlerted ) {
+			enemySeen = enemyInFOV();
+			if (enemySeen && !isCharmedBy( enemy ) && canAttack( enemy )) {
 				return doAttack( enemy );
-
 			} else {
 
-				if (enemyInFOV) {
+				if (enemySeen) {
 					target = enemy.pos;
 				} else if (enemy == null) {
 					state = WANDERING;
@@ -794,7 +808,7 @@ public abstract class Mob extends Char {
 
 				} else {
 					spend( TICK );
-					if (!enemyInFOV) {
+					if (!enemySeen) {
 						sprite.showLost();
 						state = WANDERING;
 						target = Dungeon.level.randomDestination();
@@ -810,14 +824,19 @@ public abstract class Mob extends Char {
 		public static final String TAG	= "FLEEING";
 
 		@Override
-		public boolean act( boolean enemyInFOV, boolean justAlerted ) {
-			enemySeen = enemyInFOV;
+		public boolean hasNoticedEnemy() {
+			return enemyInFOV();
+		}
+
+		@Override
+		public boolean act( boolean justAlerted ) {
+			enemySeen = hasNoticedEnemy();
 			//loses target when 0-dist rolls a 6 or greater.
-			if (enemy == null || !enemyInFOV && 1 + Random.Int(Dungeon.level.distance(pos, target)) >= 6){
+			if (enemy == null || !enemySeen && 1 + Random.Int(Dungeon.level.distance(pos, target)) >= 6){
 				target = -1;
 			
 			//if enemy isn't in FOV, keep running from their previous position.
-			} else if (enemyInFOV) {
+			} else if (enemySeen) {
 				target = enemy.pos;
 			}
 
@@ -837,6 +856,7 @@ public abstract class Mob extends Char {
 		}
 
 		protected void nowhereToRun() {
+		    if(buff(Terror.class) != null) buff(Terror.class).detach();
 		}
 	}
 
@@ -845,8 +865,13 @@ public abstract class Mob extends Char {
 		public static final String TAG	= "PASSIVE";
 
 		@Override
-		public boolean act( boolean enemyInFOV, boolean justAlerted ) {
-			enemySeen = false;
+		public boolean hasNoticedEnemy() {
+			return false;
+		}
+
+		@Override
+		public boolean act( boolean justAlerted ) {
+			enemySeen = hasNoticedEnemy();
 			spend( TICK );
 			return true;
 		}

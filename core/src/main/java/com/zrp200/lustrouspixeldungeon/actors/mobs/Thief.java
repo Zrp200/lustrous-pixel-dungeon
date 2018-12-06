@@ -173,8 +173,8 @@ public class Thief extends Mob {
 	private class Wandering extends Mob.Wandering {
 		
 		@Override
-		public boolean act(boolean enemyInFOV, boolean justAlerted) {
-			super.act(enemyInFOV, justAlerted);
+		public boolean act(boolean justAlerted) {
+			super.act(justAlerted);
 			
 			//if an enemy is just noticed and the thief posses an item, run, don't fight.
 			if (state == HUNTING && item != null){
@@ -189,7 +189,7 @@ public class Thief extends Mob {
 		@Override
 		protected void nowhereToRun() {
 			if (buff( Terror.class ) == null && buff( Corruption.class ) == null) {
-				if (enemySeen) {
+				if ( enemySeen() ) {
 					sprite.showStatus(CharSprite.NEGATIVE, Messages.get(Mob.class, "rage"));
 					state = HUNTING;
 				} else if (item != null && !Dungeon.level.heroFOV[pos]) {

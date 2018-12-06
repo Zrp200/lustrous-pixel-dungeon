@@ -645,8 +645,8 @@ public class DriedRose extends Artifact {
 		private class Wandering extends Mob.Wandering {
 			
 			@Override
-			public boolean act( boolean enemyInFOV, boolean justAlerted ) {
-				if ( enemyInFOV ) {
+			public boolean act( boolean justAlerted ) {
+				if ( enemyInFOV() ) {
 					
 					enemySeen = true;
 					

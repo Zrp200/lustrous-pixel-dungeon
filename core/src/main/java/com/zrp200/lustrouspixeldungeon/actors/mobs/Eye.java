@@ -226,13 +226,13 @@ public class Eye extends Mob {
 
 	private class Hunting extends Mob.Hunting{
 		@Override
-		public boolean act(boolean enemyInFOV, boolean justAlerted) {
+		public boolean act(boolean justAlerted) {
 			//even if enemy isn't seen, attack them if the beam is charged
 			if (beamCharged && enemy != null && canAttack(enemy)) {
-				enemySeen = enemyInFOV;
+				enemySeen = enemyInFOV(); // sync
 				return doAttack(enemy);
 			}
-			return super.act(enemyInFOV, justAlerted);
+			return super.act(justAlerted);
 		}
 	}
 }

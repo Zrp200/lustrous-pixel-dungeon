@@ -257,15 +257,15 @@ public class Tengu extends Mob {
 	private class Hunting extends Mob.Hunting{
 
 		@Override
-		public boolean act(boolean enemyInFOV, boolean justAlerted) {
-			enemySeen = enemyInFOV;
-			if (enemyInFOV && !isCharmedBy( enemy ) && canAttack( enemy )) {
+		public boolean act(boolean justAlerted) {
+			enemySeen = enemyInFOV(); //sync I guess
+			if (enemyInFOV() && !isCharmedBy( enemy ) && canAttack( enemy )) {
 
 				return doAttack( enemy );
 
 			} else {
 
-				if (enemyInFOV) {
+				if (enemyInFOV()) {
 					target = enemy.pos;
 				} else {
 					chooseEnemy();
