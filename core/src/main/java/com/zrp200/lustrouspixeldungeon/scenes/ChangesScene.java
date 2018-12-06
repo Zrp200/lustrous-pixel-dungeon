@@ -43,6 +43,7 @@ import com.zrp200.lustrouspixeldungeon.items.rings.RingOfWealth;
 import com.zrp200.lustrouspixeldungeon.items.wands.WandOfCorruption;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Elastic;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Chilling;
+import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Eldritch;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Knuckles;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Longsword;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Quarterstaff;
@@ -148,10 +149,23 @@ public class ChangesScene extends PixelScene {
 		};
 		add(list);
 		addSection("v0.0.0", true);
+		addSection("v0.0.0b", false).addButtons(
+				new ChangeButton(new WandOfCorruption(),"_-_ Reverted cripple --> vertigo change"),
+				new ChangeButton(new ItemSprite(new Longsword().image(), new Eldritch().glowing()),"Eldrich",
+						"_-_ Now inflicts brief vertigo on targets immune to terror (5+level)\n" +
+								"_-_ Base Terror duration halved (10 -> 5)\n" +
+								"_-_ Terror duration now scales with level (+2.5/level)"
+				),
+				new ChangeButton(new Image(bugfix),"Bugfixes",
+						"_-_ More changelog mistakes\n" +
+						"_-_ In-text typo with blocking weapons\n" +
+						"_-_ Attacks not surprise attacking when they should"
+				)
+		);
         addSection("v0.0.0a",false).addButtons(
                 new ChangeButton(
                         new MagicalHolster(),
-                        "_-_ Missile weapon durability boost buffed (2/5 -> 1/3)\n" +
+                        "_-_ Missile weapon durability boost buffed (1/5 -> 1/3)\n" +
 								"\nThis should make its integration with huntress a bit more " +
 								"intuitive; with the change the huntress effectively gets double " +
 								"durability on missile weapons."
@@ -178,7 +192,7 @@ public class ChangesScene extends PixelScene {
                 ),
                 new ChangeButton(new Image(bugfix), "Bugfixes",
                         "_-_ Paralytic Darts potentially breaking paralysis\n" +
-                                "_-_ Fatal attacks visually breaking paralysis and terror\n" +
+                                "_-_ Fatal attacks visually breaking paralysis\n" +
                                 "_-_ Slow and Chill not stacking\n" +
                                 "_-_ Taking 0 damage weakening charm and terror and breaking magical sleep and frost\n" +
                                 "_-_ Changelog typos"

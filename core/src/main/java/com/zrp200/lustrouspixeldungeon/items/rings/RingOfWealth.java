@@ -47,7 +47,6 @@ import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfTransmutation;
 import com.zrp200.lustrouspixeldungeon.items.stones.StoneOfEnchantment;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.MissileWeapon;
-import com.zrp200.lustrouspixeldungeon.plants.Plant;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -82,7 +81,7 @@ public class RingOfWealth extends Ring {
 		}
 		
 		//reset (if needed), decrement, and store counts
-		if (triesToDrop <= 0) triesToDrop += Random.NormalIntRange(15, 60); // 20% faster than Shattered
+		if (triesToDrop <= 0) triesToDrop += Random.NormalIntRange(15, 60);
 		triesToDrop -= dropProgression( target, tries );
 		for (Wealth w : buffs){
 			w.triesToDrop(triesToDrop);
@@ -134,7 +133,7 @@ public class RingOfWealth extends Ring {
 							case 1:
 								Blandfruit blandfruit = new Blandfruit();
 								if(Random.Int(3) == 0)
-									blandfruit.cook((Plant.Seed) Generator.random(Generator.Category.SEED));
+									blandfruit.imbuePotion((Potion)Generator.random(Generator.Category.POTION));
 								items.add(blandfruit);
 								break;
 							case 2:
@@ -170,9 +169,8 @@ public class RingOfWealth extends Ring {
 					break;
 				case 1:
 					Item item;
-					do {
-						item = Generator.random();
-					} while (!(
+					do	item = Generator.random();
+					while (!(
 							item.isUpgradable() ||
 									item instanceof Artifact ||
 									item instanceof MissileWeapon

@@ -28,7 +28,7 @@ public class BlockingWeapon extends MeleeWeapon {
         info += (Messages.get(this, "stats_desc").equals("") ? "\n\n" : "\n");
         if(defenseFactor(Dungeon.hero,level()+1) != defenseFactor(Dungeon.hero) && !levelKnown) {// if the difference would be meaningful and you don't know its level
             info += Messages.get(BlockingWeapon.class, "typical_block", defenseFactor(Dungeon.hero, 0))
-                    + (encumbrance > 0 ? " " + Messages.get(BlockingWeapon.class,"typical_encumbrance") : "._");
+                    + (encumbrance > 0 ? " " + Messages.get(BlockingWeapon.class,"typical_encumbrance") : "_.");
         }
         else {
             info += Messages.get( BlockingWeapon.class, "block", maxBlock() )

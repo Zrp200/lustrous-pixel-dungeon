@@ -89,13 +89,13 @@ public class WandOfCorruption extends Wand {
 	static{
 		MINOR_DEBUFFS.put(Weakness.class,       4f);
 		MINOR_DEBUFFS.put(Blindness.class,      3f);
-		MINOR_DEBUFFS.put(Terror.class,         2f);
-		MINOR_DEBUFFS.put(Vertigo.class,        1f);
-		
+		MINOR_DEBUFFS.put(Cripple.class,        2f);
+		MINOR_DEBUFFS.put(Terror.class,         1f);
+
+		MINOR_DEBUFFS.put(Vertigo.class,        0f);
 		MINOR_DEBUFFS.put(Chill.class,          0f);
 		MINOR_DEBUFFS.put(Ooze.class,           0f);
 		MINOR_DEBUFFS.put(Roots.class,          0f);
-		MINOR_DEBUFFS.put(Cripple.class,        0f);
 		MINOR_DEBUFFS.put(Drowsy.class,         0f);
 		MINOR_DEBUFFS.put(Bleeding.class,       0f);
 		MINOR_DEBUFFS.put(Burning.class,        0f);
