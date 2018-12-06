@@ -606,7 +606,7 @@ public class ChangesScene extends PixelScene {
 		}
 
 		public ChangeButton( Item item, String message ){
-			this( new ItemSprite(item), item.trueName(), message);
+			this( new ItemSprite(item), item.name(), message);
 		}
 
 		protected void onClick() {
