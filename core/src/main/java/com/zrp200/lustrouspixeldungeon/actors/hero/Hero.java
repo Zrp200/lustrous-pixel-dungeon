@@ -399,7 +399,7 @@ public class Hero extends Char {
 	}
 
 	public boolean canSurpriseAttack(){
-		if (belongings.weapon == null || !(belongings.weapon instanceof Weapon))    return true;
+		if (!(belongings.weapon instanceof Weapon))    return true;
 		if (STR() < ((Weapon)belongings.weapon).STRReq())                           return false;
         return !(belongings.weapon instanceof Flail);
     }
@@ -432,7 +432,7 @@ public class Hero extends Char {
 			//Normally putting furor speed on unarmed attacks would be unnecessary
 			//But there's going to be that one guy who gets a furor+force ring combo
 			//This is for that one guy, you shall get your fists of fury!
-			return RingOfFuror.modifyAttackDelay(1f, this);
+			return RingOfFuror.modifyAttackDelay(buff(RingOfForce.Force.class) == null ? 0.5f : 1f, this);
 		}
 	}
 
@@ -985,7 +985,7 @@ public class Hero extends Char {
 		//TODO improve this when I have proper damage source logic
 		if (belongings.armor != null && belongings.armor.hasGlyph(AntiMagic.class, this)
 				&& AntiMagic.RESISTS.contains(src.getClass())){
-			dmg -= Random.NormalIntRange(belongings.armor.DRMin(), belongings.armor.DRMax())/3;
+			dmg -= 5*Random.NormalIntRange(belongings.armor.DRMin(), belongings.armor.DRMax())/12;
 		}
 
 		super.damage( dmg, src );

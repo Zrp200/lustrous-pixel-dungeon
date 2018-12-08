@@ -33,7 +33,7 @@ public class Stone extends Armor.Glyph {
 	public int proc(Armor armor, Char attacker, Char defender, int damage) {
 		
 		testing = true;
-		float evasion = defender.defenseSkill(attacker);
+		float evasion = defender.defenseSkill(attacker) * ( 0.375f + armor.level() ); // (75/2)+level percent of evasion
 		float accuracy = attacker.attackSkill(defender);
 		testing = false;
 		
@@ -43,9 +43,6 @@ public class Stone extends Armor.Glyph {
 		} else {
 			hitChance = 1f - (evasion/accuracy)/2f;
 		}
-		
-		//60% of dodge chance is applied as damage reduction
-		hitChance = (2f + 3f*hitChance)/5f;
 		
 		damage = (int)Math.ceil(damage * hitChance);
 		

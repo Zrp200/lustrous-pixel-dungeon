@@ -53,6 +53,7 @@ import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.Brimstone;
 import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.Camouflage;
 import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.Entanglement;
 import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.Flow;
+import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.HolyProvidence;
 import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.Obfuscation;
 import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.Potential;
 import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.Repulsion;
@@ -277,7 +278,7 @@ public class Armor extends EquipableItem {
 	public float evasionFactor( Char owner, float evasion ){
 		
 		if (hasGlyph(Stone.class, owner) && !((Stone)glyph).testingEvasion()){
-			return 0;
+			return 0.25f;
 		}
 		
 		if (owner instanceof Hero){
@@ -516,7 +517,7 @@ public class Armor extends EquipableItem {
 	public boolean hasCurseGlyph(){
 		return glyph != null && glyph.curse();
 	}
-	
+
 	@Override
 	public ItemSprite.Glowing glowing() {
 		return glyph != null && (cursedKnown || !glyph.curse()) ? glyph.glowing() : null;
@@ -532,12 +533,12 @@ public class Armor extends EquipableItem {
 				Repulsion.class, Camouflage.class, Flow.class };
 		
 		private static final Class<?>[] rare = new Class<?>[]{
-				Affection.class, AntiMagic.class, Thorns.class };
+				Affection.class, AntiMagic.class, Thorns.class, HolyProvidence.class};
 		
 		private static final float[] typeChances = new float[]{
 				50, //12.5% each
 				40, //6.67% each
-				10  //3.33% each
+				10  //2.5% each
 		};
 
 		private static final Class<?>[] curses = new Class<?>[]{
