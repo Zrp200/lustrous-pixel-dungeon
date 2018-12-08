@@ -434,21 +434,16 @@ public abstract class Mob extends Char {
 			return false;
 		}
 	}
-	
+	public boolean canGetFurther(int target) {
+		return !( rooted
+				|| target == pos
+				|| Dungeon.flee(this, pos, target, Dungeon.level.passable, fieldOfView) == -1
+		);
+	}
 	protected boolean getFurther( int target ) {
-		if (rooted || target == pos) {
-			return false;
-		}
-		
-		int step = Dungeon.flee( this, pos, target,
-			Dungeon.level.passable,
-			fieldOfView );
-		if (step != -1) {
-			move( step );
-			return true;
-		} else {
-			return false;
-		}
+		if(!canGetFurther(target)) return false;
+		move( Dungeon.flee(this, pos, target, Dungeon.level.passable, fieldOfView) );
+		return true;
 	}
 
 	@Override
@@ -736,8 +731,10 @@ public abstract class Mob extends Char {
 		}
 		@Override
 		public boolean act( boolean justAlerted ) {
-			if ( super.act(justAlerted) ) {
+			super.act(justAlerted);
+			if ( enemySeen || ( enemyInFOV() && justAlerted ) ) {
 				notice();
+				enemySeen = true;
 				alerted = true;
 				state = HUNTING;
 				target = enemy.pos;
@@ -805,6 +802,9 @@ public abstract class Mob extends Char {
 
 		public static final String TAG	= "FLEEING";
 
+		public boolean isTrapped() {
+			return target == -1 || !getFurther(target);
+		}
 		@Override
 		public boolean act( boolean justAlerted ) {
 			super.act(justAlerted);
@@ -818,17 +818,14 @@ public abstract class Mob extends Char {
 			}
 
 			int oldPos = pos;
-			if (target != -1 && getFurther( target )) {
-
+			if (isTrapped()) {
+				spend(TICK);
+				nowhereToRun();
+				return true;
+			}
+			else {
 				spend( 1 / speed() );
 				return moveSprite( oldPos, pos );
-
-			} else {
-
-				spend( TICK );
-				nowhereToRun();
-
-				return true;
 			}
 		}
 
