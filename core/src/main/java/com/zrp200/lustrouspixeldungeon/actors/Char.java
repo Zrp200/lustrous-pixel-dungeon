@@ -154,11 +154,8 @@ public abstract class Char extends Actor {
 		HP = bundle.getInt( TAG_HP );
 		HT = bundle.getInt( TAG_HT );
 		
-		for (Bundlable b : bundle.getCollection( BUFFS )) {
-			if (b != null) {
-				((Buff)b).attachTo( this );
-			}
-		}
+		for ( Bundlable b : bundle.getCollection( BUFFS ) ) if (b != null)
+			( (Buff) b ).attachTo( this );
 		
 		//pre-0.7.0
 		if (bundle.contains( "SHLD" )){

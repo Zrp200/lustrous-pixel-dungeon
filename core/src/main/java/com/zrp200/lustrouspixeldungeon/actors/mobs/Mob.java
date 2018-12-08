@@ -37,6 +37,7 @@ import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Charm;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Corruption;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Hunger;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.MagicalSleep;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Preparation;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Sleep;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.SoulMark;
@@ -195,17 +196,13 @@ public abstract class Mob extends Char {
 		Terror terror = buff( Terror.class );
 		if (terror != null) {
 			Char source = (Char)Actor.findById( terror.object );
-			if (source != null) {
-				return source;
-			}
+			if (source != null) return source;
 		}
 		
 		StoneOfAggression.Aggression aggro = buff( StoneOfAggression.Aggression.class );
 		if (aggro != null){
 			Char source = (Char)Actor.findById( aggro.object );
-			if (source != null){
-				return source;
-			}
+			if (source != null) return source;
 		}
 
 		//find a new enemy if..
@@ -314,11 +311,11 @@ public abstract class Mob extends Char {
 	@Override
 	public void add( Buff buff ) {
 		super.add( buff );
-		if (buff instanceof Amok || buff instanceof Corruption) {
-			state = HUNTING;
-		} else if (buff instanceof Terror) {
-			state = FLEEING;
-		} else if (buff instanceof Sleep) {
+		if(buff instanceof Corruption) state = HUNTING;
+		if ( buff(MagicalSleep.class) == null )
+			if (buff instanceof Amok || buff instanceof Corruption) state = HUNTING;
+			else if (buff instanceof Terror) state = FLEEING;
+		if (buff instanceof Sleep) {
 			state = SLEEPING;
 			postpone( Sleep.SWS );
 		}
@@ -327,7 +324,7 @@ public abstract class Mob extends Char {
 	@Override
 	public void remove( Buff buff ) {
 		super.remove( buff );
-		if (buff instanceof Terror) {
+		if (buff instanceof Terror && isAlive()) {
 			sprite.showStatus( CharSprite.NEGATIVE, Messages.get(this, "rage") );
 			state = HUNTING;
 		}
@@ -536,9 +533,13 @@ public abstract class Mob extends Char {
 
 		if (buff(SoulMark.class) != null) {
 			int restoration = Math.min(damage, HP);
-			Dungeon.hero.buff(Hunger.class).satisfy(restoration*0.5f);
-			Dungeon.hero.HP = (int)Math.ceil(Math.min(Dungeon.hero.HT, Dungeon.hero.HP+(restoration*0.25f)));
-			Dungeon.hero.sprite.emitter().burst( Speck.factory(Speck.HEALING), 1 );
+			if(restoration/2 > 0) {
+				Dungeon.hero.buff(Hunger.class).satisfy(restoration * 0.5f);
+				Integer toHeal = Math.min(HT - HP, Math.round(restoration*0.25f) );
+				HP += toHeal;
+				if(toHeal > 0) sprite.showStatus( CharSprite.POSITIVE,toHeal.toString() );
+				Dungeon.hero.sprite.emitter().burst(Speck.factory(Speck.HEALING), 1);
+			}
 		}
 
 		return damage;
@@ -596,16 +597,13 @@ public abstract class Mob extends Char {
 	public void die( Object cause ) {
 		
 		if (cause == Chasm.class){
-			//50% chance to round up, 50% to round down
-			if (EXP % 2 == 1) EXP += Random.Int(2);
+			EXP += Random.Int(EXP%2+1);	//50% chance to round up, 50% to round down
 			EXP /= 2;
 		}
 		
 		super.die( cause );
 
-		if (alignment == Alignment.ENEMY){
-			rollToDropLoot();
-		}
+		if (alignment == Alignment.ENEMY) rollToDropLoot();
 		
 		if (Dungeon.hero.isAlive() && !Dungeon.level.heroFOV[pos]) {
 			GLog.i( Messages.get(this, "died") );
@@ -665,12 +663,11 @@ public abstract class Mob extends Char {
 	}
 	
 	public void beckon( int cell ) {
-		
+		if(buff(MagicalSleep.class) != null) return;
+
 		notice();
 		
-		if (state != HUNTING) {
-			state = WANDERING;
-		}
+		if (state != HUNTING) state = WANDERING;
 		target = cell;
 	}
 	

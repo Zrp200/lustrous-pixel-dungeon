@@ -82,7 +82,8 @@ public class ChangesScene extends PixelScene {
 		SHPD070 ("Shattered v0.7.0",	10,18,2018),
 		LUST000 ("Lustrous v0.0.0",		12, 1,2018),
 		LUST000a("Lustrous v0.0.0a",  	12, 4,2018),
-		LUST000b("Lustrous v0.0.0b",	12, 6,2018);
+		LUST000b("Lustrous v0.0.0b",	12, 6,2018),
+		LUST001 ("Lustrous v0.0.1",		12,10,2018);
 
 		private String name;
 		private Date releaseDate;
@@ -149,7 +150,19 @@ public class ChangesScene extends PixelScene {
 
 		};
 		add(list);
-		addSection("v0.0.0", true);
+
+		addSection("v0.0.0",true);
+		addSection("v0.0.0c INDEV",false).addButtons(
+				new ChangeButton(
+						Icons.get(Icons.PREFS),"Misc",
+						"_-_ Added a visual indicator for soul mark recovery."
+				),
+				new ChangeButton(
+						new Image(bugfix), "Bugfixes",
+						"_-_ Terror getting visually broken on fatal attacks\n" +
+								"_-_ Magical sleep getting broken by non-damaging sources"
+				)
+		);
 		addSection("v0.0.0b", false).addButtons(
 				new ChangeButton(new WandOfCorruption(),
 						"It's extremely obvious that giving wands of corruption the ability to " +
