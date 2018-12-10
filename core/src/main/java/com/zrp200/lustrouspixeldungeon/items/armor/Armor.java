@@ -76,7 +76,15 @@ public class Armor extends EquipableItem {
 	private static final int HITS_TO_KNOW    = 10;
 
 	protected static final String AC_DETACH       = "DETACH";
-	
+
+	public boolean glyphKnown = false;
+
+	@Override
+	public Item identify() {
+		glyphKnown = true;
+		return super.identify();
+	}
+
 	public enum Augment {
 		EVASION (1.5f , -1f),
 		DEFENSE (-1.5f, 1f),
@@ -178,8 +186,8 @@ public class Armor extends EquipableItem {
 		if (hero.belongings.armor == null || hero.belongings.armor.doUnequip( hero, true, false )) {
 			
 			hero.belongings.armor = this;
-			
-			cursedKnown = true;
+
+			glyphKnown = cursedKnown = true;
 			if (cursed) {
 				equipCursed( hero );
 				GLog.n( Messages.get(Armor.class, "equip_cursed") );
@@ -374,7 +382,7 @@ public class Armor extends EquipableItem {
 
 	@Override
 	public String name() {
-		return glyph != null && (cursedKnown || !glyph.curse()) ? glyph.name( super.name() ) : super.name();
+		return glyph != null && glyphKnown ? glyph.name( super.name() ) : super.name();
 	}
 	
 	@Override
@@ -405,14 +413,14 @@ public class Armor extends EquipableItem {
 			case NONE:
 		}
 		
-		if (glyph != null  && (cursedKnown || !glyph.curse())) {
+		if (glyph != null && glyphKnown) {
 			info += "\n\n" +  Messages.get(Armor.class, "inscribed", glyph.name());
 			info += " " + glyph.desc();
 		}
 		
 		if (cursed && isEquipped( Dungeon.hero )) {
 			info += "\n\n" + Messages.get(Armor.class, "cursed_worn");
-		} else if (cursedKnown && cursed) {
+		} else if ( visiblyCursed() ) {
 			info += "\n\n" + Messages.get(Armor.class, "cursed");
 		} else if (seal != null) {
 			info += "\n\n" + Messages.get(Armor.class, "seal_attached");
@@ -456,6 +464,7 @@ public class Armor extends EquipableItem {
 		} else if (effectRoll >= 0.85f){
 			inscribe();
 		}
+		glyphKnown = false;
 
 		return this;
 	}
@@ -493,6 +502,7 @@ public class Armor extends EquipableItem {
 
 	public Armor inscribe( Glyph glyph ) {
 		this.glyph = glyph;
+		glyphKnown = true;
 
 		return this;
 	}
@@ -520,7 +530,7 @@ public class Armor extends EquipableItem {
 
 	@Override
 	public ItemSprite.Glowing glowing() {
-		return glyph != null && (cursedKnown || !glyph.curse()) ? glyph.glowing() : null;
+		return glyph != null && (glyphKnown) ? glyph.glowing() : null;
 	}
 	
 	public static abstract class Glyph implements Bundlable {

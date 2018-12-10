@@ -135,7 +135,7 @@ public enum Catalog {
 	POTIONS,
 	SCROLLS;
 	
-	private LinkedHashMap<Class<? extends Item>, Boolean> seen = new LinkedHashMap<>();
+	private LinkedHashMap<Class<? extends Item>, Boolean> seen = new LinkedHashMap<>(); // needs to be public in order for
 	
 	public Collection<Class<? extends Item>> items(){
 		return seen.keySet();
@@ -155,7 +155,6 @@ public enum Catalog {
 		WEAPONS.seen.put( Dagger.class,                     false);
 		WEAPONS.seen.put( MagesStaff.class,                 false);
 		WEAPONS.seen.put( Cord.class,						false);
-		WEAPONS.seen.put( Knuckles.class,                   false);
 //		WEAPONS.seen.put( Boomerang.class,                  false);
 		WEAPONS.seen.put( Shortsword.class,                 false);
 		WEAPONS.seen.put( HandAxe.class,                    false);
@@ -315,22 +314,11 @@ public enum Catalog {
 		
 		Badges.loadGlobal();
 		
-		//logic for if we have all badges
-		if (Badges.isUnlocked(Badges.Badge.ALL_ITEMS_IDENTIFIED)){
-			for ( Catalog cat : values()){
-				for (Class<? extends Item> item : cat.items()){
-					cat.seen.put(item, true);
-				}
-			}
-			return;
-		}
-		
 		//catalog-specific badge logic
 		for (Catalog cat : values()){
-			if (Badges.isUnlocked(catalogBadges.get(cat))){
-				for (Class<? extends Item> item : cat.items()){
-					cat.seen.put(item, true);
-				}
+			if (Badges.isUnlocked(catalogBadges.get(cat)) || Badges.isUnlocked(Badges.Badge.ALL_ITEMS_IDENTIFIED) ){
+				for (Class<? extends Item> item : cat.items()) cat.seen.put(item, true);
+				if(cat == Catalog.WEAPONS) cat.seen.put(Knuckles.class, true);
 			}
 		}
 		

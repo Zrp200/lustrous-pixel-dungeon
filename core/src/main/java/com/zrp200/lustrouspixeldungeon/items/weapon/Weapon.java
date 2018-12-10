@@ -96,7 +96,14 @@ abstract public class Weapon extends KindOfWeapon {
 	private int hitsToKnow = HITS_TO_KNOW;
 	
 	public Enchantment enchantment;
-	
+	public boolean enchantKnown = false;
+
+	@Override
+	public Item identify() {
+		enchantKnown = true;
+		return super.identify();
+	}
+
 	@Override
 	public int proc( Char attacker, Char defender, int damage ) {
 		
@@ -207,7 +214,7 @@ abstract public class Weapon extends KindOfWeapon {
 	
 	@Override
 	public String name() {
-		return enchantment != null && (cursedKnown || !enchantment.curse()) ? enchantment.name( super.name() ) : super.name();
+		return enchantment != null && enchantKnown ? enchantment.name( super.name() ) : super.name();
 	}
 	
 	@Override
@@ -233,12 +240,14 @@ abstract public class Weapon extends KindOfWeapon {
 		} else if (effectRoll >= 0.9f){
 			enchant();
 		}
+		enchantKnown = false;
 
 		return this;
 	}
 	
 	public Weapon enchant( Enchantment ench ) {
 		enchantment = ench;
+		enchantKnown = true; // easier just to manually turn this off.
 		return this;
 	}
 
@@ -258,14 +267,14 @@ abstract public class Weapon extends KindOfWeapon {
 	public boolean hasGoodEnchant(){
 		return enchantment != null && !enchantment.curse();
 	}
-
 	public boolean hasCurseEnchant(){
 		return enchantment != null && enchantment.curse();
 	}
+	public boolean visiblyEnchanted() { return enchantment != null && enchantKnown; }
 
 	@Override
 	public ItemSprite.Glowing glowing() {
-		return enchantment != null && (cursedKnown || !enchantment.curse()) ? enchantment.glowing() : null;
+		return visiblyEnchanted() ? enchantment.glowing() : null;
 	}
 
 	public static abstract class Enchantment implements Bundlable {
