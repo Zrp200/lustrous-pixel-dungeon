@@ -29,6 +29,7 @@ import com.watabou.noosa.NinePatch;
 import com.watabou.noosa.RenderedText;
 import com.watabou.noosa.TouchArea;
 import com.watabou.noosa.ui.Component;
+import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.Chrome;
 import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
@@ -36,7 +37,12 @@ import com.zrp200.lustrouspixeldungeon.actors.hero.HeroClass;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.Shielded;
 import com.zrp200.lustrouspixeldungeon.items.Ankh;
 import com.zrp200.lustrouspixeldungeon.items.Item;
+import com.zrp200.lustrouspixeldungeon.items.armor.MailArmor;
+import com.zrp200.lustrouspixeldungeon.items.armor.PlateArmor;
+import com.zrp200.lustrouspixeldungeon.items.armor.ScaleArmor;
 import com.zrp200.lustrouspixeldungeon.items.armor.curses.Volatility;
+import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.HolyProvidence;
+import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.Stone;
 import com.zrp200.lustrouspixeldungeon.items.bags.MagicalHolster;
 import com.zrp200.lustrouspixeldungeon.items.bombs.TeleportationBomb;
 import com.zrp200.lustrouspixeldungeon.items.rings.RingOfWealth;
@@ -47,8 +53,10 @@ import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Eldritch;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Knuckles;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Longsword;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Quarterstaff;
+import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Sword;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.sprites.CharSprite;
+import com.zrp200.lustrouspixeldungeon.sprites.GnollTricksterSprite;
 import com.zrp200.lustrouspixeldungeon.sprites.HeroSprite;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSprite;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
@@ -150,9 +158,7 @@ public class ChangesScene extends PixelScene {
 
 		};
 		add(list);
-
-		addSection("v0.0.0",true);
-		addSection("v0.0.0c INDEV",false).addButtons(
+		addSection("v0.0.1 INDEV",true).addButtons(
 				new ChangeButton(
 						Icons.get(Icons.PREFS),"Misc",
 						"_-_ Added a visual indicator for soul mark recovery."
@@ -161,8 +167,44 @@ public class ChangesScene extends PixelScene {
 						new Image(bugfix), "Bugfixes",
 						"_-_ Terror getting visually broken on fatal attacks\n" +
 								"_-_ Magical sleep getting broken by non-damaging sources"
+				),
+				new ChangeButton(
+						new ItemSprite(Random.Int(2) == 0 ? new MailArmor().inscribe() : new Sword().enchant()),
+						"Enchantment and Curse Visibility",
+						"Enchantments, curses, and glyphs are now identified on equip rather than on sight."
 				)
 		);
+		addSection("New Content",false).addButtons(
+				new ChangeButton(
+						new ItemSprite(new PlateArmor().image(), new HolyProvidence().glowing()),
+						"Holy Providence",
+						"Added a new rare glyph that buffs you in combat!\n" +
+								"_-_ (2+level)/(25+level) chance (8% @ +0) to bless the user for 5 turns\n" +
+								"_-_ (1+level)% chance to give 10 turns of adrenaline\n"
+				)
+		);
+		addSection("Buffs",false).addButtons(
+				new ChangeButton(
+						new GnollTricksterSprite(),
+						"Gnoll Trickster (and scorpios)",
+						"Now fight when cornered. They will also retaliate when attacked.\n" +
+								"_-_ Trickster will not apply dart effects when melee attacking\n" +
+								"_-_ Scorpios can still cripple with melee attacks"
+				),
+				new ChangeButton(
+						new ItemSprite( new ScaleArmor().inscribe( new Stone() ) ),
+						"Stone",
+						"_-_ User has 1/4 evasion\n" +
+								"_-_ Damage reduction is based on the chance for the enemy to hit you with (37.5 + level)% of your evasion"
+				),
+				new ChangeButton(
+						new ItemSprite(ItemSpriteSheet.WEAPON_HOLDER,null),
+						"Unarmed Attacks",
+						"It doesn't make sense for unarmed attacks to be slower than a knuckleduster, " +
+								"so now you can attack twice per turn if unarmed. Ring of Force adjusted accordingly."
+				)
+		);
+		addSection("v0.0.0",true);
 		addSection("v0.0.0b", false).addButtons(
 				new ChangeButton(new WandOfCorruption(),
 						"It's extremely obvious that giving wands of corruption the ability to " +

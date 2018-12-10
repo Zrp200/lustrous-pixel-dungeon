@@ -72,8 +72,7 @@ public class RingOfForce extends Ring {
 	//same as equivalent tier weapon
 	private static int max(int lvl, float tier){
 		return Math.round(
-				5*(tier+1) +    //base
-				lvl*(tier+1)    //level scaling
+				(tier+1)*(5+lvl)*0.5f
 		);
 	}
 
