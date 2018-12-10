@@ -30,10 +30,9 @@ import com.zrp200.lustrouspixeldungeon.actors.buffs.Light;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.food.MysteryMeat;
 import com.zrp200.lustrouspixeldungeon.items.potions.PotionOfHealing;
-import com.zrp200.lustrouspixeldungeon.mechanics.Ballistica;
 import com.zrp200.lustrouspixeldungeon.sprites.ScorpioSprite;
 
-public class Scorpio extends Mob {
+public class Scorpio extends RangeExclusiveMob {
 	
 	{
 		spriteClass = ScorpioSprite.class;
@@ -67,28 +66,13 @@ public class Scorpio extends Mob {
 	}
 	
 	@Override
-	protected boolean canAttack( Char enemy ) {
-		Ballistica attack = new Ballistica( pos, enemy.pos, Ballistica.PROJECTILE);
-		return !Dungeon.level.adjacent( pos, enemy.pos ) && attack.collisionPos == enemy.pos;
-	}
-	
-	@Override
 	public int attackProc( Char enemy, int damage ) {
 		damage = super.attackProc( enemy, damage );
-		if (Random.Int( 2 ) == 0) {
+		if (Random.Int( 2 ) == 0 || canRetaliate /*yeah you're not getting away anymore*/ ) {
 			Buff.prolong( enemy, Cripple.class, Cripple.DURATION );
 		}
 		
 		return damage;
-	}
-	
-	@Override
-	protected boolean getCloser( int target ) {
-		if (state == HUNTING) {
-			return enemySeen && getFurther( target );
-		} else {
-			return super.getCloser( target );
-		}
 	}
 	
 	@Override

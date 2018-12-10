@@ -29,16 +29,16 @@ import com.zrp200.lustrouspixeldungeon.actors.blobs.Blob;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.Fire;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Burning;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.Chill;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Poison;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.npcs.Ghost;
 import com.zrp200.lustrouspixeldungeon.items.Generator;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.MissileWeapon;
-import com.zrp200.lustrouspixeldungeon.mechanics.Ballistica;
 import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
 import com.zrp200.lustrouspixeldungeon.sprites.GnollTricksterSprite;
 
-public class GnollTrickster extends Gnoll {
+public class GnollTrickster extends RangeExclusiveMob {
 
 	{
 		spriteClass = GnollTricksterSprite.class;
@@ -47,6 +47,7 @@ public class GnollTrickster extends Gnoll {
 		defenseSkill = 5;
 
 		EXP = 5;
+		maxLvl = 8; // same as gnoll
 
 		state = WANDERING;
 
@@ -65,26 +66,18 @@ public class GnollTrickster extends Gnoll {
 	}
 
 	@Override
-	protected boolean canAttack( Char enemy ) {
-		Ballistica attack = new Ballistica( pos, enemy.pos, Ballistica.PROJECTILE);
-		return !Dungeon.level.adjacent(pos, enemy.pos) && attack.collisionPos == enemy.pos;
-	}
-
-	@Override
 	public int attackProc( Char enemy, int damage ) {
 		damage = super.attackProc( enemy, damage );
 		//The gnoll's attacks get more severe the more the player lets it hit them
 		combo++;
-		int effect = Random.Int(4)+combo;
-
-		if (effect > 2) {
-
-			if (effect >=6 && enemy.buff(Burning.class) == null){
-
+		int effect = Random.Int(4) + combo;
+		if (effect > 3) {
+			if (effect >= 6 && enemy.buff(Burning.class) == null) {
 				if (Dungeon.level.flamable[enemy.pos])
 					GameScene.add(Blob.seed(enemy.pos, 4, Fire.class));
-				Buff.affect(enemy, Burning.class).reignite( enemy );
-
+				Buff.affect(enemy, Burning.class).reignite(enemy);
+			} else if(effect <= 6 && enemy.buff(Chill.class) == null && enemy.buff(Burning.class) == null) {
+				Buff.affect(enemy, Chill.class, effect - 2);
 			} else
 				Buff.affect( enemy, Poison.class).set((effect-2) );
 
@@ -95,11 +88,7 @@ public class GnollTrickster extends Gnoll {
 	@Override
 	protected boolean getCloser( int target ) {
 		combo = 0; //if he's moving, he isn't attacking, reset combo.
-		if (state == HUNTING) {
-			return enemySeen && getFurther( target );
-		} else {
-			return super.getCloser( target );
-		}
+		return super.getCloser(target);
 	}
 	
 	@Override
@@ -109,11 +98,9 @@ public class GnollTrickster extends Gnoll {
 		drop.quantity((drop.quantity()+1)/2);
 		return drop;
 	}
-	
 	@Override
 	public void die( Object cause ) {
 		super.die( cause );
-
 		Ghost.Quest.process();
 	}
 
