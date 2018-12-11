@@ -43,7 +43,8 @@ public class Bestiary {
 			// Sewers
 			case 1: default: // 10 rats.
 				return new ArrayList<Class<? extends Mob>>(Arrays.asList(
-						Rat.class
+						Rat.class, Rat.class, Rat.class, Rat.class, Rat.class,
+						Rat.class, Rat.class, Rat.class, Rat.class, Rat.class
 				));
 			case 2:
 				//3x rat, 3x gnoll
@@ -145,18 +146,18 @@ public class Bestiary {
 			case 22:
 				//3x succubus, 3x evil eye
 				return new ArrayList<>(Arrays.asList(
-						Succubus.class, Succubus.class, Succubus.class,
+						Succubus.random(), Succubus.random(), Succubus.random(),
 						Eye.class, Eye.class, Eye.class));
 			case 23:
 				//2x succubus, 4x evil eye, 2x scorpio
 				return new ArrayList<>(Arrays.asList(
-						Succubus.class, Succubus.class,
+						Succubus.random(), Succubus.Winged.class,
 						Eye.class, Eye.class, Eye.class, Eye.class,
 						Scorpio.class, Scorpio.class));
 			case 24:
 				//1x succubus, 2x evil eye, 3x scorpio
 				return new ArrayList<>(Arrays.asList(
-						Succubus.class,
+						Succubus.random(),
 						Eye.class, Eye.class,
 						Scorpio.class, Scorpio.class, Scorpio.class));
 		}
@@ -208,8 +209,7 @@ public class Bestiary {
 			case 19:
 				if (Random.Float() < 0.01f ) rotation.add(Eye.class); // BWAHAHAHAHA
 			case 18:
-				if (Random.Float() < 0.02f) rotation.add(Succubus.class);
-				return;
+				if (Random.Float() < 0.02f) rotation.add(Succubus.random());
 		}
 	}
 	

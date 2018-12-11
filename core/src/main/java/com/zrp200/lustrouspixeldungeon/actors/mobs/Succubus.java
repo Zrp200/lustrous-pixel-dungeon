@@ -37,11 +37,21 @@ import com.zrp200.lustrouspixeldungeon.effects.Speck;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfLullaby;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.zrp200.lustrouspixeldungeon.mechanics.Ballistica;
+import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.sprites.SuccubusSprite;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Succubus extends Mob {
+	public static Class<?extends Mob> random() {
+		return Random.chances(new HashMap<Class<?extends Mob>, Float>() {
+			{
+				put(Succubus.class,			3f);
+				put(Succubus.Winged.class, 	1f);
+			}
+		});
+	}
 	
 	private static final int BLINK_DELAY	= 5;
 	
@@ -82,7 +92,8 @@ public class Succubus extends Mob {
 			}
 			sprite.emitter().burst( Speck.factory( Speck.HEALING ), 2 );
 			Sample.INSTANCE.play( Assets.SND_CHARMS );
-		} else if (Random.Int( 3 ) == 0) {
+		}
+		if (Random.Int( 3 ) == 0) {
 			//attack will reduce by 5 turns, so effectively 3-4 turns
 			Buff.affect( enemy, Charm.class, Random.IntRange( 3, 4 ) + 5 ).object = id();
 			enemy.sprite.centerEmitter().start( Speck.factory( Speck.HEART ), 0.2f, 5 );
@@ -151,5 +162,36 @@ public class Succubus extends Mob {
 	{
 		immunities.add( Sleep.class );
 		immunities.add( Charm.class );
+	}
+
+
+	public static class Winged extends Succubus {
+		{
+			spriteClass = SuccubusSprite.Winged.class;
+			HP = HT = 72;
+			defenseSkill = 32;
+			baseSpeed = 2;
+			flying = true;
+		}
+
+		@Override
+		public int attackSkill(Char target) {
+			return 38;
+		}
+
+		@Override
+		public String description() {
+			return super.description() + "\n\n" + Messages.get(this,"variant_desc");
+		}
+
+		@Override
+		public int drRoll() {
+			return Math.max(super.drRoll()-1,0); // 9 armor
+		}
+
+		@Override
+		public int damageRoll() {
+			return Random.NormalIntRange(20,28);
+		}
 	}
 }

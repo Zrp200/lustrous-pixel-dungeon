@@ -34,19 +34,19 @@ public class SuccubusSprite extends MobSprite {
 		texture( Assets.SUCCUBUS );
 		
 		TextureFilm frames = new TextureFilm( texture, 12, 15 );
-		
+
 		idle = new Animation( 8, true );
 		idle.frames( frames, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 2, 2, 1 );
-		
+
 		run = new Animation( 15, true );
 		run.frames( frames, 3, 4, 5, 6, 7, 8 );
-		
+
 		attack = new Animation( 12, false );
 		attack.frames( frames, 9, 10, 11 );
-		
+
 		die = new Animation( 10, false );
 		die.frames( frames, 12 );
-		
+
 		play( idle );
 	}
 	
@@ -55,5 +55,29 @@ public class SuccubusSprite extends MobSprite {
 		super.die();
 		emitter().burst( Speck.factory( Speck.HEART ), 6 );
 		emitter().burst( ShadowParticle.UP, 8 );
+	}
+
+
+	public static class Winged extends SuccubusSprite {
+		public Winged() {
+			texture (Assets.SUCCWING);
+			TextureFilm frames = new TextureFilm( texture, 19, 19 );
+			idle = new Animation( 8, true );
+			idle.frames( frames, 0,1,2,3 );
+
+			run = new Animation( 12, true );
+			run.frames( frames, 0,1,2,3 );
+
+			zap = new Animation( 12, false );
+			zap.frames( frames, 4, 5, 6 );
+
+			attack = new Animation(8,false);
+			attack.frames(frames,7,8,9);
+
+			die = new Animation( 8, false );
+			die.frames( frames, 10,11,12,13 );
+
+			play( idle );
+		}
 	}
 }
