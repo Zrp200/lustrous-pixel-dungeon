@@ -114,6 +114,8 @@ public class Yog extends Mob {
 				fists.add( mob );
 
 		dmg >>= fists.size();
+
+		if(src instanceof Char) defenseProc( (Char) src, dmg ); // yeah not getting away with this.
 		
 		super.damage( dmg, src );
 
@@ -232,7 +234,20 @@ public class Yog extends Mob {
 		public int drRoll() {
 			return Random.NormalIntRange(0, 15);
 		}
-		
+
+		@Override
+		public boolean attack(Char enemy) {
+			boolean returnValue = false;
+			for (int i : PathFinder.NEIGHBOURS8) {
+				Char ch = findChar(pos + i);
+				if(ch != null && !(ch instanceof Yog || ch instanceof BurningFist)) {
+					super.attack(ch);
+					returnValue = true;
+				}
+			}
+			return returnValue;
+		}
+
 		@Override
 		public int attackProc( Char enemy, int damage ) {
 			damage = super.attackProc( enemy, damage );
@@ -262,7 +277,10 @@ public class Yog extends Mob {
 			LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
 			if (lock != null) lock.addTime(dmg*0.5f);
 		}
-		
+
+		{
+			resistances.add( Burning.class );
+		}
 		{
 			immunities.add( Paralysis.class );
 			immunities.add( Amok.class );
@@ -273,7 +291,7 @@ public class Yog extends Mob {
 		}
 	}
 	
-	public static class BurningFist extends Mob {
+	public static class BurningFist extends Elemental {
 		
 		{
 			spriteClass = BurningFistSprite.class;
@@ -282,6 +300,7 @@ public class Yog extends Mob {
 			defenseSkill = 25;
 			
 			EXP = 0;
+			flying = false;
 			
 			state = WANDERING;
 

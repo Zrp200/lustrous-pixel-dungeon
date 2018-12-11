@@ -27,6 +27,7 @@ import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Burning;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Chill;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.Cripple;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Frost;
 import com.zrp200.lustrouspixeldungeon.items.potions.PotionOfLiquidFlame;
 import com.zrp200.lustrouspixeldungeon.sprites.ElementalSprite;
@@ -78,7 +79,7 @@ public class Elemental extends Mob {
 	@Override
 	public void add( Buff buff ) {
 		if (buff instanceof Frost || buff instanceof Chill) {
-				if (Dungeon.level.water[this.pos])
+				if (Dungeon.level.water[this.pos] && buff instanceof Chill)
 					damage( Random.NormalIntRange( HT / 2, HT ), buff );
 				else
 					damage( Random.NormalIntRange( 1, HT * 2 / 3 ), buff );
@@ -86,5 +87,6 @@ public class Elemental extends Mob {
 			super.add( buff );
 		}
 	}
-	
+
+	{ immunities.add(Cripple.class); }
 }

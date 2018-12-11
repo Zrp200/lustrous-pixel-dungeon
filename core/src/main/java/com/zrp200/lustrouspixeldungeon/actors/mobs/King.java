@@ -31,6 +31,7 @@ import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.ToxicGas;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.Amok;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Blindness;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.LockedFloor;
@@ -85,7 +86,13 @@ public class King extends Mob {
 		nextPedestal = bundle.getBoolean( PEDESTAL );
 		BossHealthBar.assignBoss(this);
 	}
-	
+
+	@Override
+	protected boolean act() {
+		if(HP < HT) HP++;
+		return super.act();
+	}
+
 	@Override
 	public int damageRoll() {
 		return Random.NormalIntRange( 25, 40 );
@@ -229,12 +236,14 @@ public class King extends Mob {
 	
 	{
 		resistances.add( WandOfDisintegration.class );
+		resistances.add( ToxicGas.class );
+		resistances.add( Amok.class );
+		resistances.add( Blindness.class );
 	}
 	
 	{
 		immunities.add( Paralysis.class );
 		immunities.add( Vertigo.class );
-		immunities.add( Blindness.class );
 		immunities.add( Terror.class );
 	}
 	
