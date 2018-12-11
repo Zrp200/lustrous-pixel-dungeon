@@ -28,6 +28,7 @@ import com.zrp200.lustrouspixeldungeon.Challenges;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.items.BrokenSeal;
 import com.zrp200.lustrouspixeldungeon.items.Item;
+import com.zrp200.lustrouspixeldungeon.items.armor.Armor;
 import com.zrp200.lustrouspixeldungeon.items.armor.ClothArmor;
 import com.zrp200.lustrouspixeldungeon.items.artifacts.CloakOfShadows;
 import com.zrp200.lustrouspixeldungeon.items.bags.MagicalHolster;
@@ -52,7 +53,7 @@ import com.zrp200.lustrouspixeldungeon.messages.Messages;
 
 public enum HeroClass {
 
-	WARRIOR( "warrior", HeroSubClass.BERSERKER, HeroSubClass.GLADIATOR ),
+	WARRIOR("warrior", HeroSubClass.BERSERKER, HeroSubClass.GLADIATOR ),
 	MAGE( "mage", HeroSubClass.BATTLEMAGE, HeroSubClass.WARLOCK ),
 	ROGUE( "rogue", HeroSubClass.ASSASSIN, HeroSubClass.FREERUNNER ),
 	HUNTRESS( "huntress", HeroSubClass.FREERUNNER, HeroSubClass.WARLOCK);
@@ -93,15 +94,14 @@ public enum HeroClass {
 
 	private static void initCommon( Hero hero ) {
 		Item i = new ClothArmor().identify();
-		if (!Challenges.isItemBlocked(i)) hero.belongings.armor = (ClothArmor)i;
 
+		if (!Challenges.isItemBlocked(i)) hero.belongings.armor = (Armor)i;
 		i = new Food();
 		if (!Challenges.isItemBlocked(i)) i.collect();
 
 		if (Dungeon.isChallenged(Challenges.NO_FOOD)){
 			new SmallRation().collect();
 		}
-
 	}
 
 	public Badges.Badge masteryBadge() {
@@ -174,7 +174,7 @@ public enum HeroClass {
 
 		Dungeon.quickslot.setSlot(0, dart);
 		new MagicalHolster().collect();
-		Dungeon.LimitedDrops.VELVET_POUCH.drop();
+		Dungeon.LimitedDrops.MAGICAL_HOLSTER.drop();
 		new PotionOfMindVision().identify();
 	}
 	

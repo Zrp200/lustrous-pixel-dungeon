@@ -34,6 +34,7 @@ import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.MagicImmune;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Momentum;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
+import com.zrp200.lustrouspixeldungeon.effects.ItemChange;
 import com.zrp200.lustrouspixeldungeon.effects.Speck;
 import com.zrp200.lustrouspixeldungeon.items.BrokenSeal;
 import com.zrp200.lustrouspixeldungeon.items.EquipableItem;
@@ -187,11 +188,14 @@ public class Armor extends EquipableItem {
 			
 			hero.belongings.armor = this;
 
-			glyphKnown = cursedKnown = true;
 			if (cursed) {
 				equipCursed( hero );
 				GLog.n( Messages.get(Armor.class, "equip_cursed") );
 			}
+			if( !glyphKnown && hasGoodGlyph() )
+				ItemChange.show(Dungeon.hero,this); // just to make obvious that it's enchanted
+
+			glyphKnown = cursedKnown = true;
 			
 			((HeroSprite)hero.sprite).updateArmor();
 			activate(hero);
@@ -461,10 +465,11 @@ public class Armor extends EquipableItem {
 		if (effectRoll < 0.3f) {
 			inscribe(Glyph.randomCurse());
 			cursed = true;
+			glyphKnown = false;
 		} else if (effectRoll >= 0.85f){
 			inscribe();
+			glyphKnown = Random.Int(2) == 0;
 		}
-		glyphKnown = false;
 
 		return this;
 	}

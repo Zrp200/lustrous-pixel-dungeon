@@ -30,6 +30,7 @@ import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.MagicImmune;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
+import com.zrp200.lustrouspixeldungeon.effects.ItemChange;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.KindOfWeapon;
 import com.zrp200.lustrouspixeldungeon.items.rings.RingOfFuror;
@@ -39,6 +40,7 @@ import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Elastic;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Exhausting;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Fragile;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Friendly;
+import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Malevolent;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Sacrificial;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Wayward;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Blazing;
@@ -102,6 +104,13 @@ abstract public class Weapon extends KindOfWeapon {
 	public Item identify() {
 		enchantKnown = true;
 		return super.identify();
+	}
+
+	@Override
+	public boolean doEquip(Hero hero) {
+		if(!enchantKnown && hasGoodEnchant()) ItemChange.show(hero,this); // make it obvious
+		enchantKnown = true;
+		return super.doEquip(hero);
 	}
 
 	@Override
@@ -297,7 +306,8 @@ abstract public class Weapon extends KindOfWeapon {
 		
 		private static final Class<?>[] curses = new Class<?>[]{
 				Annoying.class, Displacing.class, Exhausting.class, Fragile.class,
-				Sacrificial.class, Wayward.class, Elastic.class, Friendly.class
+				Sacrificial.class, Wayward.class, Elastic.class, Friendly.class,
+				Malevolent.class
 		};
 		
 			

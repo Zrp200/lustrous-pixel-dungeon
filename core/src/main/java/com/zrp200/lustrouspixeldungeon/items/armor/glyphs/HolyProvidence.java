@@ -9,7 +9,7 @@ import com.zrp200.lustrouspixeldungeon.items.armor.Armor;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSprite;
 
 public class HolyProvidence extends Armor.Glyph {
-    private static ItemSprite.Glowing GOLDEN_YELLOW = new ItemSprite.Glowing(0xFFDF00);
+    private static ItemSprite.Glowing GOLDEN_YELLOW = new ItemSprite.Glowing(0xffbb00);
 
     @Override
     public ItemSprite.Glowing glowing() {
@@ -19,8 +19,10 @@ public class HolyProvidence extends Armor.Glyph {
     @Override
     public int proc(Armor armor, Char attacker, Char defender, int damage) {
         int level = Math.max(0,armor.level());
-        if(Random.Int(25+level ) >= 23 ) Buff.prolong(defender,Bless.class,5f); // 2+L/25+L proc rate (8% at base)
-        if(Random.Int(100) <= level) Buff.prolong(defender,Adrenaline.class,Adrenaline.DURATION); // fun
+        if(Random.Int(50+level) < 2+level)
+            Buff.prolong( defender, Bless.class, 8 );
+        else if(Random.Int(50+level) < 2+level)
+            Buff.prolong( defender, Adrenaline.class, 7 ); // 4% at base
         return damage;
     }
 }

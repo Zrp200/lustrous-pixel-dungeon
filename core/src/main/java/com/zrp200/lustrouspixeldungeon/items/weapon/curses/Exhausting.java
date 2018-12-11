@@ -27,29 +27,16 @@ import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Weakness;
 import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
-import com.zrp200.lustrouspixeldungeon.sprites.ItemSprite;
 
-public class Exhausting extends Weapon.Enchantment {
-
-	private static ItemSprite.Glowing BLACK = new ItemSprite.Glowing( 0x000000 );
+public class Exhausting extends WeaponCurse {
 
 	@Override
-	public int proc(Weapon weapon, Char attacker, Char defender, int damage ) {
+	public int proc(Weapon weapon, Char attacker, Char defender, int damage) {
 
 		if (attacker == Dungeon.hero && Random.Int(15) == 0) {
 			Buff.affect(attacker, Weakness.class, Random.NormalIntRange(5, 20));
 		}
 
 		return damage;
-	}
-
-	@Override
-	public boolean curse() {
-		return true;
-	}
-
-	@Override
-	public ItemSprite.Glowing glowing() {
-		return BLACK;
 	}
 }

@@ -31,12 +31,14 @@ public class Unstable extends Weapon.Enchantment {
 
 	private static ItemSprite.Glowing WHITE = new ItemSprite.Glowing( 0xFFFFFF );
 
+	@SuppressWarnings("unchecked")
 	private static Class<?extends Weapon.Enchantment>[] randomEnchants = new Class[]{
 			Blazing.class,
 			Chilling.class,
 			Dazzling.class,
 			Eldritch.class,
 			Grim.class,
+
 			Lucky.class,
 			//projecting not included, no on-hit effect
 			Shocking.class,

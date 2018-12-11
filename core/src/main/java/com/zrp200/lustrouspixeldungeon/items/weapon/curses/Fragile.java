@@ -24,11 +24,8 @@ package com.zrp200.lustrouspixeldungeon.items.weapon.curses;
 import com.watabou.utils.Bundle;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
-import com.zrp200.lustrouspixeldungeon.sprites.ItemSprite;
 
-public class Fragile extends Weapon.Enchantment {
-
-	private static ItemSprite.Glowing BLACK = new ItemSprite.Glowing( 0x000000 );
+public class Fragile extends WeaponCurse {
 	private int hits = 0;
 
 	@Override
@@ -37,16 +34,6 @@ public class Fragile extends Weapon.Enchantment {
 		damage *= (1f - hits*0.005f);
 		if (hits < 150) hits++;
 		return damage;
-	}
-
-	@Override
-	public boolean curse() {
-		return true;
-	}
-
-	@Override
-	public ItemSprite.Glowing glowing() {
-		return BLACK;
 	}
 
 	private static final String HITS = "hits";

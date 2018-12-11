@@ -23,26 +23,10 @@ package com.zrp200.lustrouspixeldungeon.items.weapon.curses;
 
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
-import com.zrp200.lustrouspixeldungeon.sprites.ItemSprite;
 
-public class Wayward extends Weapon.Enchantment {
-
-	private static ItemSprite.Glowing BLACK = new ItemSprite.Glowing( 0x000000 );
-
-	@Override
-	public int proc( Weapon weapon, Char attacker, Char defender, int damage ) {
+public class Wayward extends WeaponCurse {
+	@Override public int proc( Weapon weapon, Char attacker, Char defender, int damage ) {
 		//no proc effect, see weapon.accuracyFactor for effect
 		return damage;
 	}
-
-	@Override
-	public boolean curse() {
-		return true;
-	}
-
-	@Override
-	public ItemSprite.Glowing glowing() {
-		return BLACK;
-	}
-
 }

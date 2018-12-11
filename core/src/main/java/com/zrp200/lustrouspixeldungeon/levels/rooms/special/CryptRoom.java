@@ -89,6 +89,7 @@ public class CryptRoom extends SpecialRoom {
 			}
 		}
 		prize.cursed = prize.cursedKnown = true;
+		prize.glyphKnown = false;
 		
 		return prize;
 	}

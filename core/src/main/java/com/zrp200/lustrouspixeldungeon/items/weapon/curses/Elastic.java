@@ -25,12 +25,8 @@ import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.items.wands.WandOfBlastWave;
 import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
 import com.zrp200.lustrouspixeldungeon.mechanics.Ballistica;
-import com.zrp200.lustrouspixeldungeon.sprites.ItemSprite;
 
-public class Elastic extends Weapon.Enchantment {
-	
-	private static ItemSprite.Glowing BLACK = new ItemSprite.Glowing( 0x000000 );
-	
+public class Elastic extends WeaponCurse {
 	@Override
 	public int proc(Weapon weapon, Char attacker, Char defender, int damage ) {
 		
@@ -40,15 +36,4 @@ public class Elastic extends Weapon.Enchantment {
 		
 		return damage/6;
 	}
-	
-	@Override
-	public boolean curse() {
-		return true;
-	}
-	
-	@Override
-	public ItemSprite.Glowing glowing() {
-		return BLACK;
-	}
-
 }

@@ -30,7 +30,7 @@ import com.zrp200.lustrouspixeldungeon.effects.Speck;
 import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSprite;
 
-public class Displacing extends Weapon.Enchantment {
+public class Displacing extends WeaponCurse {
 
 	private static ItemSprite.Glowing BLACK = new ItemSprite.Glowing( 0x000000 );
 
@@ -66,16 +66,6 @@ public class Displacing extends Weapon.Enchantment {
 		}
 
 		return damage;
-	}
-
-	@Override
-	public boolean curse() {
-		return true;
-	}
-
-	@Override
-	public ItemSprite.Glowing glowing() {
-		return BLACK;
 	}
 
 }

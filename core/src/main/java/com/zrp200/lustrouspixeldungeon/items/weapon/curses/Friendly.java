@@ -27,11 +27,8 @@ import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Charm;
 import com.zrp200.lustrouspixeldungeon.effects.Speck;
 import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
-import com.zrp200.lustrouspixeldungeon.sprites.ItemSprite;
 
-public class Friendly extends Weapon.Enchantment {
-	
-	private static ItemSprite.Glowing BLACK = new ItemSprite.Glowing( 0x000000 );
+public class Friendly extends WeaponCurse {
 	
 	@Override
 	public int proc(Weapon weapon, Char attacker, Char defender, int damage ) {
@@ -50,16 +47,6 @@ public class Friendly extends Weapon.Enchantment {
 		}
 		
 		return damage;
-	}
-	
-	@Override
-	public boolean curse() {
-		return true;
-	}
-	
-	@Override
-	public ItemSprite.Glowing glowing() {
-		return BLACK;
 	}
 
 }
