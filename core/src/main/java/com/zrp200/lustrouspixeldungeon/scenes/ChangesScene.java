@@ -35,11 +35,14 @@ import com.zrp200.lustrouspixeldungeon.Chrome;
 import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
 import com.zrp200.lustrouspixeldungeon.actors.hero.HeroClass;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.Shielded;
+import com.zrp200.lustrouspixeldungeon.actors.mobs.Succubus;
 import com.zrp200.lustrouspixeldungeon.items.Ankh;
 import com.zrp200.lustrouspixeldungeon.items.Item;
+import com.zrp200.lustrouspixeldungeon.items.armor.LeatherArmor;
 import com.zrp200.lustrouspixeldungeon.items.armor.MailArmor;
 import com.zrp200.lustrouspixeldungeon.items.armor.PlateArmor;
 import com.zrp200.lustrouspixeldungeon.items.armor.ScaleArmor;
+import com.zrp200.lustrouspixeldungeon.items.armor.curses.Metabolism;
 import com.zrp200.lustrouspixeldungeon.items.armor.curses.Volatility;
 import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.HolyProvidence;
 import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.Stone;
@@ -48,11 +51,13 @@ import com.zrp200.lustrouspixeldungeon.items.bombs.TeleportationBomb;
 import com.zrp200.lustrouspixeldungeon.items.rings.RingOfWealth;
 import com.zrp200.lustrouspixeldungeon.items.wands.WandOfCorruption;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Elastic;
+import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Malevolent;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Chilling;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Eldritch;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Knuckles;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Longsword;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Quarterstaff;
+import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Shortsword;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Sword;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.sprites.CharSprite;
@@ -62,6 +67,7 @@ import com.zrp200.lustrouspixeldungeon.sprites.ItemSprite;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
 import com.zrp200.lustrouspixeldungeon.sprites.ShamanSprite;
 import com.zrp200.lustrouspixeldungeon.sprites.ShieldedSprite;
+import com.zrp200.lustrouspixeldungeon.sprites.SuccubusSprite;
 import com.zrp200.lustrouspixeldungeon.ui.Archs;
 import com.zrp200.lustrouspixeldungeon.ui.ExitButton;
 import com.zrp200.lustrouspixeldungeon.ui.Icons;
@@ -91,7 +97,7 @@ public class ChangesScene extends PixelScene {
 		LUST000 ("Lustrous v0.0.0",		12, 1,2018),
 		LUST000a("Lustrous v0.0.0a",  	12, 4,2018),
 		LUST000b("Lustrous v0.0.0b",	12, 6,2018),
-		LUST001 ("Lustrous v0.0.1",		12,10,2018);
+		LUST001 ("Lustrous v0.0.1",		12,11,2018);
 
 		private String name;
 		private Date releaseDate;
@@ -165,7 +171,9 @@ public class ChangesScene extends PixelScene {
 				),
 				new ChangeButton(
 						new Image(bugfix), "Bugfixes",
-						"_-_ Terror getting visually broken on fatal attacks\n" +
+						"_-_ Velvet Pouch unable to spawn for huntress\n" +
+								"_-_ Magical Holster duplicate getting sold to huntress\n" +
+								"_-_ Terror getting visually broken on fatal attacks\n" +
 								"_-_ Magical sleep getting broken by non-damaging sources"
 				),
 				new ChangeButton(
@@ -176,11 +184,23 @@ public class ChangesScene extends PixelScene {
 		);
 		addSection("New Content",false).addButtons(
 				new ChangeButton(
+						new SuccubusSprite.Winged(),
+						new Succubus.Winged().name,
+						"Added a new succubus variant. It has a little less HP and accuracy " +
+								"and deals reduced damage, but moves faster and is more evasive.\n\n" +
+								"_-_ Sprite credit to _hellocoolgame#8751_"
+				),
+				new ChangeButton(
 						new ItemSprite(new PlateArmor().image(), new HolyProvidence().glowing()),
-						"Holy Providence",
+						"New Rare Glyph: Holy Providence",
 						"Added a new rare glyph that buffs you in combat!\n" +
-								"_-_ (2+level)/(25+level) chance (8% @ +0) to bless the user for 5 turns\n" +
-								"_-_ (1+level)% chance to give 10 turns of adrenaline\n"
+								"_-_ (2+level)/(50+level) chance (4% @ +0) to bless the user for 8 turns\n" +
+								"_-_ (2+level)/(50+level) chance (4% @ +0) to give 7 turns of adrenaline if bless wasn't proc'd first\n"
+				),
+				new ChangeButton(
+						new ItemSprite(new Shortsword().image(), new Malevolent().glowing()),
+						"New Weapon Curse: Malevolent",
+						"It's basically unstable for curses."
 				)
 		);
 		addSection("Buffs",false).addButtons(
@@ -202,6 +222,11 @@ public class ChangesScene extends PixelScene {
 						"Unarmed Attacks",
 						"It doesn't make sense for unarmed attacks to be slower than a knuckleduster, " +
 								"so now you can attack twice per turn if unarmed. Ring of Force adjusted accordingly."
+				),
+				new ChangeButton(
+						new ItemSprite(new LeatherArmor().inscribe(new Metabolism())),
+						"Metabolism",
+						"Metabolism healing boosted by 12.5% (4 -> 4.5)"
 				)
 		);
 		addSection("v0.0.0",true);
