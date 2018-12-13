@@ -21,6 +21,8 @@
 
 package com.zrp200.lustrouspixeldungeon.items.rings;
 
+import android.util.Log;
+
 import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
@@ -30,6 +32,7 @@ import com.zrp200.lustrouspixeldungeon.items.Generator;
 import com.zrp200.lustrouspixeldungeon.items.Gold;
 import com.zrp200.lustrouspixeldungeon.items.Honeypot;
 import com.zrp200.lustrouspixeldungeon.items.Item;
+import com.zrp200.lustrouspixeldungeon.items.Stylus;
 import com.zrp200.lustrouspixeldungeon.items.armor.Armor;
 import com.zrp200.lustrouspixeldungeon.items.artifacts.Artifact;
 import com.zrp200.lustrouspixeldungeon.items.bombs.Bomb;
@@ -44,7 +47,6 @@ import com.zrp200.lustrouspixeldungeon.items.food.SmallRation;
 import com.zrp200.lustrouspixeldungeon.items.potions.Potion;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.Scroll;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfTransmutation;
-import com.zrp200.lustrouspixeldungeon.items.stones.StoneOfEnchantment;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.MissileWeapon;
 
@@ -119,6 +121,7 @@ public class RingOfWealth extends Ring {
 					items.add(Generator.random(Random.Int(2) == 0 ? Generator.Category.POTION : Generator.Category.SCROLL ));
 					break;
 				case 2:
+					Log.d(new RingOfWealth().trueName(),"Bomb");
 					items.add(new Bomb().random());
 					items.add(new Honeypot());
 					break;
@@ -183,6 +186,7 @@ public class RingOfWealth extends Ring {
 						if (item instanceof MissileWeapon) {
 							item = Generator.randomMissile(floorset + 1);
 						} else {
+							Log.i("Wealth","Prize Equipment:" + item.trueName());
 							item.cursed = false;
 							item.cursedKnown = true;
 						}
@@ -198,7 +202,7 @@ public class RingOfWealth extends Ring {
 					items.add(new Ankh());
 					break;
 				case 1:
-					items.add(new StoneOfEnchantment());
+					items.add( new Stylus() );
 					break;
 				case 2:
 					items.add(new ScrollOfTransmutation());

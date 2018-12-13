@@ -51,7 +51,7 @@ public class WarriorArmor extends ClassArmor {
 		GameScene.selectCell( leaper );
 	}
 	
-	protected static CellSelector.Listener leaper = new  CellSelector.Listener() {
+	private static CellSelector.Listener leaper = new  CellSelector.Listener() {
 		
 		@Override
 		public void onSelect( Integer target ) {

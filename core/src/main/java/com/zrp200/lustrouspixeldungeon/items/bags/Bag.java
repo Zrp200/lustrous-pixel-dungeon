@@ -36,7 +36,7 @@ import java.util.Iterator;
 
 public class Bag extends Item implements Iterable<Item> {
 
-	public static final String AC_OPEN	= "OPEN";
+	private static final String AC_OPEN	= "OPEN";
 	
 	{
 		image = 11;
@@ -48,7 +48,7 @@ public class Bag extends Item implements Iterable<Item> {
 	
 	public Char owner;
 	
-	public ArrayList<Item> items = new ArrayList<Item>();
+	public ArrayList<Item> items = new ArrayList<>();
 	
 	public int size = 1;
 	
