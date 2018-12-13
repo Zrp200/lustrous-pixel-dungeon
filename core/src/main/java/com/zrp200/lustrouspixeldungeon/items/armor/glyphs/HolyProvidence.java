@@ -20,9 +20,9 @@ public class HolyProvidence extends Armor.Glyph {
     public int proc(Armor armor, Char attacker, Char defender, int damage) {
         int level = Math.max(0,armor.level());
         if(Random.Int(50+level) < 2+level)
-            Buff.prolong( defender, Bless.class, 8 );
+            Buff.prolong( defender, Bless.class, Random.NormalFloat(6,10) );
         else if(Random.Int(50+level) < 2+level)
-            Buff.prolong( defender, Adrenaline.class, 7 ); // 4% at base
+            Buff.prolong( defender, Adrenaline.class, Random.NormalFloat(6,8) ); // 4% at base
         return damage;
     }
 }

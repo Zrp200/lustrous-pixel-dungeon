@@ -351,13 +351,15 @@ public class Armor extends EquipableItem {
 	}
 	
 	public Item upgrade( boolean inscribe ) {
-
+		boolean knewGlyph = glyphKnown;
 		if (inscribe && (glyph == null || glyph.curse())){
 			inscribe( Glyph.random() );
+			glyphKnown = true;
 		} else if (!inscribe && Random.Float() > Math.pow(0.9, level())){
 			inscribe(null);
+			glyphKnown = knewGlyph
 		}
-		
+
 		cursed = false;
 
 		if (seal != null && seal.level() == 0)
@@ -460,16 +462,15 @@ public class Armor extends EquipableItem {
 		level(n);
 		
 		//30% chance to be cursed
-		//15% chance to be inscribed
+		//20% chance to be inscribed (+33%)
 		float effectRoll = Random.Float();
 		if (effectRoll < 0.3f) {
 			inscribe(Glyph.randomCurse());
 			cursed = true;
-			glyphKnown = false;
-		} else if (effectRoll >= 0.85f){
+		} else if (effectRoll >= 0.8f){
 			inscribe();
-			glyphKnown = Random.Int(2) == 0;
 		}
+		glyphKnown = false;
 
 		return this;
 	}
@@ -535,13 +536,15 @@ public class Armor extends EquipableItem {
 
 	@Override
 	public ItemSprite.Glowing glowing() {
-		return glyph != null && (glyphKnown) ? glyph.glowing() : null;
+		return glyph != null && glyphKnown ? glyph.glowing() : null;
 	}
 	
 	public static abstract class Glyph implements Bundlable {
 		
 		private static final Class<?>[] common = new Class<?>[]{
-				Obfuscation.class, Swiftness.class, Viscosity.class, Potential.class };
+				Obfuscation.class, Swiftness.class, Viscosity.class, Potential.class,
+				HolyProvidence.class // for easier testing
+		};
 		
 		private static final Class<?>[] uncommon = new Class<?>[]{
 				Brimstone.class, Stone.class, Entanglement.class,
@@ -558,7 +561,8 @@ public class Armor extends EquipableItem {
 
 		private static final Class<?>[] curses = new Class<?>[]{
 				AntiEntropy.class, Corrosion.class, Displacement.class, Metabolism.class,
-				Multiplicity.class, Stench.class, Overgrowth.class, Bulk.class, Volatility.class
+				Multiplicity.class, Stench.class, Overgrowth.class, Bulk.class, Volatility.class,
+				Volatility.class
 		};
 		
 		public abstract int proc( Armor armor, Char attacker, Char defender, int damage );

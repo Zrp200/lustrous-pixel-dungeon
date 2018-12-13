@@ -169,7 +169,7 @@ abstract public class Weapon extends KindOfWeapon {
 			encumbrance = STRReq() - ((Hero)owner).STR();
 		}
 
-		if (hasEnchant(Wayward.class, owner))
+		if (hasEnchant(Wayward.class, owner) || hasEnchant(Malevolent.class, owner) && ((Malevolent) enchantment).randomCurse() instanceof Wayward )
 			encumbrance = Math.max(2, encumbrance+2);
 
 		float ACC = this.ACC;
@@ -209,7 +209,6 @@ abstract public class Weapon extends KindOfWeapon {
 	}
 	
 	public Item upgrade(boolean enchant ) {
-
 		if (enchant && (enchantment == null || enchantment.curse())){
 			enchant( Enchantment.random() );
 		} else if (!enchant && Random.Float() > Math.pow(0.9, level())){
@@ -241,12 +240,12 @@ abstract public class Weapon extends KindOfWeapon {
 		level(n);
 		
 		//30% chance to be cursed
-		//10% chance to be enchanted
+		//15% chance to be enchanted (+50%)
 		float effectRoll = Random.Float();
 		if (effectRoll < 0.3f) {
 			enchant(Enchantment.randomCurse());
 			cursed = true;
-		} else if (effectRoll >= 0.9f){
+		} else if (effectRoll >= 0.85f){
 			enchant();
 		}
 		enchantKnown = false;
@@ -304,7 +303,8 @@ abstract public class Weapon extends KindOfWeapon {
 				10  //3.33% each
 		};
 		
-		private static final Class<?>[] curses = new Class<?>[]{
+		@SuppressWarnings("unchecked")
+		protected static final Class<?extends Weapon.Enchantment>[] curses = new Class[] {
 				Annoying.class, Displacing.class, Exhausting.class, Fragile.class,
 				Sacrificial.class, Wayward.class, Elastic.class, Friendly.class,
 				Malevolent.class
@@ -405,12 +405,12 @@ abstract public class Weapon extends KindOfWeapon {
 		@SuppressWarnings("unchecked")
 		public static Enchantment randomCurse( Class<? extends Enchantment> ... toIgnore ){
 			try {
-				ArrayList<Class<?>> enchants = new ArrayList<>(Arrays.asList(curses));
+				ArrayList<Class<?extends Enchantment>> enchants = new ArrayList<>(Arrays.asList(curses));
 				enchants.removeAll(Arrays.asList(toIgnore));
 				if (enchants.isEmpty()) {
 					return random();
 				} else {
-					return (Enchantment) Random.element(enchants).newInstance();
+					return Random.element(enchants).newInstance();
 				}
 			} catch (Exception e) {
 				LustrousPixelDungeon.reportException(e);
