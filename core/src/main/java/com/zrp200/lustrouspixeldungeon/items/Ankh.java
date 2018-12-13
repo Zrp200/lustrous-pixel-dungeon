@@ -35,12 +35,12 @@ import com.zrp200.lustrouspixeldungeon.utils.GLog;
 import java.util.ArrayList;
 
 public class Ankh extends Item {
-
 	public static final String AC_BLESS = "BLESS";
 
 	{
 		image = ItemSpriteSheet.ANKH;
 		unique = true;
+		stackable = true;
 
 		//You tell the ankh no, don't revive me, and then it comes back to revive you again in another run.
 		//I'm not sure if that's enthusiasm or passive-aggression.
@@ -116,6 +116,11 @@ public class Ankh extends Item {
 	public void storeInBundle( Bundle bundle ) {
 		super.storeInBundle( bundle );
 		bundle.put( BLESSED, blessed );
+	}
+
+	@Override
+	public boolean isSimilar(Item item) {
+		return item instanceof Ankh && blessed == ((Ankh) item).blessed;
 	}
 
 	@Override

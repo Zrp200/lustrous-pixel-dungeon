@@ -29,11 +29,15 @@ import com.zrp200.lustrouspixeldungeon.effects.ItemChange;
 import com.zrp200.lustrouspixeldungeon.items.EquipableItem;
 import com.zrp200.lustrouspixeldungeon.items.Generator;
 import com.zrp200.lustrouspixeldungeon.items.Item;
+import com.zrp200.lustrouspixeldungeon.items.Stylus;
 import com.zrp200.lustrouspixeldungeon.items.artifacts.Artifact;
 import com.zrp200.lustrouspixeldungeon.items.potions.Potion;
+import com.zrp200.lustrouspixeldungeon.items.potions.brews.Brew;
+import com.zrp200.lustrouspixeldungeon.items.potions.elixirs.Elixir;
 import com.zrp200.lustrouspixeldungeon.items.potions.exotic.ExoticPotion;
 import com.zrp200.lustrouspixeldungeon.items.rings.Ring;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.exotic.ExoticScroll;
+import com.zrp200.lustrouspixeldungeon.items.stones.StoneOfEnchantment;
 import com.zrp200.lustrouspixeldungeon.items.wands.Wand;
 import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Knuckles;
@@ -56,8 +60,11 @@ public class ScrollOfTransmutation extends InventoryScroll {
 	}
 	
 	public static boolean canTransmute(Item item){
-		return item instanceof MagesStaff || item instanceof MeleeWeapon || item instanceof Potion
-				|| item instanceof Scroll || item instanceof Ring || item instanceof Wand
+		return item instanceof MagesStaff
+				|| item instanceof MeleeWeapon
+				|| ( item instanceof Potion && !(item instanceof Elixir || item instanceof Brew) )
+				|| item instanceof Scroll
+				|| item instanceof Ring || item instanceof Wand
 				|| item instanceof Plant.Seed || item instanceof Artifact;
 	}
 	
@@ -81,7 +88,9 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		} else if (item instanceof Plant.Seed) {
 			result = changeSeed( (Plant.Seed)item );
 		} else if (item instanceof Artifact) {
-			result = changeArtifact( (Artifact)item );
+			result = changeArtifact((Artifact) item);
+		} else if(item instanceof Stylus) {
+			result = new StoneOfEnchantment();
 		} else {
 			result = null;
 		}
@@ -226,7 +235,8 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		return n;
 	}
 	
-	public static Scroll changeScroll( Scroll s ) {
+	@SuppressWarnings({"SuspiciousMethodCalls", "ConstantConditions"})
+	public static Scroll changeScroll(Scroll s ) {
 		try {
 			if (s instanceof ExoticScroll) {
 				return ExoticScroll.exoToReg.get(s.getClass()).newInstance();

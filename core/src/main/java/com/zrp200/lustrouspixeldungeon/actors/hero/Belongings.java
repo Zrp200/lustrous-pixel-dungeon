@@ -25,6 +25,7 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Badges;
 import com.zrp200.lustrouspixeldungeon.GamesInProgress;
+import com.zrp200.lustrouspixeldungeon.items.Ankh;
 import com.zrp200.lustrouspixeldungeon.items.EquipableItem;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.KindOfWeapon;
@@ -214,6 +215,9 @@ public class Belongings implements Iterable<Item> {
 	public void resurrect( int depth ) {
 
 		for (Item item : backpack.items.toArray( new Item[0])) {
+			if (item instanceof Ankh && !((Ankh) item).isBlessed())
+				item.detach(backpack);
+
 			if (item instanceof Key) {
 				if (((Key)item).depth == depth) {
 					item.detachAll( backpack );
