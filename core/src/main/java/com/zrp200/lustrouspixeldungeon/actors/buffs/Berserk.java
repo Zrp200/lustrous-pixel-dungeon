@@ -38,8 +38,12 @@ public class Berserk extends Buff {
 	private enum State { NORMAL, BERSERK, RECOVERING }
 	private State state = State.NORMAL;
 
-	private static final float LEVEL_RECOVER_START = 2f;
+	private static final float
+			LEVEL_RECOVER_START	= 3f,	// levels required to regain berserk
+			BERSERK_BONUS 		= 2f;	// damage multiplier while berserking
+
 	private float levelRecovery;
+
 	
 	private float power = 0;
 
@@ -77,7 +81,7 @@ public class Berserk extends Buff {
 		if (berserking()){
 			WarriorShield buff = target.buff(WarriorShield.class);
 			if (target.HP <= 0) {
-				buff.absorbDamage((int)Math.ceil(target.shielding() * 0.075f)); //15 turns max, rather than 10.
+				buff.absorbDamage((int)Math.ceil(target.shielding() * 0.05f)); //20 turns max, rather than 10.
 				if (target.shielding() <= 0) {
 					target.die(this);
 					if (!target.isAlive()) Dungeon.fail(this.getClass());
@@ -90,7 +94,7 @@ public class Berserk extends Buff {
 				power = 0f;
 			}
 		} else {
-			power -= Math.max(0.1f, power) * 0.1f * Math.pow( (target.HP/(float)target.HT ), 2); // -10% rage per turn at full hp
+			power -= Math.max(0.1f, power) * 0.1f * Math.pow( ( target.HP / (float) target.HT ), 2); // -10% rage per turn at full hp
 			
 			if (power <= 0) switch(state) {
 				case RECOVERING:
@@ -105,9 +109,9 @@ public class Berserk extends Buff {
 	}
 
 	public int damageFactor(int dmg) {
-		float bonus = Math.min(power, 1) * 1.5f;
+		float bonus = Math.min(1+0.5f*power,1.5f);
 		if (state == State.BERSERK)
-			bonus = 1.75f; // gotta kill those enemies before you're basically helpless. Also insurance for power-based bugs
+			bonus = BERSERK_BONUS; // gotta kill those enemies before you're basically helpless. Also insurance for power-based bugs
 		return Math.round(dmg * bonus);
 	}
 
@@ -118,7 +122,7 @@ public class Berserk extends Buff {
 			if (shield != null){
 				state = State.BERSERK;
 				BuffIndicator.refreshHero();
-				shield.supercharge(shield.maxShield() * 10);
+				shield.supercharge(shield.maxShield() * 15);
 
 				SpellSprite.show(target, SpellSprite.BERSERK);
 				Sample.INSTANCE.play( Assets.SND_CHALLENGE );
@@ -195,7 +199,7 @@ public class Berserk extends Buff {
 
 	@Override
 	public String desc() {
-		String desc = new String();
+		String desc = "";
 		float dispDamage = (damageFactor(10000) / 100f) - 100f;
 		switch (state){
 			case BERSERK:	return Messages.get(this, "berserk_desc");
