@@ -33,7 +33,8 @@ import com.zrp200.lustrouspixeldungeon.actors.blobs.ToxicGas;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Amok;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Burning;
-import com.zrp200.lustrouspixeldungeon.actors.buffs.Charm;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.Chill;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.Frost;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.LockedFloor;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Ooze;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Paralysis;
@@ -114,8 +115,6 @@ public class Yog extends Mob {
 				fists.add( mob );
 
 		dmg >>= fists.size();
-
-		if(src instanceof Char) defenseProc( (Char) src, dmg ); // yeah not getting away with this.
 		
 		super.damage( dmg, src );
 
@@ -182,17 +181,11 @@ public class Yog extends Mob {
 	}
 	
 	{
-		
+		immunities.add( Buff.class );
 		immunities.add( Grim.class );
-		immunities.add( Terror.class );
-		immunities.add( Amok.class );
-		immunities.add( Charm.class );
-		immunities.add( Sleep.class );
-		immunities.add( Burning.class );
 		immunities.add( ToxicGas.class );
 		immunities.add( ScrollOfRetribution.class );
 		immunities.add( ScrollOfPsionicBlast.class );
-		immunities.add( Vertigo.class );
 	}
 
 	@Override
@@ -291,7 +284,7 @@ public class Yog extends Mob {
 		}
 	}
 	
-	public static class BurningFist extends Elemental {
+	public static class BurningFist extends Mob {
 		
 		{
 			spriteClass = BurningFistSprite.class;
@@ -300,7 +293,6 @@ public class Yog extends Mob {
 			defenseSkill = 25;
 			
 			EXP = 0;
-			flying = false;
 			
 			state = WANDERING;
 
@@ -385,6 +377,8 @@ public class Yog extends Mob {
 			immunities.add( Sleep.class );
 			immunities.add( Terror.class );
 			immunities.add( Vertigo.class );
+			immunities.add( Frost.class );
+			immunities.add( Chill.class );
 		}
 	}
 	

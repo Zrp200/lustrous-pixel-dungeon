@@ -36,6 +36,7 @@ import com.zrp200.lustrouspixeldungeon.actors.buffs.Blindness;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.LockedFloor;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Paralysis;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.Slow;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Terror;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Vertigo;
 import com.zrp200.lustrouspixeldungeon.effects.Flare;
@@ -44,8 +45,6 @@ import com.zrp200.lustrouspixeldungeon.items.ArmorKit;
 import com.zrp200.lustrouspixeldungeon.items.artifacts.LloydsBeacon;
 import com.zrp200.lustrouspixeldungeon.items.keys.SkeletonKey;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfTeleportation;
-import com.zrp200.lustrouspixeldungeon.items.wands.WandOfDisintegration;
-import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Grim;
 import com.zrp200.lustrouspixeldungeon.levels.CityBossLevel;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
@@ -86,7 +85,6 @@ public class King extends Mob {
 		nextPedestal = bundle.getBoolean( PEDESTAL );
 		BossHealthBar.assignBoss(this);
 	}
-
 	@Override
 	protected boolean act() {
 		if(HP < HT) HP++;
@@ -235,14 +233,14 @@ public class King extends Mob {
 	}
 	
 	{
-		resistances.add( WandOfDisintegration.class );
 		resistances.add( ToxicGas.class );
 		resistances.add( Amok.class );
 		resistances.add( Blindness.class );
+		resistances.add( Paralysis.class );
+		resistances.add( Undead.class );
 	}
 	
 	{
-		immunities.add( Paralysis.class );
 		immunities.add( Vertigo.class );
 		immunities.add( Terror.class );
 	}
@@ -290,8 +288,8 @@ public class King extends Mob {
 		@Override
 		public int attackProc( Char enemy, int damage ) {
 			damage = super.attackProc( enemy, damage );
-			if (Random.Int( MAX_ARMY_SIZE ) == 0) {
-				Buff.prolong( enemy, Paralysis.class, 1 );
+			if (Random.Int( count ) == 0) {
+				Buff.prolong( enemy, Slow.class, Random.Float(0.5f,2) );
 			}
 			
 			return damage;
@@ -318,10 +316,8 @@ public class King extends Mob {
 		public int drRoll() {
 			return Random.NormalIntRange(0, 5);
 		}
-
 		{
-			immunities.add( Grim.class );
-			immunities.add( Paralysis.class );
+		    resistances.add( Paralysis.class);
 		}
 	}
 }
