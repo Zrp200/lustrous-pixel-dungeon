@@ -35,6 +35,7 @@ public class ShamanSprite extends MobSprite {
 	public ShamanSprite(String textureFile) {
 		super();
 
+
 		texture(textureFile);
 
 		TextureFilm frames = new TextureFilm(textureFile, 12, 15);

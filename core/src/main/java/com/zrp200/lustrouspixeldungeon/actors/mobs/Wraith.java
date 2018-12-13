@@ -28,9 +28,10 @@ import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.Bleeding;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.Cripple;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Terror;
 import com.zrp200.lustrouspixeldungeon.effects.particles.ShadowParticle;
-import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Grim;
 import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
 import com.zrp200.lustrouspixeldungeon.sprites.WraithSprite;
 
@@ -116,9 +117,9 @@ public class Wraith extends Mob {
 			return null;
 		}
 	}
-	
 	{
-		immunities.add( Grim.class );
-		immunities.add( Terror.class );
+		resistances.add(Terror.class);
+		immunities.add(Cripple.class);
+		immunities.add(Bleeding.class);
 	}
 }

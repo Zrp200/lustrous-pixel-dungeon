@@ -47,7 +47,7 @@ public class Succubus extends Mob {
 	public static Class<?extends Mob> random() {
 		return Random.chances(new HashMap<Class<?extends Mob>, Float>() {
 			{
-				put(Succubus.class,			3f);
+				put(Succubus.class,			2.5f);
 				put(Succubus.Winged.class, 	1f);
 			}
 		});
@@ -92,8 +92,7 @@ public class Succubus extends Mob {
 			}
 			sprite.emitter().burst( Speck.factory( Speck.HEALING ), 2 );
 			Sample.INSTANCE.play( Assets.SND_CHARMS );
-		}
-		if (Random.Int( 3 ) == 0) {
+		} else if (Random.Int( 3 ) == 0) {
 			//attack will reduce by 5 turns, so effectively 3-4 turns
 			Buff.affect( enemy, Charm.class, Random.IntRange( 3, 4 ) + 5 ).object = id();
 			enemy.sprite.centerEmitter().start( Speck.factory( Speck.HEART ), 0.2f, 5 );
@@ -168,15 +167,15 @@ public class Succubus extends Mob {
 	public static class Winged extends Succubus {
 		{
 			spriteClass = SuccubusSprite.Winged.class;
-			HP = HT = 72;
-			defenseSkill = 32;
+			HP = HT = 75;
+			defenseSkill = 30;
 			baseSpeed = 2;
 			flying = true;
 		}
 
 		@Override
 		public int attackSkill(Char target) {
-			return 38;
+			return 37;
 		}
 
 		@Override
@@ -186,12 +185,12 @@ public class Succubus extends Mob {
 
 		@Override
 		public int drRoll() {
-			return Math.max(super.drRoll()-1,0); // 9 armor
+			return Math.max(super.drRoll()-2,0); // 8 armor
 		}
 
 		@Override
 		public int damageRoll() {
-			return Random.NormalIntRange(20,28);
+			return super.damageRoll()-2; // 20-28
 		}
 	}
 }

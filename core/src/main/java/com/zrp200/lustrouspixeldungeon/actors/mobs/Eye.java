@@ -26,6 +26,8 @@ import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.Cripple;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Light;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Terror;
 import com.zrp200.lustrouspixeldungeon.effects.CellEmitter;
@@ -33,6 +35,8 @@ import com.zrp200.lustrouspixeldungeon.effects.particles.PurpleParticle;
 import com.zrp200.lustrouspixeldungeon.items.Dewdrop;
 import com.zrp200.lustrouspixeldungeon.items.wands.WandOfDisintegration;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Grim;
+import com.zrp200.lustrouspixeldungeon.levels.traps.DisintegrationTrap;
+import com.zrp200.lustrouspixeldungeon.levels.traps.GrimTrap;
 import com.zrp200.lustrouspixeldungeon.mechanics.Ballistica;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
@@ -41,7 +45,6 @@ import com.zrp200.lustrouspixeldungeon.sprites.EyeSprite;
 import com.zrp200.lustrouspixeldungeon.utils.GLog;
 
 public class Eye extends Mob {
-	
 	{
 		spriteClass = EyeSprite.class;
 		
@@ -101,15 +104,13 @@ public class Eye extends Mob {
 
 	@Override
 	protected boolean act() {
-		if (beamCharged && state != HUNTING){
+		if (beamCharged && state != HUNTING)
 			beamCharged = false;
-		}
 		if (beam == null && beamTarget != -1) {
 			beam = new Ballistica(pos, beamTarget, Ballistica.STOP_TERRAIN);
 			sprite.turnTo(pos, beamTarget);
 		}
-		if (beamCooldown > 0)
-			beamCooldown--;
+		if (beamCooldown > 0) beamCooldown--;
 		return super.act();
 	}
 
@@ -146,12 +147,11 @@ public class Eye extends Mob {
 	}
 
 	public void deathGaze(){
+		beamCooldown = Random.IntRange(3, 6);
 		if (!beamCharged || beamCooldown > 0 || beam == null)
 			return;
 
 		beamCharged = false;
-		beamCooldown = Random.IntRange(3, 6);
-
 		boolean terrainAffected = false;
 
 		for (int pos : beam.subPath(1, beam.dist)) {
@@ -194,6 +194,12 @@ public class Eye extends Mob {
 		beamTarget = -1;
 	}
 
+	@Override
+	public void add(Buff buff) {
+		if(buff instanceof Terror && beamCharged) beamCharged = false;
+		else super.add(buff);
+	}
+
 	private static final String BEAM_TARGET     = "beamTarget";
 	private static final String BEAM_COOLDOWN   = "beamCooldown";
 	private static final String BEAM_CHARGED    = "beamCharged";
@@ -218,10 +224,14 @@ public class Eye extends Mob {
 	{
 		resistances.add( WandOfDisintegration.class );
 		resistances.add( Grim.class );
-	}
-	
-	{
-		immunities.add( Terror.class );
+
+		resistances.add( DisintegrationTrap.class );
+		resistances.add( GrimTrap.class );
+
+		resistances.add( this.getClass() ); // resists itself
+
+
+		immunities.add( Cripple.class ); // because levitating
 	}
 
 	private class Hunting extends Mob.Hunting{

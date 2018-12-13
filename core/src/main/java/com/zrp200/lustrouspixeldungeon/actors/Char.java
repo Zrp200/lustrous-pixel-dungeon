@@ -582,9 +582,11 @@ public abstract class Char extends Actor {
 				new HashSet<Class>( Arrays.asList(Bleeding.class, ToxicGas.class, Poison.class) )),
 		BLOB_IMMUNE ( new HashSet<Class>(),
 				new HashSet<Class>( Arrays.asList(Blob.class) )),
-		FIERY ( new HashSet<Class>( Arrays.asList(WandOfFireblast.class)),
-				new HashSet<Class>( Arrays.asList(Burning.class, Blazing.class))),
-		ACIDIC ( new HashSet<Class>( Arrays.asList(ToxicGas.class, Corrosion.class)),
+		FIERY (
+				new HashSet<Class>( Arrays.asList( WandOfFireblast.class, Blazing.class) ),
+				new HashSet<Class>( Arrays.asList( Burning.class) )
+		),
+		ACIDIC ( new HashSet<Class>( Arrays.asList(ToxicGas.class, Corrosion.class, Poison.class)),
 				new HashSet<Class>( Arrays.asList(Ooze.class))),
 		ELECTRIC ( new HashSet<Class>( Arrays.asList(WandOfLightning.class, Shocking.class, Potential.class, Electricity.class, ShockingDart.class)),
 				new HashSet<Class>()),
@@ -597,7 +599,7 @@ public abstract class Char extends Actor {
 			this(new HashSet<Class>(), new HashSet<Class>());
 		}
 		
-		Property( HashSet<Class> resistances, HashSet<Class> immunities){
+		Property(HashSet<Class> resistances, HashSet<Class> immunities){
 			this.resistances = resistances;
 			this.immunities = immunities;
 		}

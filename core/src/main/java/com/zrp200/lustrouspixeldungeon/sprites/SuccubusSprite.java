@@ -71,7 +71,7 @@ public class SuccubusSprite extends MobSprite {
 			zap = new Animation( 12, false );
 			zap.frames( frames, 4, 5, 6 );
 
-			attack = new Animation(8,false);
+			attack = new Animation(12,false);
 			attack.frames(frames,7,8,9);
 
 			die = new Animation( 8, false );
