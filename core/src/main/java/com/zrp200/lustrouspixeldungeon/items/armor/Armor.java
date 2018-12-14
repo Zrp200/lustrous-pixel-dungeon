@@ -357,7 +357,7 @@ public class Armor extends EquipableItem {
 			glyphKnown = true;
 		} else if (!inscribe && Random.Float() > Math.pow(0.9, level())){
 			inscribe(null);
-			glyphKnown = knewGlyph
+			glyphKnown = knewGlyph;
 		}
 
 		cursed = false;
