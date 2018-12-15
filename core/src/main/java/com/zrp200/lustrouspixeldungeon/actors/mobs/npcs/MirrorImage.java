@@ -21,79 +21,23 @@
 
 package com.zrp200.lustrouspixeldungeon.actors.mobs.npcs;
 
-import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
-import com.zrp200.lustrouspixeldungeon.Dungeon;
-import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
-import com.zrp200.lustrouspixeldungeon.actors.blobs.CorrosiveGas;
-import com.zrp200.lustrouspixeldungeon.actors.blobs.ToxicGas;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
-import com.zrp200.lustrouspixeldungeon.actors.buffs.Burning;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Invisibility;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
-import com.zrp200.lustrouspixeldungeon.actors.mobs.Mob;
-import com.zrp200.lustrouspixeldungeon.sprites.CharSprite;
-import com.zrp200.lustrouspixeldungeon.sprites.MirrorSprite;
 import com.zrp200.lustrouspixeldungeon.ui.BuffIndicator;
 
-public class MirrorImage extends NPC {
-	
-	{
-		spriteClass = MirrorSprite.class;
-		
-		HP = HT = 1;
-		defenseSkill = 1;
-		
-		alignment = Alignment.ALLY;
-		state = HUNTING;
-		
-		//before other mobs
-		actPriority = MOB_PRIO + 1;
-	}
-	
-	private Hero hero;
-	private int heroID;
-	public int armTier;
-	
-	@Override
-	protected boolean act() {
-		if(!(this instanceof PrismaticImage)) {
-			if (hero == null) {
-				hero = (Hero) Actor.findById(heroID);
-				if (hero == null) {
-					die(null);
-					sprite.killAndErase();
-					return true;
-				}
-			}
-		}
-		if (hero.tier() != armTier){
-			armTier = hero.tier();
-			((MirrorSprite)sprite).updateArmor( armTier );
-		}
-		
-		return super.act();
-	}
-	
-	private static final String HEROID	= "hero_id";
-	
-	@Override
-	public void storeInBundle( Bundle bundle ) {
-		super.storeInBundle( bundle );
-		bundle.put( HEROID, heroID );
-	}
-	
-	@Override
-	public void restoreFromBundle( Bundle bundle ) {
-		super.restoreFromBundle( bundle );
-		heroID = bundle.getInt( HEROID );
+public class MirrorImage extends HeroImage {
+
+	protected void remove() {
+		die(null);
+		sprite.killAndErase();
 	}
 	
 	public void duplicate( Hero hero ) {
-		this.hero = hero;
-		heroID = this.hero.id();
-		if(!(this instanceof PrismaticImage)) Buff.affect(this, MirrorInvis.class, Short.MAX_VALUE); // Slightly messy.
+		super.duplicate(hero);
+		Buff.affect(this, MirrorInvis.class, Short.MAX_VALUE);
 	}
 	
 	@Override
@@ -105,11 +49,6 @@ public class MirrorImage extends NPC {
 			damage = hero.damageRoll(); //handles ring of force
 		}
 		return (damage+1)/2; //half hero damage, rounded up
-	}
-	
-	@Override
-	public int attackSkill( Char target ) {
-		return hero.attackSkill(target);
 	}
 	
 	@Override
@@ -126,13 +65,9 @@ public class MirrorImage extends NPC {
 	}
 	
 	@Override
-	protected float attackDelay() {
-		return hero.attackDelay(); //handles ring of furor
-	}
-	
-	@Override
 	protected boolean canAttack(Char enemy) {
-		return super.canAttack(enemy) || (hero.belongings.weapon != null && hero.belongings.weapon.canReach(this, enemy.pos));
+		return super.canAttack(enemy) ||
+				(hero.belongings.weapon != null && hero.belongings.weapon.canReach(this, enemy.pos));
 	}
 	
 	@Override
@@ -147,65 +82,16 @@ public class MirrorImage extends NPC {
 	@Override
 	public int attackProc( Char enemy, int damage ) {
 		damage = super.attackProc( enemy, damage );
-		if(this instanceof PrismaticImage) return damage; // Catch that.
-		
+
 		MirrorInvis buff = buff(MirrorInvis.class);
 		if (buff != null){
 			buff.detach();
-		}
-		
-		if (enemy instanceof Mob) {
-			((Mob)enemy).aggro( this );
 		}
 		if (hero.belongings.weapon != null){
 			return hero.belongings.weapon.proc( this, enemy, damage );
 		} else {
 			return damage;
 		}
-	}
-	
-	@Override
-	public CharSprite sprite() {
-		CharSprite s = super.sprite();
-		
-		//pre-0.7.0 saves
-		if (heroID == 0){
-			heroID = Dungeon.hero.id();
-		}
-		
-		hero = (Hero)Actor.findById(heroID);
-		if (hero != null) {
-			armTier = hero.tier();
-		}
-		((MirrorSprite)s).updateArmor( armTier );
-		return s;
-	}
-
-	@Override
-	public boolean interact() {
-
-		if (!Dungeon.level.passable[pos]){
-			return true;
-		}
-
-		int curPos = pos;
-
-		moveSprite( pos, Dungeon.hero.pos );
-		move( Dungeon.hero.pos );
-
-		Dungeon.hero.sprite.move( Dungeon.hero.pos, curPos );
-		Dungeon.hero.move( curPos );
-
-		Dungeon.hero.spend( 1 / Dungeon.hero.speed() );
-		Dungeon.hero.busy();
-
-		return true;
-	}
-	
-	{
-		immunities.add( ToxicGas.class );
-		immunities.add( CorrosiveGas.class );
-		immunities.add( Burning.class );
 	}
 	
 	public static class MirrorInvis extends Invisibility {

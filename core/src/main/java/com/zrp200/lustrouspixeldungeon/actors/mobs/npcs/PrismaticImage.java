@@ -25,10 +25,8 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Assets;
-import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
-import com.zrp200.lustrouspixeldungeon.actors.buffs.Corruption;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.PrismaticGuard;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.Mob;
@@ -37,7 +35,7 @@ import com.zrp200.lustrouspixeldungeon.effects.Speck;
 import com.zrp200.lustrouspixeldungeon.sprites.CharSprite;
 import com.zrp200.lustrouspixeldungeon.sprites.PrismaticSprite;
 
-public class PrismaticImage extends MirrorImage {
+public class PrismaticImage extends HeroImage {
 	
 	{
 		spriteClass = PrismaticSprite.class;
@@ -46,9 +44,6 @@ public class PrismaticImage extends MirrorImage {
 		
 		WANDERING = new Wandering();
 	}
-	
-	private Hero hero;
-	private int heroID;
 	
 	private int deathTimer = -1;
 	
@@ -61,10 +56,7 @@ public class PrismaticImage extends MirrorImage {
 			if (deathTimer > 0) {
 				sprite.alpha((deathTimer + 3) / 8f);
 				spend(TICK);
-			} else {
-				destroy();
-				sprite.die();
-			}
+			} else remove();
 			return true;
 		}
 		
@@ -74,18 +66,15 @@ public class PrismaticImage extends MirrorImage {
 			sprite.resetColor();
 		}
 		
-		if ( hero == null ){
-			hero = (Hero) Actor.findById(heroID);
-			if ( hero == null ){
-				destroy();
-				sprite.die();
-				return true;
-			}
-		}
-		
 		return super.act();
 	}
-	
+
+	@Override
+	protected void remove() {
+		destroy();
+		sprite.die();
+	}
+
 	@Override
 	public void die(Object cause) {
 		if (deathTimer == -1) {
@@ -93,8 +82,7 @@ public class PrismaticImage extends MirrorImage {
 			sprite.add(CharSprite.State.PARALYSED);
 		}
 	}
-	
-	private static final String HEROID	= "hero_id";
+
 	private static final String TIMER	= "timer";
 	
 	@Override
@@ -128,7 +116,14 @@ public class PrismaticImage extends MirrorImage {
 			return 0;
 		}
 	}
-	
+
+	@Override
+	public float stealth() {
+		return (hero != null)
+			? hero.stealth()
+			: super.stealth();
+	}
+
 	@Override
 	public int defenseProc(Char enemy, int damage) {
 		damage = super.defenseProc(enemy, damage);
@@ -145,20 +140,6 @@ public class PrismaticImage extends MirrorImage {
 			return hero.belongings.armor.speedFactor(this, super.speed());
 		}
 		return super.speed();
-	}
-	
-	@Override
-	public int attackProc( Char enemy, int damage ) {
-		
-		if (enemy instanceof Mob) {
-			((Mob)enemy).aggro( this );
-		}
-		
-		return super.attackProc( enemy, damage );
-	}
-	
-	{
-		immunities.add( Corruption.class );
 	}
 	
 	private class Wandering extends Mob.Wandering{
