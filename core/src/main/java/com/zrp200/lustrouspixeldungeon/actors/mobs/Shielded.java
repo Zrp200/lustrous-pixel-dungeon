@@ -31,7 +31,7 @@ import com.zrp200.lustrouspixeldungeon.sprites.ShieldedSprite;
 
 public class Shielded extends Brute {
 
-	{
+	public Shielded() {
 		spriteClass = ShieldedSprite.class;
 		EXP = 9; // from being rare
 		defenseSkill = 20;
@@ -39,6 +39,7 @@ public class Shielded extends Brute {
 		Buff.affect(this, BrokenSeal.WarriorShield.class).setArmor(new PlateArmor());
 
 	}
+
 	@Override
 	public int drRoll() {
 		return Random.NormalIntRange(0, 10);

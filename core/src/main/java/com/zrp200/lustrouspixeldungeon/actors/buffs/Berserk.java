@@ -25,7 +25,6 @@ import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.zrp200.lustrouspixeldungeon.Assets;
-import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.effects.SpellSprite;
 import com.zrp200.lustrouspixeldungeon.items.BrokenSeal.WarriorShield;
@@ -84,7 +83,6 @@ public class Berserk extends Buff {
 				buff.absorbDamage((int)Math.ceil(target.shielding() * 0.05f)); //20 turns max, rather than 10.
 				if (target.shielding() <= 0) {
 					target.die(this);
-					if (!target.isAlive()) Dungeon.fail(this.getClass());
 				}
 			} else {
 				state = State.RECOVERING;

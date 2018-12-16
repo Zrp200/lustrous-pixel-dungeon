@@ -22,15 +22,19 @@
 package com.zrp200.lustrouspixeldungeon.actors.buffs;
 
 import com.watabou.noosa.Image;
+import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
+import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
+import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.ui.BuffIndicator;
+import com.zrp200.lustrouspixeldungeon.utils.GLog;
 
 import java.text.DecimalFormat;
 import java.util.HashSet;
 
-public class Buff extends Actor {
+public class Buff extends Actor implements Hero.Doom {
 	
 	public Char target;
 
@@ -159,5 +163,11 @@ public class Buff extends Actor {
 	
 	public static void detach( Char target, Class<? extends Buff> cl ) {
 		detach( target.buff( cl ) );
+	}
+
+	@Override
+	public void onDeath() {
+		Dungeon.fail( getClass() );
+		GLog.n( Messages.get(this, "ondeath") );
 	}
 }
