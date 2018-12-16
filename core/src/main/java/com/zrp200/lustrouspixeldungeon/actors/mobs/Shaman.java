@@ -51,7 +51,7 @@ import com.zrp200.lustrouspixeldungeon.utils.GLog;
 import java.util.HashMap;
 
 public abstract class Shaman extends Mob implements Callback {
-    private static HashMap<Class<?extends Shaman>, Float> probs = new HashMap();
+    public final static HashMap<Class<?extends Shaman>, Float> probs = new HashMap();
     static {
         probs.put(  Shaman.MagicMissile.class,    5f   );
         probs.put(  Shaman.Lightning.class,       3f   );

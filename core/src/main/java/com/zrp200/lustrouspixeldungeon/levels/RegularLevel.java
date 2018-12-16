@@ -58,6 +58,7 @@ import com.zrp200.lustrouspixeldungeon.levels.traps.WornDartTrap;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 
 public abstract class RegularLevel extends Level {
@@ -180,15 +181,17 @@ public abstract class RegularLevel extends Level {
 		}
 	}
 	
-	private ArrayList<Class<?extends Mob>> mobsToSpawn = new ArrayList<>();
+	private HashMap<Class<?extends Mob>,Float> mobsToSpawn = new HashMap<>();
 	
 	@Override
 	public Mob createMob() {
 		if (mobsToSpawn == null || mobsToSpawn.isEmpty())
 			mobsToSpawn = Bestiary.getMobRotation(Dungeon.depth);
-		
 		try {
-			return mobsToSpawn.remove(0).newInstance();
+			Class<?extends Mob> mobClass = Random.chances(mobsToSpawn);
+
+			mobsToSpawn.put( mobClass,Math.max(mobsToSpawn.get(mobClass)-1,0) );
+			return mobClass.newInstance();
 		} catch (Exception e) {
 			LustrousPixelDungeon.reportException(e);
 			return null;
@@ -479,7 +482,6 @@ public abstract class RegularLevel extends Level {
 	public void storeInBundle( Bundle bundle ) {
 		super.storeInBundle( bundle );
 		bundle.put( "rooms", rooms );
-		bundle.put( "mobs_to_spawn", mobsToSpawn.toArray(new Class[0]));
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -494,12 +496,6 @@ public abstract class RegularLevel extends Level {
 				roomEntrance = r;
 			} else if (r instanceof ExitRoom ){
 				roomExit = r;
-			}
-		}
-		
-		if (bundle.contains( "mobs_to_spawn" )) {
-			for (Class<? extends Mob> mob : bundle.getClassArray("mobs_to_spawn")) {
-				if (mob != null) mobsToSpawn.add(mob);
 			}
 		}
 	}
