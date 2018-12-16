@@ -124,6 +124,7 @@ public class Armor extends EquipableItem {
 	private static final String GLYPH			= "glyph";
 	private static final String SEAL            = "seal";
 	private static final String AUGMENT			= "augment";
+	private static final String GLYPH_KNOWN 	= "glyph known";
 
 	@Override
 	public void storeInBundle( Bundle bundle ) {
@@ -132,6 +133,7 @@ public class Armor extends EquipableItem {
 		bundle.put( GLYPH, glyph );
 		bundle.put( SEAL, seal);
 		bundle.put( AUGMENT, augment);
+		bundle.put( GLYPH_KNOWN,glyphKnown);
 	}
 
 	@Override
@@ -140,6 +142,7 @@ public class Armor extends EquipableItem {
 		hitsToKnow = bundle.getInt( UNFAMILIRIARITY );
 		inscribe((Glyph) bundle.get(GLYPH));
 		seal = (BrokenSeal)bundle.get(SEAL);
+		glyphKnown=bundle.getBoolean(GLYPH_KNOWN);
 		//pre-0.6.5 saves
 		if (bundle.contains(AUGMENT)) augment = bundle.getEnum(AUGMENT, Augment.class);
 	}
@@ -154,7 +157,7 @@ public class Armor extends EquipableItem {
 	@Override
 	public ArrayList<String> actions(Hero hero) {
 		ArrayList<String> actions = super.actions(hero);
-		if (seal != null) actions.add(AC_DETACH);
+		if (seal != null)actions.add(AC_DETACH);
 		return actions;
 	}
 
@@ -192,9 +195,10 @@ public class Armor extends EquipableItem {
 				equipCursed( hero );
 				GLog.n( Messages.get(Armor.class, "equip_cursed") );
 			}
-			if( !glyphKnown && hasGoodGlyph() )
-				ItemChange.show(Dungeon.hero,this); // just to make obvious that it's enchanted
-
+			if( !glyphKnown && glyph != null ) {// not exclusive
+				glyphKnown = true; // just to make this work.
+				ItemChange.show(Dungeon.hero, this); // just to make obvious that it's enchanted
+			}
 			glyphKnown = cursedKnown = true;
 			
 			((HeroSprite)hero.sprite).updateArmor();
@@ -419,7 +423,7 @@ public class Armor extends EquipableItem {
 			case NONE:
 		}
 		
-		if (glyph != null && glyphKnown) {
+		if ( visiblyInscribed() ) {
 			info += "\n\n" +  Messages.get(Armor.class, "inscribed", glyph.name());
 			info += " " + glyph.desc();
 		}
@@ -491,11 +495,14 @@ public class Armor extends EquipableItem {
 		if (seal != null) return 0;
 
 		int price = 20 * tier;
-		if (hasGoodGlyph()) {
-			price *= 1.5;
+		if ( visiblyInscribed() ) {
+			price *= Math.pow(1.5, hasGoodGlyph() ? 1 : -1);
 		}
-		if (cursedKnown && (cursed || hasCurseGlyph())) {
-			price /= 2;
+		if (cursedKnown) {
+			if( cursed )
+				price *= 0.75;
+			else if( !levelKnown )
+				price *= 1.25; // because you can say for certain it isn't cursed.
 		}
 		if (levelKnown && level() > 0) {
 			price *= (level() + 1);
@@ -529,10 +536,10 @@ public class Armor extends EquipableItem {
 	public boolean hasGoodGlyph(){
 		return glyph != null && !glyph.curse();
 	}
-
 	public boolean hasCurseGlyph(){
 		return glyph != null && glyph.curse();
 	}
+	public boolean visiblyInscribed() { return glyph != null && glyphKnown; }
 
 	@Override
 	public ItemSprite.Glowing glowing() {
@@ -542,16 +549,17 @@ public class Armor extends EquipableItem {
 	public static abstract class Glyph implements Bundlable {
 		
 		private static final Class<?>[] common = new Class<?>[]{
-				Obfuscation.class, Swiftness.class, Viscosity.class, Potential.class,
-				HolyProvidence.class // for easier testing
+				Obfuscation.class, Swiftness.class, Viscosity.class, Potential.class
 		};
 		
 		private static final Class<?>[] uncommon = new Class<?>[]{
 				Brimstone.class, Stone.class, Entanglement.class,
-				Repulsion.class, Camouflage.class, Flow.class };
+				Repulsion.class, Camouflage.class, Flow.class
+		};
 		
 		private static final Class<?>[] rare = new Class<?>[]{
-				Affection.class, AntiMagic.class, Thorns.class, HolyProvidence.class};
+				Affection.class, AntiMagic.class, Thorns.class, HolyProvidence.class
+		};
 		
 		private static final float[] typeChances = new float[]{
 				50, //12.5% each
@@ -561,8 +569,7 @@ public class Armor extends EquipableItem {
 
 		private static final Class<?>[] curses = new Class<?>[]{
 				AntiEntropy.class, Corrosion.class, Displacement.class, Metabolism.class,
-				Multiplicity.class, Stench.class, Overgrowth.class, Bulk.class, Volatility.class,
-				Volatility.class
+				Multiplicity.class, Stench.class, Overgrowth.class, Bulk.class, Volatility.class
 		};
 		
 		public abstract int proc( Armor armor, Char attacker, Char defender, int damage );

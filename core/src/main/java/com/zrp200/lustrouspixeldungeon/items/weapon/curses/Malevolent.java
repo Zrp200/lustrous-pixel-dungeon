@@ -37,7 +37,7 @@ public class Malevolent extends WeaponCurse {
         curseList.add(
                 new WeaponCurse() { // Multiplicity curse
                     @Override public int proc(Weapon weapon, Char attacker, Char defender, int damage) {
-                        return new Multiplicity().proc(null, attacker, defender, damage);
+                        return new Multiplicity().proc(null, defender, attacker, damage);
                     }
                 }
         );

@@ -111,14 +111,14 @@ public class MeleeWeapon extends Weapon {
 			case NONE:
 		}
 
-		if (enchantment != null && (cursedKnown || !enchantment.curse())){
+		if ( isVisiblyEnchanted() ){
 			info += "\n\n" + Messages.get(Weapon.class, "enchanted", enchantment.name());
 			info += " " + Messages.get(enchantment, "desc");
 		}
 
 		if (cursed && isEquipped( Dungeon.hero )) {
 			info += "\n\n" + Messages.get(Weapon.class, "cursed_worn");
-		} else if (cursedKnown && cursed) {
+		} else if ( visiblyCursed() ) {
 			info += "\n\n" + Messages.get(Weapon.class, "cursed");
 		} else if (!isIdentified() && cursedKnown){
 			info += "\n\n" + Messages.get(Weapon.class, "not_cursed");
@@ -130,11 +130,14 @@ public class MeleeWeapon extends Weapon {
 	@Override
 	public int price() {
 		int price = 20 * tier;
-		if (hasGoodEnchant()) {
-			price *= 1.5;
+		if ( isVisiblyEnchanted() ) {
+			if( hasGoodEnchant() ) price *= 1.5;
+			else price /= 1.5;
 		}
-		if (cursedKnown && (cursed || hasCurseEnchant())) {
-			price /= 2;
+
+		if (cursedKnown) {
+			if(cursed) price *= enchantKnown ? 0.75 : 0.667;
+			else if( !levelKnown ) price *= 1.25; // prize items usually.
 		}
 		if (levelKnown && level() > 0) {
 			price *= (level() + 1);

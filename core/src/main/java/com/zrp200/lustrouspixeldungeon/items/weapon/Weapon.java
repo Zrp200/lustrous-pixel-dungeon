@@ -108,8 +108,9 @@ abstract public class Weapon extends KindOfWeapon {
 
 	@Override
 	public boolean doEquip(Hero hero) {
-		if(!enchantKnown && hasGoodEnchant()) ItemChange.show(hero,this); // make it obvious
+		boolean enchantUnknown = !enchantKnown;
 		enchantKnown = true;
+		if(enchantUnknown && enchantment != null) ItemChange.show(hero,this); // make it obvious
 		return super.doEquip(hero);
 	}
 
@@ -131,9 +132,11 @@ abstract public class Weapon extends KindOfWeapon {
 		return damage;
 	}
 
-	private static final String UNFAMILIRIARITY	= "unfamiliarity";
-	private static final String ENCHANTMENT		= "enchantment";
-	private static final String AUGMENT			= "augment";
+	private static final String
+			UNFAMILIRIARITY	= "unfamiliarity",
+			ENCHANTMENT		= "enchantment",
+			AUGMENT			= "augment",
+			ENCHANTMENT_KNOWN = "enchant known";
 
 	@Override
 	public void storeInBundle( Bundle bundle ) {
@@ -141,6 +144,7 @@ abstract public class Weapon extends KindOfWeapon {
 		bundle.put( UNFAMILIRIARITY, hitsToKnow );
 		bundle.put( ENCHANTMENT, enchantment );
 		bundle.put( AUGMENT, augment );
+		bundle.put( ENCHANTMENT_KNOWN, enchantKnown);
 	}
 	
 	@Override
@@ -148,6 +152,7 @@ abstract public class Weapon extends KindOfWeapon {
 		super.restoreFromBundle( bundle );
 		hitsToKnow = bundle.getInt( UNFAMILIRIARITY );
 		enchantment = (Enchantment)bundle.get( ENCHANTMENT );
+		enchantKnown = bundle.getBoolean(ENCHANTMENT_KNOWN);
 		
 		//pre-0.6.5 saves
 		if (bundle.contains( "imbue" )){
@@ -222,7 +227,7 @@ abstract public class Weapon extends KindOfWeapon {
 	
 	@Override
 	public String name() {
-		return enchantment != null && enchantKnown ? enchantment.name( super.name() ) : super.name();
+		return isVisiblyEnchanted() ? enchantment.name( super.name() ) : super.name();
 	}
 	
 	@Override
@@ -278,11 +283,11 @@ abstract public class Weapon extends KindOfWeapon {
 	public boolean hasCurseEnchant(){
 		return enchantment != null && enchantment.curse();
 	}
-	public boolean visiblyEnchanted() { return enchantment != null && enchantKnown; }
+	public boolean isVisiblyEnchanted() { return enchantment != null && enchantKnown; }
 
 	@Override
 	public ItemSprite.Glowing glowing() {
-		return visiblyEnchanted() ? enchantment.glowing() : null;
+		return isVisiblyEnchanted() ? enchantment.glowing() : null;
 	}
 
 	public static abstract class Enchantment implements Bundlable {
@@ -309,8 +314,8 @@ abstract public class Weapon extends KindOfWeapon {
 				Sacrificial.class, Wayward.class, Elastic.class, Friendly.class,
 				Malevolent.class
 		};
-		
-			
+
+
 		public abstract int proc( Weapon weapon, Char attacker, Char defender, int damage );
 
 		public String name() {
