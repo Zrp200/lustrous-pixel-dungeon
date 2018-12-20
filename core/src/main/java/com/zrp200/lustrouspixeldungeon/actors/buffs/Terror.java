@@ -21,6 +21,7 @@
 
 package com.zrp200.lustrouspixeldungeon.actors.buffs;
 
+import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.ui.BuffIndicator;
@@ -68,5 +69,10 @@ public class Terror extends FlavourBuff {
 		if (cooldown() <= 0){
 			detach();
 		}
+	}
+
+	@Override
+	public void tintIcon(Image icon) {
+		greyIcon(icon,5,cooldown());
 	}
 }

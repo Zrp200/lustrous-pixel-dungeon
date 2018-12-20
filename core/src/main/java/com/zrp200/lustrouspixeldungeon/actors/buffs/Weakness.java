@@ -21,6 +21,7 @@
 
 package com.zrp200.lustrouspixeldungeon.actors.buffs;
 
+import com.watabou.noosa.Image;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.ui.BuffIndicator;
 
@@ -37,7 +38,12 @@ public class Weakness extends FlavourBuff {
 	public int icon() {
 		return BuffIndicator.WEAKNESS;
 	}
-	
+
+	@Override
+	public void tintIcon(Image icon) {
+		greyIcon( icon,5, cooldown() );
+	}
+
 	@Override
 	public String toString() {
 		return Messages.get(this, "name");

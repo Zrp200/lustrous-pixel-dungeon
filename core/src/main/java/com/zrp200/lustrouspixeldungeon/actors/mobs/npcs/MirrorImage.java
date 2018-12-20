@@ -26,6 +26,8 @@ import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Invisibility;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
+import com.zrp200.lustrouspixeldungeon.items.KindOfWeapon;
+import com.zrp200.lustrouspixeldungeon.items.rings.RingOfFuror;
 import com.zrp200.lustrouspixeldungeon.ui.BuffIndicator;
 
 public class MirrorImage extends HeroImage {
@@ -39,41 +41,37 @@ public class MirrorImage extends HeroImage {
 		super.duplicate(hero);
 		Buff.affect(this, MirrorInvis.class, Short.MAX_VALUE);
 	}
+
+	protected float attackDelay() {
+		float modifier = weapon() != null ? weapon().speedFactor(hero) : RingOfFuror.modifyAttackDelay(0.5f,hero);
+		return modifier * super.attackDelay();
+	}
+
+	private KindOfWeapon weapon() {
+		return hero.belongings.weapon;
+	}
 	
 	@Override
 	public int damageRoll() {
 		int damage;
-		if (hero.belongings.weapon != null){
-			damage = hero.belongings.weapon.damageRoll(this);
+		if (weapon() != null){
+			damage = weapon().damageRoll(this);
 		} else {
-			damage = hero.damageRoll(); //handles ring of force
+			damage = hero.damageRoll();//handles ring of force
 		}
 		return (damage+1)/2; //half hero damage, rounded up
 	}
-	
-	@Override
-	public int defenseSkill(Char enemy) {
-		if (hero != null) {
-			int baseEvasion = 4 + hero.lvl;
-			int heroEvasion = hero.defenseSkill(enemy);
-			
-			//if the hero has more/less evasion, 50% of it is applied
-			return super.defenseSkill(enemy) * (baseEvasion + heroEvasion) / 2;
-		} else {
-			return 0;
-		}
-	}
-	
+
 	@Override
 	protected boolean canAttack(Char enemy) {
 		return super.canAttack(enemy) ||
-				(hero.belongings.weapon != null && hero.belongings.weapon.canReach(this, enemy.pos));
+				(weapon() != null && weapon().canReach(this, enemy.pos));
 	}
 	
 	@Override
 	public int drRoll() {
-		if (hero != null && hero.belongings.weapon != null){
-			return Random.NormalIntRange(0, hero.belongings.weapon.defenseFactor(this)/2);
+		if (hero != null && weapon() != null){
+			return Random.NormalIntRange(0, weapon().defenseFactor(this)/2);
 		} else {
 			return 0;
 		}
@@ -87,8 +85,8 @@ public class MirrorImage extends HeroImage {
 		if (buff != null){
 			buff.detach();
 		}
-		if (hero.belongings.weapon != null){
-			return hero.belongings.weapon.proc( this, enemy, damage );
+		if (weapon() != null){
+			return weapon().proc( this, enemy, damage );
 		} else {
 			return damage;
 		}

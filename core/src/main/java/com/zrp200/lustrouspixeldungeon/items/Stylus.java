@@ -24,7 +24,6 @@ package com.zrp200.lustrouspixeldungeon.items;
 import com.watabou.noosa.audio.Sample;
 import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
-import com.zrp200.lustrouspixeldungeon.effects.ItemChange;
 import com.zrp200.lustrouspixeldungeon.effects.particles.PurpleParticle;
 import com.zrp200.lustrouspixeldungeon.items.armor.Armor;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
@@ -92,13 +91,12 @@ public class Stylus extends Item {
 		detach(curUser.belongings.backpack);
 
 		GLog.w( Messages.get(this, "inscribed"));
-
-		armor.inscribe();
 		
 		curUser.sprite.operate(curUser.pos);
 		curUser.sprite.centerEmitter().start(PurpleParticle.BURST, 0.05f, 10);
-		ItemChange.show(curUser, armor);
 		Sample.INSTANCE.play(Assets.SND_BURNING);
+
+		armor.inscribe();
 		
 		curUser.spend(TIME_TO_INSCRIBE);
 		curUser.busy();

@@ -21,6 +21,7 @@
 
 package com.zrp200.lustrouspixeldungeon.actors.buffs;
 
+import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.ui.BuffIndicator;
@@ -47,7 +48,12 @@ public class WellFed extends Buff {
 		spend(TICK);
 		return true;
 	}
-	
+
+	@Override
+	public void tintIcon(Image icon) {
+		greyIcon(icon,150,left);
+	}
+
 	public void reset(){
 		//heals one HP every 10 turns for 450 turns
 		left = (int)Hunger.STARVING;

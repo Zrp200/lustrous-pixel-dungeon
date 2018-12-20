@@ -82,8 +82,14 @@ public class Armor extends EquipableItem {
 
 	@Override
 	public Item identify() {
+		if(glyph != null && !glyphKnown) revealGlyph();
 		glyphKnown = true;
 		return super.identify();
+	}
+
+	public void revealGlyph() {
+		glyphKnown = true;
+		ItemChange.show(Dungeon.hero,this);
 	}
 
 	public enum Augment {
@@ -195,9 +201,8 @@ public class Armor extends EquipableItem {
 				equipCursed( hero );
 				GLog.n( Messages.get(Armor.class, "equip_cursed") );
 			}
-			if( !glyphKnown && glyph != null ) {// not exclusive
-				glyphKnown = true; // just to make this work.
-				ItemChange.show(Dungeon.hero, this); // just to make obvious that it's enchanted
+			if( !glyphKnown && glyph != null ) {// don't want it to always happen you know. Too much could get irritating
+				revealGlyph(); // just to make obvious that it's enchanted
 			}
 			glyphKnown = cursedKnown = true;
 			
@@ -355,13 +360,10 @@ public class Armor extends EquipableItem {
 	}
 	
 	public Item upgrade( boolean inscribe ) {
-		boolean knewGlyph = glyphKnown;
-		if (inscribe && (glyph == null || glyph.curse())){
+		if (inscribe && glyph == null){
 			inscribe( Glyph.random() );
-			glyphKnown = true;
 		} else if (!inscribe && Random.Float() > Math.pow(0.9, level())){
-			inscribe(null);
-			glyphKnown = knewGlyph;
+			inscribe(null,false);
 		}
 
 		cursed = false;
@@ -469,12 +471,11 @@ public class Armor extends EquipableItem {
 		//20% chance to be inscribed (+33%)
 		float effectRoll = Random.Float();
 		if (effectRoll < 0.3f) {
-			inscribe(Glyph.randomCurse());
+			inscribe(Glyph.randomCurse(), false);
 			cursed = true;
 		} else if (effectRoll >= 0.8f){
-			inscribe();
+			inscribe(false);
 		}
-		glyphKnown = false;
 
 		return this;
 	}
@@ -513,19 +514,30 @@ public class Armor extends EquipableItem {
 		return price;
 	}
 
-	public Armor inscribe( Glyph glyph ) {
+	public Armor inscribe( Glyph glyph, boolean visible) {
+		Glyph oldGlyph = this.glyph;
 		this.glyph = glyph;
-		glyphKnown = true;
-
+			if(visible) {
+				glyphKnown = true;
+			if (glyph.getClass() != oldGlyph.getClass() && !glyph.curse()) // pretty pointless if it's always gonna be black*/
+				revealGlyph();
+		}
 		return this;
 	}
 
-	public Armor inscribe() {
+	public Armor inscribe( Glyph glyph ) {
+		return inscribe(glyph,true);
+	}
+
+	public Armor inscribe(boolean visible) {
 
 		Class<? extends Glyph> oldGlyphClass = glyph != null ? glyph.getClass() : null;
 		Glyph gl = Glyph.random( oldGlyphClass );
 
-		return inscribe( gl );
+		return inscribe( gl, visible );
+	}
+	public Armor inscribe() {
+		return inscribe(true);
 	}
 
 	public boolean hasGlyph(Class<?extends Glyph> type, Char owner) {

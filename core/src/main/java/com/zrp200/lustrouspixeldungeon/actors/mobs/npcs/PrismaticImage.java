@@ -118,6 +118,11 @@ public class PrismaticImage extends HeroImage {
 	}
 
 	@Override
+	protected float attackDelay() {
+		return super.attackDelay();
+	}
+
+	@Override
 	public float stealth() {
 		return (hero != null)
 			? hero.stealth()

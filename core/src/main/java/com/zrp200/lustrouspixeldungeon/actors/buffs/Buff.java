@@ -170,4 +170,8 @@ public class Buff extends Actor implements Hero.Doom {
 		Dungeon.fail( getClass() );
 		GLog.n( Messages.get(this, "ondeath") );
 	}
+
+	public static void greyIcon(Image icon, float startGrey, float remaining){
+		FlavourBuff.greyIcon(icon, startGrey, remaining);
+	}
 }

@@ -21,6 +21,7 @@
 
 package com.zrp200.lustrouspixeldungeon.actors.buffs;
 
+import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.ui.BuffIndicator;
@@ -29,6 +30,7 @@ public class AdrenalineSurge extends Buff {
 	
 	{
 		type = buffType.POSITIVE;
+		announced = true;
 	}
 	
 	private int boost;
@@ -42,7 +44,12 @@ public class AdrenalineSurge extends Buff {
 	public int boost(){
 		return boost;
 	}
-	
+
+	@Override
+	public void tintIcon(Image icon) {
+		greyIcon(icon,300, cooldown() );
+	}
+
 	@Override
 	public boolean act() {
 		boost --;

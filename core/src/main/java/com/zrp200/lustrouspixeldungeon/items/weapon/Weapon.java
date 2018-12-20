@@ -98,19 +98,24 @@ abstract public class Weapon extends KindOfWeapon {
 	private int hitsToKnow = HITS_TO_KNOW;
 	
 	public Enchantment enchantment;
-	public boolean enchantKnown = false;
+	protected boolean enchantKnown = false;
 
 	@Override
 	public Item identify() {
+		if( !isVisiblyEnchanted() )
+			revealEnchant();
 		enchantKnown = true;
 		return super.identify();
 	}
 
+	public void revealEnchant() {
+		enchantKnown = true;
+		ItemChange.show(Dungeon.hero,this);
+	}
+
 	@Override
 	public boolean doEquip(Hero hero) {
-		boolean enchantUnknown = !enchantKnown;
-		enchantKnown = true;
-		if(enchantUnknown && enchantment != null) ItemChange.show(hero,this); // make it obvious
+		if( !isVisiblyEnchanted() && hasGoodEnchant() ) revealEnchant(); // make it obvious
 		return super.doEquip(hero);
 	}
 
@@ -214,10 +219,10 @@ abstract public class Weapon extends KindOfWeapon {
 	}
 	
 	public Item upgrade(boolean enchant ) {
-		if (enchant && (enchantment == null || enchantment.curse())){
+		if ( enchant && ( enchantment == null || enchantment.curse() ) ){
 			enchant( Enchantment.random() );
 		} else if (!enchant && Random.Float() > Math.pow(0.9, level())){
-			enchant(null);
+			enchant(null,false);
 		}
 		
 		cursed = false;
@@ -251,25 +256,32 @@ abstract public class Weapon extends KindOfWeapon {
 			enchant(Enchantment.randomCurse());
 			cursed = true;
 		} else if (effectRoll >= 0.85f){
-			enchant();
+			enchant(false);
 		}
-		enchantKnown = false;
 
 		return this;
 	}
 	
-	public Weapon enchant( Enchantment ench ) {
+	public Weapon enchant( Enchantment ench, boolean visible ) {
 		enchantment = ench;
-		enchantKnown = true; // easier just to manually turn this off.
+		if(visible) revealEnchant();
 		return this;
 	}
 
-	public Weapon enchant() {
+	public Weapon enchant( Enchantment ench) {
+		return enchant(ench,true);
+	}
+
+	public Weapon enchant(boolean visible) {
 
 		Class<? extends Enchantment> oldEnchantment = enchantment != null ? enchantment.getClass() : null;
 		Enchantment ench = Enchantment.random( oldEnchantment );
 
-		return enchant( ench );
+		return enchant( ench, visible );
+	}
+
+	public Weapon enchant() {
+		return enchant(true);
 	}
 
 	public boolean hasEnchant(Class<?extends Enchantment> type, Char owner) {
@@ -293,14 +305,17 @@ abstract public class Weapon extends KindOfWeapon {
 	public static abstract class Enchantment implements Bundlable {
 		
 		private static final Class<?>[] common = new Class<?>[]{
-				Blazing.class, Venomous.class, Vorpal.class, Shocking.class};
+				Blazing.class, Venomous.class, Vorpal.class, Shocking.class
+		};
 		
 		private static final Class<?>[] uncommon = new Class<?>[]{
 				Chilling.class, Eldritch.class, Lucky.class,
-				Projecting.class, Unstable.class, Dazzling.class};
+				Projecting.class, Unstable.class, Dazzling.class
+		};
 		
 		private static final Class<?>[] rare = new Class<?>[]{
-				Grim.class, Stunning.class, Vampiric.class};
+				Grim.class, Stunning.class, Vampiric.class
+		};
 		
 		private static final float[] typeChances = new float[]{
 				50, //12.5% each
@@ -310,9 +325,9 @@ abstract public class Weapon extends KindOfWeapon {
 		
 		@SuppressWarnings("unchecked")
 		protected static final Class<?extends Weapon.Enchantment>[] curses = new Class[] {
-				Annoying.class, Displacing.class, Exhausting.class, Fragile.class,
-				Sacrificial.class, Wayward.class, Elastic.class, Friendly.class,
-				Malevolent.class
+				Annoying.class,	Displacing.class, 	Exhausting.class,
+				Fragile.class, 	Sacrificial.class,	Wayward.class,
+				Elastic.class, 	Friendly.class,   	Malevolent.class
 		};
 
 

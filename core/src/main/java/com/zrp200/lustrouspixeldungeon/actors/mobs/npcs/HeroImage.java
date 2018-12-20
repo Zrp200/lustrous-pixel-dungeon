@@ -26,11 +26,14 @@ package com.zrp200.lustrouspixeldungeon.actors.mobs.npcs;
     import com.zrp200.lustrouspixeldungeon.actors.Actor;
     import com.zrp200.lustrouspixeldungeon.actors.Char;
     import com.zrp200.lustrouspixeldungeon.actors.blobs.CorrosiveGas;
+    import com.zrp200.lustrouspixeldungeon.actors.buffs.Burning;
     import com.zrp200.lustrouspixeldungeon.actors.buffs.Corruption;
     import com.zrp200.lustrouspixeldungeon.actors.buffs.Cripple;
     import com.zrp200.lustrouspixeldungeon.actors.buffs.Ooze;
     import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
     import com.zrp200.lustrouspixeldungeon.actors.mobs.Mob;
+    import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfRetribution;
+    import com.zrp200.lustrouspixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
     import com.zrp200.lustrouspixeldungeon.sprites.CharSprite;
     import com.zrp200.lustrouspixeldungeon.sprites.MirrorSprite;
 
@@ -110,11 +113,6 @@ public abstract class HeroImage extends NPC {
     }
 
     @Override
-    protected float attackDelay() {
-            return hero.attackDelay(); //handles ring of furor
-        }
-
-    @Override
     public int attackProc( Char enemy, int damage ) {
         if (enemy instanceof Mob) ( (Mob) enemy ).aggro( this );
         return super.attackProc(enemy, damage);
@@ -153,9 +151,13 @@ public abstract class HeroImage extends NPC {
 
     {
         properties.add( Property.INORGANIC );
+
+        immunities.add( Burning.class );
         immunities.add( CorrosiveGas.class );
         immunities.add( Ooze.class );
         immunities.add( Cripple.class );
         immunities.add( Corruption.class );
+        immunities.add( ScrollOfRetribution.class );
+        immunities.add( ScrollOfPsionicBlast.class);
     }
 }

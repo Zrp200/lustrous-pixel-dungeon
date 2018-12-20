@@ -24,7 +24,7 @@ package com.zrp200.lustrouspixeldungeon.sprites;
 import com.watabou.noosa.TextureFilm;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
-import com.zrp200.lustrouspixeldungeon.actors.mobs.npcs.MirrorImage;
+import com.zrp200.lustrouspixeldungeon.actors.mobs.npcs.HeroImage;
 
 public class MirrorSprite extends MobSprite {
 	
@@ -42,7 +42,7 @@ public class MirrorSprite extends MobSprite {
 	@Override
 	public void link( Char ch ) {
 		super.link( ch );
-		updateArmor( ((MirrorImage)ch).armTier );
+		updateArmor( ((HeroImage)ch).armTier );
 	}
 	
 	public void updateArmor( int tier ) {

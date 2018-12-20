@@ -22,7 +22,6 @@
 package com.zrp200.lustrouspixeldungeon.items.spells;
 
 import com.zrp200.lustrouspixeldungeon.Badges;
-import com.zrp200.lustrouspixeldungeon.effects.ItemChange;
 import com.zrp200.lustrouspixeldungeon.effects.Speck;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.armor.Armor;
@@ -55,7 +54,6 @@ public class MagicalInfusion extends InventorySpell {
 		Badges.validateItemLevelAquired(item);
 
 		curUser.sprite.emitter().start(Speck.factory(Speck.UP), 0.2f, 3);
-		ItemChange.show(curUser, item);
 	}
 	
 	@Override
@@ -64,6 +62,7 @@ public class MagicalInfusion extends InventorySpell {
 		return Math.round(quantity * ((50 + 30) / 1f));
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static class Recipe extends com.zrp200.lustrouspixeldungeon.items.Recipe.SimpleRecipe {
 		
 		{

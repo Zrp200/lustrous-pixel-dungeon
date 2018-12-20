@@ -21,7 +21,6 @@
 
 package com.zrp200.lustrouspixeldungeon.items.stones;
 
-import com.zrp200.lustrouspixeldungeon.effects.ItemChange;
 import com.zrp200.lustrouspixeldungeon.effects.Speck;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.armor.Armor;
@@ -41,18 +40,17 @@ public class StoneOfEnchantment extends InventoryStone {
 	@Override
 	protected void onItemSelected(Item item) {
 		
-		if (item instanceof Weapon) {
-			
-			((Weapon)item).enchant();
-			
-		} else {
-			
-			((Armor)item).inscribe();
-			
-		}
-		
 		curUser.sprite.emitter().start( Speck.factory( Speck.LIGHT ), 0.1f, 5 );
-		ItemChange.show( curUser, item );
+
+		if (item instanceof Weapon) {
+
+			((Weapon)item).enchant();
+
+		} else {
+
+			((Armor)item).inscribe();
+
+		}
 		
 		if (item instanceof Weapon) {
 			GLog.p(Messages.get(this, "weapon"));

@@ -21,6 +21,7 @@
 
 package com.zrp200.lustrouspixeldungeon.actors.buffs;
 
+import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
@@ -59,7 +60,12 @@ public class Ooze extends Buff {
 	public int icon() {
 		return BuffIndicator.OOZE;
 	}
-	
+
+	@Override
+	public void tintIcon(Image icon) {
+		greyIcon(icon,5,left);
+	}
+
 	@Override
 	public String toString() {
 		return Messages.get(this, "name");
