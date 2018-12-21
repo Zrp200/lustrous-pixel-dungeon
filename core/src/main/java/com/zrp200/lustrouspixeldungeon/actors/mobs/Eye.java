@@ -125,9 +125,6 @@ public class Eye extends Mob {
 			beamCharged = true;
 			return true;
 		} else {
-
-			spend( attackDelay() );
-			
 			beam = new Ballistica(pos, beamTarget, Ballistica.STOP_TERRAIN);
 			if (Dungeon.level.heroFOV[pos] || Dungeon.level.heroFOV[beam.collisionPos] ) {
 				sprite.zap( beam.collisionPos );
@@ -140,18 +137,30 @@ public class Eye extends Mob {
 
 	}
 
+	public void damage(int dmg, Object src, boolean magic) {
+		if(src instanceof Eye && magic) dmg /= 2;
+		super.damage(dmg, src, magic);
+
+	}
+
 	@Override
 	public void damage(int dmg, Object src) {
 		if (beamCharged) dmg /= 4;
 		super.damage(dmg, src);
 	}
 
+	private void resetDeathgaze() {
+		beamCharged = false;
+		beamCooldown = Random.Int(3,6);
+		beamTarget = -1;
+		beam = null;
+		sprite.idle();
+		spend( attackDelay() - cooldown() );
+	}
+
 	public void deathGaze(){
-		beamCooldown = Random.IntRange(3, 6);
 		if (!beamCharged || beamCooldown > 0 || beam == null)
 			return;
-
-		beamCharged = false;
 		boolean terrainAffected = false;
 
 		for (int pos : beam.subPath(1, beam.dist)) {
@@ -170,7 +179,7 @@ public class Eye extends Mob {
 			}
 
 			if (hit( this, ch, true )) {
-				ch.damage( Random.NormalIntRange( 30, 50 ), this );
+				ch.damage( Random.NormalIntRange( 30, 50 ), this, true );
 
 				if (Dungeon.level.heroFOV[pos]) {
 					ch.sprite.flash();
@@ -190,13 +199,16 @@ public class Eye extends Mob {
 			Dungeon.observe();
 		}
 
-		beam = null;
-		beamTarget = -1;
+		resetDeathgaze(); // we just used it, don't want it to immediately use it again lol
 	}
 
 	@Override
 	public void add(Buff buff) {
-		if(buff instanceof Terror && beamCharged) beamCharged = false;
+		if(buff instanceof Terror && beamCharged) {
+			resetDeathgaze();
+			sprite.idle();
+			sprite.showStatus( CharSprite.NEGATIVE, Messages.get(this, "rage") );
+		}
 		else super.add(buff);
 	}
 
@@ -224,12 +236,10 @@ public class Eye extends Mob {
 	{
 		resistances.add( WandOfDisintegration.class );
 		resistances.add( Grim.class );
+		resistances.add( Terror.class);
 
 		resistances.add( DisintegrationTrap.class );
 		resistances.add( GrimTrap.class );
-
-		resistances.add( this.getClass() ); // resists itself
-
 
 		immunities.add( Cripple.class ); // because levitating
 	}

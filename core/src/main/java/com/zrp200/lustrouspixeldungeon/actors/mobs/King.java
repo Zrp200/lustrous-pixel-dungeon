@@ -274,7 +274,7 @@ public class King extends Mob {
 			count--;
 			super.onRemove();
 		}
-		
+
 		@Override
 		public int damageRoll() {
 			return Random.NormalIntRange( 15, 25 );
@@ -288,8 +288,8 @@ public class King extends Mob {
 		@Override
 		public int attackProc( Char enemy, int damage ) {
 			damage = super.attackProc( enemy, damage );
-			if (Random.Int( count ) == 0) {
-				Buff.prolong( enemy, Slow.class, Random.Float(0.5f,2) );
+			if (Random.Int( MAX_ARMY_SIZE ) == 0) {
+				Buff.prolong( enemy, Slow.class, 1);
 			}
 			
 			return damage;
@@ -311,13 +311,14 @@ public class King extends Mob {
 				Sample.INSTANCE.play( Assets.SND_BONES );
 			}
 		}
-		
+
 		@Override
 		public int drRoll() {
 			return Random.NormalIntRange(0, 5);
 		}
 		{
 		    resistances.add( Paralysis.class);
+		    resistances.add( Slow.class );
 		}
 	}
 }

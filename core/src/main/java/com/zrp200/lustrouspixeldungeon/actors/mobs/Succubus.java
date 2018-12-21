@@ -86,7 +86,7 @@ public class Succubus extends Mob {
 			int shield = (HP - HT) + (5 + damage);
 			if (shield > 0){
 				HP = HT;
-				Buff.affect(this, Barrier.class).setShield(shield);
+				Buff.affect(this, Barrier.class).incShield(shield);
 			} else {
 				HP += 5 + damage;
 			}
@@ -117,8 +117,8 @@ public class Succubus extends Mob {
 			
 		}
 	}
-	
-	private void blink( int target ) {
+
+	private void blink(int target ) {
 		
 		Ballistica route = new Ballistica( pos, target, Ballistica.PROJECTILE);
 		int cell = route.collisionPos;
@@ -147,6 +147,15 @@ public class Succubus extends Mob {
 		
 		delay = BLINK_DELAY;
 	}
+
+	protected void zap() {
+		sprite.zap(enemy.pos);
+		for(Char enemy : findEnemies()) {
+			Buff.affect( enemy, Charm.class, Random.IntRange( 3, 4 )).object = id();
+			enemy.sprite.centerEmitter().start( Speck.factory( Speck.HEART ), 0.2f, 5 );
+			Sample.INSTANCE.play( Assets.SND_CHARMS );
+		}
+	}
 	
 	@Override
 	public int attackSkill( Char target ) {
@@ -168,7 +177,7 @@ public class Succubus extends Mob {
 		{
 			spriteClass = SuccubusSprite.Winged.class;
 			HP = HT = 75;
-			defenseSkill = 30;
+			defenseSkill = 28; // +3
 			baseSpeed = 2;
 			flying = true;
 		}
@@ -176,7 +185,7 @@ public class Succubus extends Mob {
 		@Override
 		public int attackSkill(Char target) {
 			return 37;
-		}
+		} // -3
 
 		@Override
 		public String description() {

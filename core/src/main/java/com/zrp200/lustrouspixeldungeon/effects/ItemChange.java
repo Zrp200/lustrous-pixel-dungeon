@@ -100,13 +100,9 @@ public class ItemChange extends ItemSprite {
 
 	public static void show( Char ch, Item item ) {
 		try {
-			if(!ch.sprite.visible) { return; }
-		} catch(NullPointerException e) {
-			return; // would be a problem anyway
-		}
-
-		ItemChange sprite = new ItemChange( item );
-		sprite.target = ch;
-		ch.sprite.parent.add( sprite );
+			ItemChange sprite = new ItemChange(item);
+			sprite.target = ch;
+			ch.sprite.parent.add(sprite);
+		} catch(NullPointerException ignored) {} // we don't want you here
 	}
 }

@@ -25,9 +25,7 @@ import com.zrp200.lustrouspixeldungeon.effects.Speck;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.armor.Armor;
 import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
-import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
-import com.zrp200.lustrouspixeldungeon.utils.GLog;
 import com.zrp200.lustrouspixeldungeon.windows.WndBag;
 
 public class StoneOfEnchantment extends InventoryStone {
@@ -50,12 +48,6 @@ public class StoneOfEnchantment extends InventoryStone {
 
 			((Armor)item).inscribe();
 
-		}
-		
-		if (item instanceof Weapon) {
-			GLog.p(Messages.get(this, "weapon"));
-		} else {
-			GLog.p(Messages.get(this, "armor"));
 		}
 		
 		useAnimation();

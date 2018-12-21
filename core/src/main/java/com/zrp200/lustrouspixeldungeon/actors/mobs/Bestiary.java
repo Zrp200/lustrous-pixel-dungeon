@@ -34,144 +34,145 @@ public class Bestiary {
 	
 	//returns a rotation of standard mobs, unshuffled.
 	private static HashMap<Class<? extends Mob>,Float> standardMobRotation(final int depth ){
-		return new HashMap<Class<? extends Mob>,Float>() {{
-			switch(depth) {
-				// Sewers
-				case 1:
-				default: // 10 rats.
-					put(Rat.class, 10f);
-					break;
-				case 2:
-					put(Rat.class, 3f);
-					put(Gnoll.class, 3f);
-					break;
-				case 3:
-					put(Rat.class, 2f);
-					put(Gnoll.class, 4f);
-					put(Crab.class, 1f);
-					put(Swarm.class, 1f);
-					break;
-				case 4:
-					put(Rat.class, 1f);
-					put(Gnoll.class, 2f);
-					put(Crab.class, 3f);
-					put(Swarm.class, 1f);
-					break;
-				// Prison
-				case 6:
-					//3x skeleton, 1x thief, 1x swarm
-					put(Skeleton.class, 3f);
-					put(Thief.class, 1f);
-					put(Swarm.class, 1f);
-					break;
-				case 7:
-					//3x skeleton, 1x thief, 1x shaman, 1x guard
-					put(Skeleton.class, 3f);
-					put(Thief.class, 1f);
-					put(Shaman.random(), 1f);
-					put(Guard.class, 1f);
-					break;
-				case 8:
-					//3x skeleton, 1x thief, 2x shaman, 2x guard
-					put(Skeleton.class, 3f);
-					put(Thief.class, 1f);
-					put(Shaman.random(), 2f);
-					put(Guard.class, 2f);
-					break;
-				case 9:
-					//3x skeleton, 1x thief, 2x shaman, 3x guard
-					put(Skeleton.class, 3f);
-					put(Thief.class, 1f);
-					put(Guard.class, 3f);
+		return new HashMap<Class<? extends Mob>,Float>() {
+			{
+				switch(depth) {
+					// Sewers
+					case 1:
+					default: // 10 rats.
+						put(Rat.class, 10f);
+						break;
+					case 2:
+						put(	Rat.class,  	3f	);
+						put(	Gnoll.class,	3f	);
+						break;
+					case 3:
+						put(Rat.class,  	2f);
+						put(Gnoll.class,	4f);
+						put(Crab.class, 	1f);
+						put(Swarm.class,	1f);
+						break;
 
-					Class<?extends Mob> s1 = Shaman.random(), s2 = Shaman.random();
-					if(s1 == s2) put(s1,2f);
-					else {
-						put(s1, 1f);
-						put(s2, 1f);
-					}
+					case 4:
+						put(	Rat.class,  	1f	);
+						put(	Gnoll.class,	2f	);
+						put(	Crab.class, 	3f	);
+						put(	Swarm.class,	1f	);
 
-					break;
+						// Rare
+						put(Thief.class,              	0.15f);
+						put(Shaman.MagicMissile.class,	0.10f);
+						put(Skeleton.class,            	0.05f);
+						break;
 
-				// Caves
-				case 11:
-					//5x bat, 1x brute, 50% chance for shaman
-					put(Bat.class, 5f);
-					put(Brute.class, 1f);
-					put(Shaman.random(), 0.5f);
-					break;
-				case 12:
-					//5x bat, 5x brute, 1x spinner, 1x shaman
-					put(Bat.class,5f);
-					put(Brute.class,5f);
-					put(Spinner.class,1f);
-					put(Shaman.random(),1f);
-					break;
-				case 13:
-					//1x bat, 3x brute, 1x shaman, 1x spinner
-					put(Bat.class, 1f);
-					put(Brute.class,3f);
-					put(Spinner.class,1f);
-					put(Shaman.random(),1f);
-					break;
-				case 14:
-					//1x bat, 3x brute, 1x shaman, 4x spinner
-					put(Bat.class, 1f);
-					put(Brute.class,3f);
-					put(Spinner.class,4f);
-					put(Shaman.random(),1f);
-					break;
+					// Prison
+					case 6:
+						//3x skeleton, 1x thief, 1x swarm
+						put(Skeleton.class, 3f);
+						put(Thief.class, 1f);
+						put(Swarm.class, 1f);
+						break;
+					case 7:
+						//3x skeleton, 1x thief, 1x shaman, 1x guard
+						put(Skeleton.class, 3f);
+						put(Thief.class, 1f);
+						put(Shaman.random(), 1f);
+						put(Guard.class, 1f);
+						break;
+					case 8:
+						//3x skeleton, 1x thief, 2x shaman, 2x guard
+						put(Skeleton.class, 3f);
+						put(Thief.class, 1f);
+						put(Shaman.random(), 2f);
+						put(Guard.class, 2f);
+						break;
+					case 9:
+						//3x skeleton, 1x thief, 2x shaman, 3x guard
+						put(Skeleton.class, 	3f);
+						put(Thief.class,    	1f);
+						put(Guard.class,    	3f);
+						put(Shaman.random(),	2f);
+						break;
 
-				// City
-				case 16:
-					//5x elemental, 5x warlock, 1x monk
-					put(Elemental.class,5f);
-					put(Warlock.class, 2f);
-					put(Monk.class,1f);
-					break;
-				case 17:
-					//2x elemental, 2x warlock, 2x monk
-					put(Elemental.class, 2f);
-					put(Warlock.class, 2f);
-					put(Monk.class,2f);
-					break;
-				case 18:
-					//1x elemental, 1x warlock, 2x monk, 1x golem
-					put(Elemental.class, 1f);
-					put(Warlock.class, 1f);
-					put(Monk.class,2f);
-					put(Golem.class,1f);
-					break;
-				case 19:
-					//1x elemental, 1x warlock, 2x monk, 3x golem
-					put(Elemental.class, 1f);
-					put(Warlock.class, 1f);
-					put(Monk.class,2f);
-					put(Golem.class,3f);
-					break;
-				// Halls
-				case 22:
-					//3x succubus, 3x evil eye
-					put(Eye.class, 3f);
-					put(Succubus.class, 2f);
-					put(Succubus.Winged.class,1f);
-					break;
-				case 23:
-					//2x succubus, 4x evil eye, 2x scorpio
-					put(Eye.class, 3f);
-					put(Succubus.class, 4/3f);
-					put(Succubus.Winged.class,2/3f);
-					put(Scorpio.class,2f);
-					break;
-				case 24:
-					//1x succubus, 2x evil eye, 3x scorpio
-					put(Eye.class, 2f);
-					put(Succubus.random(), 1f);
-					put(Scorpio.class,3f);
-					break;
+					// Caves
+					case 11:
+						//5x bat, 1x brute, 50% chance for shaman
+						put(Bat.class, 5f);
+						put(Brute.class, 1f);
+						put(Shaman.random(), 0.5f);
+						break;
+					case 12:
+						//5x bat, 5x brute, 1x spinner, 1x shaman
+						put(Bat.class,5f);
+						put(Brute.class,5f);
+						put(Spinner.class,1f);
+						put(Shaman.random(),1f);
+						break;
+					case 13:
+						//1x bat, 3x brute, 1x shaman, 1x spinner
+						put(Bat.class, 1f);
+						put(Brute.class,3f);
+						put(Spinner.class,1f);
+						put(Shaman.random(),1f);
+						break;
+					case 14:
+						//1x bat, 3x brute, 1x shaman, 4x spinner
+						put(Bat.class, 1f);
+						put(Brute.class,3f);
+						put(Spinner.class,4f);
+						put(Shaman.random(),1f);
+						break;
+
+					// City
+					case 16:
+						//5x elemental, 5x warlock, 1x monk
+						put(Elemental.class,5f);
+						put(Warlock.class, 2f);
+						put(Monk.class,1f);
+						break;
+					case 17:
+						//2x elemental, 2x warlock, 2x monk
+						put(Elemental.class, 2f);
+						put(Warlock.class, 2f);
+						put(Monk.class,2f);
+
+						put(Golem.class,0.1f);
+						break;
+					case 18:
+						//1x elemental, 1x warlock, 2x monk, 1x golem
+						put(Elemental.class, 1f);
+						put(Warlock.class, 1f);
+						put(Monk.class,2f);
+						put(Golem.class,1f);
+						break;
+					case 19:
+						//1x elemental, 1x warlock, 2x monk, 3x golem
+						put(Elemental.class, 1f);
+						put(Warlock.class, 1f);
+						put(Monk.class,2f);
+						put(Golem.class,3f);
+						break;
+					// Halls
+					case 22:
+						//3x succubus, 3x evil eye
+						put(Eye.class, 3f);
+						put(Succubus.random(), 3f);
+						break;
+					case 23:
+						//2x succubus, 4x evil eye, 2x scorpio
+						put(Eye.class, 3f);
+						put(Succubus.random(), 2f);
+						put(Scorpio.class,2f);
+						break;
+					case 24:
+						//1x succubus, 2x evil eye, 3x scorpio
+						put(Eye.class, 2f);
+						put(Succubus.random(), 1f);
+						put(Scorpio.class,3f);
+						break;
+				}
 			}
-		}};
-		
+		};
 	}
 	
 	//has a chance to add a rarely spawned mobs to the rotation
@@ -181,11 +182,6 @@ public class Bestiary {
 			
 			// Sewers
 			default:
-				return;
-			case 4:
-				rotation.put(Shaman.MagicMissile.class,0.03f);
-				rotation.put(Skeleton.class, 0.01f);
-				rotation.put(Thief.class, 0.01f);
 				return;
 				
 			// Prison
@@ -208,13 +204,6 @@ public class Bestiary {
 				return;
 				
 			// City
-			case 16:
-				rotation.put(Monk.class,0.2f);
-				return;
-			case 17:
-				rotation.put(Golem.class,0.1f);
-				return;
-
 			case 19:
 				rotation.put(Eye.class,0.01f); // BWAHAHAHAHA
 			case 18:

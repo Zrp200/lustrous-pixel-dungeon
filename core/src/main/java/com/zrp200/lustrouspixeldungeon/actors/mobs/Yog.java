@@ -76,6 +76,7 @@ public class Yog extends Mob {
 		properties.add(Property.BOSS);
 		properties.add(Property.IMMOVABLE);
 		properties.add(Property.DEMONIC);
+		properties.add(Property.BLOB_IMMUNE);
 	}
 	
 	public Yog() {
@@ -118,13 +119,20 @@ public class Yog extends Mob {
 		
 		super.damage( dmg, src );
 
+		if( isAlive() ) spawnLarva();
+
+		for (Mob mob : Dungeon.level.mobs) {
+			if (mob instanceof BurningFist || mob instanceof RottingFist || mob instanceof Larva) {
+				mob.aggro( enemy );
+			}
+		}
+
 		LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
 		if (lock != null) lock.addTime(dmg*0.5f);
 
 	}
-	
-	@Override
-	public int defenseProc( Char enemy, int damage ) {
+
+	private void spawnLarva() {
 
 		ArrayList<Integer> spawnPoints = new ArrayList<>();
 		
@@ -142,14 +150,6 @@ public class Yog extends Mob {
 			GameScene.add( larva );
 			Actor.addDelayed( new Pushing( larva, pos, larva.pos ), -1 );
 		}
-
-		for (Mob mob : Dungeon.level.mobs) {
-			if (mob instanceof BurningFist || mob instanceof RottingFist || mob instanceof Larva) {
-				mob.aggro( enemy );
-			}
-		}
-
-		return super.defenseProc(enemy, damage);
 	}
 	
 	@Override
@@ -330,7 +330,7 @@ public class Yog extends Mob {
 				if (hit( this, enemy, true )) {
 					
 					int dmg =  damageRoll();
-					enemy.damage( dmg, this );
+					enemy.damage( dmg, this, true );
 					
 					enemy.sprite.bloodBurstA( sprite.center(), dmg );
 					enemy.sprite.flash();

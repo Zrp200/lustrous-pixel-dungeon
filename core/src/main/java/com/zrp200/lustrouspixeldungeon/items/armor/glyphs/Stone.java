@@ -29,13 +29,12 @@ public class Stone extends Armor.Glyph {
 
 	private static ItemSprite.Glowing GREY = new ItemSprite.Glowing( 0x222222 );
 
-	@Override
-	public int proc(Armor armor, Char attacker, Char defender, int damage) {
-		
+	public int reduceDamage(Armor armor, Char defender, Char attacker, boolean magicAttack, int damage) {
 		testing = true;
-		float 	evasion = defender.defenseSkill(attacker) * 0.01f * ( 37.5f + armor.level() ),
-				accuracy = attacker.attackSkill(defender);
-		testing = false;
+		float
+				evasion 	= defender.defenseSkill(attacker) * ( 60 + armor.level() ) / 100f,
+				accuracy	=	attacker.attackSkill(defender) * (magicAttack ? 2 : 1);
+
 		
 		float hitChance;
 		if (evasion >= accuracy){
@@ -48,7 +47,12 @@ public class Stone extends Armor.Glyph {
 		
 		return damage;
 	}
-	
+
+	@Override
+	public int proc(Armor armor, Char attacker, Char defender, int damage) {
+		return damage;
+	}
+
 	private boolean testing = false;
 	
 	public boolean testingEvasion(){

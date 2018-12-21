@@ -319,8 +319,11 @@ public abstract class Char extends Actor {
 		return cachedShield;
 	}
 	
-	public void damage( int dmg, Object src ) {
+	public void damage( int dmg, Object src, boolean magic ) { // magic for extremely stone usage.
 		if (!isAlive() || dmg < 0) return;
+		Charm c = buff(Charm.class);
+		if (c != null && src instanceof Char && isCharmedBy( (Char) src) )
+			c.recover();
 		if (this.buff(Doom.class) != null) dmg *= 2; // The first thing that happens
 		Class<?> srcClass = src.getClass();
 		dmg = isImmune( srcClass ) ? 0 : Math.round( dmg * resist( srcClass ) );
@@ -348,15 +351,15 @@ public abstract class Char extends Actor {
 		Terror t = buff(Terror.class);
 		if (t != null)
 			t.recover();
-		Charm c = buff(Charm.class);
-		if (c != null && src instanceof Char && isCharmedBy( (Char) src) )
-			c.recover();
 		if (this.buff(Frost.class) != null)
 			Buff.detach( this, Frost.class );
 		if (this.buff(MagicalSleep.class) != null)
 			Buff.detach(this, MagicalSleep.class);
 		if (buff( Paralysis.class ) != null)
 			buff( Paralysis.class ).processDamage(dmg);
+	}
+	public void damage(int damage, Object src) {
+		damage(damage, src, false);
 	}
 	
 	public void destroy() {

@@ -41,10 +41,13 @@ public class LustrousPixelDungeon extends Game {
 
 	public static final int
 			v000 = 400,
-			v001 = 404;
+			v001 = 407;
 	
 	public LustrousPixelDungeon() {
 		super(WelcomeScene.class);
+		com.watabou.utils.Bundle.addAlias(
+				com.zrp200.lustrouspixeldungeon.items.weapon.curses.Chaotic.class,
+				"com.zrp200.lustrouspixeldungeon.items.weapon.curses.Malevolent.class" );
 	}
 
 	

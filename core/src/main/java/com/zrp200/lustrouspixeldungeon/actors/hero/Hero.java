@@ -71,7 +71,9 @@ import com.zrp200.lustrouspixeldungeon.items.Heap;
 import com.zrp200.lustrouspixeldungeon.items.Heap.Type;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.KindOfWeapon;
+import com.zrp200.lustrouspixeldungeon.items.armor.Armor;
 import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.AntiMagic;
+import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.Stone;
 import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.Viscosity;
 import com.zrp200.lustrouspixeldungeon.items.artifacts.AlchemistsToolkit;
 import com.zrp200.lustrouspixeldungeon.items.artifacts.CapeOfThorns;
@@ -287,7 +289,7 @@ public class Hero extends Char {
 	}
 
 	//this variable is only needed because of the boomerang, remove if/when it is no longer equippable
-	boolean rangedAttack = false;
+	private boolean rangedAttack = false;
 	
 	public boolean shoot( Char enemy, MissileWeapon wep ) {
 
@@ -308,9 +310,9 @@ public class Hero extends Char {
 		KindOfWeapon wep = belongings.weapon;
 		
 		float accuracy = 1;
-		if (wep instanceof MissileWeapon && rangedAttack
-				&& Dungeon.level.distance( pos, target.pos ) == 1) {
-			accuracy *= 0.5f;
+		if (wep instanceof MissileWeapon && rangedAttack)
+				if(Dungeon.level.distance( pos, target.pos ) == 1) {
+					accuracy *= 0.5f;
 		}
 		
 		if (wep != null) {
@@ -400,7 +402,7 @@ public class Hero extends Char {
 
 	public boolean canSurpriseAttack(){
 		if (!(belongings.weapon instanceof Weapon))    return true;
-		if (STR() < ((Weapon)belongings.weapon).STRReq())                           return false;
+		if (STR() < ((Weapon)belongings.weapon).STRReq()) return false;
         return !(belongings.weapon instanceof Flail);
     }
 
@@ -432,7 +434,7 @@ public class Hero extends Char {
 			//Normally putting furor speed on unarmed attacks would be unnecessary
 			//But there's going to be that one guy who gets a furor+force ring combo
 			//This is for that one guy, you shall get your fists of fury!
-			return RingOfFuror.modifyAttackDelay(buff(RingOfForce.Force.class) == null ? 0.5f : 1f, this);
+			return RingOfFuror.modifyAttackDelay(0.5f, this);
 		}
 	}
 
@@ -961,7 +963,7 @@ public class Hero extends Char {
 	}
 	
 	@Override
-	public void damage( int dmg, Object src ) {
+	public void damage( int dmg, Object src, boolean magicAttack ) {
 		if (buff(TimekeepersHourglass.timeStasis.class) != null)
 			return;
 
@@ -983,12 +985,16 @@ public class Hero extends Char {
 		dmg = (int)Math.ceil(dmg * RingOfTenacity.damageMultiplier( this ));
 
 		//TODO improve this when I have proper damage source logic
-		if (belongings.armor != null && belongings.armor.hasGlyph(AntiMagic.class, this)
-				&& AntiMagic.RESISTS.contains(src.getClass())){
-			dmg -= 5*Random.NormalIntRange(belongings.armor.DRMin(), belongings.armor.DRMax())/12;
-		}
+		Armor armor = belongings.armor;
+		if (armor != null)
+			if(armor.hasGlyph(AntiMagic.class, this)
+				&& AntiMagic.RESISTS.contains(src.getClass()) && magicAttack)
+				    dmg -= Random.NormalIntRange(armor.DRMin(), armor.DRMax())/2;
+			else if( armor.hasGlyph(Stone.class, this) && (src instanceof Char) )
+				dmg = ((Stone) (armor.glyph)).reduceDamage(armor, this, (Char)src, magicAttack, dmg);
 
-		super.damage( dmg, src );
+
+		super.damage( dmg, src, magicAttack );
 	}
 	
 	public void checkVisibleMobs() {

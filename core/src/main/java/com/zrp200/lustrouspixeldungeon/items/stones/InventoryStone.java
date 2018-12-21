@@ -34,14 +34,14 @@ import java.util.ArrayList;
 
 public abstract class InventoryStone extends Runestone {
 	
-	protected String inventoryTitle = Messages.get(this, "inv_title");
+	private String inventoryTitle = Messages.get(this, "inv_title");
 	protected WndBag.Mode mode = WndBag.Mode.ALL;
 	
 	{
 		defaultAction = AC_USE;
 	}
 	
-	public static final String AC_USE	= "USE";
+	private static final String AC_USE	= "USE";
 	
 	@Override
 	public ArrayList<String> actions(Hero hero) {
@@ -64,7 +64,7 @@ public abstract class InventoryStone extends Runestone {
 		GameScene.selectItem( itemSelector, mode, inventoryTitle );
 	}
 	
-	protected void useAnimation() {
+	void useAnimation() {
 		curUser.spend( 1f );
 		curUser.busy();
 		curUser.sprite.operate(curUser.pos);

@@ -221,68 +221,13 @@ public abstract class Mob extends Char {
 			newEnemy = true;
 
 		if ( newEnemy ) {
-
-			HashSet<Char> enemies = new HashSet<>();
-
-			//if the mob is amoked...
-			if ( buff(Amok.class) != null) {
-				//try to find an enemy mob to attack first.
-				for (Mob mob : Dungeon.level.mobs)
-					if (mob.alignment == Alignment.ENEMY && mob != this && fieldOfView[mob.pos])
-							enemies.add(mob);
-				
-				if (enemies.isEmpty()) {
-					//try to find ally mobs to attack second.
-					for (Mob mob : Dungeon.level.mobs)
-						if (mob.alignment == Alignment.ALLY && mob != this && fieldOfView[mob.pos])
-							enemies.add(mob);
-					
-					if (enemies.isEmpty()) {
-						//try to find the hero third
-						if (fieldOfView[Dungeon.hero.pos]) {
-							enemies.add(Dungeon.hero);
-						}
-					}
-				}
-				
-			//if the mob is an ally...
-			} else if ( alignment == Alignment.ALLY ) {
-				//look for hostile mobs that are not passive to attack
-				for (Mob mob : Dungeon.level.mobs)
-					if (mob.alignment == Alignment.ENEMY
-							&& fieldOfView[mob.pos]
-							&& mob.state != mob.PASSIVE)
-						enemies.add(mob);
-				
-			//if the mob is an enemy...
-			} else if (alignment == Alignment.ENEMY) {
-				//look for ally mobs to attack
-				for (Mob mob : Dungeon.level.mobs)
-					if (mob.alignment == Alignment.ALLY && fieldOfView[mob.pos])
-						enemies.add(mob);
-
-				//and look for the hero
-				if (fieldOfView[Dungeon.hero.pos]) {
-					enemies.add(Dungeon.hero);
-				}
-				
-			}
-			
-			Charm charm = buff( Charm.class );
-			if (charm != null){
-				Char source = (Char)Actor.findById( charm.object );
-				if (source != null && enemies.contains(source) && enemies.size() > 1){
-					enemies.remove(source);
-				}
-			}
-			
 			//neutral characters in particular do not choose enemies.
-			if (enemies.isEmpty()){
+			if (findEnemies().isEmpty()){
 				return null;
 			} else {
 				//go after the closest potential enemy, preferring the hero if two are equidistant
 				Char closest = null;
-				for (Char curr : enemies){
+				for (Char curr : findEnemies()){
 					if (closest == null
 							|| Dungeon.level.distance(pos, curr.pos) < Dungeon.level.distance(pos, closest.pos)
 							|| Dungeon.level.distance(pos, curr.pos) == Dungeon.level.distance(pos, closest.pos) && curr == Dungeon.hero){
@@ -294,6 +239,63 @@ public abstract class Mob extends Char {
 
 		} else
 			return enemy;
+	}
+
+	protected HashSet<Char> findEnemies() {
+		HashSet<Char> enemies = new HashSet<>();
+
+		//if the mob is amoked...
+		if ( buff(Amok.class) != null) {
+			//try to find an enemy mob to attack first.
+			for (Mob mob : Dungeon.level.mobs)
+				if (mob.alignment == Alignment.ENEMY && mob != this && fieldOfView[mob.pos])
+					enemies.add(mob);
+
+			if (enemies.isEmpty()) {
+				//try to find ally mobs to attack second.
+				for (Mob mob : Dungeon.level.mobs)
+					if (mob.alignment == Alignment.ALLY && mob != this && fieldOfView[mob.pos])
+						enemies.add(mob);
+
+				if (enemies.isEmpty()) {
+					//try to find the hero third
+					if (fieldOfView[Dungeon.hero.pos]) {
+						enemies.add(Dungeon.hero);
+					}
+				}
+			}
+
+			//if the mob is an ally...
+		} else if ( alignment == Alignment.ALLY ) {
+			//look for hostile mobs that are not passive to attack
+			for (Mob mob : Dungeon.level.mobs)
+				if (mob.alignment == Alignment.ENEMY
+						&& fieldOfView[mob.pos]
+						&& mob.state != mob.PASSIVE && (buff(Corruption.class) != null || !(mob instanceof Piranha)) )
+					enemies.add(mob);
+
+			//if the mob is an enemy...
+		} else if (alignment == Alignment.ENEMY) {
+			//look for ally mobs to attack
+			for (Mob mob : Dungeon.level.mobs)
+				if (mob.alignment == Alignment.ALLY && fieldOfView[mob.pos])
+					enemies.add(mob);
+
+			//and look for the hero
+			if (fieldOfView[Dungeon.hero.pos]) {
+				enemies.add(Dungeon.hero);
+			}
+
+		}
+
+		Charm charm = buff( Charm.class );
+		if (charm != null){
+			Char source = (Char)Actor.findById( charm.object );
+			if (source != null && enemies.contains(source) && enemies.size() > 1){
+				enemies.remove(source);
+			}
+		}
+		return enemies;
 	}
 
 	protected boolean moveSprite( int from, int to ) {

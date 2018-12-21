@@ -136,7 +136,7 @@ public class Goo extends Mob {
 
 	@Override
 	protected boolean doAttack( Char enemy ) {
-		if (pumpedUp == 1) {
+		if (pumpedUp == 1) { // mid-pump attack
 			((GooSprite)sprite).pumpUp();
 			PathFinder.buildDistanceMap( pos, BArray.not( Dungeon.level.solid, null ), 2 );
 			for (int i = 0; i < PathFinder.distance.length; i++) {
@@ -148,15 +148,16 @@ public class Goo extends Mob {
 			spend( attackDelay() );
 
 			return true;
-		} else if (pumpedUp >= 2 || Random.Int( (HP*2 <= HT) ? 2 : 5 ) > 0) {
+		}
+		if (pumpedUp > 1 || Random.Int( (HP*2 <= HT) ? 2 : 5 ) > 0) { // the actual attacking part
 
 			boolean visible = Dungeon.level.heroFOV[pos];
 
 			if (visible) {
-				if (pumpedUp >= 2) {
+				if (pumpedUp > 1) {
 					((GooSprite) sprite).pumpAttack();
 				}
-				else
+				else // attack normally
 					sprite.attack( enemy.pos );
 			} else {
 				attack( enemy );
@@ -166,7 +167,7 @@ public class Goo extends Mob {
 
 			return !visible;
 
-		} else {
+		} else { // begin pump attack
 
 			pumpedUp++;
 
@@ -192,6 +193,7 @@ public class Goo extends Mob {
 
 	@Override
 	public boolean attack( Char enemy ) {
+	    //if(pumpedUp >= 2)
 		boolean result = super.attack( enemy );
 		pumpedUp = 0;
 		return result;

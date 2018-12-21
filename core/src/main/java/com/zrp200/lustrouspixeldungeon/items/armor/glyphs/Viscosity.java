@@ -45,13 +45,17 @@ public class Viscosity extends Glyph {
 
 		//FIXME this glyph should really just proc after DR is accounted for.
 		//should build in functionality for that, but this works for now
-		int realDamage = damage - Random.NormalIntRange( armor.DRMin(), armor.DRMax());
-
-		if (realDamage <= 0) {
-			return 0;
+		int realDamage, level;
+		if(armor != null) {
+			realDamage = damage - Random.NormalIntRange(armor.DRMin(), armor.DRMax());
+			if (realDamage <= 0) {
+				return 0;
+			}
+			level = Math.max(0, armor.level());
+		} else {
+			realDamage = damage;
+			level = Random.Int(19); // true evil
 		}
-
-		int level = Math.max( 0, armor.level() );
 		
 		float percent = (level+1)/(float)(level+6);
 		int amount = (int)Math.ceil(realDamage * percent);

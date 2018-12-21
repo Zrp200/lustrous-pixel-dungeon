@@ -34,6 +34,8 @@ import com.zrp200.lustrouspixeldungeon.levels.rooms.Room;
 import com.zrp200.lustrouspixeldungeon.levels.rooms.special.PoolRoom;
 import com.zrp200.lustrouspixeldungeon.sprites.PiranhaSprite;
 
+import java.util.HashSet;
+
 public class Piranha extends Mob {
 	
 	{
@@ -69,7 +71,19 @@ public class Piranha extends Mob {
 			return super.act();
 		}
 	}
-	
+
+	@Override
+	protected HashSet<Char> findEnemies() {
+		HashSet<Char> enemies = super.findEnemies();
+		if(state == HUNTING) return enemies;
+		for(Char enemy : enemies) {
+			if(enemy.alignment == Alignment.ALLY) {
+				enemies.remove(enemy);
+			}
+		}
+		return enemies;
+	}
+
 	@Override
 	public int damageRoll() {
 		return Random.NormalIntRange( Dungeon.depth, 4 + Dungeon.depth * 2 );

@@ -51,14 +51,15 @@ import com.zrp200.lustrouspixeldungeon.utils.GLog;
 import java.util.HashMap;
 
 public abstract class Shaman extends Mob implements Callback {
-    public final static HashMap<Class<?extends Shaman>, Float> probs = new HashMap();
-    static {
-        probs.put(  Shaman.MagicMissile.class,    5f   );
-        probs.put(  Shaman.Lightning.class,       3f   );
-        probs.put(  Shaman.Firebolt.class,        1f   );
-        probs.put(  Shaman.Frost.class,           1f   );
+    private final static HashMap<Class<?extends Shaman>, Float> probs = new HashMap<Class<? extends Shaman>,Float>() {
+    	{
+			put(  Shaman.MagicMissile.class,    5f   );
+			put(  Shaman.Lightning.class,       3f   );
+			put(  Shaman.Frost.class,           2f   );
+			put(  Shaman.Firebolt.class,        1f   );
 
-    }
+		}
+	};
 
 	public static Class<?extends Mob> random() {
         return Random.chances(probs);
@@ -96,8 +97,8 @@ public abstract class Shaman extends Mob implements Callback {
 		return new Ballistica(pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos == enemy.pos;
 	}
 
-	protected void applyZap(int damage) {
-		enemy.damage(damage, this);
+	void applyZap(int damage) {
+		enemy.damage(damage, this, true);
 		if (enemy == Dungeon.hero && !enemy.isAlive()) {
 			Dungeon.fail(getClass());
 			GLog.n(Messages.get(this, "zap_kill"));
@@ -105,7 +106,7 @@ public abstract class Shaman extends Mob implements Callback {
 	}
 	protected abstract void applyZap();
 
-	protected boolean doZap() {
+	private boolean doZap() {
 		boolean visible = fieldOfView[pos] || fieldOfView[enemy.pos];
 		if (visible) {
 			( (ShamanSprite) sprite ).zapEnemy();
@@ -155,15 +156,23 @@ public abstract class Shaman extends Mob implements Callback {
 		{
 			spriteClass = ShamanSprite.MM.class;
 		}
+		private boolean zapping;
 		protected void applyZap() {
 			enemy.sprite.burst(0xFFFFFFFF,2);
-			applyZap(Random.NormalIntRange(4,12));
+			applyZap( Random.Int(4,12) );
 		}
 		public void onZapComplete() { // a temporary solution to what I want at the moment, hoping to get a bit more elegant later
-			if (!hit(this, enemy, false)) // if it won't hit without the magic boost
-				super.onZapComplete(); // try again with it.
-			else applyZap();
-			next();
+			zapping = true; // this boosts its accuracy temporarily
+			try {
+				super.onZapComplete();
+			} finally {
+				zapping = false;  // deactivate said boost
+			}
+		}
+
+		@Override
+		public int attackSkill(Char target) {
+			return Math.round( super.attackSkill(target) * (zapping ? 1.5f : 1f) );
 		}
 	}
 	public static class Firebolt extends Shaman {
@@ -180,7 +189,7 @@ public abstract class Shaman extends Mob implements Callback {
         protected void applyZap() {
             enemy.sprite.centerEmitter().burst(FlameParticle.FACTORY, 3);
 			GameScene.add( Blob.seed( enemy.pos , 1, Fire.class ) );
-            applyZap( Random.NormalIntRange(6,12) );
+            applyZap( Random.Int(6,12) );
 			Buff.affect( enemy, Burning.class ).reignite( enemy );
         }
     }
@@ -197,7 +206,7 @@ public abstract class Shaman extends Mob implements Callback {
 		}
 		protected void applyZap() {
 			enemy.sprite.burst( 0xFF99CCFF, 3 );
-			applyZap( Random.NormalIntRange(6,10));
+			applyZap( Random.Int(6,10));
 			Buff.prolong( enemy, Chill.class, Random.Float(1,5) );
 			Heap heap = Dungeon.level.heaps.get(enemy.pos);
 			if(heap != null) heap.freeze();

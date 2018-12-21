@@ -50,6 +50,7 @@ public class Wraith extends Mob {
 		flying = true;
 
 		properties.add(Property.UNDEAD);
+		properties.add(Property.INORGANIC);
 	}
 	
 	private static final String LEVEL = "level";
@@ -105,6 +106,8 @@ public class Wraith extends Mob {
 			w.adjustStats( Dungeon.depth );
 			w.pos = pos;
 			w.state = w.HUNTING;
+			w.chooseEnemy();
+			w.enemySeen = w.enemyInFOV(); // sync
 			GameScene.add( w, SPAWN_DELAY );
 			
 			w.sprite.alpha( 0 );

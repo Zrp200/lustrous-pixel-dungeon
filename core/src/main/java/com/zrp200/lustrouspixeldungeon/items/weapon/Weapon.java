@@ -35,12 +35,12 @@ import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.KindOfWeapon;
 import com.zrp200.lustrouspixeldungeon.items.rings.RingOfFuror;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Annoying;
+import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Chaotic;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Displacing;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Elastic;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Exhausting;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Fragile;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Friendly;
-import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Malevolent;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Sacrificial;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Wayward;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Blazing;
@@ -179,7 +179,7 @@ abstract public class Weapon extends KindOfWeapon {
 			encumbrance = STRReq() - ((Hero)owner).STR();
 		}
 
-		if (hasEnchant(Wayward.class, owner) || hasEnchant(Malevolent.class, owner) && ((Malevolent) enchantment).randomCurse() instanceof Wayward )
+		if (hasEnchant(Wayward.class, owner) || hasEnchant(Chaotic.class, owner) && ((Chaotic) enchantment).randomCurse() instanceof Wayward )
 			encumbrance = Math.max(2, encumbrance+2);
 
 		float ACC = this.ACC;
@@ -327,7 +327,7 @@ abstract public class Weapon extends KindOfWeapon {
 		protected static final Class<?extends Weapon.Enchantment>[] curses = new Class[] {
 				Annoying.class,	Displacing.class, 	Exhausting.class,
 				Fragile.class, 	Sacrificial.class,	Wayward.class,
-				Elastic.class, 	Friendly.class,   	Malevolent.class
+				Elastic.class, 	Friendly.class,   	Chaotic.class
 		};
 
 

@@ -58,7 +58,6 @@ import com.zrp200.lustrouspixeldungeon.levels.traps.WornDartTrap;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 
 public abstract class RegularLevel extends Level {
@@ -181,17 +180,10 @@ public abstract class RegularLevel extends Level {
 		}
 	}
 	
-	private HashMap<Class<?extends Mob>,Float> mobsToSpawn = new HashMap<>();
-	
 	@Override
 	public Mob createMob() {
-		if (mobsToSpawn == null || mobsToSpawn.isEmpty())
-			mobsToSpawn = Bestiary.getMobRotation(Dungeon.depth);
 		try {
-			Class<?extends Mob> mobClass = Random.chances(mobsToSpawn);
-
-			mobsToSpawn.put( mobClass,Math.max(mobsToSpawn.get(mobClass)-1,0) );
-			return mobClass.newInstance();
+			return Random.chances(Bestiary.getMobRotation(Dungeon.depth)).newInstance();
 		} catch (Exception e) {
 			LustrousPixelDungeon.reportException(e);
 			return null;
@@ -347,7 +339,7 @@ public abstract class RegularLevel extends Level {
 				Heap dropped = drop( toDrop, cell );
 				dropped.type = type;
 				if (type == Heap.Type.SKELETON){
-					dropped.setHauntedIfCursed(0.75f);
+					dropped.setHauntedIfCursed(1);
 				}
 			}
 			

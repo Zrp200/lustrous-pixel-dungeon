@@ -515,13 +515,8 @@ public class Armor extends EquipableItem {
 	}
 
 	public Armor inscribe( Glyph glyph, boolean visible) {
-		Glyph oldGlyph = this.glyph;
 		this.glyph = glyph;
-			if(visible) {
-				glyphKnown = true;
-			if (glyph.getClass() != oldGlyph.getClass() && !glyph.curse()) // pretty pointless if it's always gonna be black*/
-				revealGlyph();
-		}
+		if(visible) revealGlyph();
 		return this;
 	}
 
