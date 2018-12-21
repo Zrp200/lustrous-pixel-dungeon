@@ -68,6 +68,7 @@ public class Scorpio extends RangeExclusiveMob {
 	@Override
 	public int attackProc( Char enemy, int damage ) {
 		damage = super.attackProc( enemy, damage );
+		if(Dungeon.level.adjacent(pos, enemy.pos)) return damage;
 		if (Random.Int( 2 ) == 0) {
 			Buff.prolong( enemy, Cripple.class, Cripple.DURATION );
 		}

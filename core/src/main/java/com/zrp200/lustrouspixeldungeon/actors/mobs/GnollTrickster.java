@@ -68,6 +68,7 @@ public class GnollTrickster extends RangeExclusiveMob {
 	@Override
 	public int attackProc( Char enemy, int damage ) {
 		damage = super.attackProc( enemy, damage );
+		if(Dungeon.level.adjacent(pos, enemy.pos)) return damage;
 		//The gnoll's attacks get more severe the more the player lets it hit them
 		combo++;
 		int effect = Random.Int(4) + combo;

@@ -36,6 +36,7 @@ import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
 import com.zrp200.lustrouspixeldungeon.actors.hero.HeroClass;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.Shielded;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.Succubus;
+import com.zrp200.lustrouspixeldungeon.actors.mobs.Warlock;
 import com.zrp200.lustrouspixeldungeon.items.Ankh;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.armor.LeatherArmor;
@@ -50,8 +51,8 @@ import com.zrp200.lustrouspixeldungeon.items.bags.MagicalHolster;
 import com.zrp200.lustrouspixeldungeon.items.bombs.TeleportationBomb;
 import com.zrp200.lustrouspixeldungeon.items.rings.RingOfWealth;
 import com.zrp200.lustrouspixeldungeon.items.wands.WandOfCorruption;
+import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Chaotic;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Elastic;
-import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Malevolent;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Chilling;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Eldritch;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Knuckles;
@@ -65,9 +66,12 @@ import com.zrp200.lustrouspixeldungeon.sprites.GnollTricksterSprite;
 import com.zrp200.lustrouspixeldungeon.sprites.HeroSprite;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSprite;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
+import com.zrp200.lustrouspixeldungeon.sprites.KingSprite;
 import com.zrp200.lustrouspixeldungeon.sprites.ShamanSprite;
 import com.zrp200.lustrouspixeldungeon.sprites.ShieldedSprite;
+import com.zrp200.lustrouspixeldungeon.sprites.StatueSprite;
 import com.zrp200.lustrouspixeldungeon.sprites.SuccubusSprite;
+import com.zrp200.lustrouspixeldungeon.sprites.WarlockSprite;
 import com.zrp200.lustrouspixeldungeon.ui.Archs;
 import com.zrp200.lustrouspixeldungeon.ui.ExitButton;
 import com.zrp200.lustrouspixeldungeon.ui.Icons;
@@ -86,18 +90,38 @@ public class ChangesScene extends PixelScene {
 	private ChangeInfo addSection(String title, boolean isMajor, int color) {
 		ChangeInfo changes = new ChangeInfo(title,isMajor,isMajor ? "" : null);
 		changes.hardlight( color );
-		infos.add(changes);
+		infos.add(changes); // save a step
 		return changes;
 	}
+
 	private ChangeInfo addSection(String title, boolean isMajor) {
 		return addSection(title, isMajor, Window.TITLE_COLOR);
 	}
+
+	private ChangeButton addBugfixes(String...fixes) { // it's flawed but it's still better than nothing
+		StringBuilder description = new StringBuilder();
+		boolean first = true;
+		for(String fix : fixes) {
+			if(first) first = false;
+			else description.append("\n");
+			description.append("_-_ ").append(fix);
+		}
+
+		return new ChangeButton(
+				new Image( Assets.SPINNER, 144, 0, 16, 16),
+				"Bugfixes",
+				description.toString()
+		);
+	}
+
 	public enum Milestone {
 		SHPD070 ("Shattered v0.7.0",	10,18,2018),
+		SHPD071 ("Shattered v0.7.1",	12,18,2018),
+
 		LUST000 ("Lustrous v0.0.0",		12, 1,2018),
 		LUST000a("Lustrous v0.0.0a",  	12, 4,2018),
 		LUST000b("Lustrous v0.0.0b",	12, 6,2018),
-		LUST001 ("Lustrous v0.0.1",		12,11,2018);
+		LUST001 ("Lustrous v0.0.1",		12,20,2018);
 
 		private String name;
 		private Date releaseDate;
@@ -110,25 +134,27 @@ public class ChangesScene extends PixelScene {
 			this.releaseDate = calender.getTime();
 		}
 	}
+
 	private static ChangeButton addDeveloperCommentary(Milestone release, String commentary,Milestone...eventsToCompare) {
 		StringBuilder message = new StringBuilder();
 		DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
-		if(release != null) message.append("_-_ Released on " + dateFormat.format(release.releaseDate) + "\n");
-		if(eventsToCompare != null) for(Milestone event : eventsToCompare)
-			message.append( "_-_ " +
-					( release.releaseDate.getTime() - event.releaseDate.getTime() ) / 86400000 + // get the time difference in days
-					" days after " + event.name + "\n"
-			);
-		message.append("\n");
-		message.append(commentary == null ? "Dev commentary will be added here in the future." : commentary);
+
+		if(release != null) { // compare release date to milestones if possible
+			message.append( "_-_ Released on " ).append(  dateFormat.format( release.releaseDate )  ).append("\n");
+			if ( eventsToCompare != null ) for ( Milestone event : eventsToCompare )
+				message.append("_-_ ").append(
+						(release.releaseDate.getTime() - event.releaseDate.getTime()) / 86400000 // convert milliseconds to years
+				).append(" days after ").append(event.name).append("\n");
+			message.append("\n");
+		}
+		message.append(commentary == null ? "Dev commentary will be added here in the future." : commentary); // add commentary
 		return new ChangeButton( new Image(Assets.ZRP200),"Developer Commentary", message.toString() );
 	}
+
 	private final ArrayList<ChangeInfo> infos = new ArrayList<>();
 
 	@Override
 	public void create() {
-		Image bugfix = new Image( Assets.SPINNER, 144, 0, 16, 16);
-
 		super.create();
 
 		int w = Camera.main.width,
@@ -164,69 +190,174 @@ public class ChangesScene extends PixelScene {
 
 		};
 		add(list);
-		addSection("v0.0.1 INDEV",true).addButtons(
-				new ChangeButton(
-						Icons.get(Icons.PREFS),"Misc",
-						"_-_ Added a visual indicator for soul mark recovery."
-				),
-				new ChangeButton(
-						new Image(bugfix), "Bugfixes",
-						"_-_ Velvet Pouch unable to spawn for huntress\n" +
-								"_-_ Magical Holster duplicate getting sold to huntress\n" +
-								"_-_ Terror getting visually broken on fatal attacks\n" +
-								"_-_ Magical sleep getting broken by non-damaging sources"
-				),
-				new ChangeButton(
-						new ItemSprite(Random.Int(2) == 0 ? new MailArmor().inscribe() : new Sword().enchant()),
-						"Enchantment and Curse Visibility",
-						"Enchantments, curses, and glyphs are now identified on equip rather than on sight."
-				)
-		);
+		addSection("v0.0.1",true);
 		addSection("New Content",false).addButtons(
+				addDeveloperCommentary(
+						Milestone.LUST001,
+						"This is the culmination of my tinkering prior to my implementation " +
+								"of Shattered v0.7.1",
+						Milestone.SHPD071, Milestone.LUST000b, Milestone.LUST000
+				),
 				new ChangeButton(
 						new SuccubusSprite.Winged(),
 						new Succubus.Winged().name,
 						"Added a new succubus variant. It has a little less HP and accuracy " +
 								"and deals reduced damage, but moves faster and is more evasive.\n\n" +
+								"Stats:\n" +
+								"_-_ 75 HP (down from 80)\n" +
+								"_-_ 8 armor (down from 10)\n" +
+								"_-_ 37 accuracy (down from 40)\n" +
+								"_-_ 28 evasion (up from 25)\n" +
+								"_-_ 20-28 damage, down from 22-30\n" +
+								"_-_ 2x movement speed, flying\n\n" +
 								"_-_ Sprite credit to _hellocoolgame#8751_"
 				),
 				new ChangeButton(
 						new ItemSprite(new PlateArmor().image(), new HolyProvidence().glowing()),
 						"New Rare Glyph: Holy Providence",
 						"Added a new rare glyph that buffs you in combat!\n" +
-								"_-_ (2+level)/(50+level) chance (4% @ +0) to bless the user for 8 turns\n" +
-								"_-_ (2+level)/(50+level) chance (4% @ +0) to give 7 turns of adrenaline if bless wasn't proc'd first\n"
+								"_-_ (2+level)/(50+level) chance (4% @ +0) to bless the user for 6-10 turns, normally distributed\n" +
+								"_-_ (2+level)/(50+level) chance (4% @ +0) to give 6-8 turns of adrenaline if bless wasn't proc'd first, normally distributed"
 				),
 				new ChangeButton(
-						new ItemSprite(new Shortsword().image(), new Malevolent().glowing()),
-						"New Weapon Curse: Malevolent",
-						"It's basically unstable for curses."
+						new ItemSprite(new Shortsword().image(), new Chaotic().glowing()),
+						"New Weapon Curse: Chaotic",
+						"_-_ Basically unstable for curses.\n",
+						"The following effects can be called by this curse:",
+						"_-_ Annoying",
+						"_-_ Displacing",
+						"_-_ Elastic",
+						"_-_ Exhausting",
+						"_-_ Fragile",
+						"_-_ Friendly",
+						"_-_ Sacrificial",
+						"_-_ Wayward",
+						"_-_ Anti-entropy (you or target)",
+						"_-_ Corrosion (target)",
+						"_-_ Displacement",
+						"_-_ Multiplicity",
+						"_-_ Overgrowth (you or target)",
+						"_-_ Stench (you or target)",
+						"_-_ Volatility (you or target)",
+						"_-_ Viscosity (you or target)"
 				)
 		);
-		addSection("Buffs",false).addButtons(
+		addSection("Buffs",false,CharSprite.POSITIVE).addButtons(
+				new ChangeButton(
+						new KingSprite(),
+						"Boss Changes",
+						"_Dwarf King:_",
+						"_-_ Now resists toxic gas and amok",
+						"_-_ Blindness and paralysis immunities are now resists",
+						"_-_ No longer resists wand of disintegration",
+						"_-_ Passively regains 1 HP per turn",
+						"_-_ Undead no longer is immune to grim",
+						"_-_ Undead apply slow instead of paralysis",
+						"_-_ Undead now resist slow\n",
+						"_Yog:_",
+						"_-_ Can no longer debuffed",
+						"_-_ Is immune to all blobs",
+						"_-_ Larva spawns when attacked by magic in addition to melee\n",
+						"_Rotting Fist:_",
+						"_-_ Now attacks everything in a 3x3 radius at the same time",
+						"_-_ Resists burning\n",
+						"_Burning Fist:_",
+						"_-_ Now immune to frost and chill"
+				),
+				new ChangeButton(new SuccubusSprite(), new Succubus().name,
+						"Succubus can now stack shield if they already have shielding when attacking charmed enemies, " +
+								"but can only heal from enemies that are charmed by them, rather than from any charmed enemy."
+				),
 				new ChangeButton(
 						new GnollTricksterSprite(),
 						"Gnoll Trickster (and scorpios)",
-						"Now fight when cornered. They will also retaliate when attacked.\n" +
-								"_-_ Trickster will not apply dart effects when melee attacking\n" +
-								"_-_ Scorpios can still cripple with melee attacks"
+						"Now fight when cornered.\n" +
+								"_-_ They won't apply effects in this case."
 				),
 				new ChangeButton(
 						new ItemSprite( new ScaleArmor().inscribe( new Stone() ) ),
-						"Stone",
-						"_-_ User has 1/4 evasion\n" +
-								"_-_ Damage reduction is based on the chance for the enemy to hit you with (37.5 + level)% of your evasion"
+						"Glyphs",
+						"_Stone:_",
+								"_-_ Damage multiplier is now the chance for the enemy to hit you with" +
+									"(60+level)% of your evasion",
+                                "_-_ Previously it was 1-[0.6*(hit chance)].",
+								"_-_ Now applies to magical attacks as well, but is half as effective.\n",
+								"_Anti-Magic:_",
+								"_-_ No longer applies to all attacks from enemies that can use magic",
+								"_-_ Now blocks up to 1/2 armor from magic damage to (more than) compensate\n",
+								"_Affection:_",
+								"_-_ More likely to give higher charm durations with higher levels"
 				),
 				new ChangeButton(
 						new ItemSprite(ItemSpriteSheet.WEAPON_HOLDER,null),
 						"Unarmed Attacks",
 						"It doesn't make sense for unarmed attacks to be slower than a knuckleduster, " +
-								"so now you can attack twice per turn if unarmed. Ring of Force adjusted accordingly."
+								"so now you can attack twice per turn if unarmed. Ring of Force adjusted accordingly:\n\n" +
+								"_-_ Ring of Force max damage halved. It's now basically a fast weapon of its tier."
 				),
 				new ChangeButton(
 						new ItemSprite(new LeatherArmor().inscribe(new Metabolism())),
 						"Metabolism",
 						"Metabolism healing boosted by 12.5% (4 -> 4.5)"
+				)
+		);
+		addSection("Changes",false,CharSprite.WARNING).addButtons(
+				new ChangeButton(
+						new ItemSprite(Random.Int(2) == 0 ? new MailArmor().inscribe() : new Sword().enchant()),
+						"Enchantment/Glyph Identification",
+						"Enchantments, curses, and glyphs are now identified on equip rather than on sight. " +
+								"To make it obvious that an equipped item is enchanted, revealed enchantments will now" +
+								"have a vfx effect signaling that the item you just equipped was actually enchanted. " +
+								"There's no need to check your inventory to check for their existance.\n",
+								"_-_ chance weapon is enchanted boosted by 50% (10% -> 15%)",
+								"_-_ chance armor is enchanted boosted by 33%  (15% -> 20%)"
+				),
+				new ChangeButton(
+						new StatueSprite(),
+						"Mob Changes",
+						"_Evil Eyes:_",
+						"_-_ No longer immune to terror, now resist instead",
+						"_-_ Attempting to apply terror to a charging evil eye will cause it to break its gaze",
+						"_-_ Resist deathgazes, Grim Traps, and Disintegration Traps",
+						"_-_ Now immune to cripple (they do float)\n",
+						"_Wraiths:_",
+						"_-_ Lose grim and terror immunities",
+						"_-_ Terror is now resisted",
+						"_-_ Are now inorganic",
+						"_-_ Now immune to bleeding and cripple\n",
+						"_Misc:_",
+						"_-_ Acidic enemies now resist poison, and fiery enemies now resist blazing instead of being immune",
+						"_-_ Fire Elementals can no longer be crippled\n\n",
+						"_-_ Allies and pirahnas should now ignore each other unless provoked",
+						"_-_ reduced the likelyhood of certain rare mobs spawning"
+				),
+				new ChangeButton(
+						Icons.get(Icons.PREFS),"Misc",
+						"_-_ Arcane Styli can now be transmuted into stones of enchantment\n" +
+                                "_-_ Shopkeeper now offers different prices for cursed items depending on their other attributes\n" +
+								"_-_ Added a visual indicator for soul mark recovery.\n" +
+								"_-_ Changed adrenaline icon\n" +
+                                "_-_ More buffs now grey when about to expire.\n" +
+                                "_-_ Berserk now gives a death message if you die while berserking\n" +
+								"_-_ Magic from shamans now deal damage distributed randomly rather than normally",
+								"_-_ Enemy spawn logic adjusted slightly."
+				),
+				addBugfixes(
+						"Berserker rage weakening his attacks",
+						"Unblessed ankhs giving a 'Groundhog Day'-like effect",
+						"Velvet Pouch unable to spawn for huntress",
+						"Magical Holster duplicate getting sold to huntress",
+						"Various bugs with prismatic image and mirror image caused by tinkering",
+						"Formatting bug with blocking weapons",
+						"Terror getting visually broken on fatal attacks"
+				)
+		);
+		addSection("Nerfs",false,CharSprite.NEGATIVE).addButtons(
+				new ChangeButton(
+						new WarlockSprite(),
+						new Warlock().name,
+						"_-_ Warlock weaken duration is now random.",
+						"_-_ Weaken lasts 0-40 turns, rather than 40 turns"
 				)
 		);
 		addSection("v0.0.0",true);
@@ -243,13 +374,12 @@ public class ChangesScene extends PixelScene {
 				),
 				new ChangeButton(
 						new Image(Assets.BUFFS_LARGE,160,0,16,16),
-						"Terror",
-						"Terrified enemies now recover faster when cornered."
+						"Terror", "Terrified enemies now recover faster when cornered."
 				),
-				new ChangeButton(new Image(bugfix),"Bugfixes",
-						"_-_ More changelog mistakes\n" +
-						"_-_ In-text typo with blocking weapons\n" +
-						"_-_ Attacks not surprise attacking when they should"
+				addBugfixes(
+						"More changelog mistakes",
+						"In-text typo with blocking weapons",
+						"Attacks not surprise attacking when they should"
 				)
 		);
         addSection("v0.0.0a",false).addButtons(
@@ -280,23 +410,24 @@ public class ChangesScene extends PixelScene {
                         "_-_ Now also gains rage.\n" +
                                 "_-_ Gets up to 6 shielding just like a warrior with plate."
                 ),
-                new ChangeButton(new Image(bugfix), "Bugfixes",
-                        "_-_ Paralytic Darts potentially breaking paralysis\n" +
-                                "_-_ Fatal attacks visually breaking paralysis\n" +
-                                "_-_ Slow and Chill not stacking\n" +
-                                "_-_ Taking 0 damage weakening charm and terror and breaking magical sleep and frost\n" +
-                                "_-_ Changelog typos"
+                addBugfixes(
+                		"Paralytic Darts potentially breaking paralysis",
+						"Fatal attacks visually breaking paralysis",
+						"Slow and Chill not stacking",
+						"Taking 0 damage weakening charm and terror and breaking magical sleep and frost",
+						"Changelog typos"
                 )
         );
 		addSection("New Content", false).addButtons(
-				addDeveloperCommentary( Milestone.LUST000,
-						"I'm honestly just happy to have figured this out. As of this moment, " +
-								"I'm waiting on Shattered 0.7.1 to be released so I can implement it.",
-						Milestone.SHPD070),
+				addDeveloperCommentary(
+					Milestone.LUST000,
+					"I'm honestly just happy to have figured this out. As of this moment, " +
+						"I'm waiting on Shattered 0.7.1 to be released so I can implement it.",
+					Milestone.SHPD070
+				),
 				new ChangeButton(
 						new Image(Assets.HUNTRESS, 0, 15, 12, 15),
 						"Huntress (Base)",
-
 						"The Huntress's potential is being wasted by the Boomerang. " +
 								"By dumping into the Boomerang, the player wastes the majority of her natural versatility, " +
 								"so much so that she is turned into a class that tends to have very repetitive gameplay.\n" +
@@ -458,41 +589,42 @@ public class ChangesScene extends PixelScene {
 				new ChangeButton(
 						new ItemSprite(ItemSpriteSheet.STONE_HOLDER),
 						"Stone generation changes",
-						"_-_ Runestone generation is now weighted based on its base scroll rarity and its alchemical scroll-stone ratio\n" +
+						"_-_ Runestone generation is now weighted based on its base scroll "
+									+ "rarity and its alchemical scroll-stone ratio",
 								"_-_ Stones of Augmentation and Enchantment can now drop as rare stones."
 				),
 				new ChangeButton(
 						Icons.get(Icons.DEPTH),
 						"Mob Spawn Changes",
-						"_-_ Shamans now spawn on floors 11 and 12 (0 -> 1) \n\n" +
-								"Rare Mob spawns adjusted:\n" +
-								"_-_ MM shamans now spawn on floor 4 (0 -> .05)\n" +
-								"_-_ MM shaman spawn rate 10x more than normal on floor 6\n" +
-								"_-_ Fire Elementals now also spawn on floor 12 (0 -> .02)\n" +
-								"_-_ Dwarf Warlocks now spawn on floors 13 and 14 (0 -> 0.01) \n" +
-								"_-_ Monk spawn rate halved on floor 14 (.01 -> .005) \n" +
-								"_-_ Monks now spawn on floor 16 (0 -> .2) \n" +
-								"_-_ Golems now spawn on floor 17 (0 -> .2) \n" +
-								"_-_ Succubus now spawn on floor 18 (0 --> .02) \n" +
-								"_-_ Evil Eyes now spawn on floor 19 (0 --> .01) \n"
+						"_-_ Shamans now spawn on floors 11 and 12 (0 -> 1) \n",
+								"Rare Mob spawns adjusted:",
+								"_-_ MM shamans now spawn on floor 4 (0 -> .05)",
+								"_-_ MM shaman spawn rate 10x more than normal on floor 6",
+								"_-_ Fire Elementals now also spawn on floor 12 (0 -> .02)",
+								"_-_ Dwarf Warlocks now spawn on floors 13 and 14 (0 -> 0.01)",
+								"_-_ Monk spawn rate halved on floor 14 (.01 -> .005)",
+								"_-_ Monks now spawn on floor 16 (0 -> .2)",
+								"_-_ Golems now spawn on floor 17 (0 -> .2)",
+								"_-_ Succubus now spawn on floor 18 (0 -> .02)",
+								"_-_ Evil Eyes now spawn on floor 19 (0 -> .01)"
 				),
 				new ChangeButton(
 						Icons.get(Icons.PREFS),
 						"Misc Changes",
 						"_-_ There's now a post-halls tier generation table, so crypt rooms in " +
-								"floors 22-24 are even less likely to give low tier armor now.\n" +
-								"_-_ Adjusted rare mobs. They will now spawn earlier and have a bit more variety.\n" +
-								"_-_ Huntress, Journal Pages, and Challenges are now enabled by default.\n" +
-								"_-_ Food, Arcane Styli, and Tomes of Mastery can now be quickslotted. (idea credit s0i)\n\n" +
-								"_-_ Cursed wands can now spawn Inferno and Blizzard\n\n" +
-								"_-_ Weapons that block damage now say how much damage they can block.\n" +
-								"_-_ Transmutation and Recycle now have a VFX effect!\n" +
-								"_-_ Darts and Shurikens now have a faster throw animation.\n" +
+								"floors 22-24 are even less likely to give low tier armor now.\n",
+								"_-_ Adjusted rare mobs. They will now spawn earlier and have a bit more variety.\n",
+								"_-_ Huntress, Journal Pages, and Challenges are now enabled by default.",
+								"_-_ Food, Arcane Styli, and Tomes of Mastery can now be quickslotted. (idea credit s0i)",
+
+								"_-_ Cursed wands can now spawn Inferno and Blizzard\n",
+
+								"_-_ Weapons that block damage now say how much damage they can block.",
+								"_-_ Transmutation and Recycle now have a VFX effect!",
+								"_-_ Darts and Shurikens now have a faster throw animation.",
 								"_-_ Some descriptions reworded."
 				),
-				new ChangeButton( bugfix, "Bugfixes",
-						"_-_ Attacks by Stunning weapons potentially instantly breaking paralysis"
-				),
+				addBugfixes("Attacks by Stunning weapons potentially instantly breaking paralysis"),
 				new ChangeButton(
 						Icons.get(Icons.LANGS),
 						"Removed Translations",
@@ -563,7 +695,7 @@ public class ChangesScene extends PixelScene {
 
 		private ArrayList<ChangeButton> buttons = new ArrayList<>();
 
-		public ChangeInfo( String title, boolean majorTitle, String text){
+		ChangeInfo( String title, boolean majorTitle, String text){
 			super();
 			
 			if (majorTitle){
@@ -590,14 +722,14 @@ public class ChangesScene extends PixelScene {
 			title.hardlight( color );
 		}
 
-		public void addButton( ChangeButton button ){
+		void addButton( ChangeButton button ){
 			buttons.add(button);
 			add(button);
 
 			button.setSize(16, 16);
 			layout();
 		}
-		public void addButtons( ChangeButton... buttons) {
+		void addButtons( ChangeButton... buttons) {
 			for(ChangeButton button : buttons) addButton(button);
 		}
 
@@ -627,8 +759,7 @@ public class ChangesScene extends PixelScene {
 				posY += text.height();
 			}
 
-			float posX = x;
-			float tallest = 0;
+			float posX = x,	tallest = 0;
 			for (ChangeButton change : buttons){
 
 				if (posX + change.width() >= right()){
@@ -683,20 +814,26 @@ public class ChangesScene extends PixelScene {
 		protected String title;
 		protected String message;
 
-		public ChangeButton( Image icon, String title, String message){
+		ChangeButton( Image icon, String title, String... messages){
 			super();
 			
 			this.icon = icon;
 			add(this.icon);
 
 			this.title = Messages.titleCase(title);
-			this.message = message;
+			StringBuilder messageBuilder = new StringBuilder();
+			for(int i=0;i < messages.length;i++) {
+				messageBuilder.append(messages[i]);
+				if(i+1 < messages.length) messageBuilder.append("\n");
+			}
+
+			this.message = messageBuilder.toString();
 
 			layout();
 		}
 
-		public ChangeButton( Item item, String message ){
-			this( new ItemSprite(item), item.name(), message);
+		ChangeButton( Item item, String... messages ){
+			this( new ItemSprite(item), item.name(), messages);
 		}
 
 		protected void onClick() {
@@ -715,7 +852,7 @@ public class ChangesScene extends PixelScene {
 	
 	private static class ChangesWindow extends WndTitledMessage {
 	
-		public ChangesWindow( Image icon, String title, String message ) {
+		ChangesWindow( Image icon, String title, String message ) {
 			super( icon, title, message);
 			
 			add( new TouchArea( chrome ) {
