@@ -24,19 +24,17 @@ package com.zrp200.lustrouspixeldungeon.items.rings;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 
 public class RingOfSharpshooting extends Ring {
-
-	@Override
-	protected RingBuff buff( ) {
-		return new Aim();
+	static {
+		bonusScaling = 1.2f;
+		buffClass = Aim.class;
 	}
 	
-	//roughly in line with the boost a weapon gets from an upgrade
-	public static float damageMultiplier( Char target ){
-		return 1f + 0.2f * getBonus(target, Aim.class);
+	public static int levelDamageBonus( Char target ){
+		return getBonus(target);
 	}
 	
 	public static float durabilityMultiplier( Char target ){
-		return (float)(Math.pow(1.2, getBonus(target, Aim.class)));
+		return multiplier(target);
 	}
 
 	public class Aim extends RingBuff {

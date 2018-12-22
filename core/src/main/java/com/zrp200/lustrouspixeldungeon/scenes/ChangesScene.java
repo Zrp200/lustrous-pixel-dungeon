@@ -55,7 +55,7 @@ import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Chaotic;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Elastic;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Chilling;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Eldritch;
-import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Knuckles;
+import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Gloves;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Longsword;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Quarterstaff;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Shortsword;
@@ -545,7 +545,7 @@ public class ChangesScene extends PixelScene {
 						"_-_ Quarterstaff's block now scales by +0/+1\n" +
 								"_-_ Base block reduced by 1/3 (3 -- > 2)"
 				),
-				new ChangeButton( new Knuckles(),
+				new ChangeButton( new Gloves(),
 						"While no heroes now start with the knuckleduster now, that does not mean it is no longer in the game!\n" +
 								"_-_ Transmuting any tier-1 weapon (aside from Mage's Staff) will yield a Knuckleduster.\n" +
 								"_-_ Transmuting a Knuckleduster will yield a random non-Knuckleduster tier-1 weapon like normal.\n" +

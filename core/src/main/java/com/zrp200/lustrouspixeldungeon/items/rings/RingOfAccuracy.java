@@ -24,18 +24,14 @@ package com.zrp200.lustrouspixeldungeon.items.rings;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 
 public class RingOfAccuracy extends Ring {
-	
-	@Override
-	protected RingBuff buff( ) {
-		return new Accuracy();
+	static {
+	    bonusScaling = 1.3f;
+	    buffClass = Accuracy.class;
 	}
 	
-	//The ring of accuracy reduces enemy evasion
-	// this makes it more powerful against more evasive enemies
-	public static float enemyEvasionMultiplier( Char target ){
-		return (float)Math.pow(0.75, getBonus(target, Accuracy.class));
+	public static float accuracyMultiplier( Char target ){
+		return multiplier(target);
 	}
 	
-	public class Accuracy extends RingBuff {
-	}
+	public class Accuracy extends RingBuff { }
 }

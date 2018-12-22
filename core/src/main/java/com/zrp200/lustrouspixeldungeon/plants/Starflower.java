@@ -23,10 +23,12 @@ package com.zrp200.lustrouspixeldungeon.plants;
 
 import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
-import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Bless;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.Recharging;
+import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
+import com.zrp200.lustrouspixeldungeon.actors.hero.HeroSubClass;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
 
 public class Starflower extends Plant {
@@ -36,10 +38,14 @@ public class Starflower extends Plant {
 	}
 
 	@Override
-	public void activate() {
-		Char ch = Actor.findChar(pos);
+	public void activate( Char ch ) {
 
-		if (ch != null) Buff.prolong(ch, Bless.class, Bless.DURATION);
+		if (ch != null) {
+			Buff.prolong(ch, Bless.class, Bless.DURATION);
+			if (ch instanceof Hero && ((Hero) ch).subClass == HeroSubClass.WARDEN){
+				Buff.prolong(ch, Recharging.class, Bless.DURATION);
+			}
+		}
 
 		if (Random.Int(5) == 0){
 			Dungeon.level.drop(new Seed(), pos).sprite.drop();

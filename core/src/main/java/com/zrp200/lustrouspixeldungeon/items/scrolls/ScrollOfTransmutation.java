@@ -37,10 +37,10 @@ import com.zrp200.lustrouspixeldungeon.items.potions.elixirs.Elixir;
 import com.zrp200.lustrouspixeldungeon.items.potions.exotic.ExoticPotion;
 import com.zrp200.lustrouspixeldungeon.items.rings.Ring;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.exotic.ExoticScroll;
+import com.zrp200.lustrouspixeldungeon.items.stones.Runestone;
 import com.zrp200.lustrouspixeldungeon.items.stones.StoneOfEnchantment;
 import com.zrp200.lustrouspixeldungeon.items.wands.Wand;
 import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
-import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Knuckles;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.MagesStaff;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.zrp200.lustrouspixeldungeon.journal.Catalog;
@@ -60,12 +60,15 @@ public class ScrollOfTransmutation extends InventoryScroll {
 	}
 	
 	public static boolean canTransmute(Item item){
-		return item instanceof MagesStaff
-				|| item instanceof MeleeWeapon
-				|| ( item instanceof Potion && !(item instanceof Elixir || item instanceof Brew) )
-				|| item instanceof Scroll
-				|| item instanceof Ring || item instanceof Wand
-				|| item instanceof Plant.Seed || item instanceof Artifact;
+		return item instanceof MeleeWeapon ||
+				(item instanceof Potion && !(item instanceof Elixir || item instanceof Brew)) ||
+				item instanceof Scroll ||
+				item instanceof Ring ||
+				item instanceof Wand ||
+				item instanceof Plant.Seed ||
+				item instanceof Runestone ||
+				item instanceof Artifact
+                || item instanceof Stylus;
 	}
 	
 	@Override
@@ -86,7 +89,9 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		} else if (item instanceof Wand) {
 			result = changeWand( (Wand)item );
 		} else if (item instanceof Plant.Seed) {
-			result = changeSeed( (Plant.Seed)item );
+			result = changeSeed((Plant.Seed) item);
+		} else if (item instanceof Runestone) {
+			result = changeStone((Runestone) item);
 		} else if (item instanceof Artifact) {
 			result = changeArtifact((Artifact) item);
 		} else if(item instanceof Stylus) {
@@ -143,10 +148,6 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		
 		do {
 			try {
-				if(c == Generator.Category.WEP_T1 && w.getClass() != Knuckles.class) {
-					n = new Knuckles();
-					break;
-				}
 				n = (MeleeWeapon)c.classes[Random.chances(c.probs)].newInstance();
 			} catch (Exception e) {
 				LustrousPixelDungeon.reportException(e);
@@ -232,6 +233,17 @@ public class ScrollOfTransmutation extends InventoryScroll {
 			n = (Plant.Seed)Generator.random( Generator.Category.SEED );
 		} while (n.getClass() == s.getClass());
 		
+		return n;
+	}
+
+	private Runestone changeStone( Runestone r ) {
+
+		Runestone n;
+
+		do {
+			n = (Runestone) Generator.random( Generator.Category.STONE );
+		} while (n.getClass() == r.getClass());
+
 		return n;
 	}
 	

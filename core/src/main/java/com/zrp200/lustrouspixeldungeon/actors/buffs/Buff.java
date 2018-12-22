@@ -74,8 +74,10 @@ public class Buff extends Actor implements Hero.Doom {
 		if (target.buffs().contains(this)){
 			if (target.sprite != null) fx( true );
 			return true;
-		} else
+		} else {
+			this.target = null;
 			return false;
+		}
 	}
 	
 	public void detach() {

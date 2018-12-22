@@ -29,10 +29,10 @@ import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.LustSettings;
 import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
 import com.zrp200.lustrouspixeldungeon.items.Item;
+import com.zrp200.lustrouspixeldungeon.items.armor.ClassArmor;
 import com.zrp200.lustrouspixeldungeon.items.potions.Potion;
 import com.zrp200.lustrouspixeldungeon.items.rings.Ring;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.Scroll;
-import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Knuckles;
 import com.zrp200.lustrouspixeldungeon.journal.Catalog;
 import com.zrp200.lustrouspixeldungeon.journal.Document;
 import com.zrp200.lustrouspixeldungeon.journal.Notes;
@@ -656,8 +656,6 @@ public class WndJournal extends WndTabbed {
 			float pos = 0;
 			for (Class<? extends Item> itemClass : itemClasses) {
 				try{
-					if(itemClass == Knuckles.class && !known.get(itemClass))
-						continue;
 					CatalogItem item = new CatalogItem(itemClass.newInstance(), known.get(itemClass), Catalog.isSeen(itemClass));
 					item.setRect( 0, pos, width, ITEM_HEIGHT );
 					content.add( item );
@@ -683,7 +681,17 @@ public class WndJournal extends WndTabbed {
 				
 				this.item = item;
 				this.seen = seen;
-				
+
+				if ( seen && !IDed ){
+					if (item instanceof Ring){
+						((Ring) item).anonymize();
+					} else if (item instanceof Potion){
+						((Potion) item).anonymize();
+					} else if (item instanceof Scroll){
+						((Scroll) item).anonymize();
+					}
+				}
+
 				if (!seen) {
 					icon.copy( new ItemSprite( ItemSpriteSheet.SOMETHING + spriteIndexes[currentItemIdx], null) );
 					label.text("???");
@@ -697,8 +705,13 @@ public class WndJournal extends WndTabbed {
 			
 			public boolean onClick( float x, float y ) {
 				if (inside( x, y ) && seen) {
-					GameScene.show(new WndTitledMessage( new Image(icon),
-								Messages.titleCase(item.trueName()), item.desc() ));
+					if (item instanceof ClassArmor){
+						GameScene.show(new WndTitledMessage(new Image(icon),
+								Messages.titleCase(item.trueName()), item.desc()));
+					} else {
+						GameScene.show(new WndTitledMessage(new Image(icon),
+								Messages.titleCase(item.trueName()), item.info()));
+					}
 					return true;
 				} else {
 					return false;

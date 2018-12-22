@@ -93,9 +93,8 @@ public class MeleeWeapon extends Weapon {
 				info += " " + Messages.get(MeleeWeapon.class, "probably_too_heavy");
 			}
 		}
-		String stats_desc = Messages.get(this, "stats_desc");
-		if (!stats_desc.equals(""))
-			info+= "\n\n" + stats_desc;
+		if (!statsInfo().equals(""))
+			info += "\n\n" + statsInfo();
 		return info;
 	}
 	@Override
@@ -127,6 +126,10 @@ public class MeleeWeapon extends Weapon {
 		return info;
 	}
 	
+	public String statsInfo(){
+		return Messages.get(this, "stats_desc");
+	}
+
 	@Override
 	public int price() {
 		int price = 20 * tier;

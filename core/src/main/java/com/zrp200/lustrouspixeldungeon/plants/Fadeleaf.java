@@ -21,15 +21,21 @@
 
 package com.zrp200.lustrouspixeldungeon.plants;
 
+import com.watabou.noosa.Game;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
-import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
+import com.zrp200.lustrouspixeldungeon.actors.hero.HeroSubClass;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.Mob;
 import com.zrp200.lustrouspixeldungeon.effects.CellEmitter;
 import com.zrp200.lustrouspixeldungeon.effects.Speck;
+import com.zrp200.lustrouspixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.zrp200.lustrouspixeldungeon.messages.Messages;
+import com.zrp200.lustrouspixeldungeon.scenes.InterlevelScene;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
+import com.zrp200.lustrouspixeldungeon.utils.GLog;
 
 public class Fadeleaf extends Plant {
 	
@@ -38,14 +44,32 @@ public class Fadeleaf extends Plant {
 	}
 	
 	@Override
-	public void activate() {
-		Char ch = Actor.findChar(pos);
+	public void activate( final Char ch ) {
 		
 		if (ch instanceof Hero) {
-			
-			ScrollOfTeleportation.teleportHero( (Hero)ch );
+
 			((Hero)ch).curAction = null;
 			
+			if (((Hero) ch).subClass == HeroSubClass.WARDEN){
+
+				if (Dungeon.bossLevel()) {
+					GLog.w( Messages.get(ScrollOfTeleportation.class, "no_tele") );
+					return;
+
+				}
+
+				Buff buff = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+				if (buff != null) buff.detach();
+
+				InterlevelScene.mode = InterlevelScene.Mode.RETURN;
+				InterlevelScene.returnDepth = Math.max(1, (Dungeon.depth - 1));
+				InterlevelScene.returnPos = -2;
+				Game.switchScene( InterlevelScene.class );
+
+			} else {
+				ScrollOfTeleportation.teleportHero((Hero) ch);
+			}
+
 		} else if (ch instanceof Mob && !ch.properties().contains(Char.Property.IMMOVABLE)) {
 
 			int count = 10;

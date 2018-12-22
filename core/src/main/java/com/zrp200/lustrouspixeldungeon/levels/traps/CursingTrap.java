@@ -36,6 +36,7 @@ import com.zrp200.lustrouspixeldungeon.items.KindofMisc;
 import com.zrp200.lustrouspixeldungeon.items.armor.Armor;
 import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Boomerang;
+import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.utils.GLog;
 
@@ -59,12 +60,12 @@ public class CursingTrap extends Trap {
 		Heap heap = Dungeon.level.heaps.get( pos );
 		if (heap != null){
 			for (Item item : heap.items){
-				if (item.isUpgradable())
+				if (item.isUpgradable() && !(item instanceof MissileWeapon))
 					curse(item);
 			}
 		}
 
-		if (Dungeon.hero.pos == pos){
+		if (Dungeon.hero.pos == pos && !Dungeon.hero.flying){
 			curse(Dungeon.hero);
 		}
 	}

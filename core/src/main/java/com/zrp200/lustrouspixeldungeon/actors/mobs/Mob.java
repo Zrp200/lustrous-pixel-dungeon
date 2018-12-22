@@ -52,9 +52,9 @@ import com.zrp200.lustrouspixeldungeon.items.Generator;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.zrp200.lustrouspixeldungeon.items.rings.Ring;
-import com.zrp200.lustrouspixeldungeon.items.rings.RingOfAccuracy;
 import com.zrp200.lustrouspixeldungeon.items.rings.RingOfWealth;
 import com.zrp200.lustrouspixeldungeon.items.stones.StoneOfAggression;
+import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.zrp200.lustrouspixeldungeon.levels.features.Chasm;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.sprites.CharSprite;
@@ -494,7 +494,7 @@ public abstract class Mob extends Char {
 	public boolean enemySeen() { // just double checks things
 		return enemySeen && enemyInFOV();
 	}
-	
+
 	@Override
 	public int defenseSkill( Char enemy ) {
 		boolean seen = (enemySeen() && enemy.invisible == 0);
@@ -502,18 +502,25 @@ public abstract class Mob extends Char {
 		if ( seen
 				&& paralysed == 0
 				&& !(alignment == Alignment.ALLY && enemy == Dungeon.hero)) {
-			int defenseSkill = this.defenseSkill;
-			defenseSkill *= RingOfAccuracy.enemyEvasionMultiplier( enemy );
-			return defenseSkill;
+			return this.defenseSkill;
 		} else {
 			return 0;
 		}
 	}
 	
+	protected boolean hitWithRanged = false;
+
 	@Override
 	public int defenseProc( Char enemy, int damage ) {
+
+		if (enemy instanceof Hero && ((Hero) enemy).belongings.weapon instanceof MissileWeapon){
+			hitWithRanged = true;
+		}
+
 		if ((!enemySeen || enemy.invisible > 0)
 				&& enemy == Dungeon.hero && Dungeon.hero.canSurpriseAttack()) {
+			Statistics.sneakAttacks++;
+			Badges.validateRogueUnlock();
 			if (enemy.buff(Preparation.class) != null) {
 				Wound.hit(this);
 			} else {
@@ -593,6 +600,11 @@ public abstract class Mob extends Char {
 	@Override
 	public void die( Object cause ) {
 		
+		if (hitWithRanged){
+			Statistics.thrownAssists++;
+			Badges.validateHuntressUnlock();
+		}
+
 		if (cause == Chasm.class){
 			EXP += Random.Int(EXP%2+1);	//50% chance to round up, 50% to round down
 			EXP /= 2;

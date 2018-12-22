@@ -23,18 +23,16 @@ package com.zrp200.lustrouspixeldungeon.items.rings;
 
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 
-public class RingOfFuror extends Ring {
 
-	@Override
-	protected RingBuff buff( ) {
-		return new Furor();
+public class RingOfFuror extends Ring {
+	static {
+		buffClass = Furor.class;
+		bonusScaling = 1.105f;
 	}
 	
-	public static float modifyAttackDelay( float delay, Char target){
-		//furor bonus only affects delay after 0.2
-		return (float)(0.2 + (delay - 0.2)*Math.pow(0.85, getBonus(target, Furor.class)));
+	public static float attackDelayMultiplier(Char target ){
+		return 1f / multiplier(target);
 	}
 
-	public class Furor extends RingBuff {
-	}
+	private class Furor extends RingBuff {	}
 }

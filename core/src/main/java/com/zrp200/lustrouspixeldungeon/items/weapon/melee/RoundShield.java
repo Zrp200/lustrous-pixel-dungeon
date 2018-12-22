@@ -21,6 +21,7 @@
 
 package com.zrp200.lustrouspixeldungeon.items.weapon.melee;
 
+import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
 
 public class RoundShield extends BlockingWeapon {
@@ -40,5 +41,13 @@ public class RoundShield extends BlockingWeapon {
 	@Override
 	public int maxBlock( int level ) {
 		return tier + 2 + level;     //5 base, with +0/+2 scaling;
+	}
+
+	public String statsInfo(){
+		if (isIdentified()){
+			return Messages.get(this, "stats_desc", 5+2*level());
+		} else {
+			return Messages.get(this, "typical_stats_desc", 5);
+		}
 	}
 }

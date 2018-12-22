@@ -28,11 +28,8 @@ import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 
 public class RingOfForce extends Ring {
+	static { buffClass = Force.class; }
 
-	@Override
-	protected RingBuff buff( ) {
-		return new Force();
-	}
 	
 	public static int armedDamageBonus( Char ch ){
 		return getBonus( ch, Force.class);
@@ -52,7 +49,7 @@ public class RingOfForce extends Ring {
 
 	public static int damageRoll( Hero hero ){
 		if (hero.buff(Force.class) != null) {
-			int level = getBonus(hero, Force.class);
+			int level = getBonus(hero);
 			float tier = tier(hero.STR());
 			return Random.NormalIntRange(min(level, tier), max(level, tier));
 		} else {
@@ -77,19 +74,15 @@ public class RingOfForce extends Ring {
 	}
 
 	@Override
-	public String desc() {
-		String desc = super.desc();
+	public String statsInfo() {
 		float tier = tier(Dungeon.hero.STR());
-		if (levelKnown) {
-			desc += "\n\n" + Messages.get(this, "avg_dmg", min(level(), tier), max(level(), tier));
+		if (isIdentified()) {
+			return Messages.get(this, "stats", min(soloBonus(), tier), max(soloBonus(), tier), soloBonus());
 		} else {
-			desc += "\n\n" + Messages.get(this, "typical_avg_dmg", min(1, tier), max(1, tier));
+			return Messages.get(this, "typical_stats", min(1, tier), max(1, tier), 1);
 		}
-
-		return desc;
 	}
 
-	public class Force extends RingBuff {
-	}
+	private class Force extends RingBuff {	}
 }
 

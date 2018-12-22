@@ -158,7 +158,7 @@ abstract public class Weapon extends KindOfWeapon {
 		hitsToKnow = bundle.getInt( UNFAMILIRIARITY );
 		enchantment = (Enchantment)bundle.get( ENCHANTMENT );
 		enchantKnown = bundle.getBoolean(ENCHANTMENT_KNOWN);
-		
+
 		//pre-0.6.5 saves
 		if (bundle.contains( "imbue" )){
 			String imbue = bundle.getString( "imbue" );
@@ -197,7 +197,7 @@ abstract public class Weapon extends KindOfWeapon {
 
 		float DLY = augment.delayFactor(this.DLY);
 
-		DLY = RingOfFuror.modifyAttackDelay(DLY, owner);
+		DLY *= RingOfFuror.attackDelayMultiplier(owner);
 
 		return (encumbrance > 0 ? (float)(DLY * Math.pow( 1.2, encumbrance )) : DLY);
 	}
@@ -265,6 +265,7 @@ abstract public class Weapon extends KindOfWeapon {
 	public Weapon enchant( Enchantment ench, boolean visible ) {
 		enchantment = ench;
 		if(visible) revealEnchant();
+		updateQuickslot();
 		return this;
 	}
 

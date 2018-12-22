@@ -58,7 +58,7 @@ public class Item implements Bundlable {
 	
 	protected static final float TIME_TO_THROW		= 1.0f;
 	protected static final float TIME_TO_PICK_UP	= 1.0f;
-	protected static final float TIME_TO_DROP		= 0.5f;
+	protected static final float TIME_TO_DROP		= 1.0f;
 	
 	public static final String AC_DROP		= "DROP";
 	public static final String AC_THROW		= "THROW";
@@ -288,7 +288,7 @@ public class Item implements Bundlable {
 	}
 	
 	public boolean isSimilar( Item item ) {
-		return getClass() == item.getClass();
+		return level == item.level && getClass() == item.getClass();
 	}
 
 	protected void onDetach(){}
@@ -425,11 +425,12 @@ public class Item implements Bundlable {
 		return 0;
 	}
 	
-	public static Item virtual( Class<? extends Item> cl ) {
+	public Item virtual(){
 		try {
 			
-			Item item = cl.newInstance();
+			Item item = getClass().newInstance();
 			item.quantity = 0;
+			item.level = level;
 			return item;
 			
 		} catch (Exception e) {
@@ -446,7 +447,7 @@ public class Item implements Bundlable {
 		return quantity != 1 ? Integer.toString( quantity ) : null;
 	}
 	
-	public void updateQuickslot() {
+	public static void updateQuickslot() {
 			QuickSlotButton.refresh();
 	}
 	

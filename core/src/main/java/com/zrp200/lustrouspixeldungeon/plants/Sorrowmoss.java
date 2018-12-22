@@ -22,10 +22,12 @@
 package com.zrp200.lustrouspixeldungeon.plants;
 
 import com.zrp200.lustrouspixeldungeon.Dungeon;
-import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Poison;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.ToxicImbue;
+import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
+import com.zrp200.lustrouspixeldungeon.actors.hero.HeroSubClass;
 import com.zrp200.lustrouspixeldungeon.effects.CellEmitter;
 import com.zrp200.lustrouspixeldungeon.effects.particles.PoisonParticle;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
@@ -37,8 +39,10 @@ public class Sorrowmoss extends Plant {
 	}
 	
 	@Override
-	public void activate() {
-		Char ch = Actor.findChar(pos);
+	public void activate( Char ch ) {
+		if (ch instanceof Hero && ((Hero) ch).subClass == HeroSubClass.WARDEN){
+			Buff.affect(ch, ToxicImbue.class).set(15f);
+		}
 		
 		if (ch != null) {
 			Buff.affect( ch, Poison.class ).set( 4 + Dungeon.depth / 2 );

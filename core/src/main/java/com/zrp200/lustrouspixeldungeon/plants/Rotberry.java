@@ -22,6 +22,11 @@
 package com.zrp200.lustrouspixeldungeon.plants;
 
 import com.zrp200.lustrouspixeldungeon.Dungeon;
+import com.zrp200.lustrouspixeldungeon.actors.Char;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.AdrenalineSurge;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
+import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
+import com.zrp200.lustrouspixeldungeon.actors.hero.HeroSubClass;
 import com.zrp200.lustrouspixeldungeon.effects.CellEmitter;
 import com.zrp200.lustrouspixeldungeon.effects.particles.LeafParticle;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
@@ -33,7 +38,11 @@ public class Rotberry extends Plant {
 	}
 
 	@Override
-	public void activate() {
+	public void activate( Char ch ) {
+		if (ch instanceof Hero && ((Hero) ch).subClass == HeroSubClass.WARDEN){
+			Buff.affect(ch, AdrenalineSurge.class).reset(1, 200f);
+		}
+
 		Dungeon.level.drop( new Seed(), pos ).sprite.drop();
 	}
 	

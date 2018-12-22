@@ -42,6 +42,7 @@ import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 
 public class WandOfFireblast extends DamageWand {
@@ -71,6 +72,7 @@ public class WandOfFireblast extends DamageWand {
 	@Override
 	protected void onZap( Ballistica bolt ) {
 
+		ArrayList<Char> affectedChars = new ArrayList<>();
 		for( int cell : affectedCells){
 			
 			//ignore caster cell
@@ -86,18 +88,21 @@ public class WandOfFireblast extends DamageWand {
 			
 			Char ch = Actor.findChar( cell );
 			if (ch != null) {
+				affectedChars.add(ch);
+			}
+		}
 
-				processSoulMark(ch, chargesPerCast());
-				ch.damage(damageRoll(), this);
-				Buff.affect( ch, Burning.class ).reignite( ch );
-				switch(chargesPerCast()){
-					case 1:
-						break; //no effects
-					case 3:
-						Buff.affect(ch, Paralysis.class, 4f); break;
-					case 2:
-						Buff.affect(ch, Cripple.class, 4f); break;
-				}
+		for ( Char ch : affectedChars ){
+			processSoulMark(ch, chargesPerCast());
+			ch.damage(damageRoll(), this);
+			Buff.affect( ch, Burning.class ).reignite( ch );
+			switch(chargesPerCast()){
+				case 1:
+					break; //no effects
+				case 3:
+					Buff.affect(ch, Paralysis.class, 4f); break;
+				case 2:
+					Buff.affect(ch, Cripple.class, 4f); break;
 			}
 		}
 	}

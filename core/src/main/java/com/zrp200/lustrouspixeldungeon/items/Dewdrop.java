@@ -24,7 +24,6 @@ package com.zrp200.lustrouspixeldungeon.items;
 import com.watabou.noosa.audio.Sample;
 import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
-import com.zrp200.lustrouspixeldungeon.actors.hero.HeroSubClass;
 import com.zrp200.lustrouspixeldungeon.effects.Speck;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.sprites.CharSprite;
@@ -50,9 +49,8 @@ public class Dewdrop extends Item {
 			
 		} else {
 			
-			//20 drops for a full heal normally, 15 for the warden
-			float healthPercent = hero.subClass == HeroSubClass.WARDEN ? 0.0667f : 0.05f;
-			int heal = Math.round( hero.HT * healthPercent * quantity );
+			//20 drops for a full heal
+			int heal = Math.round( hero.HT * 0.05f * quantity );
 			
 			int effect = Math.min( hero.HT - hero.HP, heal );
 			if (effect > 0) {

@@ -32,7 +32,7 @@ import com.zrp200.lustrouspixeldungeon.actors.mobs.npcs.Imp;
 import com.zrp200.lustrouspixeldungeon.items.KindOfWeapon;
 import com.zrp200.lustrouspixeldungeon.items.food.Food;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Gauntlet;
-import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Knuckles;
+import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Gloves;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.sprites.MonkSprite;
 import com.zrp200.lustrouspixeldungeon.utils.GLog;
@@ -93,7 +93,7 @@ public class Monk extends Mob {
 			KindOfWeapon weapon = hero.belongings.weapon;
 			
 			if (weapon != null
-					&& !(weapon instanceof Knuckles)
+					&& !(weapon instanceof Gloves)
 					&& !(weapon instanceof Gauntlet)
 					&& !weapon.cursed) {
 				if (hitsToDisarm == 0) hitsToDisarm = Random.NormalIntRange(4, 8);

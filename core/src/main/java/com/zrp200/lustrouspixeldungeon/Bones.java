@@ -29,6 +29,7 @@ import com.zrp200.lustrouspixeldungeon.items.Generator;
 import com.zrp200.lustrouspixeldungeon.items.Gold;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.artifacts.Artifact;
+import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.MissileWeapon;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -139,6 +140,8 @@ public class Bones {
 				FileUtils.deleteFile( BONES_FILE );
 				depth = 0;
 
+				if (item == null) return null;
+
 				//Enforces artifact uniqueness
 				if (item instanceof Artifact){
 					if (Generator.removeArtifact(((Artifact)item).getClass())) {
@@ -159,16 +162,17 @@ public class Bones {
 					}
 				}
 				
-				if (item.isUpgradable()) {
+				if (item.isUpgradable() && !(item instanceof MissileWeapon)) {
 					item.cursed = true;
 					item.cursedKnown = true;
-					if (item.isUpgradable()) {
-						//caps at +3
-						if (item.level() > 3) {
-							item.degrade( item.level() - 3 );
-						}
-						item.levelKnown = false;
+				}
+
+				if (item.isUpgradable()) {
+					//caps at +3
+					if (item.level() > 3) {
+						item.degrade( item.level() - 3 );
 					}
+					item.levelKnown = false;
 				}
 				
 				item.reset();

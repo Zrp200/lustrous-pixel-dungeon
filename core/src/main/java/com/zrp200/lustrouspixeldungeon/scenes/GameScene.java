@@ -45,6 +45,7 @@ import com.zrp200.lustrouspixeldungeon.actors.blobs.Blob;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.Mob;
 import com.zrp200.lustrouspixeldungeon.effects.BannerSprites;
 import com.zrp200.lustrouspixeldungeon.effects.BlobEmitter;
+import com.zrp200.lustrouspixeldungeon.effects.CircleArc;
 import com.zrp200.lustrouspixeldungeon.effects.EmoIcon;
 import com.zrp200.lustrouspixeldungeon.effects.Flare;
 import com.zrp200.lustrouspixeldungeon.effects.FloatingText;
@@ -130,7 +131,8 @@ public class GameScene extends PixelScene {
 	private GameLog log;
 	
 	private BusyIndicator busy;
-	
+	private CircleArc counter;
+
 	private static CellSelector cellSelector;
 	
 	private Group terrain;
@@ -334,6 +336,11 @@ public class GameScene extends PixelScene {
 		busy.y = pane.bottom() + 1;
 		add( busy );
 		
+		counter = new CircleArc(18, 4.25f);
+		counter.color( 0x808080, true );
+		counter.camera = uiCamera;
+		counter.show(this, busy.center(), 0f);
+
 		switch (InterlevelScene.mode) {
 		case RESURRECT:
 			ScrollOfTeleportation.appear( Dungeon.hero, Dungeon.level.entrance );
@@ -515,7 +522,9 @@ public class GameScene extends PixelScene {
 				}
 			}
 		}
-		
+
+		counter.setSweep((1f - Actor.now()%1f)%1f);
+
 		if (Dungeon.hero.ready && Dungeon.hero.paralysed == 0) {
 			log.newLine();
 		}

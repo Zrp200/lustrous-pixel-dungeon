@@ -27,6 +27,7 @@ import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.armor.Armor;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.zrp200.lustrouspixeldungeon.items.stones.StoneOfEnchantment;
+import com.zrp200.lustrouspixeldungeon.items.weapon.SpiritBow;
 import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
@@ -44,10 +45,15 @@ public class MagicalInfusion extends InventorySpell {
 	@Override
 	protected void onItemSelected( Item item ) {
 
-		if (item instanceof Weapon)
-			((Weapon)item).upgrade(true);
-		else
-			((Armor)item).upgrade(true);
+		if (item instanceof SpiritBow){
+			if (((SpiritBow) item).enchantment == null){
+				((Weapon)item).enchant();
+			}
+		} else if (item instanceof Weapon) {
+			((Weapon) item).upgrade(true);
+		} else {
+			((Armor) item).upgrade(true);
+		}
 		
 		GLog.p( Messages.get(this, "infuse", item.name()) );
 		

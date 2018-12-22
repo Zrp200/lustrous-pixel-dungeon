@@ -24,26 +24,22 @@ package com.zrp200.lustrouspixeldungeon.plants;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
-import com.watabou.utils.Random;
+import com.watabou.utils.PathFinder;
 import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.Challenges;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
-import com.zrp200.lustrouspixeldungeon.actors.buffs.Barkskin;
-import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.actors.hero.HeroSubClass;
 import com.zrp200.lustrouspixeldungeon.effects.CellEmitter;
 import com.zrp200.lustrouspixeldungeon.effects.particles.LeafParticle;
-import com.zrp200.lustrouspixeldungeon.items.Dewdrop;
-import com.zrp200.lustrouspixeldungeon.items.Generator;
 import com.zrp200.lustrouspixeldungeon.items.Item;
-import com.zrp200.lustrouspixeldungeon.items.artifacts.SandalsOfNature;
 import com.zrp200.lustrouspixeldungeon.levels.Level;
 import com.zrp200.lustrouspixeldungeon.levels.Terrain;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
+import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
 
 import java.util.ArrayList;
@@ -61,16 +57,13 @@ public abstract class Plant implements Bundlable {
 
 		if (ch instanceof Hero){
 			((Hero) ch).interrupt();
-			if (((Hero)ch).subClass == HeroSubClass.WARDEN) {
-				Buff.affect(ch, Barkskin.class).set(ch.HT / 3, 1);
-			}
 		}
 
 		wither();
-		activate();
+		activate( ch );
 	}
 	
-	public abstract void activate();
+	public abstract void activate( Char ch );
 	
 	public void wither() {
 		Dungeon.level.uproot( pos );
@@ -78,30 +71,7 @@ public abstract class Plant implements Bundlable {
 		if (Dungeon.level.heroFOV[pos]) {
 			CellEmitter.get( pos ).burst( LeafParticle.GENERAL, 6 );
 		}
-		
-		if (Dungeon.hero.subClass == HeroSubClass.WARDEN) {
 
-			int naturalismLevel = 0;
-			SandalsOfNature.Naturalism naturalism = Dungeon.hero.buff( SandalsOfNature.Naturalism.class );
-			if (naturalism != null) {
-				naturalismLevel = naturalism.itemLevel()+1;
-			}
-
-			if (Random.Int( 5 - (naturalismLevel/2) ) == 0) {
-				Item seed = Generator.random(Generator.Category.SEED);
-
-				if (seed instanceof BlandfruitBush.Seed) {
-					if (Random.Int(3) - Dungeon.LimitedDrops.BLANDFRUIT_SEED.count >= 0) {
-						Dungeon.level.drop(seed, pos).sprite.drop();
-						Dungeon.LimitedDrops.BLANDFRUIT_SEED.count++;
-					}
-				} else
-					Dungeon.level.drop(seed, pos).sprite.drop();
-			}
-			if (Random.Int( 5 - naturalismLevel ) == 0) {
-				Dungeon.level.drop( new Dewdrop(), pos ).sprite.drop();
-			}
-		}
 	}
 	
 	private static final String POS	= "pos";
@@ -149,6 +119,17 @@ public abstract class Plant implements Bundlable {
 				super.onThrow( cell );
 			} else {
 				Dungeon.level.plant( this, cell );
+				if (Dungeon.hero.subClass == HeroSubClass.WARDEN) {
+					for (int i : PathFinder.NEIGHBOURS8) {
+						int c = Dungeon.level.map[cell + i];
+						if ( c == Terrain.EMPTY || c == Terrain.EMPTY_DECO
+								|| c == Terrain.EMBERS || c == Terrain.GRASS){
+							Level.set(cell + i, Terrain.FURROWED_GRASS);
+							GameScene.updateMap(cell + i);
+							CellEmitter.get( cell + i ).burst( LeafParticle.LEVEL_SPECIFIC, 4 );
+						}
+					}
+				}
 			}
 		}
 		

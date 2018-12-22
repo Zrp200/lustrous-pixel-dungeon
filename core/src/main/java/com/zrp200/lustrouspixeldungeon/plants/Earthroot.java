@@ -25,10 +25,11 @@ import com.watabou.noosa.Camera;
 import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
-import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.Barkskin;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.FlavourBuff;
+import com.zrp200.lustrouspixeldungeon.actors.hero.HeroSubClass;
 import com.zrp200.lustrouspixeldungeon.effects.CellEmitter;
 import com.zrp200.lustrouspixeldungeon.effects.particles.EarthParticle;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
@@ -42,11 +43,14 @@ public class Earthroot extends Plant {
 	}
 	
 	@Override
-	public void activate() {
-		Char ch = Actor.findChar(pos);
+	public void activate( Char ch ) {
 		
 		if (ch == Dungeon.hero) {
-			Buff.affect( ch, Armor.class ).level(ch.HT);
+			if (Dungeon.hero.subClass == HeroSubClass.WARDEN){
+				Buff.affect(ch, Barkskin.class).set((Dungeon.depth + 5)/2, 5);
+			} else {
+				Buff.affect(ch, Armor.class).level(ch.HT);
+			}
 		}
 		
 		if (Dungeon.level.heroFOV[pos]) {

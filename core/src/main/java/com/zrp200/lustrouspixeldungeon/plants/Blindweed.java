@@ -23,11 +23,13 @@ package com.zrp200.lustrouspixeldungeon.plants;
 
 import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
-import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Blindness;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Cripple;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.Invisibility;
+import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
+import com.zrp200.lustrouspixeldungeon.actors.hero.HeroSubClass;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.Mob;
 import com.zrp200.lustrouspixeldungeon.effects.CellEmitter;
 import com.zrp200.lustrouspixeldungeon.effects.Speck;
@@ -40,16 +42,19 @@ public class Blindweed extends Plant {
 	}
 	
 	@Override
-	public void activate() {
-		Char ch = Actor.findChar(pos);
+	public void activate( Char ch ) {
 		
 		if (ch != null) {
-			int len = Random.Int( 5, 10 );
-			Buff.prolong( ch, Blindness.class, len );
-			Buff.prolong( ch, Cripple.class, len );
-			if (ch instanceof Mob) {
-				if (((Mob)ch).state == ((Mob)ch).HUNTING) ((Mob)ch).state = ((Mob)ch).WANDERING;
-				((Mob)ch).beckon( Dungeon.level.randomDestination() );
+			if (ch instanceof Hero && ((Hero) ch).subClass == HeroSubClass.WARDEN){
+				Buff.affect(ch, Invisibility.class, 10f);
+			} else {
+				int len = Random.Int(5, 10);
+				Buff.prolong(ch, Blindness.class, len);
+				Buff.prolong(ch, Cripple.class, len);
+				if (ch instanceof Mob) {
+					if (((Mob) ch).state == ((Mob) ch).HUNTING) ((Mob) ch).state = ((Mob) ch).WANDERING;
+					((Mob) ch).beckon(Dungeon.level.randomDestination());
+				}
 			}
 		}
 		

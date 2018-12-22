@@ -21,16 +21,38 @@
 
 package com.zrp200.lustrouspixeldungeon.actors.buffs;
 
+import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
+import com.zrp200.lustrouspixeldungeon.Dungeon;
+import com.zrp200.lustrouspixeldungeon.actors.Actor;
+import com.zrp200.lustrouspixeldungeon.actors.Char;
+import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
+import com.zrp200.lustrouspixeldungeon.items.weapon.SpiritBow;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
+import com.zrp200.lustrouspixeldungeon.sprites.ItemSprite;
+import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
+import com.zrp200.lustrouspixeldungeon.ui.ActionIndicator;
 import com.zrp200.lustrouspixeldungeon.ui.BuffIndicator;
+import com.zrp200.lustrouspixeldungeon.ui.QuickSlotButton;
 
-public class SnipersMark extends FlavourBuff {
+public class SnipersMark extends FlavourBuff implements ActionIndicator.Action {
 
 	public int object = 0;
 
 	private static final String OBJECT    = "object";
-
+	
+	@Override
+	public boolean attachTo(Char target) {
+		ActionIndicator.setAction(this);
+		return super.attachTo(target);
+	}
+	
+	@Override
+	public void detach() {
+		super.detach();
+		ActionIndicator.clearAction(this);
+	}
+	
 	@Override
 	public void storeInBundle( Bundle bundle ) {
 		super.storeInBundle( bundle );
@@ -57,5 +79,35 @@ public class SnipersMark extends FlavourBuff {
 	@Override
 	public String desc() {
 		return Messages.get(this, "desc");
+	}
+	
+	@Override
+	public Image getIcon() {
+		return new ItemSprite(ItemSpriteSheet.SPIRIT_BOW, null);
+	}
+	
+	@Override
+	public void doAction() {
+		
+		Hero hero = Dungeon.hero;
+		if (hero == null) return;
+		
+		SpiritBow bow = hero.belongings.getItem(SpiritBow.class);
+		if (bow == null) return;
+		
+		SpiritBow.SpiritArrow arrow = bow.knockArrow();
+		if (arrow == null) return;
+		
+		Char ch = (Char) Actor.findById(object);
+		if (ch == null) return;
+		
+		int cell = QuickSlotButton.autoAim(ch, arrow);
+		if (cell == -1) return;
+		
+		bow.sniperSpecial = true;
+		
+		arrow.cast(hero, cell);
+		detach();
+		
 	}
 }

@@ -21,10 +21,12 @@
 
 package com.zrp200.lustrouspixeldungeon.plants;
 
-import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.Levitation;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Vertigo;
+import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
+import com.zrp200.lustrouspixeldungeon.actors.hero.HeroSubClass;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
 
 public class Stormvine extends Plant {
@@ -34,11 +36,14 @@ public class Stormvine extends Plant {
 	}
 
 	@Override
-	public void activate() {
-		Char ch = Actor.findChar(pos);
+	public void activate( Char ch ) {
 
 		if (ch != null) {
-			Buff.affect(ch, Vertigo.class, Vertigo.DURATION );
+			if (ch instanceof Hero && ((Hero) ch).subClass == HeroSubClass.WARDEN){
+				Buff.affect(ch, Levitation.class, 10f);
+			} else {
+				Buff.affect(ch, Vertigo.class, Vertigo.DURATION);
+			}
 		}
 	}
 

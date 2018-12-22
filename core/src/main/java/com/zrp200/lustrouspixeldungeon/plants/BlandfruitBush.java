@@ -22,6 +22,7 @@
 package com.zrp200.lustrouspixeldungeon.plants;
 
 import com.zrp200.lustrouspixeldungeon.Dungeon;
+import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.items.food.Blandfruit;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
 
@@ -32,7 +33,7 @@ public class BlandfruitBush extends Plant {
 	}
 
 	@Override
-	public void activate() {
+	public void activate( Char ch ) {
 		Dungeon.level.drop( new Blandfruit(), pos ).sprite.drop();
 	}
 

@@ -25,7 +25,7 @@ import com.watabou.noosa.TextureFilm;
 import com.watabou.utils.Callback;
 import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
-import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.darts.Dart;
+import com.zrp200.lustrouspixeldungeon.items.Item;
 
 public class ScorpioSprite extends MobSprite {
 	
@@ -81,7 +81,7 @@ public class ScorpioSprite extends MobSprite {
 			idle();
 			
 			((MissileSprite)parent.recycle( MissileSprite.class )).
-			reset( ch.pos, cellToAttack, new Dart(), new Callback() {
+			reset( ch.pos, cellToAttack, new ScorpioShot(), new Callback() {
 				@Override
 				public void call() {
 					ch.onAttackComplete();
@@ -89,6 +89,12 @@ public class ScorpioSprite extends MobSprite {
 			} );
 		} else {
 			super.onComplete( anim );
+		}
+	}
+
+	public class ScorpioShot extends Item {
+		{
+			image = ItemSpriteSheet.FISHING_SPEAR;
 		}
 	}
 }

@@ -24,11 +24,12 @@ package com.zrp200.lustrouspixeldungeon.plants;
 import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
-import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.FlavourBuff;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.Healing;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
+import com.zrp200.lustrouspixeldungeon.actors.hero.HeroSubClass;
 import com.zrp200.lustrouspixeldungeon.effects.CellEmitter;
 import com.zrp200.lustrouspixeldungeon.effects.Speck;
 import com.zrp200.lustrouspixeldungeon.effects.particles.ShaftParticle;
@@ -43,11 +44,14 @@ public class Sungrass extends Plant {
 	}
 	
 	@Override
-	public void activate() {
-		Char ch = Actor.findChar(pos);
+	public void activate( Char ch ) {
 		
 		if (ch == Dungeon.hero) {
-			Buff.affect( ch, Health.class ).boost(ch.HT);
+			if (Dungeon.hero.subClass == HeroSubClass.WARDEN) {
+				Buff.affect(ch, Healing.class).setHeal(ch.HT, 0, 1);
+			} else {
+				Buff.affect(ch, Health.class).boost(ch.HT);
+			}
 		}
 		
 		if (Dungeon.level.heroFOV[pos]) {

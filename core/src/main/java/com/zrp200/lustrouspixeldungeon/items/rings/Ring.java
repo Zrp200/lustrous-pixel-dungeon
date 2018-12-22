@@ -25,6 +25,7 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Badges;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
+import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
@@ -36,6 +37,7 @@ import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
 import com.zrp200.lustrouspixeldungeon.utils.GLog;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -47,17 +49,10 @@ public class Ring extends KindofMisc {
 	protected Buff buff;
 	
 	private static final Class<?>[] rings = {
-		RingOfAccuracy.class,
-		RingOfEvasion.class,
-		RingOfElements.class,
-		RingOfForce.class,
-		RingOfFuror.class,
-		RingOfHaste.class,
-		RingOfEnergy.class,
-		RingOfMight.class,
-		RingOfSharpshooting.class,
-		RingOfTenacity.class,
-		RingOfWealth.class,
+		RingOfAccuracy.class,	RingOfEvasion.class,	RingOfElements.class,
+		RingOfForce.class,   	RingOfFuror.class,  	RingOfHaste.class,
+		RingOfEnergy.class,  	RingOfMight.class,  	RingOfSharpshooting.class,
+		RingOfTenacity.class,	RingOfWealth.class
 	};
 
 	private static final HashMap<String, Integer> gems = new HashMap<String, Integer>() {
@@ -105,6 +100,25 @@ public class Ring extends KindofMisc {
 		super();
 		reset();
 	}
+
+	static float bonusScaling;
+	static Class<?extends RingBuff> buffClass;
+
+	public static float multiplier( int bonus ) {
+		return (float)Math.pow(bonusScaling, bonus);
+	}
+	public static float multiplier( Char target ){
+		return multiplier( getBonus(target) );
+	}
+
+	//anonymous rings are always IDed, do not affect ID status,
+	//and their sprite is replaced by a placeholder if they are not known,
+	//useful for items that appear in UIs, or which are only spawned for their effects
+	protected boolean anonymous = false;
+	public void anonymize(){
+		if (!isKnown()) image = ItemSpriteSheet.RING_HOLDER;
+		anonymous = true;
+	}
 	
 	public void reset() {
 		super.reset();
@@ -136,16 +150,18 @@ public class Ring extends KindofMisc {
 	}
 	
 	public boolean isKnown() {
-		return handler != null && handler.isKnown( this );
+		return anonymous || (handler != null && handler.isKnown( this ));
 	}
 	
 	public void setKnown() {
-		if (!isKnown()) {
-			handler.know( this );
-		}
-		
-		if (Dungeon.hero.isAlive()) {
-			Catalog.setSeen(getClass());
+		if (!anonymous) {
+			if (!isKnown()) {
+				handler.know(this);
+			}
+
+			if (Dungeon.hero.isAlive()) {
+				Catalog.setSeen(getClass());
+			}
 		}
 	}
 	
@@ -155,10 +171,10 @@ public class Ring extends KindofMisc {
 	}
 	
 	@Override
-	public String info() {
-
-		String desc = isKnown()? desc() : Messages.get(this, "unknown_desc");
-
+	public String info(){
+		
+		String desc = isKnown() ? super.desc() : Messages.get(this, "unknown_desc");
+		
 		if (cursed && isEquipped( Dungeon.hero )) {
 			desc += "\n\n" + Messages.get(Ring.class, "cursed_worn");
 			
@@ -169,10 +185,24 @@ public class Ring extends KindofMisc {
 			desc += "\n\n" + Messages.get(Ring.class, "not_cursed");
 			
 		}
-
+		
+		if (isKnown()) {
+			desc += "\n\n" + statsInfo();
+		}
+		
 		return desc;
 	}
 	
+	protected String statsInfo() {
+		return Messages.get(
+				this,
+				(isIdentified() ? "" : "typical_") + "stats",
+				new DecimalFormat("#.##").format(
+						100f * ( multiplier(soloBonus( visiblyUpgraded() ) ) - 1f )
+				)
+		);
+	}
+
 	@Override
 	public Item upgrade() {
 		super.upgrade();
@@ -249,7 +279,12 @@ public class Ring extends KindofMisc {
 	}
 	
 	protected RingBuff buff() {
-		return null;
+		try {
+			return buffClass.newInstance();
+		} catch(Exception e) {
+			LustrousPixelDungeon.reportException(e);
+			return null;
+		}
 	}
 
 	private static final String UNFAMILIRIARITY    = "unfamiliarity";
@@ -273,37 +308,30 @@ public class Ring extends KindofMisc {
 		}
 	}
 
+	public static int getBonus(Char target) {
+		return getBonus(target, buffClass);
+	}
+
 	public static int getBonus(Char target, Class<?extends RingBuff> type){
 		int bonus = 0;
-		for (RingBuff buff : target.buffs(type)) {
-			bonus += buff.level();
-		}
+		for (RingBuff buff : target.buffs(type)) bonus += buff.level();
 		return bonus;
 	}
 
+	int soloBonus(){ return soloBonus(Ring.this.level()); }
+	int soloBonus(int level) { return cursed ? Math.min( 0, level-2 ) : level+1; }
+
 	public class RingBuff extends Buff {
-		
 		@Override
 		public boolean act() {
-			
 			if (!isIdentified() && --ticksToKnow <= 0) {
 				identify();
 				GLog.w( Messages.get(Ring.class, "identify", Ring.this.toString()) );
 				Badges.validateItemLevelAquired( Ring.this );
 			}
-			
 			spend( TICK );
-			
 			return true;
 		}
-
-		public int level(){
-			if (Ring.this.cursed){
-				return Math.min( 0, Ring.this.level()-2 );
-			} else {
-				return Ring.this.level()+1;
-			}
-		}
-
+		public int level(){ return Ring.this.soloBonus(); }
 	}
 }

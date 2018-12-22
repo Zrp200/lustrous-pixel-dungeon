@@ -25,9 +25,7 @@ import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
-import com.zrp200.lustrouspixeldungeon.actors.hero.HeroClass;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.Mob;
-import com.zrp200.lustrouspixeldungeon.items.rings.RingOfSharpshooting;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
 
 public class ThrowingKnife extends MissileWeapon {
@@ -37,21 +35,14 @@ public class ThrowingKnife extends MissileWeapon {
 		
 		bones = false;
 		
-	}
-	
-	@Override
-	public int min(int lvl) {
-		return 2;
+		tier = 1;
+		baseUses = 5;
 	}
 	
 	@Override
 	public int max(int lvl) {
-		return 6;
-	}
-	
-	@Override
-	public int STRReq(int lvl) {
-		return 9;
+		return  6 * tier +                      //6 base, up from 5
+				(tier == 1 ? 2*lvl : tier*lvl); //scaling unchanged
 	}
 	
 	private Char enemy;
@@ -72,24 +63,13 @@ public class ThrowingKnife extends MissileWeapon {
 				int damage = augment.damageFactor(Random.NormalIntRange(
 						min() + Math.round(diff*0.75f),
 						max()));
-				damage = Math.round(damage * RingOfSharpshooting.damageMultiplier( hero ));
 				int exStr = hero.STR() - STRReq();
-				if (exStr > 0 && hero.heroClass == HeroClass.HUNTRESS) {
+				if (exStr > 0) {
 					damage += Random.IntRange(0, exStr);
 				}
 				return damage;
 			}
 		}
 		return super.damageRoll(owner);
-	}
-	
-	@Override
-	protected float durabilityPerUse() {
-		return super.durabilityPerUse()*2f;
-	}
-	
-	@Override
-	public int price() {
-		return 6 * quantity;
 	}
 }

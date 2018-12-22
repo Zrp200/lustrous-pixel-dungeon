@@ -35,8 +35,6 @@ import com.zrp200.lustrouspixeldungeon.LustSettings;
 import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
 import com.zrp200.lustrouspixeldungeon.actors.hero.HeroClass;
 import com.zrp200.lustrouspixeldungeon.actors.hero.HeroSubClass;
-import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Cord;
-import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.darts.Dart;
 import com.zrp200.lustrouspixeldungeon.journal.Journal;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.scenes.InterlevelScene;
@@ -211,7 +209,7 @@ public class WndStartGame extends Window {
 			
 			//if( cl == HeroClass.HUNTRESS && !Badges.isUnlocked(Badges.Badge.BOSS_SLAIN_3)){
 			//	LustrousPixelDungeon.scene().add(
-			//			new WndMessage(Messages.get(WndStartGame.class, "huntress_unlock")));
+			//			new WndMessage(cl.unlockMsg());
 			//} else {
 				GamesInProgress.selectedClass = cl;
 			//}
@@ -341,9 +339,9 @@ public class WndStartGame extends Window {
 							heroMisc.icon(Icons.get(Icons.DEPTH));
 							break;
 						case HUNTRESS:
-							heroItem.icon( new ItemSprite( new Dart().image(), null ) );
-							heroLoadout.icon( new ItemSprite( new Cord().image(), null ) );
-							heroMisc.icon( Icons.get( Icons.HUNTRESS ) );
+							heroItem.icon(new ItemSprite(ItemSpriteSheet.SPIRIT_BOW, null));
+							heroLoadout.icon(new ItemSprite(ItemSpriteSheet.GLOVES, null));
+							heroMisc.icon(new Image(Assets.TILES_SEWERS, 112, 96, 16, 16 ));
 							break;
 					}
 					

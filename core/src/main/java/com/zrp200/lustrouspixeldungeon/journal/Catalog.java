@@ -99,11 +99,11 @@ import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Dirk;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Flail;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Gauntlet;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Glaive;
+import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Gloves;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Greataxe;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Greatshield;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Greatsword;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.HandAxe;
-import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Knuckles;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Longsword;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Mace;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.MagesStaff;
@@ -152,6 +152,7 @@ public enum Catalog {
 	
 	static {
 		WEAPONS.seen.put( WornShortsword.class,             false);
+		WEAPONS.seen.put( Gloves.class,                     false);
 		WEAPONS.seen.put( Dagger.class,                     false);
 		WEAPONS.seen.put( MagesStaff.class,                 false);
 		WEAPONS.seen.put( Cord.class,						false);
@@ -253,7 +254,7 @@ public enum Catalog {
 		SCROLLS.seen.put( ScrollOfTerror.class,             false);
 		SCROLLS.seen.put( ScrollOfLullaby.class,            false);
 		SCROLLS.seen.put( ScrollOfRage.class,               false);
-		SCROLLS.seen.put( ScrollOfRetribution.class,       false);
+		SCROLLS.seen.put( ScrollOfRetribution.class,        false);
 		SCROLLS.seen.put( ScrollOfTransmutation.class,      false);
 	}
 	
@@ -313,12 +314,12 @@ public enum Catalog {
 	public static void restore( Bundle bundle ){
 		
 		Badges.loadGlobal();
-		
+
 		//catalog-specific badge logic
 		for (Catalog cat : values()){
 			if (Badges.isUnlocked(catalogBadges.get(cat)) || Badges.isUnlocked(Badges.Badge.ALL_ITEMS_IDENTIFIED) ){
 				for (Class<? extends Item> item : cat.items()) cat.seen.put(item, true);
-				if(cat == Catalog.WEAPONS) cat.seen.put(Knuckles.class, true);
+				if(cat == Catalog.WEAPONS) cat.seen.put(Cord.class, true);
 			}
 		}
 		

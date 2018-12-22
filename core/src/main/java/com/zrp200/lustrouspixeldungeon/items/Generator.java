@@ -122,11 +122,11 @@ import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Dirk;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Flail;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Gauntlet;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Glaive;
+import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Gloves;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Greataxe;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Greatshield;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Greatsword;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.HandAxe;
-import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Knuckles;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Longsword;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Mace;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.MagesStaff;
@@ -318,7 +318,7 @@ public class Generator {
 			
 			WEP_T1.classes = new Class<?>[]{
 					WornShortsword.class,
-					Knuckles.class,
+					Gloves.class,
 					Cord.class,
 					Dagger.class,
 					MagesStaff.class

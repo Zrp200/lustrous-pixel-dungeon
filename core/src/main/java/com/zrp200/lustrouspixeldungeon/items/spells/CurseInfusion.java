@@ -29,9 +29,9 @@ import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.armor.Armor;
 import com.zrp200.lustrouspixeldungeon.items.quest.MetalShard;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfRemoveCurse;
+import com.zrp200.lustrouspixeldungeon.items.weapon.SpiritBow;
 import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.MeleeWeapon;
-import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Boomerang;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
 import com.zrp200.lustrouspixeldungeon.windows.WndBag;
 
@@ -49,7 +49,7 @@ public class CurseInfusion extends InventorySpell {
 		Sample.INSTANCE.play(Assets.SND_CURSED);
 		
 		item.cursed = true;
-		if (item instanceof MeleeWeapon || item instanceof Boomerang) {
+		if (item instanceof MeleeWeapon || item instanceof SpiritBow) {
 			Weapon w = (Weapon) item;
 			Class<? extends Weapon.Enchantment> curr = null;
 			if (w.enchantment != null) {

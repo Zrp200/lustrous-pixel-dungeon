@@ -21,9 +21,9 @@
 
 package com.zrp200.lustrouspixeldungeon.plants;
 
-import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Bleeding;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.BlobImmunity;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Cripple;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Drowsy;
@@ -33,6 +33,7 @@ import com.zrp200.lustrouspixeldungeon.actors.buffs.Slow;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Vertigo;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Weakness;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
+import com.zrp200.lustrouspixeldungeon.actors.hero.HeroSubClass;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.Mob;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
@@ -45,13 +46,12 @@ public class Dreamfoil extends Plant {
 	}
 
 	@Override
-	public void activate() {
-		Char ch = Actor.findChar(pos);
+	public void activate( Char ch ) {
 
 		if (ch != null) {
-			if (ch instanceof Mob)
+			if (ch instanceof Mob) {
 				Buff.affect(ch, MagicalSleep.class);
-			else if (ch instanceof Hero){
+			} else if (ch instanceof Hero){
 				GLog.i( Messages.get(this, "refreshed") );
 				Buff.detach( ch, Poison.class );
 				Buff.detach( ch, Cripple.class );
@@ -60,6 +60,11 @@ public class Dreamfoil extends Plant {
 				Buff.detach( ch, Drowsy.class );
 				Buff.detach( ch, Slow.class );
 				Buff.detach( ch, Vertigo.class);
+
+				if (((Hero) ch).subClass == HeroSubClass.WARDEN){
+					Buff.affect(ch, BlobImmunity.class, 10f);
+				}
+
 			}
 		}
 	}

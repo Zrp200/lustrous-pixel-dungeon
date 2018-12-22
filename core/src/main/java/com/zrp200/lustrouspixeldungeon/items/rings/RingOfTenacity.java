@@ -22,17 +22,27 @@
 package com.zrp200.lustrouspixeldungeon.items.rings;
 
 import com.zrp200.lustrouspixeldungeon.actors.Char;
+import com.zrp200.lustrouspixeldungeon.messages.Messages;
+
+import java.text.DecimalFormat;
 
 public class RingOfTenacity extends Ring {
+	static {
+		bonusScaling = 0.85f;
+		buffClass = Tenacity.class;
+	}
 
-	@Override
-	protected RingBuff buff( ) {
-		return new Tenacity();
+	public String statsInfo() {
+		if (isIdentified()){
+			return Messages.get(this, "stats", new DecimalFormat("#.##").format(100f * (1f - multiplier(soloBonus() ) ) ) );
+		} else {
+			return Messages.get(this, "typical_stats", new DecimalFormat("#.##").format(15f));
+		}
 	}
 	
 	public static float damageMultiplier( Char t ){
 		//(HT - HP)/HT = heroes current % missing health.
-		return (float)Math.pow(0.85, getBonus( t, Tenacity.class)*((float)(t.HT - t.HP)/t.HT));
+		return (float)Math.pow(bonusScaling, getBonus( t )*((float)(t.HT - t.HP)/t.HT));
 	}
 
 	public class Tenacity extends RingBuff {

@@ -49,7 +49,9 @@ import com.zrp200.lustrouspixeldungeon.items.scrolls.Scroll;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfTransmutation;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.MissileWeapon;
+import com.zrp200.lustrouspixeldungeon.messages.Messages;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -57,16 +59,24 @@ import static com.zrp200.lustrouspixeldungeon.Challenges.NO_FOOD;
 import static com.zrp200.lustrouspixeldungeon.Challenges.NO_HERBALISM;
 
 public class RingOfWealth extends Ring {
+
+	static {
+		bonusScaling = 1.2f;
+		buffClass = Wealth.class;
+	}
 	
 	private float triesToDrop = 0;
-	
-	@Override
-	protected RingBuff buff( ) {
-		return new Wealth();
+
+	public String statsInfo() {
+		if (isIdentified()){
+			return Messages.get(this, "stats", new DecimalFormat("#.##").format(100f * (Math.pow(1.15f, soloBonus()) - 1f)));
+		} else {
+			return Messages.get(this, "typical_stats", new DecimalFormat("#.##").format(15f));
+		}
 	}
 	
 	public static float dropChanceMultiplier( Char target ){
-		return (float)Math.pow(1.2, getBonus(target, Wealth.class)); // +4.3% compared to shattered
+		return multiplier(target); // +4.3% compared to shattered
 	}
 	
 	public static ArrayList<Item> tryRareDrop(Char target, int tries ){
@@ -227,7 +237,7 @@ public class RingOfWealth extends Ring {
 	}
 	
 	private static float dropProgression( Char target, int tries ){
-		return tries * (float)Math.pow(1.2f, getBonus(target, Wealth.class) - 1 );
+		return tries * (float)Math.pow(bonusScaling, getBonus(target) - 1 );
 	}
 
 	public class Wealth extends RingBuff {

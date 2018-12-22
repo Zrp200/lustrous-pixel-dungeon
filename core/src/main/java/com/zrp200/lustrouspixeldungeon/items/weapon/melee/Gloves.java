@@ -19,28 +19,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.zrp200.lustrouspixeldungeon.levels.traps;
+package com.zrp200.lustrouspixeldungeon.items.weapon.melee;
 
-import com.zrp200.lustrouspixeldungeon.actors.Actor;
-import com.zrp200.lustrouspixeldungeon.actors.Char;
-import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
-import com.zrp200.lustrouspixeldungeon.actors.buffs.Ooze;
-import com.zrp200.lustrouspixeldungeon.effects.Splash;
 
-public class OozeTrap extends Trap {
+import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
+
+public class Gloves extends MeleeWeapon {
 
 	{
-		color = GREEN;
-		shape = DOTS;
+		image = ItemSpriteSheet.GLOVES;
+
+		tier = 1;
+		DLY = 0.5f; //2x speed
+		
+		bones = false;
 	}
 
 	@Override
-	public void activate() {
-		Char ch = Actor.findChar( pos );
-
-		if (ch != null && !ch.flying){
-			Buff.affect(ch, Ooze.class).set( 20f );
-			Splash.at( pos, 0x000000, 5);
-		}
+	public int max(int lvl) {
+		return  (int)(2.5f*(tier+1)) +  //5 base, down from 10
+				lvl*tier;               //+1 per level, down from +2
 	}
+
 }

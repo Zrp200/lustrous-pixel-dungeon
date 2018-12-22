@@ -21,12 +21,17 @@
 
 package com.zrp200.lustrouspixeldungeon.items.spells;
 
+import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
 import com.zrp200.lustrouspixeldungeon.effects.ItemChange;
 import com.zrp200.lustrouspixeldungeon.items.Generator;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.potions.Potion;
+import com.zrp200.lustrouspixeldungeon.items.potions.brews.Brew;
+import com.zrp200.lustrouspixeldungeon.items.potions.elixirs.Elixir;
+import com.zrp200.lustrouspixeldungeon.items.potions.exotic.ExoticPotion;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.Scroll;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfTransmutation;
+import com.zrp200.lustrouspixeldungeon.items.scrolls.exotic.ExoticScroll;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.exotic.ScrollOfDivination;
 import com.zrp200.lustrouspixeldungeon.items.stones.Runestone;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
@@ -48,8 +53,24 @@ public class Recycle extends InventorySpell {
 		do {
 			if (item instanceof Potion) {
 				result = Generator.random(Generator.Category.POTION);
+				if (item instanceof ExoticPotion){
+					try {
+						result = ExoticPotion.regToExo.get(result.getClass()).newInstance();
+					} catch ( Exception e ){
+						LustrousPixelDungeon.reportException(e);
+						result = item;
+					}
+				}
 			} else if (item instanceof Scroll) {
 				result = Generator.random(Generator.Category.SCROLL);
+				if (item instanceof ExoticScroll){
+					try {
+						result = ExoticScroll.regToExo.get(result.getClass()).newInstance();
+					} catch ( Exception e ){
+						LustrousPixelDungeon.reportException(e);
+						result = item;
+					}
+				}
 			} else if (item instanceof Plant.Seed) {
 				result = Generator.random(Generator.Category.SEED);
 			} else {
@@ -64,7 +85,7 @@ public class Recycle extends InventorySpell {
 	}
 	
 	public static boolean isRecyclable(Item item){
-		return item instanceof Potion ||
+		return (item instanceof Potion && !(item instanceof Elixir || item instanceof Brew)) ||
 				item instanceof Scroll ||
 				item instanceof Plant.Seed ||
 				item instanceof Runestone;

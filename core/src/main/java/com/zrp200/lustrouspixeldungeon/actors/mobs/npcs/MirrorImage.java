@@ -43,7 +43,7 @@ public class MirrorImage extends HeroImage {
 	}
 
 	protected float attackDelay() {
-		float modifier = weapon() != null ? weapon().speedFactor(hero) : RingOfFuror.modifyAttackDelay(0.5f,hero);
+		float modifier = weapon() != null ? weapon().speedFactor(hero) : RingOfFuror.attackDelayMultiplier(hero) * 0.5f;
 		return modifier * super.attackDelay();
 	}
 

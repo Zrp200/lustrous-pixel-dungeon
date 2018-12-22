@@ -24,10 +24,11 @@ package com.zrp200.lustrouspixeldungeon.plants;
 import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
-import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.FlavourBuff;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.Haste;
+import com.zrp200.lustrouspixeldungeon.actors.hero.HeroSubClass;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
 import com.zrp200.lustrouspixeldungeon.ui.BuffIndicator;
@@ -39,10 +40,12 @@ public class Swiftthistle extends Plant {
 	}
 	
 	@Override
-	public void activate() {
-		Char ch = Actor.findChar(pos);
+	public void activate( Char ch ) {
 		if (ch == Dungeon.hero) {
 			Buff.affect(ch, TimeBubble.class).reset();
+			if (Dungeon.hero.subClass == HeroSubClass.WARDEN){
+				Buff.affect(ch, Haste.class, 5f);
+			}
 		}
 	}
 	
@@ -91,8 +94,8 @@ public class Swiftthistle extends Plant {
 				detach();
 			}
 		}
-		
-		@Override
+
+        @Override
 		public String toString() {
 			return Messages.get(this, "name");
 		}

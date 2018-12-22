@@ -24,16 +24,14 @@ package com.zrp200.lustrouspixeldungeon.items.rings;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 
 public class RingOfHaste extends Ring {
-	
-	@Override
-	protected RingBuff buff( ) {
-		return new Haste();
+    static {
+    	buffClass = Haste.class;
+    	bonusScaling = 1.2f;
 	}
 	
 	public static float speedMultiplier( Char target ){
-		return (float)Math.pow(1.2, getBonus(target, Haste.class));
+		return multiplier(target);
 	}
 	
-	public class Haste extends RingBuff {
-	}
+	private class Haste extends RingBuff {	}
 }

@@ -23,6 +23,8 @@ package com.zrp200.lustrouspixeldungeon.items.armor.curses;
 
 import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
+import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
+import com.zrp200.lustrouspixeldungeon.actors.hero.HeroSubClass;
 import com.zrp200.lustrouspixeldungeon.effects.CellEmitter;
 import com.zrp200.lustrouspixeldungeon.effects.particles.LeafParticle;
 import com.zrp200.lustrouspixeldungeon.items.Generator;
@@ -48,7 +50,16 @@ public class Overgrowth extends Armor.Glyph {
 			
 			Plant p = s.couch(defender.pos, null);
 			
-			p.activate();
+			//momentarily revoke warden benefits, otherwise this curse would be incredibly powerful
+			if (defender instanceof Hero && ((Hero) defender).subClass == HeroSubClass.WARDEN){
+				((Hero) defender).subClass = HeroSubClass.NONE;
+				p.activate( defender );
+				((Hero) defender).subClass = HeroSubClass.WARDEN;
+			} else {
+				p.activate( defender );
+			}
+
+
 			CellEmitter.get( defender.pos ).burst( LeafParticle.LEVEL_SPECIFIC, 10 );
 			
 		}

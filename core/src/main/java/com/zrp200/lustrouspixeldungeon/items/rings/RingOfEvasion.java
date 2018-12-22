@@ -24,14 +24,16 @@ package com.zrp200.lustrouspixeldungeon.items.rings;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 
 public class RingOfEvasion extends Ring {
-	
+	static {
+		bonusScaling = 1.15f;
+	}
 	@Override
 	protected RingBuff buff( ) {
 		return new Evasion();
 	}
 	
 	public static float evasionMultiplier( Char target ){
-		return (float) Math.pow( 1.15, getBonus(target, Evasion.class));
+		return (float) Math.pow( bonusScaling, getBonus(target, Evasion.class));
 	}
 
 	public class Evasion extends RingBuff {

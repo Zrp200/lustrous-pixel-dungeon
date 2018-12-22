@@ -23,6 +23,7 @@ package com.zrp200.lustrouspixeldungeon.items.scrolls;
 
 import com.zrp200.lustrouspixeldungeon.Badges;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
+import com.zrp200.lustrouspixeldungeon.Statistics;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.effects.Speck;
 import com.zrp200.lustrouspixeldungeon.effects.particles.ShadowParticle;
@@ -98,6 +99,8 @@ public class ScrollOfUpgrade extends InventoryScroll {
 		}
 		
 		Badges.validateItemLevelAquired( item );
+		Statistics.upgradesUsed++;
+		Badges.validateMageUnlock();
 	}
 	
 	public static void upgrade( Hero hero ) {

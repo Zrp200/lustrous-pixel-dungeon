@@ -22,8 +22,13 @@
 package com.zrp200.lustrouspixeldungeon.plants;
 
 import com.zrp200.lustrouspixeldungeon.Dungeon;
+import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.Blob;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.Fire;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.FireImbue;
+import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
+import com.zrp200.lustrouspixeldungeon.actors.hero.HeroSubClass;
 import com.zrp200.lustrouspixeldungeon.effects.CellEmitter;
 import com.zrp200.lustrouspixeldungeon.effects.particles.FlameParticle;
 import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
@@ -36,7 +41,11 @@ public class Firebloom extends Plant {
 	}
 	
 	@Override
-	public void activate() {
+	public void activate( Char ch ) {
+
+		if (ch instanceof Hero && ((Hero) ch).subClass == HeroSubClass.WARDEN){
+			Buff.affect(ch, FireImbue.class).set(15f);
+		}
 		
 		GameScene.add( Blob.seed( pos, 2, Fire.class ) );
 		

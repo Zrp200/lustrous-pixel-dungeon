@@ -21,11 +21,20 @@
 
 package com.zrp200.lustrouspixeldungeon.items.rings;
 
+import com.zrp200.lustrouspixeldungeon.actors.Char;
+
 public class RingOfEnergy extends Ring {
+	static {
+		bonusScaling = 1.2f;
+	}
 	
 	@Override
 	protected RingBuff buff( ) {
 		return new Energy();
+	}
+	
+	public static float wandChargeMultiplier( Char target ){
+		return (float)Math.pow(bonusScaling, getBonus(target, Energy.class));
 	}
 	
 	public class Energy extends RingBuff {

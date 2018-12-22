@@ -31,24 +31,28 @@ import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.armor.Armor;
 import com.zrp200.lustrouspixeldungeon.items.armor.ClothArmor;
 import com.zrp200.lustrouspixeldungeon.items.artifacts.CloakOfShadows;
-import com.zrp200.lustrouspixeldungeon.items.bags.MagicalHolster;
 import com.zrp200.lustrouspixeldungeon.items.bags.PotionBandolier;
 import com.zrp200.lustrouspixeldungeon.items.bags.ScrollHolder;
 import com.zrp200.lustrouspixeldungeon.items.bags.VelvetPouch;
 import com.zrp200.lustrouspixeldungeon.items.food.Food;
 import com.zrp200.lustrouspixeldungeon.items.food.SmallRation;
 import com.zrp200.lustrouspixeldungeon.items.potions.PotionOfHealing;
+import com.zrp200.lustrouspixeldungeon.items.potions.PotionOfInvisibility;
+import com.zrp200.lustrouspixeldungeon.items.potions.PotionOfLiquidFlame;
 import com.zrp200.lustrouspixeldungeon.items.potions.PotionOfMindVision;
+import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfIdentify;
+import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfLullaby;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfMagicMapping;
+import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfRage;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.zrp200.lustrouspixeldungeon.items.wands.WandOfMagicMissile;
-import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Cord;
+import com.zrp200.lustrouspixeldungeon.items.weapon.SpiritBow;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Dagger;
+import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Gloves;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.MagesStaff;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.WornShortsword;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.ThrowingKnife;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.ThrowingStone;
-import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.darts.Dart;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 
 public enum HeroClass {
@@ -56,7 +60,7 @@ public enum HeroClass {
 	WARRIOR("warrior", HeroSubClass.BERSERKER, HeroSubClass.GLADIATOR ),
 	MAGE( "mage", HeroSubClass.BATTLEMAGE, HeroSubClass.WARLOCK ),
 	ROGUE( "rogue", HeroSubClass.ASSASSIN, HeroSubClass.FREERUNNER ),
-	HUNTRESS( "huntress", HeroSubClass.FREERUNNER, HeroSubClass.WARLOCK);
+	HUNTRESS( "huntress", HeroSubClass.SNIPER, HeroSubClass.WARDEN );
 
 	private String title;
 	private HeroSubClass[] subClasses;
@@ -102,6 +106,9 @@ public enum HeroClass {
 		if (Dungeon.isChallenged(Challenges.NO_FOOD)){
 			new SmallRation().collect();
 		}
+
+		new ScrollOfIdentify().identify();
+
 	}
 
 	public Badges.Badge masteryBadge() {
@@ -130,7 +137,9 @@ public enum HeroClass {
 		
 		new PotionBandolier().collect();
 		Dungeon.LimitedDrops.POTION_BANDOLIER.drop();
+
 		new PotionOfHealing().identify();
+		new ScrollOfRage().identify();
 	}
 
 	private static void initMage( Hero hero ) {
@@ -145,7 +154,9 @@ public enum HeroClass {
 
 		new ScrollHolder().collect();
 		Dungeon.LimitedDrops.SCROLL_HOLDER.drop();
+
 		new ScrollOfUpgrade().identify();
+		new PotionOfLiquidFlame().identify();
 	}
 
 	private static void initRogue( Hero hero ) {
@@ -163,19 +174,24 @@ public enum HeroClass {
 
 		new VelvetPouch().collect();
 		Dungeon.LimitedDrops.VELVET_POUCH.drop();
+
 		new ScrollOfMagicMapping().identify();
+		new PotionOfInvisibility().identify();
 	}
 
 	private static void initHuntress( Hero hero ) {
 
-		(hero.belongings.weapon = new Cord()).identify();
-		Dart dart = new Dart();
-		dart.quantity(2).collect();
+		(hero.belongings.weapon = new Gloves()).identify();
+		SpiritBow bow = new SpiritBow();
+		bow.identify().collect();
 
-		Dungeon.quickslot.setSlot(0, dart);
-		new MagicalHolster().collect();
-		Dungeon.LimitedDrops.MAGICAL_HOLSTER.drop();
+		Dungeon.quickslot.setSlot(0, bow);
+
+		new VelvetPouch().collect();
+		Dungeon.LimitedDrops.VELVET_POUCH.drop();
+
 		new PotionOfMindVision().identify();
+		new ScrollOfLullaby().identify();
 	}
 	
 	public String title() {
@@ -187,19 +203,16 @@ public enum HeroClass {
 	}
 	
 	public String spritesheet() {
-		
 		switch (this) {
-		case WARRIOR:
-			return Assets.WARRIOR;
-		case MAGE:
-			return Assets.MAGE;
-		case ROGUE:
-			return Assets.ROGUE;
-		case HUNTRESS:
-			return Assets.HUNTRESS;
+			case WARRIOR: default:
+				return Assets.WARRIOR;
+			case MAGE:
+				return Assets.MAGE;
+			case ROGUE:
+				return Assets.ROGUE;
+			case HUNTRESS:
+				return Assets.HUNTRESS;
 		}
-		
-		return null;
 	}
 	
 	public String[] perks() {
