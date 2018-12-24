@@ -142,11 +142,11 @@ public class WndJournal extends WndTabbed {
 		protected ColorBlock line;
 		protected Image icon;
 		
-		public ListItem( Image icon, String text ) {
+		ListItem( Image icon, String text ) {
 			this(icon, text, -1);
 		}
 		
-		public ListItem( Image icon, String text, int d ) {
+		ListItem( Image icon, String text, int d ) {
 			super();
 			
 			this.icon.copy(icon);
@@ -261,10 +261,10 @@ public class WndJournal extends WndTabbed {
 		
 		private static class GuideItem extends ListItem {
 			
-			private boolean found = false;
+			private boolean found;
 			private String page;
 			
-			public GuideItem( String page ){
+			GuideItem( String page ){
 				super( new ItemSprite( ItemSpriteSheet.GUIDE_PAGE, null),
 						Messages.titleCase(Document.ADVENTURERS_GUIDE.pageTitle(page)), -1);
 				
@@ -676,7 +676,7 @@ public class WndJournal extends WndTabbed {
 			private Item item;
 			private boolean seen;
 			
-			public CatalogItem(Item item, boolean IDed, boolean seen ) {
+			CatalogItem(Item item, boolean IDed, boolean seen ) {
 				super( new ItemSprite(item), Messages.titleCase(item.trueName()));
 				
 				this.item = item;

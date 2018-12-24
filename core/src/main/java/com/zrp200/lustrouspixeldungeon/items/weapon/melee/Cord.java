@@ -29,4 +29,9 @@ public class Cord extends Whip {
         tier = 1;
         bones = false;
     }
+
+    @Override
+    public int maxScale() {
+        return super.maxScale()+1; // round up
+    }
 }

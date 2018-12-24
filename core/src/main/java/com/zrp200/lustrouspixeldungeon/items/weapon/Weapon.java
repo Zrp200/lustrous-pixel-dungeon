@@ -102,13 +102,11 @@ abstract public class Weapon extends KindOfWeapon {
 
 	@Override
 	public Item identify() {
-		if( !isVisiblyEnchanted() )
-			revealEnchant();
 		enchantKnown = true;
 		return super.identify();
 	}
 
-	public void revealEnchant() {
+	private void revealEnchant() {
 		enchantKnown = true;
 		ItemChange.show(Dungeon.hero,this);
 	}
@@ -162,9 +160,17 @@ abstract public class Weapon extends KindOfWeapon {
 		//pre-0.6.5 saves
 		if (bundle.contains( "imbue" )){
 			String imbue = bundle.getString( "imbue" );
-			if (imbue.equals( "LIGHT" ))        augment = Augment.SPEED;
-			else if (imbue.equals( "HEAVY" ))   augment = Augment.DAMAGE;
-			else                                augment = Augment.NONE;
+			switch (imbue) {
+				case "LIGHT":
+					augment = Augment.SPEED;
+					break;
+				case "HEAVY":
+					augment = Augment.DAMAGE;
+					break;
+				default:
+					augment = Augment.NONE;
+					break;
+			}
 		} else {
 			augment = bundle.getEnum(AUGMENT, Augment.class);
 		}
@@ -218,6 +224,7 @@ abstract public class Weapon extends KindOfWeapon {
 		return upgrade(false);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public Item upgrade(boolean enchant ) {
 		if ( enchant && ( enchantment == null || enchantment.curse() ) ){
 			enchant( Enchantment.random() );
@@ -235,6 +242,7 @@ abstract public class Weapon extends KindOfWeapon {
 		return isVisiblyEnchanted() ? enchantment.name( super.name() ) : super.name();
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public Item random() {
 		//+0: 75% (3/4)
@@ -253,11 +261,12 @@ abstract public class Weapon extends KindOfWeapon {
 		//15% chance to be enchanted (+50%)
 		float effectRoll = Random.Float();
 		if (effectRoll < 0.3f) {
-			enchant(Enchantment.randomCurse());
+			enchant( Enchantment.randomCurse() );
 			cursed = true;
 		} else if (effectRoll >= 0.85f){
-			enchant(false);
+			enchant( false );
 		}
+		enchantKnown = false;
 
 		return this;
 	}
@@ -296,7 +305,7 @@ abstract public class Weapon extends KindOfWeapon {
 	public boolean hasCurseEnchant(){
 		return enchantment != null && enchantment.curse();
 	}
-	public boolean isVisiblyEnchanted() { return enchantment != null && enchantKnown; }
+	protected boolean isVisiblyEnchanted() { return enchantment != null && enchantKnown; }
 
 	@Override
 	public ItemSprite.Glowing glowing() {
@@ -375,7 +384,7 @@ abstract public class Weapon extends KindOfWeapon {
 			}
 		}
 		
-		@SuppressWarnings("unchecked")
+		@SuppressWarnings({"unchecked", "ConstantConditions"})
 		public static Enchantment randomCommon( Class<? extends Enchantment> ... toIgnore ) {
 			try {
 				ArrayList<Class<?>> enchants = new ArrayList<>(Arrays.asList(common));
@@ -408,7 +417,7 @@ abstract public class Weapon extends KindOfWeapon {
 		}
 		
 		@SuppressWarnings("unchecked")
-		public static Enchantment randomRare( Class<? extends Enchantment> ... toIgnore ) {
+		static Enchantment randomRare(Class<? extends Enchantment>... toIgnore) {
 			try {
 				ArrayList<Class<?>> enchants = new ArrayList<>(Arrays.asList(rare));
 				enchants.removeAll(Arrays.asList(toIgnore));

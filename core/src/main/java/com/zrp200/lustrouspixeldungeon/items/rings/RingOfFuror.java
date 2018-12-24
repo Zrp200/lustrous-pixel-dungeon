@@ -29,7 +29,12 @@ public class RingOfFuror extends Ring {
 		buffClass = Furor.class;
 		bonusScaling = 1.105f;
 	}
-	
+
+	@Override
+	protected RingBuff buff() {
+		return new Furor();
+	}
+
 	public static float attackDelayMultiplier(Char target ){
 		return 1f / multiplier(target);
 	}

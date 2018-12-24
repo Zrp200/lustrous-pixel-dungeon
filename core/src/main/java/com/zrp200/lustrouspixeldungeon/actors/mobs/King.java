@@ -237,7 +237,7 @@ public class King extends Mob {
 		resistances.add( Amok.class );
 		resistances.add( Blindness.class );
 		resistances.add( Paralysis.class );
-		resistances.add( Undead.class );
+		resistances.add( Undead.class ); // yes he resists them.
 	}
 	
 	{
@@ -289,7 +289,7 @@ public class King extends Mob {
 		public int attackProc( Char enemy, int damage ) {
 			damage = super.attackProc( enemy, damage );
 			if (Random.Int( MAX_ARMY_SIZE ) == 0) {
-				Buff.prolong( enemy, Slow.class, 1);
+				Buff.affect( enemy, Slow.class, 1);
 			}
 			
 			return damage;

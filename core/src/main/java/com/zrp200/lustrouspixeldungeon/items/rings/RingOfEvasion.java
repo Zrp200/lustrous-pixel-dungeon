@@ -26,6 +26,7 @@ import com.zrp200.lustrouspixeldungeon.actors.Char;
 public class RingOfEvasion extends Ring {
 	static {
 		bonusScaling = 1.15f;
+		buffClass = Evasion.class;
 	}
 	@Override
 	protected RingBuff buff( ) {
@@ -36,6 +37,6 @@ public class RingOfEvasion extends Ring {
 		return (float) Math.pow( bonusScaling, getBonus(target, Evasion.class));
 	}
 
-	public class Evasion extends RingBuff {
+	private class Evasion extends RingBuff {
 	}
 }

@@ -51,6 +51,11 @@ public class RingOfElements extends Ring {
 		buffClass = Resistance.class;
 	}
 
+	@Override
+	protected RingBuff buff() {
+		return new Resistance();
+	}
+
 	@SuppressWarnings("unchecked")
 	private static final HashSet<Class> RESISTS = new HashSet() {
 		{
@@ -65,14 +70,6 @@ public class RingOfElements extends Ring {
 			add(Shaman.class);	add(Warlock.class);	add(Eye.class);	add(Yog.BurningFist.class);
 		}
 	};
-
-	public String statsInfo() {
-		if (isIdentified()){
-			return Messages.get(this, "stats", new DecimalFormat("#.##").format(100f * (1f - Math.pow(0.875f, soloBonus()))));
-		} else {
-			return Messages.get(this, "typical_stats", new DecimalFormat("#.##").format(12.5f));
-		}
-	}
 	
 	public static float resist( Char target, Class effect ){
 		if (getBonus(target) == 0) return 1f;

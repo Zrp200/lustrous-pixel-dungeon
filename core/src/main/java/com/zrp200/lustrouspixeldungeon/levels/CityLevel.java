@@ -32,6 +32,7 @@ import com.zrp200.lustrouspixeldungeon.actors.mobs.npcs.Imp;
 import com.zrp200.lustrouspixeldungeon.levels.painters.CityPainter;
 import com.zrp200.lustrouspixeldungeon.levels.painters.Painter;
 import com.zrp200.lustrouspixeldungeon.levels.traps.BlazingTrap;
+import com.zrp200.lustrouspixeldungeon.levels.traps.BlizzardTrap;
 import com.zrp200.lustrouspixeldungeon.levels.traps.CorrosionTrap;
 import com.zrp200.lustrouspixeldungeon.levels.traps.CursingTrap;
 import com.zrp200.lustrouspixeldungeon.levels.traps.DisarmingTrap;
@@ -40,6 +41,7 @@ import com.zrp200.lustrouspixeldungeon.levels.traps.ExplosiveTrap;
 import com.zrp200.lustrouspixeldungeon.levels.traps.FlashingTrap;
 import com.zrp200.lustrouspixeldungeon.levels.traps.FrostTrap;
 import com.zrp200.lustrouspixeldungeon.levels.traps.GuardianTrap;
+import com.zrp200.lustrouspixeldungeon.levels.traps.InfernalTrap;
 import com.zrp200.lustrouspixeldungeon.levels.traps.PitfallTrap;
 import com.zrp200.lustrouspixeldungeon.levels.traps.RockfallTrap;
 import com.zrp200.lustrouspixeldungeon.levels.traps.StormTrap;
@@ -89,16 +91,17 @@ public class CityLevel extends RegularLevel {
 	@Override
 	protected Class<?>[] trapClasses() {
 		return new Class[]{ FrostTrap.class, StormTrap.class, CorrosionTrap.class, BlazingTrap.class, DisintegrationTrap.class,
-				ExplosiveTrap.class, RockfallTrap.class, FlashingTrap.class, GuardianTrap.class, WeakeningTrap.class,
-				SummoningTrap.class, WarpingTrap.class, CursingTrap.class,
+				ExplosiveTrap.class, InfernalTrap.class, FlashingTrap.class, BlizzardTrap.class, WeakeningTrap.class,
+				SummoningTrap.class, WarpingTrap.class, CursingTrap.class, RockfallTrap.class,GuardianTrap.class,
 				PitfallTrap.class, DisarmingTrap.class };
 	}
 
 	@Override
 	protected float[] trapChances() {
-		return new float[]{ 8, 8, 8, 8, 8,
+		return new float[]{
+				8, 8, 8, 8, 8,
 				4, 4, 4, 4, 4,
-				2, 2, 2,
+				2, 2, 2, 2, 2,
 				1, 1 };
 	}
 	

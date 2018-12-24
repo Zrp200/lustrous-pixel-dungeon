@@ -26,6 +26,7 @@ import com.zrp200.lustrouspixeldungeon.actors.Char;
 public class RingOfEnergy extends Ring {
 	static {
 		bonusScaling = 1.2f;
+		buffClass = Energy.class;
 	}
 	
 	@Override

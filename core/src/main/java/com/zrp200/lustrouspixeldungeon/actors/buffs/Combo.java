@@ -232,6 +232,10 @@ public class Combo extends Buff implements ActionIndicator.Action {
 					dmg = Math.round(dmg*2.5f);
 					break;
 				case FURY:
+					for (int i = 1; i < 2; i++) {
+						dmgReroll = target.damageRoll();
+						if (dmgReroll > dmg) dmg = dmgReroll;
+					}
 					dmg = Math.round(dmg*0.6f);
 					break;
 			}

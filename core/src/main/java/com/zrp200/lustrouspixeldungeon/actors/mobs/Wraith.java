@@ -106,8 +106,8 @@ public class Wraith extends Mob {
 			w.adjustStats( Dungeon.depth );
 			w.pos = pos;
 			w.state = w.HUNTING;
-			w.chooseEnemy();
-			w.enemySeen = w.enemyInFOV(); // sync
+			w.enemy = Dungeon.hero; // safe bet.
+			w.enemySeen = true;
 			GameScene.add( w, SPAWN_DELAY );
 			
 			w.sprite.alpha( 0 );

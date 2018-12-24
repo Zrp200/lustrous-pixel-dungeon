@@ -49,7 +49,7 @@ public class TeleportationTrap extends Trap {
 		Sample.INSTANCE.play( Assets.SND_TELEPORT );
 
 		Char ch = Actor.findChar( pos);
-		if (ch != null && !ch.flying) {
+		if (ch != null) {
 			if (ch instanceof Hero) {
 				ScrollOfTeleportation.teleportHero((Hero) ch);
 			} else {

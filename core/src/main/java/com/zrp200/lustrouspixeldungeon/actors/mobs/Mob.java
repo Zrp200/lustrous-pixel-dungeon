@@ -188,7 +188,7 @@ public abstract class Mob extends Char {
 	}
 
 	public boolean enemyInFOV() {
-		return enemy != null && enemy.isAlive() && fieldOfView[enemy.pos] && enemy.invisible <= 0;
+		return enemy != null && enemy.isAlive() && (fieldOfView == null || fieldOfView[enemy.pos]) && enemy.invisible <= 0;
 	}
 	
 	protected Char chooseEnemy() {
@@ -243,6 +243,7 @@ public abstract class Mob extends Char {
 
 	protected HashSet<Char> findEnemies() {
 		HashSet<Char> enemies = new HashSet<>();
+		if(fieldOfView == null) return enemies;
 
 		//if the mob is amoked...
 		if ( buff(Amok.class) != null) {
@@ -314,9 +315,8 @@ public abstract class Mob extends Char {
 	public void add( Buff buff ) {
 		super.add( buff );
 		if(buff instanceof Corruption) state = HUNTING;
-		if ( buff(MagicalSleep.class) == null )
-			if (buff instanceof Amok || buff instanceof Corruption) state = HUNTING;
-			else if (buff instanceof Terror) state = FLEEING;
+		if (buff instanceof Amok || buff instanceof Corruption) state = HUNTING;
+		else if (buff instanceof Terror) state = FLEEING;
 		if (buff instanceof Sleep) {
 			state = SLEEPING;
 			postpone( Sleep.SWS );
@@ -517,7 +517,7 @@ public abstract class Mob extends Char {
 			hitWithRanged = true;
 		}
 
-		if ((!enemySeen || enemy.invisible > 0)
+		if ((!enemySeen() || enemy.invisible > 0)
 				&& enemy == Dungeon.hero && Dungeon.hero.canSurpriseAttack()) {
 			Statistics.sneakAttacks++;
 			Badges.validateRogueUnlock();

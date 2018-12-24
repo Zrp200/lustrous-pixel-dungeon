@@ -21,39 +21,21 @@
 
 package com.zrp200.lustrouspixeldungeon.levels.traps;
 
-import com.watabou.noosa.audio.Sample;
-import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
-import com.zrp200.lustrouspixeldungeon.actors.mobs.Mob;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.Statue;
-import com.zrp200.lustrouspixeldungeon.effects.CellEmitter;
-import com.zrp200.lustrouspixeldungeon.effects.Speck;
-import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
 import com.zrp200.lustrouspixeldungeon.sprites.StatueSprite;
-import com.zrp200.lustrouspixeldungeon.utils.GLog;
 
-public class GuardianTrap extends Trap {
+public class GuardianTrap extends AlarmTrap {
 
 	{
-		color = RED;
 		shape = STARS;
 	}
 
 	@Override
 	public void activate() {
 
-		for (Mob mob : Dungeon.level.mobs) {
-			mob.beckon( pos );
-		}
-
-		if (Dungeon.level.heroFOV[pos]) {
-			GLog.w( Messages.get(this, "alarm") );
-			CellEmitter.center(pos).start( Speck.factory(Speck.SCREAM), 0.3f, 3 );
-		}
-
-		Sample.INSTANCE.play( Assets.SND_ALERT );
-
+		super.activate();
 		for (int i = 0; i < (Dungeon.depth - 5)/5; i++){
 			Guardian guardian = new Guardian();
 			guardian.state = guardian.WANDERING;
@@ -73,7 +55,7 @@ public class GuardianTrap extends Trap {
 			state = WANDERING;
 		}
 
-		public Guardian(){
+		Guardian(){
 			super();
 
 			weapon.enchant(null);

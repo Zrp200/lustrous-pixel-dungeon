@@ -31,12 +31,14 @@ import com.watabou.noosa.TouchArea;
 import com.watabou.noosa.ui.Component;
 import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Assets;
+import com.zrp200.lustrouspixeldungeon.Badges;
 import com.zrp200.lustrouspixeldungeon.Chrome;
 import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
 import com.zrp200.lustrouspixeldungeon.actors.hero.HeroClass;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.Shielded;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.Succubus;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.Warlock;
+import com.zrp200.lustrouspixeldungeon.effects.BadgeBanner;
 import com.zrp200.lustrouspixeldungeon.items.Ankh;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.armor.LeatherArmor;
@@ -49,17 +51,25 @@ import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.HolyProvidence;
 import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.Stone;
 import com.zrp200.lustrouspixeldungeon.items.bags.MagicalHolster;
 import com.zrp200.lustrouspixeldungeon.items.bombs.TeleportationBomb;
+import com.zrp200.lustrouspixeldungeon.items.rings.RingOfEnergy;
+import com.zrp200.lustrouspixeldungeon.items.rings.RingOfForce;
+import com.zrp200.lustrouspixeldungeon.items.rings.RingOfFuror;
 import com.zrp200.lustrouspixeldungeon.items.rings.RingOfWealth;
 import com.zrp200.lustrouspixeldungeon.items.wands.WandOfCorruption;
+import com.zrp200.lustrouspixeldungeon.items.wands.WandOfRegrowth;
+import com.zrp200.lustrouspixeldungeon.items.weapon.SpiritBow;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Chaotic;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Elastic;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Chilling;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Eldritch;
+import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Gauntlet;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Gloves;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Longsword;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Quarterstaff;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Shortsword;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Sword;
+import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Bolas;
+import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Shuriken;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.sprites.CharSprite;
 import com.zrp200.lustrouspixeldungeon.sprites.GnollTricksterSprite;
@@ -115,13 +125,14 @@ public class ChangesScene extends PixelScene {
 	}
 
 	public enum Milestone {
-		SHPD070 ("Shattered v0.7.0",	10,18,2018),
-		SHPD071 ("Shattered v0.7.1",	12,18,2018),
-
-		LUST000 ("Lustrous v0.0.0",		12, 1,2018),
-		LUST000a("Lustrous v0.0.0a",  	12, 4,2018),
+		LUST001 ("Lustrous v0.0.1",		12,20,2018),
 		LUST000b("Lustrous v0.0.0b",	12, 6,2018),
-		LUST001 ("Lustrous v0.0.1",		12,20,2018);
+		LUST000a("Lustrous v0.0.0a",  	12, 4,2018),
+		LUST000 ("Lustrous v0.0.0",		12, 1,2018),
+
+		SHPD071 ("Shattered v0.7.1",	12,18,2018),
+		SHPD070 ("Shattered v0.7.0",	10,18,2018);
+
 
 		private String name;
 		private Date releaseDate;
@@ -135,30 +146,46 @@ public class ChangesScene extends PixelScene {
 		}
 	}
 
-	private static ChangeButton addDeveloperCommentary(Milestone release, String commentary,Milestone...eventsToCompare) {
+	private static ChangeButton addDeveloperCommentary(Image devIcon, Milestone release, String commentary,Milestone...eventsToCompare) {
 		StringBuilder message = new StringBuilder();
 		DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
 
 		if(release != null) { // compare release date to milestones if possible
-			message.append( "_-_ Released on " ).append(  dateFormat.format( release.releaseDate )  ).append("\n");
-			if ( eventsToCompare != null ) for ( Milestone event : eventsToCompare )
-				message.append("_-_ ").append(
-						(release.releaseDate.getTime() - event.releaseDate.getTime()) / 86400000 // convert milliseconds to years
-				).append(" days after ").append(event.name).append("\n");
+
+			message.append( "_-_ Released on " )
+					.append(  dateFormat.format( release.releaseDate )  )
+					.append("\n");
+
+			if ( eventsToCompare != null ) for ( Milestone event : eventsToCompare ) {
+
+				message.append("_-_ ");
+
+				long daysSinceEvent = (release.releaseDate.getTime() - event.releaseDate.getTime()) / 86400000; // convert milliseconds to years
+
+				message.append(daysSinceEvent)
+						.append(" day")
+						.append(daysSinceEvent != 1 ? "s" : "")
+						.append(" after ")
+						.append(event.name)
+						.append("\n");
+			}
 			message.append("\n");
 		}
 		message.append(commentary == null ? "Dev commentary will be added here in the future." : commentary); // add commentary
-		return new ChangeButton( new Image(Assets.ZRP200),"Developer Commentary", message.toString() );
+		return new ChangeButton( devIcon,"Developer Commentary", message.toString() );
+	}
+	private static ChangeButton addDeveloperCommentary(Milestone release, String commentary,Milestone...eventsToCompare) {
+		return addDeveloperCommentary(new Image(Assets.ZRP200),release,commentary,eventsToCompare);
 	}
 
-	private final ArrayList<ChangeInfo> infos = new ArrayList<>();
+	private static final ArrayList<ChangeInfo> infos = new ArrayList<>();
 
 	@Override
 	public void create() {
+		infos.clear();
 		super.create();
 
-		int w = Camera.main.width,
-            h = Camera.main.height;
+		int w = Camera.main.width, 	h = Camera.main.height;
 
 		RenderedText title = PixelScene.renderText(Messages.get(this, "title"), 9);
 		title.hardlight(Window.TITLE_COLOR);
@@ -190,8 +217,135 @@ public class ChangesScene extends PixelScene {
 
 		};
 		add(list);
+
+        addSection("v0.0.2-INDEV",true);
+        ChangeInfo.newContent(
+        	addDeveloperCommentary(null,null,null),	//really just a placeholder
+			new ChangeButton(
+					new Image(Assets.TERRAIN_FEATURES, 16, 0, 16, 16),
+					"Traps",
+					"Added two new traps: the Infernal and Blizzard traps! They appear starting in caves."
+			)
+		);
+        ChangeInfo.changes(
+                new ChangeButton(new SpiritBow(),
+                        "_-_ Now scales up to +10, gaining a visible upgrade every three levels",
+                        "_-_ Actual damage scaling unchanged\n",
+                        "This should make its upgrades tie into its actual damage scaling more obviously " +
+                                "as well as let it scale up to +10 like other non-upgradable items\n",
+                        "_-_ Sharpshooting benefit halved (now +0.5/+1) to tie into this mechanic."
+                ),
+                new ChangeButton(new ShamanSprite.MM(),"Magical Attacks",
+                        "_-_ Magical attacks from enemies are now randomly distributed, rather than normally"
+                ),
+                ChangeButton.bugfix(
+                        "Crash bugs with wraiths"
+                )
+        );
+		addSection("Implemented Shattered v0.7.1",true,Window.TITLE_COLOR);
+		ChangeInfo.newContent(
+				addDeveloperCommentary(
+						Icons.get(Icons.SHPX),
+						Milestone.SHPD071,
+						"This update overhauls the huntress! She has a new signature item (a bow!), " +
+								"as well as significantly reworked subclass abilities.\n\n" +
+								"Thrown weapons can now be upgraded, and there are a variety of other smaller tweaks and " +
+								"improvements as well.",
+						Milestone.SHPD070),
+				new ChangeButton( new Image(Assets.HUNTRESS, 0, 15, 12, 15), "Huntress Reworked!",
+				"The Huntress has received a class overhaul!\n\n" +
+						"Her boomerang has been replaced with a bow. The bow has infinite uses, like the boomerang, but cannot be upgraded directly, instead it will grow stronger as the huntress levels up.\n\n" +
+						"Her knuckledusters have been replaced with studded gloves, and lose their damage blocking.\n\n" +
+						"Those with runs in progress will have their boomerang turn into a bow, and will regain most of the scrolls of upgrade spent on the boomerang.\n\n" +
+						"The huntress can now also move through grass without trampling it (she 'furrows' it instead)."),
+				new ChangeButton( new Image(Assets.HUNTRESS, 0, 90, 12, 15), "Huntress Subclasses Reworked!",
+				"Huntress subclasses have also received overhauls:\n\n" +
+						"The Sniper can now see 50% further, penetrates armor with ranged attacks, and can perform a special attack with her bow.\n\n" +
+						"The Warden can now see through grass and gains a variety of bonuses to plant interaction."),
+				new ChangeButton( new ItemSprite(ItemSpriteSheet.TRIDENT, null), "Thrown Weapon Improvements",
+				"Thrown weapons now show their tier, ranging from 1-5 like with melee weapons.\n\n" +
+						"All Heroes now benefit from excess strength on thrown weapons.\n\n" +
+						"Thrown weapons now get +50% accuracy when used at range.\n\n" +
+						"Thrown weapons can now be upgraded!\n" +
+						"_-_ Upgrades work on a single thrown weapon\n" +
+						"_-_ Increases damage based on tier\n" +
+						"_-_ Gives 3x durability each upgrade\n" +
+						"_-_ Weapons with 100+ uses now last forever\n" +
+						"_-_ Darts are not upgradeable, but tipped darts can get extra durability\n\n" +
+						"Ring of sharpshooting has been slightly adjusted to tie into this new upgrade system.")
+		);
+
+		ChangeInfo.changes(
+				new ChangeButton(BadgeBanner.image(Badges.Badge.UNLOCK_MAGE.image), "Hero Class changes",
+					"All heroes except the warrior now need to be unlocked via new badges. The requirements are quite simple, with the goal of giving new players some early goals. Players who have already unlocked characters will not need to re-unlock them.\n\n" +
+							"To help accelerate item identification for alchemy, all heroes now start with 3 identified items: The scroll of identify, a potion, and another scroll."
+				),
+				new ChangeButton(Icons.get(Icons.PREFS), Messages.get(this, "misc"),
+				"Added a partial turn indicator to the game interface, which occupies the same spot as the busy icon. This should make it much easier to plan actions that take more or less than 1 turn.\n\n" +
+						"Rings now have better descriptions for their stats! All rings now show exactly how they affect you in a similar way to how other equipment gives direct stats.\n\n" +
+						"Precise descriptions have been added for weapons which block damage.\n\n" +
+						"Added item stats to the item catalog.\n\n" +
+						"Dropping an item now takes 1 turn, up from 0.5 turns."),
+				ChangeButton.bugfix(
+						"various minor visual bugs",
+						"odd behaviour when transmuting certain items",
+						"keys rarely spawning without chests",
+						"fireblast rarely damaging things it shouldn't",
+						"dew drops from dew catchers landing on stairs",
+						"ankh revive window rarely closing when it shouldn't",
+						"flock and summoning traps creating harsh multi-sound effects",
+						"thrown weapons being lost when used on sheep",
+						"various specific errors when actions took more/less than 1 turn",
+						"various freeze bugs caused by Tengu",
+						"various crash bugs"
+				)
+		);
+
+		ChangeInfo.buffs(
+				new ChangeButton( new ItemSprite(ItemSpriteSheet.RING_TOPAZ, null), new RingOfEnergy().trueName(),
+						"The ring of energy has been simplified/buffed:\n\n" +
+						"_-_ Now grants a flat +20% charge speed per level, instead of +1 effective missing charge per level"
+				),
+				new ChangeButton( new Bolas(),
+				"Bolas have received a damage buff:\n\n" +
+						"_-_ Base damage increased to 6-9 from 4-6"),
+				new ChangeButton( new WandOfRegrowth(),
+				"Thanks to the new furrowed grass system, the wand of regrowth can receive a slight buff:\n\n" +
+						"_-_ When the wand of regrowth begins to run out of energy due to excessive use, it will now spawn furrowed grass, instead of short grass."
+				)
+		);
+
+		ChangeInfo.nerfs(
+				new ChangeButton( new ItemSprite(ItemSpriteSheet.RING_RUBY, null), new RingOfFuror().trueName(),
+				"Ring of furor has been nerfed/simplified:\n\n" +
+						"_-_ Now provides a flat +10.5% attack speed per level, instead of speed which scales based on how slow the weapon is.\n\n" +
+						"This means the ring is effectively nerfed for slow weapons and regular weapons, and slightly buffed for fast weapons.\n\n" +
+						"A +6 ring grants almost exactly doubled attack speed."
+				),
+				new ChangeButton( new ItemSprite(ItemSpriteSheet.RING_GARNET, null), new RingOfForce().trueName(),
+				"The ring of force's equipped weapon bonus was always meant as a small boost so it wasn't useless if the player already had a better weapon. It wasn't intended to be used to both replace melee and then boost thrown weapons.\n" +
+						"_-_ The ring of force no longer gives bonus damage to thrown weapons."),
+				new ChangeButton( new Gauntlet(),
+				"As furor now works much better with fast weapons, I've taken the oppourtunity to very slightly nerf sai and gauntlets\n\n" +
+						"_-_ Sai blocking down to 0-2 from 0-3\n" +
+						"_-_ Gauntlet blocking down to 0-4 from 0-5"),
+				new ChangeButton( new Shuriken(),
+				"Shuriken have been adjusted due to the new upgrade system:\n\n" +
+						"_-_ Base damage increased to 4-8 from 4-6\n" +
+						"_-_ Durability reduced to 5 from 10"
+				)
+		);
+		ChangeInfo.generate("Not Implemented",CharSprite.NEGATIVE,
+				new ChangeButton(Icons.get(Icons.PREFS), "Misc",
+						"_-_ New blocking weapon descriptions"
+				),
+				ChangeButton.bugfix(
+						"Warping and Teleportation traps not working against flying enemies"
+				)
+		);
+		// v0.0.1
 		addSection("v0.0.1",true);
-		addSection("New Content",false).addButtons(
+		ChangeInfo.newContent(
 				addDeveloperCommentary(
 						Milestone.LUST001,
 						"This is the culmination of my tinkering prior to my implementation " +
@@ -242,7 +396,7 @@ public class ChangesScene extends PixelScene {
 						"_-_ Viscosity (you or target)"
 				)
 		);
-		addSection("Buffs",false,CharSprite.POSITIVE).addButtons(
+		ChangeInfo.buffs(
 				new ChangeButton(
 						new KingSprite(),
 						"Boss Changes",
@@ -301,7 +455,7 @@ public class ChangesScene extends PixelScene {
 						"Metabolism healing boosted by 12.5% (4 -> 4.5)"
 				)
 		);
-		addSection("Changes",false,CharSprite.WARNING).addButtons(
+		ChangeInfo.changes(
 				new ChangeButton(
 						new ItemSprite(Random.Int(2) == 0 ? new MailArmor().inscribe() : new Sword().enchant()),
 						"Enchantment/Glyph Identification",
@@ -342,7 +496,7 @@ public class ChangesScene extends PixelScene {
 								"_-_ Magic from shamans now deal damage distributed randomly rather than normally",
 								"_-_ Enemy spawn logic adjusted slightly."
 				),
-				addBugfixes(
+				ChangeButton.bugfix(
 						"Berserker rage weakening his attacks",
 						"Unblessed ankhs giving a 'Groundhog Day'-like effect",
 						"Velvet Pouch unable to spawn for huntress",
@@ -418,7 +572,7 @@ public class ChangesScene extends PixelScene {
 						"Changelog typos"
                 )
         );
-		addSection("New Content", false).addButtons(
+		ChangeInfo.newContent(
 				addDeveloperCommentary(
 					Milestone.LUST000,
 					"I'm honestly just happy to have figured this out. As of this moment, " +
@@ -637,12 +791,10 @@ public class ChangesScene extends PixelScene {
 		Component content = list.content();
 		content.clear();
 
-		float posY = 0, nextPosY = 0;
-		boolean second = false;
+		float posY = 0, nextPosY = 0;	boolean second = false;
 		for (ChangeInfo info : infos){
 			if (info.major) {
-				posY = nextPosY;
-				second = false;
+				posY = nextPosY; second = false;
 				info.setRect(0, posY, panel.innerWidth(), 0);
 				content.add(info);
 				posY = nextPosY = info.bottom();
@@ -684,7 +836,40 @@ public class ChangesScene extends PixelScene {
 		LustrousPixelDungeon.switchNoFade(TitleScene.class);
 	}
 
+	@SuppressWarnings("SpellCheckingInspection")
 	private static class ChangeInfo extends Component {
+
+		enum Template {
+			NEW_CONTENT("New Content",Window.TITLE_COLOR),
+			BUFFS("Buffs",CharSprite.POSITIVE),
+			CHANGES("Changes",CharSprite.WARNING),
+			NERFS("Nerfs",CharSprite.NEGATIVE),
+			BLANK("",Window.TITLE_COLOR);
+
+			String title;
+			int color;
+
+			Template(String title, int color) {
+				this.title = title;
+				this.color = color;
+			}
+		}
+
+		static void generate(String title, int color, ChangeButton... buttons ) {
+			ChangeInfo info = new ChangeInfo(title,false,null);
+			info.hardlight(color);
+			infos.add(info);
+			info.addButtons(buttons);
+		}
+		static void generate(Template template, ChangeButton... buttons) {
+			generate(template.title, template.color, buttons);
+		}
+
+		static void newContent(ChangeButton... buttons) { generate(Template.NEW_CONTENT,buttons); }
+		static void buffs(ChangeButton... buttons)     	{ generate(Template.BUFFS,buttons); }
+		static void changes(ChangeButton... buttons)   	{ generate(Template.CHANGES,buttons); }
+		static void nerfs(ChangeButton... buttons)     	{ generate(Template.NERFS,buttons); }
+
 
 		protected ColorBlock line;
 
@@ -809,6 +994,22 @@ public class ChangesScene extends PixelScene {
 
 	//not actually a button, but functions as one.
 	private static class ChangeButton extends Component {
+
+        private static ChangeButton bugfix(String...fixes) { // it's flawed but it's still better than nothing
+            StringBuilder description = new StringBuilder();
+            boolean first = true;
+            for(String fix : fixes) {
+                if(first) first = false;
+                else description.append("\n");
+                description.append("_-_ ").append(fix);
+            }
+
+            return new ChangeButton(
+                    new Image( Assets.SPINNER, 144, 0, 16, 16),
+                    "Bugfixes",
+                    description.toString()
+            );
+        }
 
 		protected Image icon;
 		protected String title;

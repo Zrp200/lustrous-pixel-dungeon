@@ -21,6 +21,7 @@
 
 package com.zrp200.lustrouspixeldungeon.levels.traps;
 
+import com.watabou.utils.PathFinder;
 import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
@@ -36,11 +37,10 @@ public class OozeTrap extends Trap {
 
 	@Override
 	public void activate() {
-		Char ch = Actor.findChar( pos );
-
-		if (ch != null && !ch.flying){
-			Buff.affect(ch, Ooze.class).set( 20f );
-			Splash.at( pos, 0x000000, 5);
+		for (int i : PathFinder.NEIGHBOURS9) {
+			Splash.at(pos+i, 0x000000, 5);
+			Char ch = Actor.findChar(pos+i);
+			if (ch != null) Buff.affect(ch, Ooze.class).set( 20f );
 		}
 	}
 }

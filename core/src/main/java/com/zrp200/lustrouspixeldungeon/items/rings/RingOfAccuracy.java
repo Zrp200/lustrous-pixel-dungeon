@@ -28,10 +28,15 @@ public class RingOfAccuracy extends Ring {
 	    bonusScaling = 1.3f;
 	    buffClass = Accuracy.class;
 	}
-	
-	public static float accuracyMultiplier( Char target ){
+
+	@Override
+	protected RingBuff buff() {
+		return new Accuracy();
+	}
+
+	public static float accuracyMultiplier(Char target ){
 		return multiplier(target);
 	}
 	
-	public class Accuracy extends RingBuff { }
+	private class Accuracy extends RingBuff { }
 }

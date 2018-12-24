@@ -28,8 +28,13 @@ public class RingOfSharpshooting extends Ring {
 		bonusScaling = 1.2f;
 		buffClass = Aim.class;
 	}
-	
-	public static int levelDamageBonus( Char target ){
+
+	@Override
+	protected RingBuff buff() {
+		return new Aim();
+	}
+
+	public static int levelDamageBonus(Char target ){
 		return getBonus(target);
 	}
 	

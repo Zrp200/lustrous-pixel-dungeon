@@ -30,8 +30,12 @@ import com.zrp200.lustrouspixeldungeon.messages.Messages;
 public class RingOfForce extends Ring {
 	static { buffClass = Force.class; }
 
-	
-	public static int armedDamageBonus( Char ch ){
+	@Override
+	protected RingBuff buff() {
+		return new Force();
+	}
+
+	public static int armedDamageBonus(Char ch ){
 		return getBonus( ch, Force.class);
 	}
 	

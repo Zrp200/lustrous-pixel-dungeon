@@ -30,8 +30,10 @@ import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.ToxicGas;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.LockedFloor;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Poison;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.Terror;
 import com.zrp200.lustrouspixeldungeon.actors.hero.HeroSubClass;
 import com.zrp200.lustrouspixeldungeon.effects.CellEmitter;
 import com.zrp200.lustrouspixeldungeon.effects.Speck;
@@ -84,6 +86,12 @@ public class Tengu extends Mob {
 	@Override
 	public int drRoll() {
 		return Random.NormalIntRange(0, 5);
+	}
+
+	@Override
+	public void add(Buff buff) {
+		if(buff instanceof Terror) jump();
+		else super.add(buff);
 	}
 
 	@Override

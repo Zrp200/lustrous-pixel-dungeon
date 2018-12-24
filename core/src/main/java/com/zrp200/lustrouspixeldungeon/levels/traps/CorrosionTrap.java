@@ -26,21 +26,26 @@ import com.zrp200.lustrouspixeldungeon.actors.blobs.Blob;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.CorrosiveGas;
 import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
 
-public class CorrosionTrap extends Trap {
+public class CorrosionTrap extends BlobTrap {
 
 	{
 		color = GREY;
-		shape = GRILL;
+		blobClass = CorrosiveGas.class;
 	}
 
 	@Override
 	public void activate() {
 
-		CorrosiveGas corrosiveGas = Blob.seed(pos, 80 + 5 * Dungeon.depth, CorrosiveGas.class);
+		CorrosiveGas corrosiveGas = (CorrosiveGas) seedBlob();
 
 		corrosiveGas.setStrength(1+Dungeon.depth/4);
 
 		GameScene.add(corrosiveGas);
 
+	}
+
+	@Override
+	protected int blobAmount() {
+		return 80+5*Dungeon.depth;
 	}
 }

@@ -32,15 +32,12 @@ public class RingOfTenacity extends Ring {
 		buffClass = Tenacity.class;
 	}
 
-	public String statsInfo() {
-		if (isIdentified()){
-			return Messages.get(this, "stats", new DecimalFormat("#.##").format(100f * (1f - multiplier(soloBonus() ) ) ) );
-		} else {
-			return Messages.get(this, "typical_stats", new DecimalFormat("#.##").format(15f));
-		}
+	@Override
+	protected RingBuff buff() {
+		return new Tenacity();
 	}
-	
-	public static float damageMultiplier( Char t ){
+
+	public static float damageMultiplier(Char t ){
 		//(HT - HP)/HT = heroes current % missing health.
 		return (float)Math.pow(bonusScaling, getBonus( t )*((float)(t.HT - t.HP)/t.HT));
 	}

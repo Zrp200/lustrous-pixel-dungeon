@@ -26,17 +26,10 @@ import com.zrp200.lustrouspixeldungeon.actors.blobs.Blob;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.ConfusionGas;
 import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
 
-public class ConfusionTrap extends Trap {
+public class ConfusionTrap extends BlobTrap {
 
 	{
 		color = TEAL;
-		shape = GRILL;
-	}
-
-	@Override
-	public void activate() {
-
-		GameScene.add(Blob.seed(pos, 300 + 20 * Dungeon.depth, ConfusionGas.class));
-
+		blobClass = ConfusionGas.class;
 	}
 }

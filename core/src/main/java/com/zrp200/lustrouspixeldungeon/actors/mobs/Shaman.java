@@ -142,7 +142,7 @@ public abstract class Shaman extends Mob implements Callback {
 			properties.add(Property.ELECTRIC);
 		}
 		protected void applyZap() {
-			int damage = Random.NormalIntRange(6, 12);
+			int damage = Random.IntRange(6, 12);
 			if (Dungeon.level.water[enemy.pos] && !enemy.flying)
 				damage *= 1.25f;
 			enemy.sprite.centerEmitter().burst( SparkParticle.FACTORY, 3 );
@@ -186,9 +186,15 @@ public abstract class Shaman extends Mob implements Callback {
             resistances.add(WandOfFireblast.class);
             resistances.add(Shaman.Firebolt.class);
         }
-        protected void applyZap() {
-            enemy.sprite.centerEmitter().burst(FlameParticle.FACTORY, 3);
+
+		@Override
+		public void onZapComplete() {
+			super.onZapComplete();
 			GameScene.add( Blob.seed( enemy.pos , 1, Fire.class ) );
+		}
+
+		protected void applyZap() {
+            enemy.sprite.centerEmitter().burst(FlameParticle.FACTORY, 3);
             applyZap( Random.Int(6,12) );
 			Buff.affect( enemy, Burning.class ).reignite( enemy );
         }

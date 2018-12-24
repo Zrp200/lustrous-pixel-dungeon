@@ -7,7 +7,7 @@ import com.zrp200.lustrouspixeldungeon.messages.Messages;
 
 public class BlockingWeapon extends MeleeWeapon {
     public int maxBlock(int level) {
-        return tier;
+        return tier-1;
     }
 
     final public int maxBlock() {

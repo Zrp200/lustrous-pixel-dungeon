@@ -114,7 +114,7 @@ public class Ring extends KindofMisc {
 	//anonymous rings are always IDed, do not affect ID status,
 	//and their sprite is replaced by a placeholder if they are not known,
 	//useful for items that appear in UIs, or which are only spawned for their effects
-	protected boolean anonymous = false;
+	private boolean anonymous = false;
 	public void anonymize(){
 		if (!isKnown()) image = ItemSpriteSheet.RING_HOLDER;
 		anonymous = true;
@@ -194,11 +194,12 @@ public class Ring extends KindofMisc {
 	}
 	
 	protected String statsInfo() {
+		float multiplier = (float)Math.pow( bonusScaling, soloBonus( visiblyUpgraded() ) );
 		return Messages.get(
 				this,
 				(isIdentified() ? "" : "typical_") + "stats",
 				new DecimalFormat("#.##").format(
-						100f * ( multiplier(soloBonus( visiblyUpgraded() ) ) - 1f )
+						100 * ( bonusScaling > 1 ? multiplier - 1f : 1f - multiplier )
 				)
 		);
 	}
@@ -319,7 +320,7 @@ public class Ring extends KindofMisc {
 	}
 
 	int soloBonus(){ return soloBonus(Ring.this.level()); }
-	int soloBonus(int level) { return cursed ? Math.min( 0, level-2 ) : level+1; }
+	private int soloBonus(int level) { return cursed ? Math.min( 0, level-2 ) : level+1; }
 
 	public class RingBuff extends Buff {
 		@Override

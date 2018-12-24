@@ -28,10 +28,12 @@ import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
+import com.zrp200.lustrouspixeldungeon.actors.blobs.Blizzard;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.zrp200.lustrouspixeldungeon.levels.painters.CavesPainter;
 import com.zrp200.lustrouspixeldungeon.levels.painters.Painter;
 import com.zrp200.lustrouspixeldungeon.levels.rooms.Room;
+import com.zrp200.lustrouspixeldungeon.levels.traps.BlizzardTrap;
 import com.zrp200.lustrouspixeldungeon.levels.traps.BurningTrap;
 import com.zrp200.lustrouspixeldungeon.levels.traps.ConfusionTrap;
 import com.zrp200.lustrouspixeldungeon.levels.traps.CorrosionTrap;
@@ -39,6 +41,7 @@ import com.zrp200.lustrouspixeldungeon.levels.traps.ExplosiveTrap;
 import com.zrp200.lustrouspixeldungeon.levels.traps.FrostTrap;
 import com.zrp200.lustrouspixeldungeon.levels.traps.GrippingTrap;
 import com.zrp200.lustrouspixeldungeon.levels.traps.GuardianTrap;
+import com.zrp200.lustrouspixeldungeon.levels.traps.InfernalTrap;
 import com.zrp200.lustrouspixeldungeon.levels.traps.PitfallTrap;
 import com.zrp200.lustrouspixeldungeon.levels.traps.PoisonDartTrap;
 import com.zrp200.lustrouspixeldungeon.levels.traps.RockfallTrap;
@@ -97,16 +100,17 @@ public class CavesLevel extends RegularLevel {
 	@Override
 	protected Class<?>[] trapClasses() {
 		return new Class[]{ BurningTrap.class, PoisonDartTrap.class, FrostTrap.class, StormTrap.class, CorrosionTrap.class,
-				GrippingTrap.class, ExplosiveTrap.class, RockfallTrap.class,  GuardianTrap.class,
-				ConfusionTrap.class, SummoningTrap.class, WarpingTrap.class,
+				GrippingTrap.class, ExplosiveTrap.class, RockfallTrap.class,  GuardianTrap.class, BlizzardTrap.class,
+				ConfusionTrap.class, SummoningTrap.class, WarpingTrap.class, InfernalTrap.class,
 				PitfallTrap.class };
 	}
 
 	@Override
 	protected float[] trapChances() {
-		return new float[]{ 8, 8, 8, 8, 8,
+		return new float[]{
+				8, 8, 8, 8, 8,
 				4, 4, 4, 4,
-				2, 2, 2,
+				2, 2, 2, 2,
 				1 };
 	}
 	

@@ -28,8 +28,13 @@ public class RingOfHaste extends Ring {
     	buffClass = Haste.class;
     	bonusScaling = 1.2f;
 	}
-	
-	public static float speedMultiplier( Char target ){
+
+	@Override
+	protected RingBuff buff() {
+		return new Haste();
+	}
+
+	public static float speedMultiplier(Char target ){
 		return multiplier(target);
 	}
 	

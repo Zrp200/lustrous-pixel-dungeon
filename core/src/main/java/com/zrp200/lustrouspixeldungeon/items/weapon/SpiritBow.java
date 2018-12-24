@@ -77,18 +77,18 @@ public class SpiritBow extends Weapon {
 	@Override
 	public String info() {
 		String info = desc();
-		
+
 		info += "\n\n" + Messages.get( SpiritBow.class, "stats",
 				Math.round(augment.damageFactor(min())),
 				Math.round(augment.damageFactor(max())),
 				STRReq());
-		
+
 		if (STRReq() > Dungeon.hero.STR()) {
 			info += " " + Messages.get(Weapon.class, "too_heavy");
 		} else if (Dungeon.hero.STR() > STRReq()){
 			info += " " + Messages.get(Weapon.class, "excess_str", Dungeon.hero.STR() - STRReq());
 		}
-		
+
 		switch (augment) {
 			case SPEED:
 				info += "\n\n" + Messages.get(Weapon.class, "faster");
@@ -98,12 +98,12 @@ public class SpiritBow extends Weapon {
 				break;
 			case NONE:
 		}
-		
+
 		if (enchantment != null && (cursedKnown || !enchantment.curse())){
 			info += "\n\n" + Messages.get(Weapon.class, "enchanted", enchantment.name());
 			info += " " + Messages.get(enchantment, "desc");
 		}
-		
+
 		if (cursed && isEquipped( Dungeon.hero )) {
 			info += "\n\n" + Messages.get(Weapon.class, "cursed_worn");
 		} else if (cursedKnown && cursed) {
@@ -111,7 +111,7 @@ public class SpiritBow extends Weapon {
 		} else if (!isIdentified() && cursedKnown){
 			info += "\n\n" + Messages.get(Weapon.class, "not_cursed");
 		}
-		
+
 		info += "\n\n" + Messages.get(MissileWeapon.class, "distance");
 		
 		return info;
@@ -126,12 +126,12 @@ public class SpiritBow extends Weapon {
 	
 	@Override
 	public int min(int lvl) {
-		return 1 + Dungeon.hero.lvl/6 + RingOfSharpshooting.levelDamageBonus(Dungeon.hero);
+		return 1 + Dungeon.hero.lvl/6 + RingOfSharpshooting.levelDamageBonus(Dungeon.hero)/2;
 	}
 	
 	@Override
 	public int max(int lvl) {
-		return 6 + Dungeon.hero.lvl/3 + 2*RingOfSharpshooting.levelDamageBonus(Dungeon.hero);
+		return 6 + Dungeon.hero.lvl/3 + RingOfSharpshooting.levelDamageBonus(Dungeon.hero);
 	}
 	
 	private int targetPos;
@@ -184,7 +184,7 @@ public class SpiritBow extends Weapon {
 	@Override
 	public int level() {
 		//need to check if hero is null for loading an upgraded bow from pre-0.7.0
-		return Dungeon.hero == null ? 0 : Dungeon.hero.lvl/5;
+		return Dungeon.hero == null ? 0 : Dungeon.hero.lvl/3;
 	}
 	
 	@Override

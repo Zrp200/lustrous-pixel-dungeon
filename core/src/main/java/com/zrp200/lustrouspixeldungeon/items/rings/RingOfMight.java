@@ -33,6 +33,11 @@ public class RingOfMight extends Ring {
 	}
 
 	@Override
+	protected RingBuff buff() {
+		return new Might();
+	}
+
+	@Override
 	public boolean doEquip(Hero hero) {
 		if (super.doEquip(hero)){
 			hero.updateHT( false );

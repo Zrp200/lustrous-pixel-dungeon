@@ -64,16 +64,13 @@ public class RingOfWealth extends Ring {
 		bonusScaling = 1.2f;
 		buffClass = Wealth.class;
 	}
-	
-	private float triesToDrop = 0;
 
-	public String statsInfo() {
-		if (isIdentified()){
-			return Messages.get(this, "stats", new DecimalFormat("#.##").format(100f * (Math.pow(1.15f, soloBonus()) - 1f)));
-		} else {
-			return Messages.get(this, "typical_stats", new DecimalFormat("#.##").format(15f));
-		}
+	@Override
+	protected RingBuff buff() {
+		return new Wealth();
 	}
+
+	private float triesToDrop = 0;
 	
 	public static float dropChanceMultiplier( Char target ){
 		return multiplier(target); // +4.3% compared to shattered
