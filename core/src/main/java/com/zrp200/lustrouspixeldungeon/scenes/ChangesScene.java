@@ -228,13 +228,6 @@ public class ChangesScene extends PixelScene {
 			)
 		);
         ChangeInfo.changes(
-                new ChangeButton(new SpiritBow(),
-                        "_-_ Now scales up to +10, gaining a visible upgrade every three levels",
-                        "_-_ Actual damage scaling unchanged\n",
-                        "This should make its upgrades tie into its actual damage scaling more obviously " +
-                                "as well as let it scale up to +10 like other non-upgradable items\n",
-                        "_-_ Sharpshooting benefit halved (now +0.5/+1) to tie into this mechanic."
-                ),
                 new ChangeButton(new ShamanSprite.MM(),"Magical Attacks",
                         "_-_ Magical attacks from enemies are now randomly distributed, rather than normally"
                 ),

@@ -126,12 +126,12 @@ public class SpiritBow extends Weapon {
 	
 	@Override
 	public int min(int lvl) {
-		return 1 + Dungeon.hero.lvl/6 + RingOfSharpshooting.levelDamageBonus(Dungeon.hero)/2;
+		return 1 + Dungeon.hero.lvl/6 + RingOfSharpshooting.levelDamageBonus(Dungeon.hero);
 	}
 	
 	@Override
 	public int max(int lvl) {
-		return 6 + Dungeon.hero.lvl/3 + RingOfSharpshooting.levelDamageBonus(Dungeon.hero);
+		return 6 + Dungeon.hero.lvl/3 + RingOfSharpshooting.levelDamageBonus(Dungeon.hero)*2;
 	}
 	
 	private int targetPos;
@@ -184,7 +184,7 @@ public class SpiritBow extends Weapon {
 	@Override
 	public int level() {
 		//need to check if hero is null for loading an upgraded bow from pre-0.7.0
-		return Dungeon.hero == null ? 0 : Dungeon.hero.lvl/3;
+		return Dungeon.hero == null ? 0 : Dungeon.hero.lvl/5;
 	}
 	
 	@Override
