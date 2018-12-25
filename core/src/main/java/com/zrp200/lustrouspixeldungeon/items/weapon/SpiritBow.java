@@ -44,7 +44,7 @@ import java.util.ArrayList;
 
 public class SpiritBow extends Weapon {
 	
-	public static final String AC_SHOOT		= "SHOOT";
+	private static final String AC_SHOOT		= "SHOOT";
 	
 	{
 		image = ItemSpriteSheet.SPIRIT_BOW;
