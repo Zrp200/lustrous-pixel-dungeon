@@ -212,9 +212,12 @@ public class ChangesScene extends PixelScene {
 		};
 		add(list);
 
-        addSection("v0.0.2-INDEV",true);
+        addSection("v0.0.2-PREBETA",true);
         ChangeInfo.newContent(
-        	addDeveloperCommentary(null,null,null),	//really just a placeholder
+        	addDeveloperCommentary(
+        			null,
+					"This what I've got so far, really. The major change here is the implementation of 0.7.1, with a few minor changes. So far, I've added two new traps and made small changes to existing mechanics."
+				, (Milestone[]) null),	//really just a placeholder
 			new ChangeButton(
 					new Image(Assets.TERRAIN_FEATURES, 16, 0, 16, 16),
 					"Traps",
@@ -234,7 +237,6 @@ public class ChangesScene extends PixelScene {
 				),
 				new ChangeButton(
 						new Starflower.Seed(),
-						"Starflower Warden interaction",
 						"Starflower gives 10 turns adrenaline instead of 30 turns of recharging"
 				)
 		);
@@ -261,7 +263,8 @@ public class ChangesScene extends PixelScene {
 				new ChangeButton(
 						Icons.get(Icons.PREFS),
 						"Misc Changes",
-						"_-_ Darts can now be dropped from remains again"
+						"_-_ Darts can now be dropped from remains again\n" +
+								"_-_ Minor text adjustments"
 				),
                 ChangeButton.bugfix(
                         "Crash bugs with wraiths",
