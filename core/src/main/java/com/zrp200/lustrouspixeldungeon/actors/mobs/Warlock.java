@@ -100,10 +100,10 @@ public class Warlock extends Mob implements Callback {
 		
 		if (hit( this, enemy, true )) {
 			if (Random.Int( 2 ) == 0) {
-				Buff.prolong( enemy, Weakness.class, Random.Int( (int)(Weakness.DURATION*1.5f) ) );
+				Buff.prolong( enemy, Weakness.class, Random.Int( (int)(Weakness.DURATION) ) );
 			}
 			
-			int dmg = Random.IntRange( 12, 18 );
+			int dmg = Random.NormalIntRange( 12, 18 );
 			enemy.damage( dmg, this, true );
 			
 			if (!enemy.isAlive() && enemy == Dungeon.hero) {

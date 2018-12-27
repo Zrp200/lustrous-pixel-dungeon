@@ -71,12 +71,6 @@ public abstract class Mob extends Char {
 		
 		alignment = Alignment.ENEMY;
 	}
-	
-	private static final String	TXT_DIED	= "You hear something died in the distance";
-	
-	protected static final String TXT_NOTICE1	= "?!";
-	protected static final String TXT_RAGE		= "#$%^";
-	protected static final String TXT_EXP		= "%+dEXP";
 
 	public AiState SLEEPING     = new Sleeping();
 	public AiState HUNTING		= new Hunting();
@@ -134,16 +128,22 @@ public abstract class Mob extends Char {
 		super.restoreFromBundle( bundle );
 
 		String state = bundle.getString( STATE );
-		if (state.equals( Sleeping.TAG )) {
-			this.state = SLEEPING;
-		} else if (state.equals( Wandering.TAG )) {
-			this.state = WANDERING;
-		} else if (state.equals( Hunting.TAG )) {
-			this.state = HUNTING;
-		} else if (state.equals( Fleeing.TAG )) {
-			this.state = FLEEING;
-		} else if (state.equals( Passive.TAG )) {
-			this.state = PASSIVE;
+		switch (state) {
+			case Sleeping.TAG:
+				this.state = SLEEPING;
+				break;
+			case Wandering.TAG:
+				this.state = WANDERING;
+				break;
+			case Hunting.TAG:
+				this.state = HUNTING;
+				break;
+			case Fleeing.TAG:
+				this.state = FLEEING;
+				break;
+			case Passive.TAG:
+				this.state = PASSIVE;
+				break;
 		}
 
 		enemySeen = bundle.getBoolean( SEEN );
@@ -188,7 +188,10 @@ public abstract class Mob extends Char {
 	}
 
 	public boolean enemyInFOV() {
-		return enemy != null && enemy.isAlive() && (fieldOfView == null || fieldOfView[enemy.pos]) && enemy.invisible <= 0;
+		return enemy != null
+				&& enemy.isAlive()
+				&& (fieldOfView == null || fieldOfView[enemy.pos])
+				&& enemy.invisible <= 0;
 	}
 	
 	protected Char chooseEnemy() {
@@ -230,15 +233,15 @@ public abstract class Mob extends Char {
 				for (Char curr : findEnemies()){
 					if (closest == null
 							|| Dungeon.level.distance(pos, curr.pos) < Dungeon.level.distance(pos, closest.pos)
-							|| Dungeon.level.distance(pos, curr.pos) == Dungeon.level.distance(pos, closest.pos) && curr == Dungeon.hero){
+							|| Dungeon.level.distance(pos, curr.pos) == Dungeon.level.distance(pos, closest.pos)
+							&& curr == Dungeon.hero) {
 						closest = curr;
 					}
 				}
 				return closest;
 			}
 
-		} else
-			return enemy;
+		} else return enemy;
 	}
 
 	protected HashSet<Char> findEnemies() {

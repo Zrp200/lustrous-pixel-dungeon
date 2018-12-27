@@ -142,7 +142,7 @@ public abstract class Shaman extends Mob implements Callback {
 			properties.add(Property.ELECTRIC);
 		}
 		protected void applyZap() {
-			int damage = Random.IntRange(6, 12);
+			int damage = Random.NormalIntRange(6, 12);
 			if (Dungeon.level.water[enemy.pos] && !enemy.flying)
 				damage *= 1.25f;
 			enemy.sprite.centerEmitter().burst( SparkParticle.FACTORY, 3 );
@@ -159,7 +159,7 @@ public abstract class Shaman extends Mob implements Callback {
 		private boolean zapping;
 		protected void applyZap() {
 			enemy.sprite.burst(0xFFFFFFFF,2);
-			applyZap( Random.Int(4,12) );
+			applyZap( Random.NormalIntRange(4,12) );
 		}
 		public void onZapComplete() { // a temporary solution to what I want at the moment, hoping to get a bit more elegant later
 			zapping = true; // this boosts its accuracy temporarily
@@ -195,7 +195,7 @@ public abstract class Shaman extends Mob implements Callback {
 
 		protected void applyZap() {
             enemy.sprite.centerEmitter().burst(FlameParticle.FACTORY, 3);
-            applyZap( Random.Int(6,12) );
+            applyZap( Random.NormalIntRange(6,12) );
 			Buff.affect( enemy, Burning.class ).reignite( enemy );
         }
     }
@@ -212,7 +212,7 @@ public abstract class Shaman extends Mob implements Callback {
 		}
 		protected void applyZap() {
 			enemy.sprite.burst( 0xFF99CCFF, 3 );
-			applyZap( Random.Int(6,10));
+			applyZap( Random.NormalIntRange(6,10));
 			Buff.prolong( enemy, Chill.class, Random.Float(1,5) );
 			Heap heap = Dungeon.level.heaps.get(enemy.pos);
 			if(heap != null) heap.freeze();

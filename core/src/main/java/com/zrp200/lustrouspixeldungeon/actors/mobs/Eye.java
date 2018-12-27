@@ -138,7 +138,7 @@ public class Eye extends Mob {
 	}
 
 	public void damage(int dmg, Object src, boolean magic) {
-		if(src instanceof Eye && magic) dmg /= 2;
+		if(src instanceof Eye && magic) dmg /= 2; // deathgaze resist
 		super.damage(dmg, src, magic);
 
 	}
