@@ -30,6 +30,7 @@ import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.effects.Splash;
+import com.zrp200.lustrouspixeldungeon.effects.Surprise;
 import com.zrp200.lustrouspixeldungeon.items.rings.RingOfFuror;
 import com.zrp200.lustrouspixeldungeon.items.rings.RingOfSharpshooting;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.MissileWeapon;
@@ -225,6 +226,7 @@ public class SpiritBow extends Weapon {
 		
 		@Override
 		public int proc(Char attacker, Char defender, int damage) {
+			if(sniperSpecial && augment == Augment.DAMAGE) Surprise.hit(defender);
 			return SpiritBow.this.proc(attacker, defender, damage);
 		}
 		

@@ -38,7 +38,7 @@ public class ToxicImbue extends Buff {
 
 	public static final float DURATION	= 50f;
 
-	protected float left;
+	private float left, initial;
 
 	private static final String LEFT	= "left";
 
@@ -56,13 +56,13 @@ public class ToxicImbue extends Buff {
 	}
 
 	public void set( float duration ) {
-		this.left = duration;
+		this.left = this.initial = duration;
 	}
 
 
     @Override
 	public boolean act() {
-		GameScene.add(Blob.seed(target.pos, 50, ToxicGas.class));
+		GameScene.add(Blob.seed(target.pos, (int)Math.ceil(50*left/initial), ToxicGas.class));
 
 		spend(TICK);
 		left -= TICK;
@@ -94,6 +94,11 @@ public class ToxicImbue extends Buff {
 	public String desc() {
 		return Messages.get(this, "desc", dispTurns(left));
 	}
+
+    {
+        resistances.add( Corrosion.class);
+        resistances.add( Ooze.class );
+    }
 
 	{
 		immunities.add( ToxicGas.class );

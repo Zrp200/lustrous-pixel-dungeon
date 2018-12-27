@@ -31,6 +31,7 @@ import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.armor.Armor;
 import com.zrp200.lustrouspixeldungeon.items.armor.ClothArmor;
 import com.zrp200.lustrouspixeldungeon.items.artifacts.CloakOfShadows;
+import com.zrp200.lustrouspixeldungeon.items.bags.MagicalHolster;
 import com.zrp200.lustrouspixeldungeon.items.bags.PotionBandolier;
 import com.zrp200.lustrouspixeldungeon.items.bags.ScrollHolder;
 import com.zrp200.lustrouspixeldungeon.items.bags.VelvetPouch;
@@ -187,8 +188,8 @@ public enum HeroClass {
 
 		Dungeon.quickslot.setSlot(0, bow);
 
-		new VelvetPouch().collect();
-		Dungeon.LimitedDrops.VELVET_POUCH.drop();
+		new MagicalHolster().collect();
+		Dungeon.LimitedDrops.MAGICAL_HOLSTER.drop();
 
 		new PotionOfMindVision().identify();
 		new ScrollOfLullaby().identify();

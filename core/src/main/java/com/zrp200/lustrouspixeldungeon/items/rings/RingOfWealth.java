@@ -128,7 +128,7 @@ public class RingOfWealth extends Ring {
 					items.add(Generator.random(Random.Int(2) == 0 ? Generator.Category.POTION : Generator.Category.SCROLL ));
 					break;
 				case 2:
-					Log.d(new RingOfWealth().trueName(),"Bomb");
+	//				Log.d(new RingOfWealth().trueName(),"Bomb");
 					items.add(new Bomb().random());
 					items.add(new Honeypot());
 					break;
@@ -181,19 +181,16 @@ public class RingOfWealth extends Ring {
 					Item item;
 					do	item = Generator.random();
 					while (!(
-							item.isUpgradable() ||
-									item instanceof Artifact ||
-									item instanceof MissileWeapon
+							item.isUpgradable() || item instanceof Artifact
 					));
 					if(Random.Int(2) == 0) { // Prize-ify
 						int floorset = Dungeon.depth / 5;
 						if (item instanceof MeleeWeapon)
 							item = Generator.randomWeapon(floorset + 1);
 						if (item instanceof Armor) item = Generator.randomArmor(floorset + 1);
-						if (item instanceof MissileWeapon) {
-							item = Generator.randomMissile(floorset + 1);
-						} else {
-							Log.i("Wealth","Prize Equipment:" + item.trueName());
+						if (item instanceof MissileWeapon) item = Generator.randomMissile(floorset + 1);
+						else {
+	//						Log.i("Wealth","Prize Equipment:" + item.trueName());
 							item.cursed = false;
 							item.cursedKnown = true;
 						}
@@ -230,6 +227,7 @@ public class RingOfWealth extends Ring {
 			else if(item instanceof Potion) item = ScrollOfTransmutation.changePotion( (Potion) item );
 			items.set(i, item);
 		}
+		if(items.isEmpty()) return generateRareDrop(); // I'm sick of this.
 		return items;
 	}
 	

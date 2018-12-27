@@ -15,7 +15,7 @@ public class Volatility extends Armor.Glyph {
         if(Random.Int(20)==0) {
             new Bomb().explode(defender.pos);
             if (armor != null && armor.level() == 0 && armor.checkSeal() != null && !armor.unique && defender == Dungeon.hero)
-                Dungeon.hero.belongings.armor = null; // DESTROY
+                Dungeon.hero.belongings.armor = null; // DESTROY!!!!
         }
         return damage;
     }

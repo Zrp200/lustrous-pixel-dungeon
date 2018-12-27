@@ -32,9 +32,9 @@ public class Stone extends Armor.Glyph {
 	public int reduceDamage(Armor armor, Char defender, Char attacker, boolean magicAttack, int damage) {
 		testing = true;
 		float
-				evasion 	= defender.defenseSkill(attacker) * ( 60 + armor.level() ) / 100f,
-				accuracy	=	attacker.attackSkill(defender) * (magicAttack ? 2 : 1);
-
+			evasion 	= 	defender.defenseSkill(attacker) * ( 60 + armor.level() ) / 100f,
+			accuracy	=	attacker.attackSkill(defender) * (magicAttack ? 2 : 1);
+		testing = false;
 		
 		float hitChance;
 		if (evasion >= accuracy){

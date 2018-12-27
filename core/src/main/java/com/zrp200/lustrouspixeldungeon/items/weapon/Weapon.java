@@ -282,6 +282,7 @@ abstract public class Weapon extends KindOfWeapon {
 		return enchant(ench,true);
 	}
 
+	@SuppressWarnings("unchecked")
 	public Weapon enchant(boolean visible) {
 
 		Class<? extends Enchantment> oldEnchantment = enchantment != null ? enchantment.getClass() : null;

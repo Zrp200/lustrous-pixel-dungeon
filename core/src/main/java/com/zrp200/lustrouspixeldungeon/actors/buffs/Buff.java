@@ -22,6 +22,7 @@
 package com.zrp200.lustrouspixeldungeon.actors.buffs;
 
 import com.watabou.noosa.Image;
+import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Actor;
@@ -175,5 +176,11 @@ public class Buff extends Actor implements Hero.Doom {
 
 	public static void greyIcon(Image icon, float startGrey, float remaining){
 		FlavourBuff.greyIcon(icon, startGrey, remaining);
+	}
+
+	public Image getLargeIcon() {
+		int x = icon() % 16, y = icon() / 16;
+		x*=16;y*=16;
+		return new Image(Assets.BUFFS_LARGE,x,y,16,16);
 	}
 }

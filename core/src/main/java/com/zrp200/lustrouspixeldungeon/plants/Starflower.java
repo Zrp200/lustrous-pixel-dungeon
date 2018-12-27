@@ -24,6 +24,7 @@ package com.zrp200.lustrouspixeldungeon.plants;
 import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.Adrenaline;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Bless;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Recharging;
@@ -39,17 +40,18 @@ public class Starflower extends Plant {
 
 	@Override
 	public void activate( Char ch ) {
-
 		if (ch != null) {
 			Buff.prolong(ch, Bless.class, Bless.DURATION);
 			if (ch instanceof Hero && ((Hero) ch).subClass == HeroSubClass.WARDEN){
-				Buff.prolong(ch, Recharging.class, Bless.DURATION);
+				Buff.affect(ch, Adrenaline.class, Adrenaline.DURATION);
 			}
 		}
+	}
 
-		if (Random.Int(5) == 0){
-			Dungeon.level.drop(new Seed(), pos).sprite.drop();
-		}
+	@Override
+	public void wither() {
+		super.wither();
+		if (Random.Int(5) == 0) Dungeon.level.drop(new Seed(), pos).sprite.drop();
 	}
 
 	public static class Seed extends Plant.Seed{

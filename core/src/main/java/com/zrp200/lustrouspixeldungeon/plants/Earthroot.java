@@ -29,6 +29,7 @@ import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Barkskin;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.FlavourBuff;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.Roots;
 import com.zrp200.lustrouspixeldungeon.actors.hero.HeroSubClass;
 import com.zrp200.lustrouspixeldungeon.effects.CellEmitter;
 import com.zrp200.lustrouspixeldungeon.effects.particles.EarthParticle;
@@ -48,9 +49,10 @@ public class Earthroot extends Plant {
 		if (ch == Dungeon.hero) {
 			if (Dungeon.hero.subClass == HeroSubClass.WARDEN){
 				Buff.affect(ch, Barkskin.class).set((Dungeon.depth + 5)/2, 5);
-			} else {
-				Buff.affect(ch, Armor.class).level(ch.HT);
 			}
+			Buff.affect(ch, Armor.class).level(ch.HT);
+		} else {
+			Buff.affect(ch, Roots.class, 5f);
 		}
 		
 		if (Dungeon.level.heroFOV[pos]) {

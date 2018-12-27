@@ -24,6 +24,7 @@ package com.zrp200.lustrouspixeldungeon.items;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.GameMath;
 import com.watabou.utils.Random;
+import com.zrp200.lustrouspixeldungeon.Challenges;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
 import com.zrp200.lustrouspixeldungeon.items.armor.Armor;
@@ -143,6 +144,7 @@ import com.zrp200.lustrouspixeldungeon.items.weapon.melee.WarHammer;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Whip;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.WornShortsword;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Bolas;
+import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Boomerang;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.FishingSpear;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Javelin;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.MissileWeapon;
@@ -154,6 +156,7 @@ import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.ThrowingStone;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Tomahawk;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Trident;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.darts.Dart;
+import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.darts.TippedDart;
 import com.zrp200.lustrouspixeldungeon.plants.Blindweed;
 import com.zrp200.lustrouspixeldungeon.plants.Dreamfoil;
 import com.zrp200.lustrouspixeldungeon.plants.Earthroot;
@@ -378,33 +381,37 @@ public class Generator {
 			MISSILE.probs = new float[]{};
 			
 			MIS_T1.classes = new Class<?>[]{
-					Dart.class,
 					ThrowingStone.class,
-					ThrowingKnife.class
+					ThrowingKnife.class,
+					Dart.class,
 			};
-			MIS_T1.probs = new float[]{ 1, 4, 3};
+			MIS_T1.probs = new float[]{ 4, 3, 0 };
 			
 			MIS_T2.classes = new Class<?>[]{
 					FishingSpear.class,
-					Shuriken.class
+					Shuriken.class,
+					TippedDart.class
 			};
-			MIS_T2.probs = new float[]{ 4, 3 };
+			MIS_T2.probs = new float[]{ 4, 3, 0 };
 			
 			MIS_T3.classes = new Class<?>[]{
 					ThrowingSpear.class,
-					Bolas.class
+					Bolas.class,
+					Boomerang.class // coming soon?
 			};
-			MIS_T3.probs = new float[]{ 4, 3 };
+			MIS_T3.probs = new float[]{ 4, 3, 0 };
 			
 			MIS_T4.classes = new Class<?>[]{
 					Javelin.class,
 					Tomahawk.class
+				//	ObsidianKnife
 			};
 			MIS_T4.probs = new float[]{ 4, 3 };
 			
 			MIS_T5.classes = new Class<?>[]{
 					Trident.class,
 					ThrowingHammer.class
+				// 	Chakram?
 			};
 			MIS_T5.probs = new float[]{ 4, 3 };
 			
@@ -502,9 +509,7 @@ public class Generator {
 	
 	public static Item random( Class<? extends Item> cl ) {
 		try {
-			
 			return cl.newInstance().random();
-			
 		} catch (Exception e) {
 
 			LustrousPixelDungeon.reportException(e);

@@ -35,8 +35,8 @@ import java.util.ArrayList;
 
 public abstract class EquipableItem extends Item {
 
-	public static final String AC_EQUIP		= "EQUIP";
-	public static final String AC_UNEQUIP	= "UNEQUIP";
+	protected static final String AC_EQUIP		= "EQUIP";
+	private static final String AC_UNEQUIP	= "UNEQUIP";
 
 	{
 		bones = true;
