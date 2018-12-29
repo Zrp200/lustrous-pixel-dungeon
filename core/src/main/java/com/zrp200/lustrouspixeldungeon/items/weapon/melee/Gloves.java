@@ -24,20 +24,18 @@ package com.zrp200.lustrouspixeldungeon.items.weapon.melee;
 
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
 
-public class Gloves extends MeleeWeapon {
+public class Gloves extends Sai {
 
 	{
 		image = ItemSpriteSheet.GLOVES;
 
 		tier = 1;
-		DLY = 0.5f; //2x speed
 		
 		bones = false;
 	}
 
 	@Override
-	public int max(int lvl) {
-		return super.max(lvl)/2;
+	public int maxBlock(int level) {
+		return tier; // 0-1 blocking
 	}
-
 }

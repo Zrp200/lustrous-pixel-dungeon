@@ -53,15 +53,15 @@ import java.util.Comparator;
 
 public class Item implements Bundlable {
 
-	protected static final String TXT_TO_STRING_LVL		= "%s %+d";
-	protected static final String TXT_TO_STRING_X		= "%s x%d";
+	private static final String TXT_TO_STRING_LVL		= "%s %+d";
+	private static final String TXT_TO_STRING_X		= "%s x%d";
 	
-	protected static final float TIME_TO_THROW		= 1.0f;
+	private static final float TIME_TO_THROW		= 1.0f;
 	protected static final float TIME_TO_PICK_UP	= 1.0f;
-	protected static final float TIME_TO_DROP		= 1.0f;
+	private static final float TIME_TO_DROP		= 1.0f;
 	
-	public static final String AC_DROP		= "DROP";
-	public static final String AC_THROW		= "THROW";
+	private static final String AC_DROP		= "DROP";
+	protected static final String AC_THROW		= "THROW";
 	
 	public String defaultAction;
 	public boolean usesTargeting;
@@ -339,7 +339,7 @@ public class Item implements Bundlable {
 		return levelKnown ? level : 0;
 	}
 	
-	public boolean visiblyCursed() {
+	protected boolean visiblyCursed() {
 		return cursed && cursedKnown;
 	}
 	

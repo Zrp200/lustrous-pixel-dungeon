@@ -51,12 +51,13 @@ import com.zrp200.lustrouspixeldungeon.windows.WndOptions;
 
 import java.util.ArrayList;
 
-public class MagesStaff extends MeleeWeapon {
+public class MagesStaff extends MeleeWeapon.Uncommon {
 
 	private Wand wand;
 
-	public static final String AC_IMBUE = "IMBUE";
-	public static final String AC_ZAP	= "ZAP";
+	private static final String
+		AC_IMBUE = "IMBUE",
+		AC_ZAP	= "ZAP";
 
 	private static final float STAFF_SCALE_FACTOR = 0.75f;
 
@@ -74,12 +75,6 @@ public class MagesStaff extends MeleeWeapon {
 
 	public MagesStaff() {
 		wand = null;
-	}
-
-	@Override
-	public int max(int lvl) {
-		return  4*(tier+1) +    //8 base damage, down from 10
-				lvl*(tier+1);   //scaling unaffected
 	}
 
 	public MagesStaff(Wand wand){

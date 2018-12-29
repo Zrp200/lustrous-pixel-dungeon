@@ -24,7 +24,6 @@ package com.zrp200.lustrouspixeldungeon.items;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.GameMath;
 import com.watabou.utils.Random;
-import com.zrp200.lustrouspixeldungeon.Challenges;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
 import com.zrp200.lustrouspixeldungeon.items.armor.Armor;
@@ -148,6 +147,7 @@ import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Boomerang;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.FishingSpear;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Javelin;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.MissileWeapon;
+import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.ObsidianKnife;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Shuriken;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.ThrowingHammer;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.ThrowingKnife;
@@ -403,10 +403,10 @@ public class Generator {
 			
 			MIS_T4.classes = new Class<?>[]{
 					Javelin.class,
-					Tomahawk.class
-				//	ObsidianKnife
+					Tomahawk.class,
+					ObsidianKnife.class
 			};
-			MIS_T4.probs = new float[]{ 4, 3 };
+			MIS_T4.probs = new float[]{ 4, 3, 2 };
 			
 			MIS_T5.classes = new Class<?>[]{
 					Trident.class,

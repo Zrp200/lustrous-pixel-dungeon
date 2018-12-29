@@ -39,17 +39,11 @@ import com.zrp200.lustrouspixeldungeon.actors.mobs.Warlock;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.Yog;
 import com.zrp200.lustrouspixeldungeon.levels.traps.DisintegrationTrap;
 import com.zrp200.lustrouspixeldungeon.levels.traps.GrimTrap;
-import com.zrp200.lustrouspixeldungeon.messages.Messages;
 
-import java.text.DecimalFormat;
 import java.util.HashSet;
 
 public class RingOfElements extends Ring {
-
-	static {
-		bonusScaling = 0.875f;
-		buffClass = Resistance.class;
-	}
+	private static final float BONUS_SCALING = 0.875f;
 
 	@Override
 	protected RingBuff buff() {
@@ -70,18 +64,22 @@ public class RingOfElements extends Ring {
 			add(Shaman.class);	add(Warlock.class);	add(Eye.class);	add(Yog.BurningFist.class);
 		}
 	};
-	
-	public static float resist( Char target, Class effect ){
-		if (getBonus(target) == 0) return 1f;
+
+	@Override
+	protected String statsInfo() {
+		return statsInfo(BONUS_SCALING);
+	}
+
+	public static float resist(Char target, Class effect ){
+		if (getBonus(target, Resistance.class) == 0) return 1f;
 		
 		for (Class c : RESISTS){
 			if (c.isAssignableFrom(effect)){
-				return multiplier(target);
+				return (float)Math.pow(BONUS_SCALING,getBonus(target,Resistance.class));
 			}
 		}
-		
 		return 1f;
 	}
 	
-	public class Resistance extends RingBuff { }
+	private class Resistance extends RingBuff { }
 }

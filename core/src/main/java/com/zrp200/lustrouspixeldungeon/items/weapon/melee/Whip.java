@@ -33,7 +33,7 @@ public class Whip extends MeleeWeapon {
 	}
 
 	@Override
-	public int maxBase() {return 3*super.maxBase()/5;}
-	public int maxScale() {return 3*super.maxScale()/4;}
+	public int maxBase()  	{ 	return 3*super.maxBase()/5;  	}
+	public int maxScale()	{ 	return 3*super.maxScale()/4; 	}
 
 }

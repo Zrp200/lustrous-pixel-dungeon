@@ -36,12 +36,9 @@ import com.zrp200.lustrouspixeldungeon.Chrome;
 import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Charm;
-import com.zrp200.lustrouspixeldungeon.actors.buffs.Corrosion;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Terror;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.ToxicImbue;
-import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.actors.hero.HeroClass;
-import com.zrp200.lustrouspixeldungeon.actors.mobs.Rat;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.Shielded;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.Succubus;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.Warlock;
@@ -64,18 +61,18 @@ import com.zrp200.lustrouspixeldungeon.items.rings.RingOfFuror;
 import com.zrp200.lustrouspixeldungeon.items.rings.RingOfWealth;
 import com.zrp200.lustrouspixeldungeon.items.wands.WandOfCorruption;
 import com.zrp200.lustrouspixeldungeon.items.wands.WandOfRegrowth;
-import com.zrp200.lustrouspixeldungeon.items.weapon.SpiritBow;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Chaotic;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Elastic;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Chilling;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Eldritch;
-import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Gauntlet;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Gloves;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Longsword;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Quarterstaff;
+import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Sai;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Shortsword;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Sword;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Bolas;
+import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.ObsidianKnife;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Shuriken;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.plants.Earthroot;
@@ -90,9 +87,9 @@ import com.zrp200.lustrouspixeldungeon.sprites.ShamanSprite;
 import com.zrp200.lustrouspixeldungeon.sprites.ShieldedSprite;
 import com.zrp200.lustrouspixeldungeon.sprites.StatueSprite;
 import com.zrp200.lustrouspixeldungeon.sprites.SuccubusSprite;
+import com.zrp200.lustrouspixeldungeon.sprites.TenguSprite;
 import com.zrp200.lustrouspixeldungeon.sprites.WarlockSprite;
 import com.zrp200.lustrouspixeldungeon.ui.Archs;
-import com.zrp200.lustrouspixeldungeon.ui.BuffIndicator;
 import com.zrp200.lustrouspixeldungeon.ui.ExitButton;
 import com.zrp200.lustrouspixeldungeon.ui.Icons;
 import com.zrp200.lustrouspixeldungeon.ui.RenderedTextMultiline;
@@ -154,11 +151,12 @@ public class ChangesScene extends PixelScene {
 
 				message.append("_-_ ");
 
-				long daysSinceEvent = (release.releaseDate.getTime() - event.releaseDate.getTime()) / 86400000; // convert milliseconds to years
+				// convert milliseconds to days
+				long daysSinceEvent = (release.releaseDate.getTime() - event.releaseDate.getTime()) / 86400000;
 
 				message.append(daysSinceEvent)
 						.append(" day")
-						.append(daysSinceEvent != 1 ? "s" : "")
+						.append(daysSinceEvent != 1 ? "s" : "") // "1 days" makes no sense.
 						.append(" after ")
 						.append(event.name)
 						.append("\n");
@@ -212,17 +210,33 @@ public class ChangesScene extends PixelScene {
 		};
 		add(list);
 
-        addSection("v0.0.2-PREBETA",true);
+        addSection("v0.0.2-BETA",true);
         ChangeInfo.newContent(
         	addDeveloperCommentary(
         			null,
-					"This what I've got so far, really. The major change here is the implementation of 0.7.1, with a few minor changes. So far, I've added two new traps and made small changes to existing mechanics."
-				, (Milestone[]) null),	//really just a placeholder
-			new ChangeButton(
-					new Image(Assets.TERRAIN_FEATURES, 16, 0, 16, 16),
-					"Traps",
-					"Added two new traps: the Infernal and Blizzard traps! They appear starting in caves."
-			)
+				"Well, here it is: my implementation of 0.7.1. I've implemented basically all of it, " +
+						"with exceptions of course.\n\n" +
+						"In this update, I've added two new traps to the game: the Infernal and Blizzard traps. " +
+						"They mirror the Infernal and Blizzard brews, respectively. In addition, I've added a new missile weapon as " +
+						"well as a way to untip darts via alchemy. See the changelog to see the various minor adjustments I've also made.",
+				Milestone.LUST001
+			),
+			new ChangeButton(new Image(Assets.TERRAIN_FEATURES, 16, 0, 16, 16),
+				"Traps",
+				"Added two new traps: the Infernal and Blizzard traps!\n",
+					"_-_ Mirror Infernal and Blizzard brews, respectively",
+					"_-_ They appear starting in caves."
+			),
+				new ChangeButton(
+					new ObsidianKnife(), "Added a new t4 missile weapon!",
+					"_-_ 8-16 damage with +2/+4 scaling",
+					"_-_ When surprise attacking, deals 67% to max.",
+					"_-_ 5 durability at base."
+				),
+				new ChangeButton(
+						new ItemSprite(ItemSpriteSheet.MISSILE_HOLDER),"Untipping Darts",
+						"Darts can now be untipped via alchemy!"
+				)
 		);
         ChangeInfo.buffs(
         		new ChangeButton(
@@ -231,22 +245,26 @@ public class ChangesScene extends PixelScene {
 						"Each hit of fury now rolls twice. The higher roll will be applied to the target."
 				),
 				new ChangeButton(
+						new TenguSprite(), "Tengu",
+						"Tengu is now immune to terror. Inflicting it will cause Tengu to teleport."
+				),
+				new ChangeButton(
 						new Earthroot.Seed(),
 						"_-_ Now roots enemies for 5 turns",
-						"_-_ Wardens get both their unique effects as well as the standard Herbal Armor"
+						"_-_ Wardens get both their unique effects as well as the standard Herbal Armor."
 				),
 				new ChangeButton(
 						new Starflower.Seed(),
-						"Starflower gives 10 turns adrenaline instead of 30 turns of recharging"
+						"Wardens get 10 turns adrenaline instead of 30 turns of recharging."
 				)
 		);
         ChangeInfo.changes(
         		new ChangeButton(
-        				HeroSprite.avatar(HeroClass.HUNTRESS,1),
+        				HeroSprite.avatar(HeroClass.HUNTRESS,0),
 						"Huntress",
 						"_-_ Starts with v0.7.1 studded gloves instead of cord.",
 						"_-_ Starts with v0.7.1 bow instead of darts\n",
-						"_-_ a buffed cord can be obtained via transmuting a tier-1 weapon"
+						"_-_ a buffed cord (+1/+1 -> +1/+2) can be obtained via transmuting a tier-1 weapon"
 				),
         		new ChangeButton(
         				new ItemSprite( new PlateArmor().inscribe( new HolyProvidence() ) ),
@@ -270,8 +288,23 @@ public class ChangesScene extends PixelScene {
                         "Crash bugs with wraiths",
 						"Ring of Wealth failing to drop things when it should",
 						"Affection and thorns not scaling properly with upgrades"
-                )
+                ),
+				new ChangeButton(
+						Icons.get(Icons.LANGS),
+						"Text Adjustments",
+						"Changed how some things are worded, including:\n",
+						"_-_ Ring of Tenacity description",
+						"_-_ Some enemy/weapon descriptions"
+				)
         );
+        ChangeInfo.nerfs(
+				new ChangeButton(
+						new MagicalHolster(), "Now that missile weapons can be upgraded and thus are more viable, " +
+						"the 0.0.0a holster buff is a bit over the top (especially for huntress)\n",
+						"_-_ Holster durability boost reduced (1.33 -> 1.2)\n",
+						"Speaking of, the huntress once again starts with the holster."
+				)
+		);
 		addSection("Implemented Shattered v0.7.1a",true,CharSprite.WARNING);
 		ChangeInfo.newContent(
 				addDeveloperCommentary(
@@ -282,13 +315,13 @@ public class ChangesScene extends PixelScene {
 								"Thrown weapons can now be upgraded, and there are a variety of other smaller tweaks and " +
 								"improvements as well.",
 						Milestone.SHPD070),
-				new ChangeButton( HeroSprite.avatar(HeroClass.HUNTRESS,1), "Huntress Reworked!",
+				new ChangeButton( HeroSprite.avatar(HeroClass.HUNTRESS,0), "Huntress Reworked!",
 				"The Huntress has received a class overhaul!\n\n" +
 						"Her boomerang has been replaced with a bow. The bow has infinite uses, like the boomerang, but cannot be upgraded directly, instead it will grow stronger as the huntress levels up.\n\n" +
-						"Her knuckledusters have been replaced with studded gloves, and lose their damage blocking.\n\n" +
+						"Her knuckledusters have been replaced with studded gloves. This change is purely cosmetic\n",
 						"Those with runs in progress will have their boomerang turn into a bow, and will regain most of the scrolls of upgrade spent on the boomerang.\n\n" +
 						"The huntress can now also move through grass without trampling it (she 'furrows' it instead)."),
-				new ChangeButton( new Image(Assets.HUNTRESS, 0, 90, 12, 15), "Huntress Subclasses Reworked!",
+				new ChangeButton( HeroSprite.avatar(HeroClass.HUNTRESS,6), "Huntress Subclasses Reworked!",
 				"Huntress subclasses have also received overhauls:\n\n" +
 						"The Sniper can now see 50% further, penetrates armor with ranged attacks, and can perform a special attack with her bow.\n\n" +
 						"The Warden can now see through grass and gains a variety of bonuses to plant interaction."),
@@ -354,7 +387,7 @@ public class ChangesScene extends PixelScene {
 				new ChangeButton( new ItemSprite(ItemSpriteSheet.RING_GARNET, null), new RingOfForce().trueName(),
 				"The ring of force's equipped weapon bonus was always meant as a small boost so it wasn't useless if the player already had a better weapon. It wasn't intended to be used to both replace melee and then boost thrown weapons.\n" +
 						"_-_ The ring of force no longer gives bonus damage to thrown weapons."),
-				new ChangeButton( new Gauntlet(),
+				new ChangeButton( new Sai(),
 				"As furor now works much better with fast weapons, I've taken the oppourtunity to very slightly nerf sai and gauntlets\n\n" +
 						"_-_ Sai blocking down to 0-2 from 0-3\n" +
 						"_-_ Gauntlet blocking down to 0-4 from 0-5"),
@@ -608,7 +641,7 @@ public class ChangesScene extends PixelScene {
 					Milestone.SHPD070
 				),
 				new ChangeButton(
-						new Image(Assets.HUNTRESS, 0, 15, 12, 15),
+						HeroSprite.avatar(HeroClass.HUNTRESS,0),
 						"Huntress (Base)",
 						"The Huntress's potential is being wasted by the Boomerang. " +
 								"By dumping into the Boomerang, the player wastes the majority of her natural versatility, " +
@@ -760,7 +793,7 @@ public class ChangesScene extends PixelScene {
 								"With this, bosses should now be beatable with only an Elastic weapon (given enough time)"
 				)
 		);
-		addSection("Changes", false, CharSprite.WARNING).addButtons(
+		ChangeInfo.changes(
 				new ChangeButton(
 						new ItemSprite(ItemSpriteSheet.STONE_HOLDER),
 						"Stone generation changes",

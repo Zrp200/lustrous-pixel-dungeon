@@ -19,27 +19,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.zrp200.lustrouspixeldungeon.items.rings;
+package com.zrp200.lustrouspixeldungeon.items.weapon.missiles;
 
-import com.zrp200.lustrouspixeldungeon.actors.Char;
+import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
 
-public class RingOfEvasion extends Ring {
-	private static final float BONUS_SCALING = 1.15f;
+public class ObsidianKnife extends ThrowingKnife {
+    {
+        image = ItemSpriteSheet.OBSIDIAN_KNIFE;
 
-	@Override
-	protected RingBuff buff( ) {
-		return new Evasion();
-	}
+        bones = true;
 
-	@Override
-	protected String statsInfo() {
-		return statsInfo(BONUS_SCALING);
-	}
+        tier = 4;
+        surpriseToMax = 0.67f;
+    }
 
-	public static float evasionMultiplier(Char target ){
-		return (float)Math.pow(BONUS_SCALING, getBonus(target, Evasion.class));
-	}
-
-	private class Evasion extends RingBuff {
-	}
+    @Override
+    public int maxBase() {
+        return tier * 4; // 16 max, down from 20
+    }
 }

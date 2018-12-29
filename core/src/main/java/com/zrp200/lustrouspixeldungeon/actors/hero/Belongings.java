@@ -57,7 +57,7 @@ public class Belongings implements Iterable<Item> {
 	public KindofMisc misc1 = null;
 	public KindofMisc misc2 = null;
 	
-	public Belongings( Hero owner ) {
+	Belongings(Hero owner) {
 		this.owner = owner;
 		
 		backpack = new Bag() {{
@@ -131,7 +131,7 @@ public class Belongings implements Iterable<Item> {
 		}
 	}
 	
-	public static void preview( GamesInProgress.Info info, Bundle bundle ) {
+	static void preview(GamesInProgress.Info info, Bundle bundle) {
 		if (bundle.contains( ARMOR )){
 			info.armorTier = ((Armor)bundle.get( ARMOR )).tier;
 		} else {

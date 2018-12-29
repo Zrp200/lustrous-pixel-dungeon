@@ -25,18 +25,21 @@ import com.zrp200.lustrouspixeldungeon.actors.Char;
 
 
 public class RingOfFuror extends Ring {
-	static {
-		buffClass = Furor.class;
-		bonusScaling = 1.105f;
-	}
+
+	private static final float BONUS_SCALING = 1.105f;
 
 	@Override
 	protected RingBuff buff() {
 		return new Furor();
 	}
 
+	@Override
+	protected String statsInfo() {
+		return statsInfo(BONUS_SCALING);
+	}
+
 	public static float attackDelayMultiplier(Char target ){
-		return 1f / multiplier(target);
+		return (float)Math.pow(BONUS_SCALING, -getBonus(target, Furor.class));
 	}
 
 	private class Furor extends RingBuff {	}

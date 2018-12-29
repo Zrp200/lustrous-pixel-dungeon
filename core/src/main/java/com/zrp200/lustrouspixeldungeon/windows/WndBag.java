@@ -95,14 +95,14 @@ public class WndBag extends WndTabbed {
 		NOT_EQUIPPED
 	}
 
-	protected static final int COLS_P    = 4;
-	protected static final int COLS_L    = 6;
+	private static final int COLS_P    = 4;
+	private static final int COLS_L    = 6;
 	
-	protected static final int SLOT_WIDTH	= 28;
-	protected static final int SLOT_HEIGHT	= 28;
-	protected static final int SLOT_MARGIN	= 1;
+	private static final int SLOT_WIDTH	= 28;
+	private static final int SLOT_HEIGHT	= 28;
+	private static final int SLOT_MARGIN	= 1;
 	
-	protected static final int TITLE_HEIGHT	= 14;
+	private static final int TITLE_HEIGHT	= 14;
 	
 	private Listener listener;
 	private WndBag.Mode mode;
@@ -186,7 +186,7 @@ public class WndBag extends WndTabbed {
 				lastBag( listener, mode, title );
 	}
 	
-	protected void placeTitle( Bag bag, int width ){
+	private void placeTitle(Bag bag, int width){
 		
 		RenderedText txtTitle = PixelScene.renderText(
 				title != null ? Messages.titleCase(title) : Messages.titleCase( bag.name() ), 9 );
@@ -211,7 +211,7 @@ public class WndBag extends WndTabbed {
 		add(amt);
 	}
 	
-	protected void placeItems( Bag container ) {
+	private void placeItems(Bag container) {
 		
 		// Equipped items
 		Belongings stuff = Dungeon.hero.belongings;
@@ -231,7 +231,7 @@ public class WndBag extends WndTabbed {
 		}
 	}
 	
-	protected void placeItem( final Item item ) {
+	private void placeItem(final Item item) {
 		
 		int x = col * (SLOT_WIDTH + SLOT_MARGIN);
 		int y = TITLE_HEIGHT + row * (SLOT_HEIGHT + SLOT_MARGIN);
@@ -298,7 +298,7 @@ public class WndBag extends WndTabbed {
 
 		private Bag bag;
 		
-		public BagTab( Bag bag ) {
+		BagTab(Bag bag) {
 			super( icon(bag) );
 			
 			this.bag = bag;
@@ -334,7 +334,7 @@ public class WndBag extends WndTabbed {
 		private Item item;
 		private ColorBlock bg;
 		
-		public ItemButton( Item item ) {
+		ItemButton(Item item) {
 			
 			super( item );
 

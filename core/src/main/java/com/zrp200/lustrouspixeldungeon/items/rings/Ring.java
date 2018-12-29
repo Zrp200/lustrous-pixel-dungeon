@@ -25,7 +25,6 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Badges;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
-import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
@@ -42,9 +41,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
-public class Ring extends KindofMisc {
+public abstract class Ring extends KindofMisc {
 
 	private static final int TICKS_TO_KNOW    = 200;
+
+	private static final float UPGRADE_CURSE_REMOVAL = .8f;
 	
 	protected Buff buff;
 	
@@ -99,16 +100,6 @@ public class Ring extends KindofMisc {
 	public Ring() {
 		super();
 		reset();
-	}
-
-	static float bonusScaling;
-	static Class<?extends RingBuff> buffClass;
-
-	public static float multiplier( int bonus ) {
-		return (float)Math.pow(bonusScaling, bonus);
-	}
-	public static float multiplier( Char target ){
-		return multiplier( getBonus(target) );
 	}
 
 	//anonymous rings are always IDed, do not affect ID status,
@@ -192,23 +183,40 @@ public class Ring extends KindofMisc {
 		
 		return desc;
 	}
-	
-	protected String statsInfo() {
-		float multiplier = (float)Math.pow( bonusScaling, soloBonus( visiblyUpgraded() ) );
-		return Messages.get(
-				this,
-				(isIdentified() ? "" : "typical_") + "stats",
-				new DecimalFormat("#.##").format(
-						100 * ( bonusScaling > 1 ? multiplier - 1f : 1f - multiplier )
-				)
+
+	abstract protected String statsInfo();
+	final String statsInfo(float bonusScaling) {
+		float multiplier = (float)Math.pow(bonusScaling, visualSoloBonus() );
+		String visualMultiplier = new DecimalFormat("#.##").format(
+				100 * (bonusScaling > 1 ? multiplier - 1f : 1f - multiplier )
 		);
+
+		StringBuilder message = new StringBuilder();
+		message.append(Messages.get(this,"stats")).append(" ");
+		if( !isIdentified() ) message.append("typically ");
+
+		String effect1 = Messages.get(this,"effect1"); // this goes first if available; this is the "flat" boost
+
+		if( !(effect1.equals( "" ) ) )
+			message.append( effect1 ).append( " by _" )
+					.append( (int) visualSoloBonus() )
+					.append("_ and ");
+
+		message.append( Messages.get(this, "effect2") )
+				.append(" by _")
+				.append( visualMultiplier ).append( "%._" );
+		return message.toString();
+	}
+
+	protected float visualSoloBonus() {
+		return soloBonus(visiblyUpgraded());
 	}
 
 	@Override
 	public Item upgrade() {
 		super.upgrade();
 		
-		if (Random.Float() > Math.pow(0.8, level())) {
+		if (Random.Float() > Math.pow(UPGRADE_CURSE_REMOVAL, level())) {
 			cursed = false;
 		}
 		
@@ -279,14 +287,7 @@ public class Ring extends KindofMisc {
 		return price;
 	}
 	
-	protected RingBuff buff() {
-		try {
-			return buffClass.newInstance();
-		} catch(Exception e) {
-			LustrousPixelDungeon.reportException(e);
-			return null;
-		}
-	}
+	protected abstract RingBuff buff();
 
 	private static final String UNFAMILIRIARITY    = "unfamiliarity";
 
@@ -309,10 +310,6 @@ public class Ring extends KindofMisc {
 		}
 	}
 
-	public static int getBonus(Char target) {
-		return getBonus(target, buffClass);
-	}
-
 	public static int getBonus(Char target, Class<?extends RingBuff> type){
 		int bonus = 0;
 		for (RingBuff buff : target.buffs(type)) bonus += buff.level();
@@ -320,7 +317,8 @@ public class Ring extends KindofMisc {
 	}
 
 	int soloBonus(){ return soloBonus(Ring.this.level()); }
-	private int soloBonus(int level) { return cursed ? Math.min( 0, level-2 ) : level+1; }
+
+	private int soloBonus(float level) { return (int)(cursed ? Math.min( 0, level-2 ) : level+1); } // adjusts for curses and such
 
 	public class RingBuff extends Buff {
 		@Override

@@ -24,18 +24,20 @@ package com.zrp200.lustrouspixeldungeon.items.rings;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 
 public class RingOfEnergy extends Ring {
-	static {
-		bonusScaling = 1.2f;
-		buffClass = Energy.class;
+	private static final float BONUS_SCALING = 1.2f;
+
+	@Override
+	protected String statsInfo() {
+		return statsInfo(BONUS_SCALING);
 	}
-	
+
 	@Override
 	protected RingBuff buff( ) {
 		return new Energy();
 	}
 	
 	public static float wandChargeMultiplier( Char target ){
-		return (float)Math.pow(bonusScaling, getBonus(target, Energy.class));
+		return (float)Math.pow(BONUS_SCALING,getBonus(target,Energy.class));
 	}
 	
 	public class Energy extends RingBuff {

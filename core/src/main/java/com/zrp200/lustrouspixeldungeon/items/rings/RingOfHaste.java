@@ -24,9 +24,11 @@ package com.zrp200.lustrouspixeldungeon.items.rings;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 
 public class RingOfHaste extends Ring {
-    static {
-    	buffClass = Haste.class;
-    	bonusScaling = 1.2f;
+	private static final float BONUS_SCALING = 1.2f;
+
+	@Override
+	protected String statsInfo() {
+		return statsInfo(BONUS_SCALING);
 	}
 
 	@Override
@@ -35,7 +37,7 @@ public class RingOfHaste extends Ring {
 	}
 
 	public static float speedMultiplier(Char target ){
-		return multiplier(target);
+		return (float)Math.pow(BONUS_SCALING,getBonus(target,Haste.class));
 	}
 	
 	private class Haste extends RingBuff {	}

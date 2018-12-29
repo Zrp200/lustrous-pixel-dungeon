@@ -186,4 +186,43 @@ public abstract class TippedDart extends Dart {
 			}
 		}
 	}
+	public static class UntipDart extends Recipe{
+			@Override
+			public boolean testIngredients(ArrayList<Item> ingredients) {
+				for(Item ingredient : ingredients) {
+					if(!(ingredient instanceof TippedDart)) return false;
+				}
+				return !ingredients.isEmpty();
+			}
+
+			@Override
+			public int cost(ArrayList<Item> ingredients) {
+				return 0;
+			}
+
+			@Override
+			public Item brew(ArrayList<Item> ingredients) {
+				Item output = sampleOutput(ingredients);
+				if(output == null) return null;
+				for(Item ingredient : ingredients) {
+					ingredient.quantity(0);
+				}
+				return output;
+
+			}
+
+			@Override
+			public Item sampleOutput(ArrayList<Item> ingredients) {
+				if (!testIngredients(ingredients)) return null;
+
+				try{
+					int produced = 0;
+					for(Item ingredient : ingredients) produced += ingredient.quantity();
+					return new Dart().quantity(produced);
+				} catch (Exception e) {
+					LustrousPixelDungeon.reportException(e);
+					return null;
+				}
+			}
+	}
 }

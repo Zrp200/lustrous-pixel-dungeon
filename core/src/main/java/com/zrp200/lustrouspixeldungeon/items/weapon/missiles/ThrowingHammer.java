@@ -32,16 +32,14 @@ public class ThrowingHammer extends MissileWeapon {
 		baseUses = 15;
 		sticky = false;
 	}
-	
+
 	@Override
-	public int min(int lvl) {
-		return  Math.round(1.6f * tier) +   //8 base, down from 10
-				(tier == 1 ? lvl : 2*lvl);  //scaling unchanged
+	public int minBase() {
+		return Math.round(1.6f * tier); // 8, down from 10
 	}
-	
+
 	@Override
-	public int max(int lvl) {
-		return  4 * tier +                  //20 base, down from 25
-				(tier) * lvl;               //scaling unchanged
+	public int maxBase() {
+		return 4*tier; // 20, down from 25
 	}
 }

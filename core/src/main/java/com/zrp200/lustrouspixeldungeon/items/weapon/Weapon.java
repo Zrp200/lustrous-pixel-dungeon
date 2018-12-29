@@ -30,6 +30,7 @@ import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.MagicImmune;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
+import com.zrp200.lustrouspixeldungeon.actors.mobs.Mob;
 import com.zrp200.lustrouspixeldungeon.effects.ItemChange;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.KindOfWeapon;
@@ -67,9 +68,9 @@ abstract public class Weapon extends KindOfWeapon {
 
 	private static final int HITS_TO_KNOW    = 20;
 
-	public float    ACC = 1f;	// Accuracy modifier
-	public float	DLY	= 1f;	// Speed modifier
-	public int      RCH = 1;    // Reach modifier (only applies to melee hits)
+	protected float 	ACC = 1f;	// Accuracy modifier
+	protected float 	DLY	= 1f;	// Speed modifier
+	protected int   	RCH = 1;    // Reach modifier (only applies to melee hits)
 
 	public enum Augment {
 		SPEED   (0.7f, 0.6667f),
@@ -99,6 +100,29 @@ abstract public class Weapon extends KindOfWeapon {
 	
 	public Enchantment enchantment;
 	protected boolean enchantKnown = false;
+
+	protected float surpriseToMax = 0f;
+
+	protected Char findEnemy(Char owner) {
+		return owner instanceof Hero ? ((Hero)owner).enemy() : null;
+	}
+
+	@Override
+	public int damageRoll(Char owner) {
+		if (findEnemy(owner) instanceof Mob && ((Mob) findEnemy(owner)).surprisedBy(owner)) {
+			//deals 75% toward max to max on surprise, instead of min to max.
+			int diff = max() - min();
+			int damage = augment.damageFactor(Random.NormalIntRange(
+					min() + Math.round(diff*surpriseToMax),
+					max()));
+			int exStr = owner instanceof Hero ? ((Hero) owner).STR() - STRReq() : 0;
+			if (exStr > 0) {
+				damage += Random.IntRange(0, exStr);
+			}
+			return damage;
+		}
+		return super.damageRoll(owner);
+	}
 
 	@Override
 	public Item identify() {

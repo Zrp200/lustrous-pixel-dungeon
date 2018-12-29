@@ -47,7 +47,7 @@ public class WndItem extends Window {
 	private static final int WIDTH_MIN = 120;
 	private static final int WIDTH_MAX = 220;
 
-	public WndItem( final WndBag owner, final Item item ){
+	WndItem(final WndBag owner, final Item item){
 		this( owner, item, owner != null );
 	}
 	

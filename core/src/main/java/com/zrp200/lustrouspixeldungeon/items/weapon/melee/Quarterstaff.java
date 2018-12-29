@@ -23,7 +23,7 @@ package com.zrp200.lustrouspixeldungeon.items.weapon.melee;
 
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
 
-public class Quarterstaff extends BlockingWeapon{
+public class Quarterstaff extends BlockingWeapon {
 
 	{
 		image = ItemSpriteSheet.QUARTERSTAFF;

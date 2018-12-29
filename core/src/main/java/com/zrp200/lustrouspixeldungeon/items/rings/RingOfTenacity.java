@@ -21,25 +21,34 @@
 
 package com.zrp200.lustrouspixeldungeon.items.rings;
 
+import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
-import com.zrp200.lustrouspixeldungeon.messages.Messages;
-
-import java.text.DecimalFormat;
+import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 
 public class RingOfTenacity extends Ring {
-	static {
-		bonusScaling = 0.85f;
-		buffClass = Tenacity.class;
-	}
+	private static final float BONUS_SCALING = 0.85f;
 
 	@Override
 	protected RingBuff buff() {
 		return new Tenacity();
 	}
 
+	@Override
+	protected String statsInfo() {
+		return statsInfo(BONUS_SCALING);
+	}
+
 	public static float damageMultiplier(Char t ){
 		//(HT - HP)/HT = heroes current % missing health.
-		return (float)Math.pow(bonusScaling, getBonus( t )*((float)(t.HT - t.HP)/t.HT));
+		return (float)Math.pow(BONUS_SCALING,getBonus( t, Tenacity.class )*((float)(t.HT - t.HP)/t.HT));
+	}
+
+	@Override
+	protected float visualSoloBonus() {
+		float level = super.visualSoloBonus();
+		Hero hero = Dungeon.hero;
+		if(hero != null) level *= (hero.HT - hero.HP) / hero.HT;
+		return level;
 	}
 
 	public class Tenacity extends RingBuff {

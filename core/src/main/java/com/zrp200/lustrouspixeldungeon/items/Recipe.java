@@ -62,6 +62,7 @@ import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.darts.TippedDart;
 
 import java.util.ArrayList;
 
+@SuppressWarnings("StaticInitializerReferencesSubClass")
 public abstract class Recipe {
 	
 	public abstract boolean testIngredients(ArrayList<Item> ingredients);
@@ -173,12 +174,14 @@ public abstract class Recipe {
 	private static Recipe[] oneIngredientRecipes = new Recipe[]{
 		new AlchemistsToolkit.upgradeKit(),
 		new Scroll.ScrollToStone(),
-		new StewedMeat.oneMeat()
+		new StewedMeat.oneMeat(),
+		new TippedDart.UntipDart()
 	};
 	
 	private static Recipe[] twoIngredientRecipes = new Recipe[]{
 		new Blandfruit.CookFruit(),
 		new TippedDart.TipDart(),
+		new TippedDart.UntipDart(),
 		new Bomb.EnhanceBomb(),
 		new ElixirOfAquaticRejuvenation.Recipe(),
 		new ElixirOfDragonsBlood.Recipe(),
@@ -213,6 +216,7 @@ public abstract class Recipe {
 		new ExoticPotion.PotionToExotic(),
 		new ExoticScroll.ScrollToExotic(),
 		new StewedMeat.threeMeat(),
+		new TippedDart.UntipDart(),
 		new MeatPie.Recipe()
 	};
 	

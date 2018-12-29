@@ -24,9 +24,11 @@ package com.zrp200.lustrouspixeldungeon.items.rings;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 
 public class RingOfAccuracy extends Ring {
-	static {
-	    bonusScaling = 1.3f;
-	    buffClass = Accuracy.class;
+	private static final float BONUS_SCALING = 1.3f;
+
+	@Override
+	protected String statsInfo() {
+		return statsInfo(BONUS_SCALING);
 	}
 
 	@Override
@@ -35,7 +37,7 @@ public class RingOfAccuracy extends Ring {
 	}
 
 	public static float accuracyMultiplier(Char target ){
-		return multiplier(target);
+		return (float)Math.pow(BONUS_SCALING,getBonus(target,Accuracy.class));
 	}
 	
 	private class Accuracy extends RingBuff { }

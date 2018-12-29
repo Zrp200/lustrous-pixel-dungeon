@@ -127,12 +127,28 @@ public class SpiritBow extends Weapon {
 	
 	@Override
 	public int min(int lvl) {
-		return 1 + Dungeon.hero.lvl/6 + RingOfSharpshooting.levelDamageBonus(Dungeon.hero);
+		return Math.max(0,minBase() + Dungeon.hero.lvl/6 + RingOfSharpshooting.levelDamageBonus(Dungeon.hero)*maxScale());
 	}
-	
+
+	@Override
+	public int minBase() {
+		return 1;
+	}
+	public int maxBase() {
+		return 6;
+	}
+
+	// Sharpshooting scaling
+	public int minScale() {
+		return 1;
+	}
+	public int maxScale() {
+		return 2;
+	}
+
 	@Override
 	public int max(int lvl) {
-		return 6 + Dungeon.hero.lvl/3 + RingOfSharpshooting.levelDamageBonus(Dungeon.hero)*2;
+		return Math.max(0,maxBase() + Dungeon.hero.lvl/3 + RingOfSharpshooting.levelDamageBonus(Dungeon.hero)*maxScale());
 	}
 	
 	private int targetPos;
@@ -218,7 +234,7 @@ public class SpiritBow extends Weapon {
 		public int damageRoll(Char owner) {
 			return SpiritBow.this.damageRoll(owner);
 		}
-		
+
 		@Override
 		public boolean hasEnchant(Class<? extends Enchantment> type, Char owner) {
 			return SpiritBow.this.hasEnchant(type, owner);

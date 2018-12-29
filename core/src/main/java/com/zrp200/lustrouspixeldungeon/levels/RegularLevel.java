@@ -64,10 +64,10 @@ public abstract class RegularLevel extends Level {
 	
 	protected ArrayList<Room> rooms;
 	
-	protected Builder builder;
+	private Builder builder;
 	
-	protected Room roomEntrance;
-	protected Room roomExit;
+	Room roomEntrance;
+	Room roomExit;
 	
 	public int secretDoors;
 	
@@ -407,7 +407,7 @@ public abstract class RegularLevel extends Level {
 		return false;
 	}
 	
-	protected Room randomRoom( Class<?extends Room> type ) {
+	Room randomRoom(Class<? extends Room> type) {
 		Random.shuffle( rooms );
 		for (Room r : rooms) {
 			if (type.isInstance(r)) {
@@ -427,7 +427,7 @@ public abstract class RegularLevel extends Level {
 		return null;
 	}
 	
-	protected int randomDropCell() {
+	private int randomDropCell() {
 		while (true) {
 			Room room = randomRoom( StandardRoom.class );
 			if (room != null && room != roomEntrance) {

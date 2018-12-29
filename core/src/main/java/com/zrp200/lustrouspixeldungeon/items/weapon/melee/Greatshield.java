@@ -33,8 +33,7 @@ public class Greatshield extends BlockingWeapon {
 
 	@Override
 	public int max(int lvl) {
-		return  Math.round(2.5f*(tier+1)) +     //15 base, down from 30
-				lvl*(tier-2);                   //+3 per level, down from +6
+		return super.max(lvl)/2; // 5-15 @ +1/+3
 	}
 
 	@Override

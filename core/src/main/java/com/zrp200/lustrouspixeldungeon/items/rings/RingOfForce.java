@@ -28,7 +28,6 @@ import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 
 public class RingOfForce extends Ring {
-	static { buffClass = Force.class; }
 
 	@Override
 	protected RingBuff buff() {
@@ -53,7 +52,7 @@ public class RingOfForce extends Ring {
 
 	public static int damageRoll( Hero hero ){
 		if (hero.buff(Force.class) != null) {
-			int level = getBonus(hero);
+			int level = getBonus(hero,Force.class);
 			float tier = tier(hero.STR());
 			return Random.NormalIntRange(min(level, tier), max(level, tier));
 		} else {

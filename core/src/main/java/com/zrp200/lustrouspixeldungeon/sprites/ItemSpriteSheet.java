@@ -276,6 +276,7 @@ public class ItemSpriteSheet {
 
 	public static final int JAVELIN         = MISSILE_WEP+10;
 	public static final int TOMAHAWK        = MISSILE_WEP+11;
+	public static final int OBSIDIAN_KNIFE	= MISSILE_WEP+12;
 	
 	public static final int TRIDENT         = MISSILE_WEP+13;
 	public static final int THROWING_HAMMER = MISSILE_WEP+14;
@@ -296,6 +297,7 @@ public class ItemSpriteSheet {
 
 		assignItemRect(JAVELIN,         16, 16);
 		assignItemRect(TOMAHAWK,        13, 13);
+		assignItemRect(OBSIDIAN_KNIFE,	14, 15);
 		
 		assignItemRect(TRIDENT,         16, 16);
 		assignItemRect(THROWING_HAMMER, 12, 12);

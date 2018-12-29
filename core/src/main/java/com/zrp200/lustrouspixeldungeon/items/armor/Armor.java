@@ -76,7 +76,7 @@ public class Armor extends EquipableItem {
 
 	private static final int HITS_TO_KNOW    = 10;
 
-	protected static final String AC_DETACH       = "DETACH";
+	private static final String AC_DETACH       = "DETACH";
 
 	public boolean glyphKnown = false;
 
@@ -87,7 +87,7 @@ public class Armor extends EquipableItem {
 		return super.identify();
 	}
 
-	public void revealGlyph() {
+	private void revealGlyph() {
 		glyphKnown = true;
 		ItemChange.show(Dungeon.hero,this);
 	}
@@ -287,7 +287,7 @@ public class Armor extends EquipableItem {
 		return DRMin(level());
 	}
 
-	public int DRMin(int lvl){
+	private int DRMin(int lvl){
 		int max = DRMax(lvl);
 		if (lvl >= max){
 			return (lvl - max);
@@ -546,7 +546,7 @@ public class Armor extends EquipableItem {
 	public boolean hasCurseGlyph(){
 		return glyph != null && glyph.curse();
 	}
-	public boolean visiblyInscribed() { return glyph != null && glyphKnown; }
+	private boolean visiblyInscribed() { return glyph != null && glyphKnown; }
 
 	@Override
 	public ItemSprite.Glowing glowing() {
@@ -638,7 +638,7 @@ public class Armor extends EquipableItem {
 			}
 		}
 		
-		@SuppressWarnings("unchecked")
+		@SuppressWarnings({"unchecked", "ConstantConditions"})
 		public static Glyph randomUncommon( Class<? extends Glyph> ... toIgnore ){
 			try {
 				ArrayList<Class<?>> glyphs = new ArrayList<>(Arrays.asList(uncommon));
@@ -654,8 +654,8 @@ public class Armor extends EquipableItem {
 			}
 		}
 		
-		@SuppressWarnings("unchecked")
-		public static Glyph randomRare( Class<? extends Glyph> ... toIgnore ){
+		@SuppressWarnings({"unchecked", "ConstantConditions"})
+		static Glyph randomRare(Class<? extends Glyph>... toIgnore){
 			try {
 				ArrayList<Class<?>> glyphs = new ArrayList<>(Arrays.asList(rare));
 				glyphs.removeAll(Arrays.asList(toIgnore));
@@ -670,7 +670,7 @@ public class Armor extends EquipableItem {
 			}
 		}
 		
-		@SuppressWarnings("unchecked")
+		@SuppressWarnings({"unchecked", "ConstantConditions"})
 		public static Glyph randomCurse( Class<? extends Glyph> ... toIgnore ){
 			try {
 				ArrayList<Class<?>> glyphs = new ArrayList<>(Arrays.asList(curses));

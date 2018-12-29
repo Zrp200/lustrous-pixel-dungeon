@@ -37,18 +37,6 @@ public class MeleeWeapon extends Weapon {
 	public int minBase() {return tier;}
 	public int maxBase() {return (tier+1)*5;}
 
-	@Override
-	public int min(int lvl) {
-		return  minBase() +  //base
-				lvl*minScale();    //level scaling
-	}
-
-	@Override
-	public int max(int lvl) {
-		return  maxBase() +    //base
-				lvl*(maxScale());   //level scaling
-	}
-
 	public int STRReq(int lvl){
 		lvl = Math.max(0, lvl);
 		//strength req decreases at +1,+3,+6,+10,etc.
@@ -126,7 +114,7 @@ public class MeleeWeapon extends Weapon {
 		return info;
 	}
 	
-	public String statsInfo(){
+	String statsInfo(){
 		return Messages.get(this, "stats_desc");
 	}
 
@@ -149,6 +137,13 @@ public class MeleeWeapon extends Weapon {
 			price = 1;
 		}
 		return price;
+	}
+
+	public static class Uncommon extends MeleeWeapon { // because this is used so often
+		@Override
+		public int maxBase() {
+			return 4*(tier+1);
+		}
 	}
 
 }

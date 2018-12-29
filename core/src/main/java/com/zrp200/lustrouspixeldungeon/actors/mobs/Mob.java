@@ -96,7 +96,7 @@ public abstract class Mob extends Char {
 		return enemy;
 	}
 
-	protected static final float TIME_TO_WAKE_UP = 1f;
+	private static final float TIME_TO_WAKE_UP = 1f;
 	
 	private static final String STATE	= "state";
 	private static final String SEEN	= "seen";
@@ -383,16 +383,15 @@ public abstract class Mob extends Char {
 
 					} else if (!path.isEmpty()) {
 						//if the new target is simply 1 earlier in the path shorten the path
-						if (path.getLast() == target) {
+						if (path.getLast() != target) {
+							if (Dungeon.level.adjacent(target, path.getLast())) {
+								path.add(target);
 
-							//if the new target is closer/same, need to modify end of path
-						} else if (Dungeon.level.adjacent(target, path.getLast())) {
-							path.add(target);
-
-							//if the new target is further away, need to extend the path
-						} else {
-							path.add(last);
-							path.add(target);
+								//if the new target is further away, need to extend the path
+							} else {
+								path.add(last);
+								path.add(target);
+							}
 						}
 					}
 
@@ -439,7 +438,7 @@ public abstract class Mob extends Char {
 			return false;
 		}
 	}
-	public boolean canGetFurther(int target) {
+	boolean canGetFurther(int target) {
 		return !( rooted
 				|| target == pos
 				|| Dungeon.flee(this, pos, target, Dungeon.level.passable, fieldOfView) == -1
@@ -511,7 +510,7 @@ public abstract class Mob extends Char {
 		}
 	}
 	
-	protected boolean hitWithRanged = false;
+	private boolean hitWithRanged = false;
 
 	@Override
 	public int defenseProc( Char enemy, int damage ) {
@@ -700,7 +699,7 @@ public abstract class Mob extends Char {
 		return enemySeen && (target == Dungeon.hero.pos);
 	}
 
-	public class AiState {
+	class AiState {
 		boolean act( boolean justAlerted ) {
 			return enemySeen = hasNoticedEnemy();
 		}
@@ -710,7 +709,7 @@ public abstract class Mob extends Char {
 	}
 
 	protected class Sleeping extends AiState {
-		public static final String TAG	= "SLEEPING";
+		static final String TAG	= "SLEEPING";
 
 		public boolean hasNoticedEnemy() {
 			return super.hasNoticedEnemy() && Random.Float( distance( enemy ) + enemy.stealth() + (enemy.flying ? 2 : 0) ) < 1;
@@ -742,7 +741,7 @@ public abstract class Mob extends Char {
 
 	protected class Wandering extends AiState {
 
-		public static final String TAG	= "WANDERING";
+		static final String TAG	= "WANDERING";
 		public boolean hasNoticedEnemy() {
 			return super.hasNoticedEnemy() && (Random.Float( distance( enemy ) / 2f + enemy.stealth() ) < 1);
 		}
@@ -781,7 +780,7 @@ public abstract class Mob extends Char {
 
 	protected class Hunting extends AiState {
 
-		public static final String TAG	= "HUNTING";
+		static final String TAG	= "HUNTING";
 
 		@Override
 		public boolean act( boolean justAlerted ) {
@@ -817,9 +816,9 @@ public abstract class Mob extends Char {
 
 	protected class Fleeing extends AiState {
 
-		public static final String TAG	= "FLEEING";
+		static final String TAG	= "FLEEING";
 
-		public boolean isTrapped() {
+		boolean isTrapped() {
 			return target == -1 || !getFurther(target);
 		}
 		@Override
@@ -853,7 +852,7 @@ public abstract class Mob extends Char {
 
 	protected class Passive extends AiState {
 
-		public static final String TAG	= "PASSIVE";
+		static final String TAG	= "PASSIVE";
 
 		@Override
 		public boolean hasNoticedEnemy() {

@@ -24,9 +24,11 @@ package com.zrp200.lustrouspixeldungeon.items.rings;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 
 public class RingOfSharpshooting extends Ring {
-	static {
-		bonusScaling = 1.2f;
-		buffClass = Aim.class;
+	private static final float BONUS_SCALING = 1.2f;
+
+	@Override
+	protected String statsInfo() {
+		return statsInfo(BONUS_SCALING);
 	}
 
 	@Override
@@ -35,13 +37,13 @@ public class RingOfSharpshooting extends Ring {
 	}
 
 	public static int levelDamageBonus(Char target ){
-		return getBonus(target);
+		return Math.round( getBonus(target, Aim.class) );
 	}
 	
 	public static float durabilityMultiplier( Char target ){
-		return multiplier(target);
+		return (float)Math.pow(BONUS_SCALING,getBonus(target, Aim.class));
 	}
 
-	public class Aim extends RingBuff {
+	private class Aim extends RingBuff {
 	}
 }

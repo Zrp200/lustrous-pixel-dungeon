@@ -59,6 +59,7 @@ import com.zrp200.lustrouspixeldungeon.actors.buffs.SnipersMark;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Vertigo;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Weakness;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.Mob;
+import com.zrp200.lustrouspixeldungeon.actors.mobs.Piranha;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.npcs.NPC;
 import com.zrp200.lustrouspixeldungeon.effects.CellEmitter;
 import com.zrp200.lustrouspixeldungeon.effects.CheckedCell;
@@ -102,6 +103,7 @@ import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.zrp200.lustrouspixeldungeon.items.weapon.SpiritBow;
 import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Flail;
+import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.FishingSpear;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.zrp200.lustrouspixeldungeon.journal.Notes;
 import com.zrp200.lustrouspixeldungeon.levels.Level;
@@ -137,7 +139,7 @@ public class Hero extends Char {
 	
 	public static final int MAX_LEVEL = 30;
 
-	public static final int STARTING_STR = 10;
+	private static final int STARTING_STR = 10;
 	
 	private static final float TIME_TO_REST		    = 1f;
 	private static final float TIME_TO_SEARCH	    = 2f;
@@ -161,9 +163,7 @@ public class Hero extends Char {
 	public Belongings belongings;
 	
 	public int STR;
-	
-	public float awareness;
-	
+
 	public int lvl = 1;
 	public int exp = 0;
 	
@@ -172,7 +172,7 @@ public class Hero extends Char {
 	private ArrayList<Mob> visibleEnemies;
 
 	//This list is maintained so that some logic checks can be skipped
-	// for enemies we know we aren't seeing normally, resultign in better performance
+	// for enemies we know we aren't seeing normally, resulting in better performance
 	public ArrayList<Mob> mindVisionEnemies = new ArrayList<>();
 	
 	public Hero() {
@@ -184,7 +184,7 @@ public class Hero extends Char {
 		
 		belongings = new Belongings( this );
 		
-		visibleEnemies = new ArrayList<Mob>();
+		visibleEnemies = new ArrayList<>();
 	}
 	
 	public void updateHT( boolean boostHP ){
@@ -297,10 +297,13 @@ public class Hero extends Char {
 
 		//temporarily set the hero's weapon to the missile weapon being used
 		KindOfWeapon equipped = belongings.weapon;
-		belongings.weapon = wep;
-		boolean result = attack( enemy );
-		Invisibility.dispel();
-		belongings.weapon = equipped;
+		boolean result;
+		try {
+			belongings.weapon = wep;
+			result = attack(enemy);
+			Invisibility.dispel();
+		}
+		finally {belongings.weapon = equipped;} // prevent weird run-destroying issues.
 
 		return result;
 	}
@@ -319,6 +322,7 @@ public class Hero extends Char {
 				accuracy *= 1.5f;
 			}
 		}
+		if(wep instanceof FishingSpear && target instanceof Piranha) accuracy *= 1.5f;
 		
 		if (wep != null) {
 			return (int)(attackSkill * accuracy * wep.accuracyFactor( this ));
@@ -972,7 +976,7 @@ public class Hero extends Char {
 	}
 	
 	@Override
-	public void damage( int dmg, Object src, boolean magicAttack ) {
+	public void damage( int dmg, Object src, boolean magic ) {
 		if (buff(TimekeepersHourglass.timeStasis.class) != null)
 			return;
 
@@ -997,13 +1001,13 @@ public class Hero extends Char {
 		Armor armor = belongings.armor;
 		if (armor != null)
 			if(armor.hasGlyph(AntiMagic.class, this)
-				&& AntiMagic.RESISTS.contains(src.getClass()) && magicAttack)
+				&& AntiMagic.RESISTS.contains(src.getClass()) && magic) // it's supposed to block magic you know
 				    dmg -= Random.NormalIntRange(armor.DRMin(), armor.DRMax())/2;
 			else if( armor.hasGlyph(Stone.class, this) && (src instanceof Char) )
-				dmg = ((Stone) (armor.glyph)).reduceDamage(armor, this, (Char)src, magicAttack, dmg);
+				dmg = ((Stone) (armor.glyph)).reduceDamage(armor, this, (Char)src, magic, dmg);
 
 
-		super.damage( dmg, src, magicAttack );
+		super.damage( dmg, src, magic );
 	}
 	
 	public void checkVisibleMobs() {
@@ -1393,7 +1397,7 @@ public class Hero extends Char {
 
 		int pos = Dungeon.hero.pos;
 
-		ArrayList<Integer> passable = new ArrayList<Integer>();
+		ArrayList<Integer> passable = new ArrayList<>();
 		for (Integer ofs : PathFinder.NEIGHBOURS8) {
 			int cell = pos + ofs;
 			if ((Dungeon.level.passable[cell] || Dungeon.level.avoid[cell]) && Dungeon.level.heaps.get( cell ) == null) {
@@ -1402,7 +1406,7 @@ public class Hero extends Char {
 		}
 		Collections.shuffle( passable );
 
-		ArrayList<Item> items = new ArrayList<Item>( Dungeon.hero.belongings.backpack.items );
+		ArrayList<Item> items = new ArrayList<>(Dungeon.hero.belongings.backpack.items);
 		for (Integer cell : passable) {
 			if (items.isEmpty()) {
 				break;

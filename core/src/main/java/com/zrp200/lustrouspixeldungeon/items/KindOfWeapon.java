@@ -89,8 +89,21 @@ abstract public class KindOfWeapon extends EquipableItem {
 		return max(level());
 	}
 
-	abstract public int min(int lvl);
-	abstract public int max(int lvl);
+	public abstract int minScale();
+	public abstract int maxScale();
+
+	public abstract int minBase();
+	public abstract int maxBase();
+
+	public int min(int lvl) {
+		return  minBase() +  //base
+				lvl*minScale();    //level scaling
+	}
+
+	public int max(int lvl) {
+		return  maxBase() +    //base
+				lvl*(maxScale());   //level scaling
+	}
 
 	public int damageRoll( Char owner ) {
 		return Random.NormalIntRange( min(), max() );

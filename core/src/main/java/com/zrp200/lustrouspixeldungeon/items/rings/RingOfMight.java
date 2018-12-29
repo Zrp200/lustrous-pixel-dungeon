@@ -27,9 +27,11 @@ import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 
 public class RingOfMight extends Ring {
-    static {
-    	buffClass = Might.class;
-    	bonusScaling = 1.035f;
+	private static final float BONUS_SCALING = 1.035f;
+
+	@Override
+	protected String statsInfo() {
+		return statsInfo(BONUS_SCALING);
 	}
 
 	@Override
@@ -78,11 +80,11 @@ public class RingOfMight extends Ring {
 
 	
 	public static int strengthBonus( Char target ){
-		return getBonus(target);
+		return getBonus(target,Might.class);
 	}
 	
 	public static float HTMultiplier( Char target ){
-		return multiplier(target);
+		return (float)Math.pow(BONUS_SCALING,getBonus(target,Might.class));
 	}
 
 	public class Might extends RingBuff {
