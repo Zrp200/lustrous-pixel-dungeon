@@ -211,9 +211,35 @@ public class ChangesScene extends PixelScene {
 		add(list);
 
         addSection("v0.0.2-BETA",true);
+        ChangeInfo.generate("BETA-1",false,
+				// new content
+				// buffs
+				new ChangeButton(HeroSprite.avatar(HeroClass.HUNTRESS,6),"Sniper","Sniper now always pierces armor with ranged weapons."),
+				// changes
+				ChangeButton.bugfix(
+					"Ring of Accuracy's description is now fixed.",
+					"Curse removal revealing the existance of a curse enchant if hidden.",
+					"Skeletons' and Thieves' spawnrates being 10x the expected rates on floor 4",
+					"Crash bugs"
+				),
+				new ChangeButton(Icons.get(Icons.LANGS),"Text Changes",
+					"_-_ Changed way missile weapons' descriptions are handled, and changed their content too."
+				),
+				// nerfs
+				new ChangeButton( new ObsidianKnife() ).appendList(
+						"min-to-max surprise % is now 50%, down from 67%",
+						"lowered spawn rate"
+				),
+				new ChangeButton(new ItemSprite(new Longsword().enchant(new Chilling())),"Chilling",
+						"Reverted previous changes and added new behavior:\n",
+						"_-_ A proc will extend the current chill duration by 1-2 turns or set the "
+							+ "chill duration to a random number between 2 and 3 depending on which "
+							+ "action would result in a higher stack of chill."
+				)
+		);
         ChangeInfo.newContent(
         	addDeveloperCommentary(
-        			null,
+				null,
 				"Well, here it is: my implementation of 0.7.1. I've implemented basically all of it, " +
 						"with exceptions of course.\n\n" +
 						"In this update, I've added two new traps to the game: the Infernal and Blizzard traps. " +
@@ -234,8 +260,9 @@ public class ChangesScene extends PixelScene {
 					"_-_ 5 durability at base."
 				),
 				new ChangeButton(
-						new ItemSprite(ItemSpriteSheet.MISSILE_HOLDER),"Untipping Darts",
-						"Darts can now be untipped via alchemy!"
+						new ItemSprite(ItemSpriteSheet.MISSILE_HOLDER),"Darts",
+						"Darts can now be untipped via alchemy!",
+						"\nIn addition, they can once again be dropped by hero's remains."
 				)
 		);
         ChangeInfo.buffs(
@@ -278,12 +305,6 @@ public class ChangesScene extends PixelScene {
 						new ToxicImbue(),
 						"_-_ Less toxic gas is produced the closer the buff is to expiring.",
 						"_-_ Characters imbued with toxicity now resist Corrosion and Caustic Ooze."),
-				new ChangeButton(
-						Icons.get(Icons.PREFS),
-						"Misc Changes",
-						"_-_ Darts can now be dropped from remains again\n" +
-								"_-_ Minor text adjustments"
-				),
                 ChangeButton.bugfix(
                         "Crash bugs with wraiths",
 						"Ring of Wealth failing to drop things when it should",
@@ -340,14 +361,21 @@ public class ChangesScene extends PixelScene {
 
 		ChangeInfo.changes(
 				new ChangeButton(BadgeBanner.image(Badges.Badge.UNLOCK_MAGE.image), "Hero Class changes",
-					"All heroes except the warrior now need to be unlocked via new badges. The requirements are quite simple, with the goal of giving new players some early goals. Players who have already unlocked characters will not need to re-unlock them.\n\n" +
-							"To help accelerate item identification for alchemy, all heroes now start with 3 identified items: The scroll of identify, a potion, and another scroll."
+					"All heroes except the warrior now need to be unlocked via new badges. "
+						+ "The requirements are quite simple, with the goal of giving new players "
+						+ "some early goals. Players who have already unlocked characters will not "
+						+ "need to re-unlock them.\n",
+					"To help accelerate item identification for alchemy, all heroes now start with "
+						+ "3 identified items: The scroll of identify, a potion, and another scroll."
 				),
-				new ChangeButton(Icons.get(Icons.PREFS), Messages.get(this, "misc"),
-				"Added a partial turn indicator to the game interface, which occupies the same spot as the busy icon. This should make it much easier to plan actions that take more or less than 1 turn.\n\n" +
-						"Rings now have better descriptions for their stats! All rings now show exactly how they affect you in a similar way to how other equipment gives direct stats.\n",
-						"Added item stats to the item catalog.\n",
-						"Dropping an item now takes 1 turn, up from 0.5 turns."),
+				ChangeButton.misc(
+				"Added a partial turn indicator to the game interface, which occupies the same spot "
+					+ "as the busy icon. This should make it much easier to plan actions that take "
+					+ "more or less than 1 turn.",
+				"Rings now have better descriptions for their stats! All rings now show exactly how "
+					+ "they affect you in a similar way to how other equipment gives direct stats.",
+				"Added item stats to the item catalog.",
+				"Dropping an item now takes 1 turn, up from 0.5 turns."),
 				ChangeButton.bugfix(
 						"various minor visual bugs",
 						"odd behaviour when transmuting certain items",
@@ -391,15 +419,18 @@ public class ChangesScene extends PixelScene {
 				"As furor now works much better with fast weapons, I've taken the oppourtunity to very slightly nerf sai and gauntlets\n\n" +
 						"_-_ Sai blocking down to 0-2 from 0-3\n" +
 						"_-_ Gauntlet blocking down to 0-4 from 0-5"),
-				new ChangeButton( new Shuriken(),
-				"Shuriken have been adjusted due to the new upgrade system:\n\n" +
-						"_-_ Base damage increased to 4-8 from 4-6",
-						"_-_ Durability reduced to 5 from 10"
+				new ChangeButton( new Shuriken(), "Shuriken have been adjusted due to the new upgrade system:\n")
+						.appendList(
+								"Base damage increased to 4-8 from 4-6",
+								"Durability reduced to 5 from 10"
 				)
 		);
-		ChangeInfo.generate("Not Implemented",CharSprite.NEGATIVE,
-				new ChangeButton(Icons.get(Icons.PREFS), "Misc",
-						"_-_ New blocking weapon descriptions"
+		ChangeInfo.generate("Not Implemented",false,CharSprite.NEGATIVE,
+				new ChangeButton(HeroSprite.avatar(HeroClass.HUNTRESS,6),"Minor subclass mechanics").appendList(
+						"Sniper not piercing armor when using ranged weapons on adjacent enemies."
+				),
+				ChangeButton.misc(
+						"New blocking weapon descriptions"
 				),
 				ChangeButton.bugfix(
 						"Warping and Teleportation traps working against flying enemies"
@@ -547,16 +578,15 @@ public class ChangesScene extends PixelScene {
 						"_-_ Allies and pirahnas should now ignore each other unless provoked",
 						"_-_ reduced the likelyhood of certain rare mobs spawning"
 				),
-				new ChangeButton(
-						Icons.get(Icons.PREFS),"Misc",
-						"_-_ Arcane Styli can now be transmuted into stones of enchantment\n" +
-                                "_-_ Shopkeeper now offers different prices for cursed items depending on their other attributes\n" +
-								"_-_ Added a visual indicator for soul mark recovery.\n" +
-								"_-_ Changed adrenaline icon\n" +
-                                "_-_ More buffs now grey when about to expire.\n" +
-                                "_-_ Berserk now gives a death message if you die while berserking\n" +
-								"_-_ Magic from shamans now deal damage distributed randomly rather than normally",
-								"_-_ Enemy spawn logic adjusted slightly."
+				ChangeButton.misc(
+						"Arcane Styli can now be transmuted into stones of enchantment",
+						"Shopkeeper now offers different prices for cursed items depending on their other attributes",
+						"Added a visual indicator for soul mark recovery.",
+						"Changed adrenaline icon",
+						"More buffs now grey when about to expire.",
+						"Berserk now gives a death message if you die while berserking",
+						"Magic from shamans now deal damage distributed randomly rather than normally",
+						"Enemy spawn logic adjusted slightly."
 				),
 				ChangeButton.bugfix(
 						"Berserker rage weakening his attacks",
@@ -576,8 +606,8 @@ public class ChangesScene extends PixelScene {
 						"_-_ Weaken lasts 0-40 turns, rather than 40 turns"
 				)
 		);
-		addSection("v0.0.0",true);
-		addSection("v0.0.0b", false).addButtons(
+		ChangeInfo.generate("v0.0.0",true);
+		ChangeInfo.generate("v0.0.0b", false,
 				new ChangeButton(new WandOfCorruption(),
 						"It's extremely obvious that giving wands of corruption the ability to " +
 								"inflict vertigo was the wrong decision. Terror + Vertigo is extremely " +
@@ -766,15 +796,13 @@ public class ChangesScene extends PixelScene {
 								"_-_ Transmuting a Knuckleduster will yield a random non-Knuckleduster tier-1 weapon like normal.\n" +
 								"_-_ The Knuckleduster now blocks up to 1 point of damage!"
 				),
-				new ChangeButton(
-						new ItemSprite(ItemSpriteSheet.WAND_TRANSFUSION),
-						"Wands",
-						"Wand of Transfusion:\n" +
-								"_-_ Charm now scales by 2 (was 1)\n" +
-								"_-_ Battlemage effect's proc rate boosted by 25% (1/10 -> 1/8)\n" +
-								"\nWand of Fireblast:\n" +
-								"_-_ When consuming 3 charges at once, now applies both paralysis and cripple"
-				),
+				new ChangeButton(new ItemSprite(ItemSpriteSheet.WAND_TRANSFUSION), "Wands")
+						.append("Wand of Transfusion:")
+						.appendList(
+								"Charm now scales by 2 (was 1)",
+								"Battlemage effect's proc rate boosted by 25% (1/10 -> 1/8)\n"
+						).append("Wand of Fireblast:")
+						.appendList("When consuming 3 charges at once, now applies both paralysis and cripple"),
 				new ChangeButton(
 						new Charm().getLargeIcon(), "Charm",
 						"_-_ Charm now only recovers if hit by whoever applied it.\n" +
@@ -901,22 +929,30 @@ public class ChangesScene extends PixelScene {
 			BLANK("",Window.TITLE_COLOR);
 
 			String title;
+			boolean major;
 			int color;
 
-			Template(String title, int color) {
+			Template(String title, boolean isMajor, int color) {
 				this.title = title;
+				this.major = isMajor;
 				this.color = color;
+			}
+			Template(String title, int color) {
+				this(title,false,color);
 			}
 		}
 
-		static void generate(String title, int color, ChangeButton... buttons ) {
-			ChangeInfo info = new ChangeInfo(title,false,null);
+		static void generate(String title, boolean majorTitle, int color, ChangeButton... buttons ) {
+			ChangeInfo info = new ChangeInfo(title,majorTitle,null);
 			info.hardlight(color);
 			infos.add(info);
 			info.addButtons(buttons);
 		}
+		static void generate(String title, boolean majorTitle, ChangeButton... buttons) { // for custom entries
+			generate(title, majorTitle, Window.TITLE_COLOR, buttons);
+		}
 		static void generate(Template template, ChangeButton... buttons) {
-			generate(template.title, template.color, buttons);
+			generate(template.title, template.major, template.color, buttons);
 		}
 
 		static void newContent(ChangeButton... buttons) { generate(Template.NEW_CONTENT,buttons); }
@@ -936,7 +972,6 @@ public class ChangesScene extends PixelScene {
 
 		ChangeInfo( String title, boolean majorTitle, String text){
 			super();
-			
 			if (majorTitle){
 				this.title = PixelScene.renderText( title, 9 );
 				line = new ColorBlock( 1, 1, 0xFF222222);
@@ -1047,21 +1082,17 @@ public class ChangesScene extends PixelScene {
 	//not actually a button, but functions as one.
 	private static class ChangeButton extends Component {
 
-        private static ChangeButton bugfix(String...fixes) { // it's flawed but it's still better than nothing
-            StringBuilder description = new StringBuilder();
-            boolean first = true;
-            for(String fix : fixes) {
-                if(first) first = false;
-                else description.append("\n");
-                description.append("_-_ ").append(fix);
-            }
+		private static ChangeButton misc(String... changes) {
+			return new ChangeButton(Icons.get(Icons.PREFS),Messages.get(ChangesScene.class,"misc")).appendList(changes);
+		}
 
-            return new ChangeButton(
-                    new Image( Assets.SPINNER, 144, 0, 16, 16),
-                    "Bugfixes",
-                    description.toString()
-            );
+        private static ChangeButton bugfix(String...fixes) { // it's flawed but it's still better than nothing
+			return new ChangeButton(
+					new Image( Assets.SPINNER, 144, 0, 16, 16),
+					Messages.get(ChangesScene.class,"bugfixes")
+			).appendList(fixes);
         }
+
 		protected Image icon;
 		protected String title;
 		protected String message;
@@ -1073,13 +1104,9 @@ public class ChangesScene extends PixelScene {
 			add(this.icon);
 
 			this.title = Messages.titleCase(title);
-			StringBuilder messageBuilder = new StringBuilder();
-			for(int i=0;i < messages.length;i++) {
-				messageBuilder.append(messages[i]);
-				if(i+1 < messages.length) messageBuilder.append("\n");
-			}
 
-			this.message = messageBuilder.toString();
+			this.message = "";
+			append(messages);
 
 			layout();
 		}
@@ -1089,6 +1116,20 @@ public class ChangesScene extends PixelScene {
 		}
 		ChangeButton( Buff buff, String... messages) {
 			this( buff.getLargeIcon(), buff.toString(), messages);
+		}
+
+		ChangeButton appendList(String... items ) {
+			for(String item : items)
+				append("_-_ " + item);
+			return this;
+		}
+		@SuppressWarnings("StringConcatenationInLoop")
+		public ChangeButton append(String... messages) {
+			for (String message : messages) {
+				if (!message.equals("")) this.message += "\n";
+				this.message += message;
+			}
+			return this;
 		}
 
 		protected void onClick() {

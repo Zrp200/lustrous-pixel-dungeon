@@ -190,7 +190,7 @@ public abstract class Mob extends Char {
 	public boolean enemyInFOV() {
 		return enemy != null
 				&& enemy.isAlive()
-				&& (fieldOfView == null || fieldOfView[enemy.pos])
+				&& (fieldOfView == null || enemy.pos >= fieldOfView.length || fieldOfView[enemy.pos])
 				&& enemy.invisible <= 0;
 	}
 	
@@ -563,7 +563,7 @@ public abstract class Mob extends Char {
 	}
 
 	@Override
-	public void damage( int dmg, Object src ) {
+	public void damage( int dmg, Object src, boolean magic ) {
 
 		if (state == SLEEPING) {
 			state = WANDERING;
@@ -572,7 +572,7 @@ public abstract class Mob extends Char {
 			alerted = true;
 		}
 		
-		super.damage( dmg, src );
+		super.damage( dmg, src, magic );
 	}
 	
 	
@@ -683,7 +683,9 @@ public abstract class Mob extends Char {
 	}
 	
 	public String description() {
-		return Messages.get(this, "desc");
+		String variantDesc = Messages.get(this,"variant_desc");
+		return Messages.get(this, "desc")
+				+ (variantDesc.equals("") ? "" : "\n\n" + variantDesc);
 	}
 	
 	public void notice() {

@@ -107,7 +107,7 @@ public class Yog extends Mob {
 	}
 
 	@Override
-	public void damage( int dmg, Object src ) {
+	public void damage( int dmg, Object src, boolean magic ) {
 
 		HashSet<Mob> fists = new HashSet<>();
 
@@ -117,7 +117,7 @@ public class Yog extends Mob {
 
 		dmg >>= fists.size();
 		
-		super.damage( dmg, src );
+		super.damage(dmg, src, magic);
 
 		if( isAlive() ) spawnLarva();
 
@@ -265,8 +265,8 @@ public class Yog extends Mob {
 		}
 
 		@Override
-		public void damage(int dmg, Object src) {
-			super.damage(dmg, src);
+		public void damage(int dmg, Object src, boolean magic ) {
+			super.damage(dmg, src, magic);
 			LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
 			if (lock != null) lock.addTime(dmg*0.5f);
 		}
@@ -362,8 +362,8 @@ public class Yog extends Mob {
 		}
 
 		@Override
-		public void damage(int dmg, Object src) {
-			super.damage(dmg, src);
+		public void damage(int dmg, Object src, boolean magic ) {
+			super.damage(dmg, src, magic);
 			LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
 			if (lock != null) lock.addTime(dmg*0.5f);
 		}

@@ -64,8 +64,6 @@ abstract public class MissileWeapon extends Weapon {
 	
 	//used to reduce durability from the source weapon stack, rather than the one being thrown.
 	protected MissileWeapon parent;
-	
-	public int tier;
 
 	@Override
 	public int min() {
@@ -253,20 +251,6 @@ abstract public class MissileWeapon extends Weapon {
 	}
 	
 	@Override
-	public int damageRoll(Char owner) {
-		int damage = augment.damageFactor(super.damageRoll( owner ));
-		
-		if (owner instanceof Hero) {
-			int exStr = ((Hero)owner).STR() - STRReq();
-			if (exStr > 0) {
-				damage += Random.IntRange( 0, exStr );
-			}
-		}
-		
-		return damage;
-	}
-	
-	@Override
 	public void reset() {
 		super.reset();
 		durability = MAX_DURABILITY;
@@ -316,34 +300,7 @@ abstract public class MissileWeapon extends Weapon {
 	
 	@Override
 	public String info() {
-
-		String info = desc();
-		
-		info += "\n\n" + Messages.get( MissileWeapon.class, "stats",
-				tier,
-				Math.round(augment.damageFactor(min())),
-				Math.round(augment.damageFactor(max())),
-				STRReq());
-
-		if (STRReq() > Dungeon.hero.STR()) {
-			info += " " + Messages.get(Weapon.class, "too_heavy");
-		} else if (Dungeon.hero.STR() > STRReq()){
-			info += " " + Messages.get(Weapon.class, "excess_str", Dungeon.hero.STR() - STRReq());
-		}
-
-		if (enchantment != null && (cursedKnown || !enchantment.curse())){
-			info += "\n\n" + Messages.get(Weapon.class, "enchanted", enchantment.name());
-			info += " " + Messages.get(enchantment, "desc");
-		}
-
-		if (cursed && isEquipped( Dungeon.hero )) {
-			info += "\n\n" + Messages.get(Weapon.class, "cursed_worn");
-		} else if (cursedKnown && cursed) {
-			info += "\n\n" + Messages.get(Weapon.class, "cursed");
-		} else if (!isIdentified() && cursedKnown){
-			info += "\n\n" + Messages.get(Weapon.class, "not_cursed");
-		}
-
+		String info = super.info();
 		info += "\n\n" + Messages.get(MissileWeapon.class, "distance");
 		
 		info += "\n\n" + Messages.get(this, "durability");
@@ -355,8 +312,7 @@ abstract public class MissileWeapon extends Weapon {
 		} else {
 			info += " " + Messages.get(this, "unlimited_uses");
 		}
-		
-		
+
 		return info;
 	}
 	

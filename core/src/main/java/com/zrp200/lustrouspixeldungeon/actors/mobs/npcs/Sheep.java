@@ -23,12 +23,12 @@ package com.zrp200.lustrouspixeldungeon.actors.mobs.npcs;
 
 import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
-import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
+import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.sprites.CharSprite;
 import com.zrp200.lustrouspixeldungeon.sprites.SheepSprite;
 
-public class Sheep extends NPC {
+public class Sheep extends Noncombatant {
 
 	private static final String[] LINE_KEYS = {"Baa!", "Baa?", "Baa.", "Baa..."};
 
@@ -56,11 +56,13 @@ public class Sheep extends NPC {
 	}
 
 	@Override
-	public void damage( int dmg, Object src ) {
+	public int defenseSkill(Char enemy) {
+		return 0; // wouldn't make much sense if they somehow were aware enough to dodge things.
 	}
 
 	@Override
-	public void add( Buff buff ) {
+	public boolean reset() {
+		return false; // default behavior
 	}
 
 	@Override

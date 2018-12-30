@@ -128,9 +128,7 @@ public abstract class Shaman extends Mob implements Callback {
 			enemy.sprite.showStatus( CharSprite.NEUTRAL,  enemy.defenseVerb() );
 		next();
 	}
-	public String description() {
-	    return super.description() + "\n\n" + Messages.get(this, "variant_desc");
-    }
+
 	@Override
 	public void call() {
 		next();
@@ -161,11 +159,9 @@ public abstract class Shaman extends Mob implements Callback {
 			enemy.sprite.burst(0xFFFFFFFF,2);
 			applyZap( Random.NormalIntRange(4,12) );
 		}
-		public void onZapComplete() { // a temporary solution to what I want at the moment, hoping to get a bit more elegant later
+		public void onZapComplete() {
 			zapping = true; // this boosts its accuracy temporarily
-			try {
-				super.onZapComplete();
-			} finally {
+			try { super.onZapComplete(); } finally {
 				zapping = false;  // deactivate said boost
 			}
 		}

@@ -230,12 +230,10 @@ public class Blacksmith extends NPC {
 	}
 	
 	@Override
-	public void damage( int dmg, Object src ) {
-	}
+	public void damage( int dmg, Object src,boolean magic ) { }
 	
 	@Override
-	public void add( Buff buff ) {
-	}
+	public void add( Buff buff ) { }
 	
 	@Override
 	public boolean reset() {

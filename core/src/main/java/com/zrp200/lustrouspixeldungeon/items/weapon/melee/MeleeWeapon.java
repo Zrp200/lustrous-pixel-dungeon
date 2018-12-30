@@ -21,40 +21,20 @@
 
 package com.zrp200.lustrouspixeldungeon.items.weapon.melee;
 
-import com.watabou.utils.Random;
-import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
-import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
-import com.zrp200.lustrouspixeldungeon.messages.Messages;
 
 public class MeleeWeapon extends Weapon {
-	
-	public int tier;
 
-	public int minScale() {return 1;}
-	public int maxScale() {return tier+1;}
-	public int minBase() {return tier;}
-	public int maxBase() {return (tier+1)*5;}
+	public int minScale() 	{ return 1;          }
+	public int maxScale() 	{ return tier+1;     }
+	public int minBase()  	{ return tier;       }
+	public int maxBase()  	{ return (tier+1)*5; }
 
 	public int STRReq(int lvl){
 		lvl = Math.max(0, lvl);
 		//strength req decreases at +1,+3,+6,+10,etc.
 		return (8 + tier * 2) - (int)(Math.sqrt(8 * lvl + 1) - 1)/2;
-	}
-	
-	@Override
-	public int damageRoll(Char owner) {
-		int damage = augment.damageFactor(super.damageRoll( owner ));
-
-		if (owner instanceof Hero) {
-			int exStr = ((Hero)owner).STR() - STRReq();
-			if (exStr > 0) {
-				damage += Random.IntRange( 0, exStr );
-			}
-		}
-		
-		return damage;
 	}
 
 	public int defenseFactor(Char owner, int level) {
@@ -62,60 +42,6 @@ public class MeleeWeapon extends Weapon {
 	}
 	public int defenseFactor(Char owner) {
 		return defenseFactor(owner, level());
-	}
-
-	public String baseInfo() {
-		String info = desc();
-		int encumbrance = STRReq(levelKnown ? level() : 0) - Dungeon.hero.STR();
-
-		if (levelKnown) {
-			info += "\n\n" + Messages.get(MeleeWeapon.class, "stats_known", tier, augment.damageFactor(min()), augment.damageFactor(max()), STRReq());
-			if (encumbrance > 0) {
-				info += " " + Messages.get(Weapon.class, "too_heavy");
-			} else if (encumbrance < 0){
-				info += " " + Messages.get(Weapon.class, "excess_str", -encumbrance);
-			}
-		} else {
-			info += "\n\n" + Messages.get(MeleeWeapon.class, "stats_unknown", tier, min(0), max(0), STRReq(0));
-			if (encumbrance > 0) {
-				info += " " + Messages.get(MeleeWeapon.class, "probably_too_heavy");
-			}
-		}
-		if (!statsInfo().equals(""))
-			info += "\n\n" + statsInfo();
-		return info;
-	}
-	@Override
-	public String info() {
-		String info = baseInfo();
-		switch (augment) {
-			case SPEED:
-				info += "\n\n" + Messages.get(Weapon.class, "faster");
-				break;
-			case DAMAGE:
-				info += "\n\n" + Messages.get(Weapon.class, "stronger");
-				break;
-			case NONE:
-		}
-
-		if ( isVisiblyEnchanted() ){
-			info += "\n\n" + Messages.get(Weapon.class, "enchanted", enchantment.name());
-			info += " " + Messages.get(enchantment, "desc");
-		}
-
-		if (cursed && isEquipped( Dungeon.hero )) {
-			info += "\n\n" + Messages.get(Weapon.class, "cursed_worn");
-		} else if ( visiblyCursed() ) {
-			info += "\n\n" + Messages.get(Weapon.class, "cursed");
-		} else if (!isIdentified() && cursedKnown){
-			info += "\n\n" + Messages.get(Weapon.class, "not_cursed");
-		}
-		
-		return info;
-	}
-	
-	String statsInfo(){
-		return Messages.get(this, "stats_desc");
 	}
 
 	@Override

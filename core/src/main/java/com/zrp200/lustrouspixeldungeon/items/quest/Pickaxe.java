@@ -32,7 +32,7 @@ import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.Bat;
 import com.zrp200.lustrouspixeldungeon.effects.CellEmitter;
 import com.zrp200.lustrouspixeldungeon.effects.Speck;
-import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Shortsword;
+import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
 import com.zrp200.lustrouspixeldungeon.levels.Level;
 import com.zrp200.lustrouspixeldungeon.levels.Terrain;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
@@ -43,7 +43,7 @@ import com.zrp200.lustrouspixeldungeon.utils.GLog;
 
 import java.util.ArrayList;
 
-public class Pickaxe extends Shortsword {
+public class Pickaxe extends Weapon {
 	
 	public static final String AC_MINE	= "MINE";
 	
@@ -60,10 +60,15 @@ public class Pickaxe extends Shortsword {
 		defaultAction = AC_MINE;
 
 	}
-	
+
+	public int minBase() { return  2; }
+	public int maxBase() { return 15; }
+
+	public int minScale() { return 0; }
+	public int maxScale() { return 0; }
+
 	public boolean bloodStained = false;
 
-	@Override
 	public int STRReq(int lvl) {
 		return 14;  //tier 3
 	}

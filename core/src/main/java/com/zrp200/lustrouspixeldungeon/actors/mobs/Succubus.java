@@ -37,7 +37,6 @@ import com.zrp200.lustrouspixeldungeon.effects.Speck;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfLullaby;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.zrp200.lustrouspixeldungeon.mechanics.Ballistica;
-import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.sprites.SuccubusSprite;
 
 import java.util.ArrayList;
@@ -186,11 +185,6 @@ public class Succubus extends Mob {
 		public int attackSkill(Char target) {
 			return 37;
 		} // -3
-
-		@Override
-		public String description() {
-			return super.description() + "\n\n" + Messages.get(this,"variant_desc");
-		}
 
 		@Override
 		public int drRoll() {

@@ -23,7 +23,6 @@ package com.zrp200.lustrouspixeldungeon.items.weapon;
 
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Callback;
-import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Actor;
@@ -127,7 +126,7 @@ public class SpiritBow extends Weapon {
 	
 	@Override
 	public int min(int lvl) {
-		return Math.max(0,minBase() + Dungeon.hero.lvl/6 + RingOfSharpshooting.levelDamageBonus(Dungeon.hero)*maxScale());
+		return Math.max(0,minBase() + Dungeon.hero.lvl/6 + RingOfSharpshooting.levelDamageBonus(Dungeon.hero)*minScale());
 	}
 
 	@Override
@@ -155,14 +154,7 @@ public class SpiritBow extends Weapon {
 	
 	@Override
 	public int damageRoll(Char owner) {
-		int damage = augment.damageFactor(super.damageRoll(owner));
-		
-		if (owner instanceof Hero) {
-			int exStr = ((Hero)owner).STR() - STRReq();
-			if (exStr > 0) {
-				damage += Random.IntRange( 0, exStr );
-			}
-		}
+		int damage = super.damageRoll(owner);
 		
 		if (sniperSpecial){
 			switch (augment){

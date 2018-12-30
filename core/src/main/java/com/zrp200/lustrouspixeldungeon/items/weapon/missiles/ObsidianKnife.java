@@ -30,7 +30,7 @@ public class ObsidianKnife extends ThrowingKnife {
         bones = true;
 
         tier = 4;
-        surpriseToMax = 0.67f;
+        surpriseToMax = 0.5f;
     }
 
     @Override

@@ -43,25 +43,25 @@ abstract public class KindOfWeapon extends EquipableItem {
 	@Override
 	public boolean doEquip( Hero hero ) {
 		detachAll( hero.belongings.backpack );
-		
+
 		if (hero.belongings.weapon == null || hero.belongings.weapon.doUnequip( hero, true )) {
-			
+
 			hero.belongings.weapon = this;
 			activate( hero );
 
 			updateQuickslot();
-			
+
 			cursedKnown = true;
 			if (cursed) {
 				equipCursed( hero );
 				GLog.n( Messages.get(KindOfWeapon.class, "equip_cursed") );
 			}
-			
+
 			hero.spendAndNext( TIME_TO_EQUIP );
 			return true;
-			
+
 		} else {
-			
+
 			collect( hero.belongings.backpack );
 			return false;
 		}
@@ -108,7 +108,7 @@ abstract public class KindOfWeapon extends EquipableItem {
 	public int damageRoll( Char owner ) {
 		return Random.NormalIntRange( min(), max() );
 	}
-	
+
 	public float accuracyFactor( Char owner ) {
 		return 1f;
 	}

@@ -72,8 +72,8 @@ public class Brute extends Mob {
 	}
 	
 	@Override
-	public void damage( int dmg, Object src ) {
-		super.damage( dmg, src );
+	public void damage( int dmg, Object src, boolean magic ) {
+		super.damage(dmg, src, magic);
 		
 		if (isAlive() && !enraged && HP < HT / 4) {
 			enraged = true;

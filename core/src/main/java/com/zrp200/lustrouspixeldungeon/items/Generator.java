@@ -406,7 +406,7 @@ public class Generator {
 					Tomahawk.class,
 					ObsidianKnife.class
 			};
-			MIS_T4.probs = new float[]{ 4, 3, 2 };
+			MIS_T4.probs = new float[]{ 4, 3, 1 };
 			
 			MIS_T5.classes = new Class<?>[]{
 					Trident.class,

@@ -72,6 +72,8 @@ abstract public class Weapon extends KindOfWeapon {
 	protected float 	DLY	= 1f;	// Speed modifier
 	protected int   	RCH = 1;    // Reach modifier (only applies to melee hits)
 
+	public int tier;
+
 	public enum Augment {
 		SPEED   (0.7f, 0.6667f),
 		DAMAGE  (1.5f, 1.6667f),
@@ -110,7 +112,7 @@ abstract public class Weapon extends KindOfWeapon {
 	@Override
 	public int damageRoll(Char owner) {
 		if (findEnemy(owner) instanceof Mob && ((Mob) findEnemy(owner)).surprisedBy(owner)) {
-			//deals 75% toward max to max on surprise, instead of min to max.
+			//deals % toward max to max on surprise, instead of min to max.
 			int diff = max() - min();
 			int damage = augment.damageFactor(Random.NormalIntRange(
 					min() + Math.round(diff*surpriseToMax),
@@ -157,6 +159,60 @@ abstract public class Weapon extends KindOfWeapon {
 		}
 
 		return damage;
+	}
+
+	public String baseInfo() {
+		String info = desc();
+		int encumbrance = STRReq(levelKnown ? level() : 0) - Dungeon.hero.STR();
+
+		if (levelKnown) {
+			info += "\n\n" + Messages.get(this, "stats_known", tier, augment.damageFactor(min()), augment.damageFactor(max()), STRReq());
+			if (encumbrance > 0) {
+				info += " " + Messages.get(this, "too_heavy");
+			} else if (encumbrance < 0){
+				info += " " + Messages.get(this, "excess_str", -encumbrance);
+			}
+		} else {
+			info += "\n\n" + Messages.get(this, "stats_unknown", tier, min(0), max(0), STRReq(0));
+			if (encumbrance > 0) {
+				info += " " + Messages.get(this, "probably_too_heavy");
+			}
+		}
+		if (!statsInfo().equals(""))
+			info += "\n\n" + statsInfo();
+		return info;
+	}
+	@Override
+	public String info() {
+		String info = baseInfo();
+		switch (augment) {
+			case SPEED:
+				info += "\n\n" + Messages.get(Weapon.class, "faster");
+				break;
+			case DAMAGE:
+				info += "\n\n" + Messages.get(Weapon.class, "stronger");
+				break;
+			case NONE:
+		}
+
+		if ( isVisiblyEnchanted() ){
+			info += "\n\n" + Messages.get(Weapon.class, "enchanted", enchantment.name());
+			info += " " + Messages.get(enchantment, "desc");
+		}
+
+		if (cursed && isEquipped( Dungeon.hero )) {
+			info += "\n\n" + Messages.get(Weapon.class, "cursed_worn");
+		} else if ( visiblyCursed() ) {
+			info += "\n\n" + Messages.get(Weapon.class, "cursed");
+		} else if (!isIdentified() && cursedKnown){
+			info += "\n\n" + Messages.get(Weapon.class, "not_cursed");
+		}
+
+		return info;
+	}
+
+	public String statsInfo(){
+		return Messages.get(this, "stats_desc");
 	}
 
 	private static final String
@@ -388,12 +444,10 @@ abstract public class Weapon extends KindOfWeapon {
 		}
 
 		@Override
-		public void restoreFromBundle( Bundle bundle ) {
-		}
+		public void restoreFromBundle( Bundle bundle ) { }
 
 		@Override
-		public void storeInBundle( Bundle bundle ) {
-		}
+		public void storeInBundle( Bundle bundle ) { }
 		
 		public abstract ItemSprite.Glowing glowing();
 		

@@ -185,9 +185,9 @@ public abstract class Ring extends KindofMisc {
 	}
 
 	abstract protected String statsInfo();
-	final String statsInfo(float bonusScaling) {
+	final String statsInfo(float bonusScaling) { // the "default" method
 		float multiplier = (float)Math.pow(bonusScaling, visualSoloBonus() );
-		String visualMultiplier = new DecimalFormat("#.##").format(
+		String visualMultiplier = new DecimalFormat("#.#"+(multiplier<1?"#":"")).format(
 				100 * (bonusScaling > 1 ? multiplier - 1f : 1f - multiplier )
 		);
 
@@ -209,7 +209,7 @@ public abstract class Ring extends KindofMisc {
 	}
 
 	protected float visualSoloBonus() {
-		return soloBonus(visiblyUpgraded());
+		return visiblyCursed() ? Math.min(0,visiblyUpgraded() - 2) : soloBonus( visiblyUpgraded() );
 	}
 
 	@Override
@@ -271,7 +271,7 @@ public abstract class Ring extends KindofMisc {
 	@Override
 	public int price() {
 		int price = 75;
-		if (cursed && cursedKnown) {
+		if ( visiblyCursed() ) {
 			price /= 2;
 		}
 		if (levelKnown) {
@@ -317,7 +317,6 @@ public abstract class Ring extends KindofMisc {
 	}
 
 	int soloBonus(){ return soloBonus(Ring.this.level()); }
-
 	private int soloBonus(float level) { return (int)(cursed ? Math.min( 0, level-2 ) : level+1); } // adjusts for curses and such
 
 	public class RingBuff extends Buff {

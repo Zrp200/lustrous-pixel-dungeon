@@ -25,8 +25,6 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
-import com.zrp200.lustrouspixeldungeon.actors.Char;
-import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.Golem;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.Mob;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.Monk;
@@ -41,7 +39,7 @@ import com.zrp200.lustrouspixeldungeon.sprites.ImpSprite;
 import com.zrp200.lustrouspixeldungeon.windows.WndImp;
 import com.zrp200.lustrouspixeldungeon.windows.WndQuest;
 
-public class Imp extends NPC {
+public class Imp extends Noncombatant {
 
 	{
 		spriteClass = ImpSprite.class;
@@ -66,24 +64,6 @@ public class Imp extends NPC {
 		throwItem();
 		
 		return super.act();
-	}
-	
-	@Override
-	public int defenseSkill( Char enemy ) {
-		return 1000;
-	}
-	
-	@Override
-	public void damage( int dmg, Object src ) {
-	}
-	
-	@Override
-	public void add( Buff buff ) {
-	}
-	
-	@Override
-	public boolean reset() {
-		return true;
 	}
 	
 	@Override

@@ -27,8 +27,6 @@ import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
-import com.zrp200.lustrouspixeldungeon.actors.Char;
-import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Paralysis;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Roots;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.FetidRat;
@@ -55,7 +53,7 @@ import com.zrp200.lustrouspixeldungeon.utils.GLog;
 import com.zrp200.lustrouspixeldungeon.windows.WndQuest;
 import com.zrp200.lustrouspixeldungeon.windows.WndSadGhost;
 
-public class Ghost extends NPC {
+public class Ghost extends Noncombatant {
 
 	{
 		spriteClass = GhostSprite.class;
@@ -67,7 +65,6 @@ public class Ghost extends NPC {
 	
 	public Ghost() {
 		super();
-
 		Sample.INSTANCE.load( Assets.SND_GHOST );
 	}
 
@@ -76,34 +73,6 @@ public class Ghost extends NPC {
 		if (Quest.processed())
 			target = Dungeon.hero.pos;
 		return super.act();
-	}
-
-	@Override
-	public int defenseSkill( Char enemy ) {
-		return 1000;
-	}
-	
-	@Override
-	public float speed() {
-		return Quest.processed() ? 2f : 0.5f;
-	}
-	
-	@Override
-	protected Char chooseEnemy() {
-		return null;
-	}
-	
-	@Override
-	public void damage( int dmg, Object src ) {
-	}
-	
-	@Override
-	public void add( Buff buff ) {
-	}
-	
-	@Override
-	public boolean reset() {
-		return true;
 	}
 	
 	@Override

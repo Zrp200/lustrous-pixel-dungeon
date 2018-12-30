@@ -24,8 +24,6 @@ package com.zrp200.lustrouspixeldungeon.actors.mobs.npcs;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
-import com.zrp200.lustrouspixeldungeon.actors.Char;
-import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.items.Generator;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.quest.CeremonialCandle;
@@ -47,7 +45,7 @@ import com.zrp200.lustrouspixeldungeon.windows.WndWandmaker;
 
 import java.util.ArrayList;
 
-public class Wandmaker extends NPC {
+public class Wandmaker extends Noncombatant {
 
 	{
 		spriteClass = WandmakerSprite.class;
@@ -59,24 +57,6 @@ public class Wandmaker extends NPC {
 	protected boolean act() {
 		throwItem();
 		return super.act();
-	}
-	
-	@Override
-	public int defenseSkill( Char enemy ) {
-		return 1000;
-	}
-	
-	@Override
-	public void damage( int dmg, Object src ) {
-	}
-	
-	@Override
-	public void add( Buff buff ) {
-	}
-	
-	@Override
-	public boolean reset() {
-		return true;
 	}
 	
 	@Override

@@ -75,7 +75,6 @@ public class Chaotic extends WeaponCurse {
 
             add(glyphToCurse(Multiplicity.class));
             add(glyphToCurse(Displacement.class));
-
             add(glyphToOffCurse(Corrosion.class));
         }
     };

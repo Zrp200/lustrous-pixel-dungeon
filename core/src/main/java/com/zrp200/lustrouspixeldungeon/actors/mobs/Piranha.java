@@ -28,7 +28,6 @@ import com.zrp200.lustrouspixeldungeon.Statistics;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Burning;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Vertigo;
-import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.items.food.MysteryMeat;
 import com.zrp200.lustrouspixeldungeon.levels.RegularLevel;
 import com.zrp200.lustrouspixeldungeon.levels.rooms.Room;
@@ -78,7 +77,7 @@ public class Piranha extends Mob {
 		HashSet<Char> enemies = super.findEnemies();
 		if(state == HUNTING) return enemies;
 		for(Char enemy : enemies) {
-			if(enemy.alignment == Alignment.ALLY && !(enemy instanceof Hero)) {
+			if(enemy.alignment == Alignment.ALLY && enemy != Dungeon.hero ) {
 				enemies.remove(enemy);
 			}
 		}

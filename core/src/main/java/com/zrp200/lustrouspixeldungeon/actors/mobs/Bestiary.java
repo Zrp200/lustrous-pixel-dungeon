@@ -60,9 +60,9 @@ public class Bestiary {
 						put(	Swarm.class,	1f	);
 
 						// Rare
-						put(Thief.class,              	0.15f);
-						put(Shaman.MagicMissile.class,	0.10f);
-						put(Skeleton.class,            	0.05f);
+						put(Thief.class,              	0.015f);
+						put(Shaman.MagicMissile.class,	0.010f);
+						put(Skeleton.class,            	0.005f);
 						break;
 
 					// Prison
