@@ -23,6 +23,7 @@ package com.zrp200.lustrouspixeldungeon.levels.features;
 
 import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
+import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
@@ -102,10 +103,10 @@ public class HighGrass {
 		}
 		
 		freezeTrample = false;
-
-		GameScene.updateMap( pos );
+		if (LustrousPixelDungeon.scene() instanceof GameScene) {
+		    GameScene.updateMap( pos );
 
 		CellEmitter.get( pos ).burst( LeafParticle.LEVEL_SPECIFIC, 4 );
-		if (Dungeon.level.heroFOV[pos]) Dungeon.observe();
+		if (Dungeon.level.heroFOV[pos]) Dungeon.observe();}
 	}
 }

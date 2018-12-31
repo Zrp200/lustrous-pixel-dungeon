@@ -126,7 +126,7 @@ public class SpiritBow extends Weapon {
 	
 	@Override
 	public int min(int lvl) {
-		return Math.max(0,minBase() + Dungeon.hero.lvl/6 + RingOfSharpshooting.levelDamageBonus(Dungeon.hero)*minScale());
+		return Math.max(0,minBase() + Dungeon.hero.lvl/5 + RingOfSharpshooting.levelDamageBonus(Dungeon.hero)*minScale());
 	}
 
 	@Override
@@ -147,7 +147,7 @@ public class SpiritBow extends Weapon {
 
 	@Override
 	public int max(int lvl) {
-		return Math.max(0,maxBase() + Dungeon.hero.lvl/3 + RingOfSharpshooting.levelDamageBonus(Dungeon.hero)*maxScale());
+		return Math.max(0,maxBase() + (int)(Dungeon.hero.lvl/2.5f) + RingOfSharpshooting.levelDamageBonus(Dungeon.hero)*maxScale());
 	}
 	
 	private int targetPos;
@@ -303,7 +303,10 @@ public class SpiritBow extends Weapon {
 								new Callback() {
 									@Override
 									public void call() {
-										if (enemy.isAlive()) onThrow(cell);
+										if (enemy.isAlive()) {
+											curUser = user;
+											onThrow(cell);
+										}
 										
 										if (last) {
 											user.spendAndNext(castDelay(user, dst));

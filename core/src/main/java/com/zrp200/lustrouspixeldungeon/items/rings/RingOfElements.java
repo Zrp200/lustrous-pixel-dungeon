@@ -43,7 +43,7 @@ import com.zrp200.lustrouspixeldungeon.levels.traps.GrimTrap;
 import java.util.HashSet;
 
 public class RingOfElements extends Ring {
-	private static final float BONUS_SCALING = 0.875f;
+	private static final float BONUS_SCALING = 0.84f;
 
 	@Override
 	protected RingBuff buff() {

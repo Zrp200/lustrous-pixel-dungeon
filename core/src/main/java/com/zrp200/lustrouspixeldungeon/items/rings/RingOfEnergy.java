@@ -24,7 +24,7 @@ package com.zrp200.lustrouspixeldungeon.items.rings;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 
 public class RingOfEnergy extends Ring {
-	private static final float BONUS_SCALING = 1.2f;
+	private static final float BONUS_SCALING = 1.25f;
 
 	@Override
 	protected String statsInfo() {

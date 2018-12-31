@@ -42,7 +42,7 @@ public class Stone extends Armor.Glyph {
 		} else {
 			hitChance = 1f - (evasion/accuracy)/2f;
 		}
-		
+
 		damage = (int)Math.ceil(damage * hitChance);
 		
 		return damage;
