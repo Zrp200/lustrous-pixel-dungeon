@@ -29,10 +29,7 @@ import com.zrp200.lustrouspixeldungeon.utils.BArray;
 
 public class WarpingTrap extends TeleportationTrap {
 
-	{
-		color = TEAL;
-		shape = STARS;
-	}
+	{ shape = STARS; }
 
 	@Override
 	public void activate() {

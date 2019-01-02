@@ -24,6 +24,7 @@ package com.zrp200.lustrouspixeldungeon.items;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.GameMath;
 import com.watabou.utils.Random;
+import com.zrp200.lustrouspixeldungeon.Challenges;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
 import com.zrp200.lustrouspixeldungeon.items.armor.Armor;
@@ -460,7 +461,7 @@ public class Generator {
 			{0, 10, 40, 40, 10},
 			{0,  5, 20, 50, 25},
 			{0,  2,  8, 20, 70},
-			{0,  1,  2,  3, 94} // You're getting a t5. Deal with it.
+			{0,  1,  4, 10, 85} // You're getting a t5. Deal with it.
 	};
 	
 	private static HashMap<Category,Float> categoryProbs = new LinkedHashMap<>();
@@ -471,6 +472,7 @@ public class Generator {
 		}
 	}
 	
+	@SuppressWarnings("ConstantConditions")
 	public static Item random() {
 		Category cat = Random.chances( categoryProbs );
 		if (cat == null){
@@ -478,7 +480,9 @@ public class Generator {
 			cat = Random.chances( categoryProbs );
 		}
 		categoryProbs.put( cat, categoryProbs.get( cat ) - 1);
-		return random( cat );
+		Item result = random( cat );
+		if(result == null || Challenges.isItemBlocked(result)) result = random();
+		return result;
 	}
 	
 	public static Item random( Category cat ) {
@@ -602,13 +606,14 @@ public class Generator {
 				return null;
 			}
 			
+			@SuppressWarnings("unchecked")
 			Class<?extends Artifact> art = (Class<? extends Artifact>) cat.classes[i];
 
 			if (removeArtifact(art)) {
 				Artifact artifact = art.newInstance();
 				
 				artifact.random();
-				
+				if(Challenges.isItemBlocked(artifact)) return randomArtifact(); // honestly gets two birds with one stone here
 				return artifact;
 			} else {
 				return null;

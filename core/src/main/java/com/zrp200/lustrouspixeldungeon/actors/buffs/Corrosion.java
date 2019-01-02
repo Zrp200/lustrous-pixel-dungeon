@@ -24,19 +24,15 @@ package com.zrp200.lustrouspixeldungeon.actors.buffs;
 import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
-import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.ui.BuffIndicator;
-import com.zrp200.lustrouspixeldungeon.utils.GLog;
 
-public class Corrosion extends Buff implements Hero.Doom {
+public class Corrosion extends ActiveBuff{
 
 	private float damage = 1;
 	protected float left;
 
 	private static final String DAMAGE	= "damage";
-	private static final String LEFT	= "left";
-
 	{
 		type = buffType.NEGATIVE;
 		announced = true;
@@ -46,18 +42,16 @@ public class Corrosion extends Buff implements Hero.Doom {
 	public void storeInBundle( Bundle bundle ) {
 		super.storeInBundle( bundle );
 		bundle.put( DAMAGE, damage );
-		bundle.put( LEFT, left );
 	}
 
 	@Override
 	public void restoreFromBundle( Bundle bundle ) {
 		super.restoreFromBundle( bundle );
 		damage = bundle.getFloat( DAMAGE );
-		left = bundle.getFloat( LEFT );
 	}
 
 	public void set(float duration, int damage) {
-		this.left = Math.max(duration, left);
+		set(duration);
 		if (this.damage < damage) this.damage = damage;
 	}
 	
@@ -71,11 +65,6 @@ public class Corrosion extends Buff implements Hero.Doom {
 		icon.hardlight(1f, 0.5f, 0f);
 	}
 
-	@Override
-	public String toString() {
-		return Messages.get(this, "name");
-	}
-	
 	@Override
 	public String heroMessage() {
 		return Messages.get(this, "heromsg");
@@ -95,22 +84,11 @@ public class Corrosion extends Buff implements Hero.Doom {
 			} else {
 				damage += 0.5f;
 			}
-			
-			spend( TICK );
-			if ((left -= TICK) <= 0) {
-				detach();
-			}
+			super.act();
 		} else {
 			detach();
 		}
 
 		return true;
 	}
-	
-	@Override
-	public void onDeath() {
-		Dungeon.fail( getClass() );
-		GLog.n(Messages.get(this, "ondeath"));
-	}
-
 }

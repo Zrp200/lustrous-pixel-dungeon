@@ -24,7 +24,6 @@ package com.zrp200.lustrouspixeldungeon.levels.traps;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.Blob;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.CorrosiveGas;
-import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
 
 public class CorrosionTrap extends BlobTrap {
 
@@ -34,14 +33,10 @@ public class CorrosionTrap extends BlobTrap {
 	}
 
 	@Override
-	public void activate() {
-
-		CorrosiveGas corrosiveGas = (CorrosiveGas) seedBlob();
-
-		corrosiveGas.setStrength(1+Dungeon.depth/4);
-
-		GameScene.add(corrosiveGas);
-
+	protected Blob seedBlob() {
+		CorrosiveGas gas = (CorrosiveGas) super.seedBlob();
+		gas.setStrength(1+Dungeon.depth/4);
+		return gas;
 	}
 
 	@Override

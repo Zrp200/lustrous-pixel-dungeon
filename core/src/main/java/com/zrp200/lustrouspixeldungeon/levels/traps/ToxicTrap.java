@@ -21,22 +21,13 @@
 
 package com.zrp200.lustrouspixeldungeon.levels.traps;
 
-import com.zrp200.lustrouspixeldungeon.Dungeon;
-import com.zrp200.lustrouspixeldungeon.actors.blobs.Blob;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.ToxicGas;
-import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
 
-public class ToxicTrap extends Trap{
+public class ToxicTrap extends BlobTrap {
 
 	{
 		color = GREEN;
-		shape = GRILL;
+		blobClass = ToxicGas.class;
 	}
 
-	@Override
-	public void activate() {
-
-		GameScene.add( Blob.seed( pos, 300 + 20 * Dungeon.depth, ToxicGas.class ) );
-
-	}
 }

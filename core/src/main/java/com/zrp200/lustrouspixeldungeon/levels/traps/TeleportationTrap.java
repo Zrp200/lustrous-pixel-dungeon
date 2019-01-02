@@ -82,7 +82,7 @@ public class TeleportationTrap extends Trap {
 		Heap heap = Dungeon.level.heaps.get(this.pos);
 		int respawn = Dungeon.level.randomRespawnCell();
 		while (heap != null && respawn != -1) {
-			if (heap.type == Heap.Type.FOR_SALE) return;
+			if (heap.type == Heap.Type.FOR_SALE) break;
 			if (heap.type == Heap.Type.HEAP) {
 				Dungeon.level.drop(heap.pickUp(), respawn);
 				heap = Dungeon.level.heaps.get(this.pos);
@@ -91,9 +91,10 @@ public class TeleportationTrap extends Trap {
 			else {
 				Dungeon.level.heaps.remove(this.pos);
 				heap.pos = respawn;
+				heap.seen = false;
 				Dungeon.level.heaps.put(respawn, heap);
 				heap.sprite.place(respawn);
-				return;
+				break;
 			}
 		}
 	}

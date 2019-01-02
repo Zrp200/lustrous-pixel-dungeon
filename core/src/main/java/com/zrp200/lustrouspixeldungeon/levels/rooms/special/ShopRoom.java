@@ -23,7 +23,9 @@ package com.zrp200.lustrouspixeldungeon.levels.rooms.special;
 
 import com.watabou.utils.Point;
 import com.watabou.utils.Random;
+import com.zrp200.lustrouspixeldungeon.Challenges;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
+import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Belongings;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.Mob;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.npcs.Shopkeeper;
@@ -35,10 +37,7 @@ import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.MerchantsBeacon;
 import com.zrp200.lustrouspixeldungeon.items.Stylus;
 import com.zrp200.lustrouspixeldungeon.items.Torch;
-import com.zrp200.lustrouspixeldungeon.items.armor.LeatherArmor;
-import com.zrp200.lustrouspixeldungeon.items.armor.MailArmor;
-import com.zrp200.lustrouspixeldungeon.items.armor.PlateArmor;
-import com.zrp200.lustrouspixeldungeon.items.armor.ScaleArmor;
+import com.zrp200.lustrouspixeldungeon.items.armor.Armor;
 import com.zrp200.lustrouspixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.zrp200.lustrouspixeldungeon.items.bags.Bag;
 import com.zrp200.lustrouspixeldungeon.items.bags.MagicalHolster;
@@ -53,26 +52,11 @@ import com.zrp200.lustrouspixeldungeon.items.scrolls.Scroll;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfMagicMapping;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfRemoveCurse;
+import com.zrp200.lustrouspixeldungeon.items.spells.Spell;
 import com.zrp200.lustrouspixeldungeon.items.stones.Runestone;
 import com.zrp200.lustrouspixeldungeon.items.stones.StoneOfAugmentation;
 import com.zrp200.lustrouspixeldungeon.items.wands.Wand;
-import com.zrp200.lustrouspixeldungeon.items.weapon.melee.BattleAxe;
-import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Greatsword;
-import com.zrp200.lustrouspixeldungeon.items.weapon.melee.HandAxe;
-import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Longsword;
-import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Mace;
-import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Shortsword;
-import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Sword;
-import com.zrp200.lustrouspixeldungeon.items.weapon.melee.WarHammer;
-import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Bolas;
-import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.FishingSpear;
-import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Javelin;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.MissileWeapon;
-import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Shuriken;
-import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.ThrowingHammer;
-import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.ThrowingSpear;
-import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Tomahawk;
-import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Trident;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.darts.TippedDart;
 import com.zrp200.lustrouspixeldungeon.levels.Level;
 import com.zrp200.lustrouspixeldungeon.levels.Terrain;
@@ -83,17 +67,15 @@ import java.util.ArrayList;
 
 public class ShopRoom extends SpecialRoom {
 
-	private ArrayList<Item> itemsToSpawn;
+	private ArrayList<Item> itemsToSpawn = generateItems();
 	
 	@Override
 	public int minWidth() {
-		if (itemsToSpawn == null) itemsToSpawn = generateItems();
 		return Math.max(7, (int)(Math.sqrt(itemsToSpawn.size())+3));
 	}
 	
 	@Override
 	public int minHeight() {
-		if (itemsToSpawn == null) itemsToSpawn = generateItems();
 		return Math.max(7, (int)(Math.sqrt(itemsToSpawn.size())+3));
 	}
 	
@@ -123,9 +105,6 @@ public class ShopRoom extends SpecialRoom {
 	}
 
 	protected void placeItems( Level level ){
-
-		if (itemsToSpawn == null)
-			itemsToSpawn = generateItems();
 
 		Point itemPlacement = new Point(entrance());
 		if (itemPlacement.y == top){
@@ -163,134 +142,107 @@ public class ShopRoom extends SpecialRoom {
 
 	}
 	
-	protected static ArrayList<Item> generateItems() {
+	@SuppressWarnings({"ConstantConditions"})
+	private static ArrayList<Item> generateItems() {
+		final int tier = Math.min( 4, Math.max( 0, Dungeon.depth/5 ) );
 
-		ArrayList<Item> itemsToSpawn = new ArrayList<>();
-		
-		switch (Dungeon.depth) {
-		case 6:
-			itemsToSpawn.add( (Random.Int( 2 ) == 0 ? new Shortsword().identify() : new HandAxe()).identify() );
-			itemsToSpawn.add( Random.Int( 2 ) == 0 ?
-					new FishingSpear().quantity(2) :
-					new Shuriken().quantity(2));
-			itemsToSpawn.add( new LeatherArmor().identify() );
-			break;
-			
-		case 11:
-			itemsToSpawn.add( (Random.Int( 2 ) == 0 ? new Sword().identify() : new Mace()).identify() );
-			itemsToSpawn.add( Random.Int( 2 ) == 0 ?
-					new ThrowingSpear().quantity(2) :
-					new Bolas().quantity(2));
-			itemsToSpawn.add( new MailArmor().identify() );
-			break;
-			
-		case 16:
-			itemsToSpawn.add( (Random.Int( 2 ) == 0 ? new Longsword().identify() : new BattleAxe()).identify() );
-			itemsToSpawn.add( Random.Int( 2 ) == 0 ?
-					new Javelin().quantity(2) :
-					new Tomahawk().quantity(2));
-			itemsToSpawn.add( new ScaleArmor().identify() );
-			break;
-			
-		case 21:
-			itemsToSpawn.add( Random.Int( 2 ) == 0 ? new Greatsword().identify() : new WarHammer().identify() );
-			itemsToSpawn.add( Random.Int(2) == 0 ?
-					new Trident().quantity(2) :
-					new ThrowingHammer().quantity(2));
-			itemsToSpawn.add( new PlateArmor().identify() );
-			itemsToSpawn.add( new Torch() );
-			itemsToSpawn.add( new Torch() );
-			itemsToSpawn.add( new Torch() );
-			break;
-		}
-		
-		itemsToSpawn.add( TippedDart.randomTipped() );
+		@SuppressWarnings("unchecked")
+		ArrayList<Item> itemsToSpawn = new ArrayList() {
+			{
+				try {
+					add( Generator.random( Generator.wepTiers[tier] ).getClass().newInstance().identify() );
+					add( ( (Armor) Generator.Category.ARMOR.classes[tier].newInstance() ).identify() );
+				} catch (Exception e) {
+					LustrousPixelDungeon.reportException(e);
+				}
 
-		itemsToSpawn.add( new MerchantsBeacon() );
+				add(Generator.random(Generator.misTiers[tier]).quantity(2));
+				add(TippedDart.randomTipped());
+				add(new MerchantsBeacon());
+
+				add(ChooseBag(Dungeon.hero.belongings));
+
+				if (tier >= 4 || Dungeon.isChallenged(Challenges.DARKNESS)) {
+					add( new Torch() );
+					add( new Torch() );
+					add( new Torch() );
+				}
 
 
-		itemsToSpawn.add(ChooseBag(Dungeon.hero.belongings));
+				add(new PotionOfHealing());
+				for (int i = 0; i < 3; i++)
+					add(Generator.random(Generator.Category.POTION));
 
+				add(new ScrollOfIdentify());
+				add(new ScrollOfRemoveCurse());
+				add(new ScrollOfMagicMapping());
+				add(Generator.random(Generator.Category.SCROLL));
 
-		itemsToSpawn.add( new PotionOfHealing() );
-		for (int i=0; i < 3; i++)
-			itemsToSpawn.add( Generator.random( Generator.Category.POTION ) );
+				for (int i = 0; i < 2; i++)
+					add(Random.Int(2) == 0 ?
+							Generator.random(Generator.Category.POTION) :
+							Generator.random(Generator.Category.SCROLL));
 
-		itemsToSpawn.add( new ScrollOfIdentify() );
-		itemsToSpawn.add( new ScrollOfRemoveCurse() );
-		itemsToSpawn.add( new ScrollOfMagicMapping() );
-		itemsToSpawn.add( Generator.random( Generator.Category.SCROLL ) );
+				add(new SmallRation());
+				add(new SmallRation());
 
-		for (int i=0; i < 2; i++)
-			itemsToSpawn.add( Random.Int(2) == 0 ?
-					Generator.random( Generator.Category.POTION ) :
-					Generator.random( Generator.Category.SCROLL ) );
+				switch (Random.Int(4)) {
+					case 0:
+						add(new Bomb());
+						break;
+					case 1:
+					case 2:
+						add(new Bomb.DoubleBomb());
+						break;
+					case 3:
+						add(new Honeypot());
+						break;
+				}
 
+				add(new Ankh());
+				add(new StoneOfAugmentation());
 
-		itemsToSpawn.add( new SmallRation() );
-		itemsToSpawn.add( new SmallRation() );
-		
-		switch (Random.Int(4)){
-			case 0:
-				itemsToSpawn.add( new Bomb() );
-				break;
-			case 1:
-			case 2:
-				itemsToSpawn.add( new Bomb.DoubleBomb() );
-				break;
-			case 3:
-				itemsToSpawn.add( new Honeypot() );
-				break;
-		}
+				TimekeepersHourglass hourglass = Dungeon.hero.belongings.getItem(TimekeepersHourglass.class);
+				if (hourglass != null) {
+					int bags = 0;
+					//creates the given float percent of the remaining bags to be dropped.
+					//this way players who get the hourglass late can still max it, usually.
+					switch (Dungeon.depth) {
+						case 6:
+							bags = (int) Math.ceil((5 - hourglass.sandBags) * 0.2f);
+							break;
+						case 11:
+							bags = (int) Math.ceil((5 - hourglass.sandBags) * 0.25f);
+							break;
+						case 16:
+							bags = (int) Math.ceil((5 - hourglass.sandBags) * 0.50f);
+							break;
+						case 21:
+							bags = (int) Math.ceil((5 - hourglass.sandBags) * 0.80f);
+							break;
+					}
 
-		itemsToSpawn.add( new Ankh() );
-		itemsToSpawn.add( new StoneOfAugmentation() );
+					for (int i = 1; i <= bags; i++) {
+						add(new TimekeepersHourglass.sandBag());
+						hourglass.sandBags++;
+					}
+				}
+				Generator.Category[] rareCategories = new Generator.Category[]{
+						Generator.Category.RING, Generator.Category.WAND, Generator.Category.ARTIFACT
+				};
+				if (Random.Int(10) == 0) {
+					Item rare = Generator.random(Random.oneOf(rareCategories)).identify();
+					rare.level(0);
+					rare.cursed = false;
+					add(rare);
+				}
+				if (Random.Int(10) >= 3) add(new Stylus());
 
-		TimekeepersHourglass hourglass = Dungeon.hero.belongings.getItem(TimekeepersHourglass.class);
-		if (hourglass != null){
-			int bags = 0;
-			//creates the given float percent of the remaining bags to be dropped.
-			//this way players who get the hourglass late can still max it, usually.
-			switch (Dungeon.depth) {
-				case 6:
-					bags = (int)Math.ceil(( 5-hourglass.sandBags) * 0.20f ); break;
-				case 11:
-					bags = (int)Math.ceil(( 5-hourglass.sandBags) * 0.25f ); break;
-				case 16:
-					bags = (int)Math.ceil(( 5-hourglass.sandBags) * 0.50f ); break;
-				case 21:
-					bags = (int)Math.ceil(( 5-hourglass.sandBags) * 0.80f ); break;
+				//hard limit is 63 items + 1 shopkeeper, as shops can't be bigger than 8x8=64 internally
+				if (size() > 63)
+					throw new RuntimeException("Shop attempted to carry more than 63 items!");
 			}
-
-			for(int i = 1; i <= bags; i++){
-				itemsToSpawn.add( new TimekeepersHourglass.sandBag());
-				hourglass.sandBags ++;
-			}
-		}
-
-		Item rare;
-		switch (Random.Int(10)){
-			case 0:
-				rare = Generator.random( Generator.Category.WAND );
-				rare.level( 0 );
-				break;
-			case 1:
-				rare = Generator.random(Generator.Category.RING);
-				rare.level( 0 );
-				break;
-			case 2:
-				rare = Generator.random( Generator.Category.ARTIFACT );
-				break;
-			default:
-				rare = new Stylus();
-		}
-		rare.cursed = false;
-		rare.cursedKnown = true;
-		itemsToSpawn.add( rare );
-
-		//hard limit is 63 items + 1 shopkeeper, as shops can't be bigger than 8x8=64 internally
-		if (itemsToSpawn.size() > 63)
-			throw new RuntimeException("Shop attempted to carry more than 63 items!");
+		};
 
 		Random.shuffle(itemsToSpawn);
 		return itemsToSpawn;
@@ -304,9 +256,11 @@ public class ShopRoom extends SpecialRoom {
 		//count up items in the main bag
 		for (Item item : pack.backpack.items) {
 			if (item instanceof Plant.Seed || item instanceof Runestone)    bagItems[0]++;
-			if (item instanceof Scroll)                                     bagItems[1]++;
+			if (item instanceof Scroll || item instanceof Spell)            bagItems[1]++;
 			if (item instanceof Potion)                                     bagItems[2]++;
-			if (item instanceof Wand || item instanceof MissileWeapon)      bagItems[3]++;
+			if (item instanceof Wand
+					|| item instanceof MissileWeapon
+					|| item instanceof Bomb)      							bagItems[3]++;
 		}
 		
 		//disqualify bags that have already been dropped

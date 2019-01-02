@@ -52,7 +52,7 @@ public class MysteryMeat extends Food {
 		return 5 * quantity;
 	}
 
-	public static void effect(Hero hero){
+	public void effect(Hero hero){
 		switch (Random.Int( 5 )) {
 			case 0:
 				GLog.w( Messages.get(MysteryMeat.class, "hot") );
@@ -81,8 +81,7 @@ public class MysteryMeat extends Food {
 		
 		@Override
 		public boolean isSimilar(Item item) {
-			return item instanceof MysteryMeat || item instanceof StewedMeat
-					|| item instanceof ChargrilledMeat || item instanceof FrozenCarpaccio;
+			return item instanceof MysteryMeat;
 		}
 		
 		@Override

@@ -50,7 +50,12 @@ public class Buff extends Actor implements Hero.Doom {
 	
 	//whether or not the buff announces its name
 	public boolean announced = false;
-	
+
+	@Override
+	public String toString() {
+		return Messages.get(this, "name");
+	}
+
 	protected HashSet<Class> resistances = new HashSet<>();
 	
 	public HashSet<Class> resistances() {
@@ -99,7 +104,6 @@ public class Buff extends Actor implements Hero.Doom {
 	public void tintIcon( Image icon ){
 		//do nothing by default
 	}
-
 	public void fx(boolean on) {
 		//do nothing by default
 	}

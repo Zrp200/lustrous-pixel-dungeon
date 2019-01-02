@@ -22,10 +22,12 @@
 package com.zrp200.lustrouspixeldungeon.levels.rooms.secret;
 
 import com.watabou.utils.Point;
+import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Hunger;
 import com.zrp200.lustrouspixeldungeon.items.food.ChargrilledMeat;
 import com.zrp200.lustrouspixeldungeon.items.food.Food;
+import com.zrp200.lustrouspixeldungeon.items.food.FrozenCarpaccio;
 import com.zrp200.lustrouspixeldungeon.items.food.Pasty;
 import com.zrp200.lustrouspixeldungeon.levels.Level;
 import com.zrp200.lustrouspixeldungeon.levels.Terrain;
@@ -53,20 +55,15 @@ public class SecretLarderRoom extends SecretRoom {
 		
 		Painter.fill(level, c.x-1, c.y-1, 3, 3, Terrain.WATER);
 		Painter.set(level, c, Terrain.GRASS);
-		
+
 		level.plant(new BlandfruitBush.Seed(), level.pointToCell(c));
 		
 		int extraFood = (int)(Hunger.STARVING - Hunger.HUNGRY) * (1 + Dungeon.depth / 5);
-		
+
 		while (extraFood > 0){
-			Food food;
-			if (extraFood >= Hunger.STARVING){
-				food = new Pasty();
-				extraFood -= Hunger.STARVING;
-			} else {
-				food = new ChargrilledMeat();
-				extraFood -= (Hunger.STARVING - Hunger.HUNGRY);
-			}
+			Food food = Random.oneOf(new Pasty(), new Food(), new ChargrilledMeat(), new FrozenCarpaccio());
+			if(food.energy > extraFood) continue;
+			extraFood -= food.energy;
 			int foodPos;
 			do {
 				foodPos = level.pointToCell(random());

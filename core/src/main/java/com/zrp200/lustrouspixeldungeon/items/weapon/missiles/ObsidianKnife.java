@@ -34,7 +34,18 @@ public class ObsidianKnife extends ThrowingKnife {
     }
 
     @Override
-    public int maxBase() {
-        return tier * 4; // 16 max, down from 20
+    public int max(int lvl) {
+        tier--;
+        int trueMax = super.max(lvl);
+        tier++;
+        return trueMax;
+    }
+
+    @Override
+    public int min(int lvl) {
+        tier--;
+        int trueMin = super.min(lvl);
+        tier++;
+        return trueMin;
     }
 }

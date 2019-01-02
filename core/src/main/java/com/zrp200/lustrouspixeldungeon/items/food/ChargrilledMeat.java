@@ -21,14 +21,13 @@
 
 package com.zrp200.lustrouspixeldungeon.items.food;
 
-import com.zrp200.lustrouspixeldungeon.actors.buffs.Hunger;
+import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
 
-public class ChargrilledMeat extends Food {
+public class ChargrilledMeat extends MysteryMeat {
 
 	{
 		image = ItemSpriteSheet.STEAK;
-		energy = Hunger.HUNGRY/2f;
 	}
 	
 	@Override
@@ -41,4 +40,7 @@ public class ChargrilledMeat extends Food {
 		result.quantity = ingredient.quantity();
 		return result;
 	}
+
+	@Override
+	public void effect(Hero hero) { }
 }

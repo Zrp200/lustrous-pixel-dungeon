@@ -22,57 +22,25 @@
 package com.zrp200.lustrouspixeldungeon.actors.buffs;
 
 import com.watabou.noosa.Image;
-import com.watabou.utils.Bundle;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.Blob;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.ToxicGas;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
 import com.zrp200.lustrouspixeldungeon.ui.BuffIndicator;
 
-public class ToxicImbue extends Buff {
+public class ToxicImbue extends ActiveBuff {
 	
 	{
 		type = buffType.POSITIVE;
 		announced = true;
 	}
 
-	public static final float DURATION	= 50f;
-
-	private float left, initial;
-
-	private static final String LEFT	= "left";
-
-	@Override
-	public void storeInBundle( Bundle bundle ) {
-		super.storeInBundle( bundle );
-		bundle.put( LEFT, left );
-
-	}
-
-	@Override
-	public void restoreFromBundle( Bundle bundle ) {
-		super.restoreFromBundle( bundle );
-		left = bundle.getFloat( LEFT );
-	}
-
-	public void set( float duration ) {
-		this.left = this.initial = duration;
-	}
-
+	public static final int DURATION = 50;
 
     @Override
 	public boolean act() {
 		GameScene.add(Blob.seed(target.pos, (int)Math.ceil(50*left/initial), ToxicGas.class));
-
-		spend(TICK);
-		left -= TICK;
-		if (left <= 0){
-			detach();
-		} else if (left < 5){
-			BuffIndicator.refreshHero();
-		}
-
-		return true;
+		return super.act();
 	}
 
 	@Override
@@ -82,12 +50,7 @@ public class ToxicImbue extends Buff {
 	
 	@Override
 	public void tintIcon(Image icon) {
-		FlavourBuff.greyIcon(icon, 5f, left);
-	}
-
-	@Override
-	public String toString() {
-		return Messages.get(this, "name");
+		FlavourBuff.greyIcon(icon, 5, left);
 	}
 
 	@Override

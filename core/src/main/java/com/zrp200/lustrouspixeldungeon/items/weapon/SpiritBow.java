@@ -54,6 +54,8 @@ public class SpiritBow extends Weapon {
 		
 		unique = true;
 		bones = false;
+
+		enchantKnown = true;
 	}
 	
 	public boolean sniperSpecial = false;
@@ -99,7 +101,7 @@ public class SpiritBow extends Weapon {
 			case NONE:
 		}
 
-		if (enchantment != null && (cursedKnown || !enchantment.curse())){
+		if (isVisiblyEnchanted()){
 			info += "\n\n" + Messages.get(Weapon.class, "enchanted", enchantment.name());
 			info += " " + Messages.get(enchantment, "desc");
 		}

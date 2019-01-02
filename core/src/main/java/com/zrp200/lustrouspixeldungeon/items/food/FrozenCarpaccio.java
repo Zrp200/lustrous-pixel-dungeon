@@ -27,7 +27,6 @@ import com.zrp200.lustrouspixeldungeon.actors.buffs.Bleeding;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Cripple;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Drowsy;
-import com.zrp200.lustrouspixeldungeon.actors.buffs.Hunger;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Invisibility;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Poison;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Slow;
@@ -39,24 +38,17 @@ import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
 import com.zrp200.lustrouspixeldungeon.utils.GLog;
 
-public class FrozenCarpaccio extends Food {
+public class FrozenCarpaccio extends MysteryMeat {
 
 	{
 		image = ItemSpriteSheet.CARPACCIO;
-		energy = Hunger.HUNGRY/2f;
-	}
-	
-	@Override
-	protected void satisfy(Hero hero) {
-		super.satisfy(hero);
-		effect(hero);
 	}
 	
 	public int price() {
 		return 10 * quantity;
 	}
 
-	public static void effect(Hero hero){
+	public void effect(Hero hero){
 		switch (Random.Int( 5 )) {
 			case 0:
 				GLog.i( Messages.get(FrozenCarpaccio.class, "invis") );

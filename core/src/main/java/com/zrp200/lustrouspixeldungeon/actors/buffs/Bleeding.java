@@ -21,7 +21,6 @@
 
 package com.zrp200.lustrouspixeldungeon.actors.buffs;
 
-import com.watabou.utils.Bundle;
 import com.watabou.utils.PointF;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.effects.Splash;
@@ -31,32 +30,11 @@ import com.zrp200.lustrouspixeldungeon.utils.GLog;
 
 import static com.watabou.utils.Random.NormalFloat;
 
-public class Bleeding extends Buff {
+public class Bleeding extends ActiveBuff {
 
 	{
 		type = buffType.NEGATIVE;
 		announced = true;
-	}
-	
-	protected float level;
-	
-	private static final String LEVEL	= "level";
-	
-	@Override
-	public void storeInBundle( Bundle bundle ) {
-		super.storeInBundle( bundle );
-		bundle.put( LEVEL, level );
-		
-	}
-	
-	@Override
-	public void restoreFromBundle( Bundle bundle ) {
-		super.restoreFromBundle( bundle );
-		level = bundle.getFloat( LEVEL );
-	}
-	
-	public void set( float level ) {
-		this.level = Math.max(this.level, level);
 	}
 	
 	@Override
@@ -73,8 +51,8 @@ public class Bleeding extends Buff {
 	public boolean act() {
 		if (target.isAlive()) {
 			
-			level = NormalFloat(level / 2f, level);
-			int dmg = Math.round(level);
+			left = NormalFloat(left / 2f, left);
+			int dmg = Math.round(left);
 			
 			if (dmg > 0) {
 				
@@ -110,6 +88,6 @@ public class Bleeding extends Buff {
 
 	@Override
 	public String desc() {
-		return Messages.get(this, "desc", Math.round(level));
+		return Messages.get(this, "desc", Math.round(left));
 	}
 }

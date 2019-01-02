@@ -21,20 +21,13 @@
 
 package com.zrp200.lustrouspixeldungeon.items.food;
 
-import com.zrp200.lustrouspixeldungeon.actors.buffs.Hunger;
 import com.zrp200.lustrouspixeldungeon.items.Recipe;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
 
-public class StewedMeat extends Food {
+public class StewedMeat extends ChargrilledMeat {
 	
 	{
 		image = ItemSpriteSheet.STEWED;
-		energy = Hunger.HUNGRY/2f;
-	}
-	
-	@Override
-	public int price() {
-		return 8 * quantity;
 	}
 	
 	public static class oneMeat extends Recipe.SimpleRecipe{
@@ -61,8 +54,8 @@ public class StewedMeat extends Food {
 		}
 	}
 	
-	//red meat
-	//blue meat
+	//red meat -- chargrilled
+	//blue meat -- frozen
 	
 	public static class threeMeat extends Recipe.SimpleRecipe{
 		{

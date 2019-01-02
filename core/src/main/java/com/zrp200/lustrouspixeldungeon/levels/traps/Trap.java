@@ -21,6 +21,7 @@
 
 package com.zrp200.lustrouspixeldungeon.levels.traps;
 
+import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
@@ -114,6 +115,10 @@ public abstract class Trap implements Bundlable {
 		bundle.put( POS, pos );
 		bundle.put( VISIBLE, visible );
 		bundle.put( ACTIVE, active );
+	}
+
+	public Image getImage() {
+		return new Image(Assets.TERRAIN_FEATURES,16*color,16*shape,16,16);
 	}
 
 	public String desc() {

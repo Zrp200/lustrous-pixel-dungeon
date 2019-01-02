@@ -23,6 +23,7 @@ package com.zrp200.lustrouspixeldungeon.levels.rooms.special;
 
 import com.watabou.utils.Point;
 import com.watabou.utils.Random;
+import com.zrp200.lustrouspixeldungeon.Challenges;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.items.Generator;
 import com.zrp200.lustrouspixeldungeon.items.Item;
@@ -68,15 +69,15 @@ public class ArmoryRoom extends SpecialRoom {
 	}
 	
 	private static Item prize( Level level ) {
-		switch (Random.Int( 4 )){
+		switch (Random.Int( 4 - (Dungeon.isChallenged(Challenges.NO_ARMOR) ? 1 : 0) ) ) {
 			case 0:
 				return new Bomb().random();
 			case 1:
 				return Generator.randomWeapon();
-			case 2:
-				return Generator.randomArmor();
-			case 3: default:
+			case 2: default:
 				return Generator.randomMissile();
+			case 3:
+				return Generator.randomArmor();
 		}
 	}
 }

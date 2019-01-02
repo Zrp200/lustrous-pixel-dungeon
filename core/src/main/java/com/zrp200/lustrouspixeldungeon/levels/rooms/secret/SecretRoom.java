@@ -23,6 +23,8 @@ package com.zrp200.lustrouspixeldungeon.levels.rooms.secret;
 
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
+import com.zrp200.lustrouspixeldungeon.Challenges;
+import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.GamesInProgress;
 import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
 import com.zrp200.lustrouspixeldungeon.actors.hero.HeroClass;
@@ -66,6 +68,8 @@ public abstract class SecretRoom extends SpecialRoom {
 		}
 		
 		runSecrets = new ArrayList<>(ALL_SECRETS);
+		if(Dungeon.isChallenged(Challenges.NO_FOOD)) runSecrets.remove(SecretLarderRoom.class);
+		if(Dungeon.isChallenged(Challenges.NO_HERBALISM)) runSecrets.remove(SecretGardenRoom.class);
 		Random.shuffle(runSecrets);
 		
 	}

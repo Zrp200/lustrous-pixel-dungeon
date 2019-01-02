@@ -44,6 +44,7 @@ import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Fragile;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Friendly;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Sacrificial;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Wayward;
+import com.zrp200.lustrouspixeldungeon.items.weapon.curses.WeaponCurse;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Blazing;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Chilling;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Dazzling;
@@ -101,7 +102,7 @@ abstract public class Weapon extends KindOfWeapon {
 	private int hitsToKnow = HITS_TO_KNOW;
 	
 	public Enchantment enchantment;
-	protected boolean enchantKnown = false;
+	public boolean enchantKnown = false;
 
 	protected float surpriseToMax = 0f;
 
@@ -341,12 +342,11 @@ abstract public class Weapon extends KindOfWeapon {
 		//15% chance to be enchanted (+50%)
 		float effectRoll = Random.Float();
 		if (effectRoll < 0.3f) {
-			enchant( Enchantment.randomCurse() );
+			enchant( Enchantment.randomCurse(), false );
 			cursed = true;
 		} else if (effectRoll >= 0.85f){
 			enchant( false );
 		}
-		enchantKnown = false;
 
 		return this;
 	}
@@ -383,9 +383,7 @@ abstract public class Weapon extends KindOfWeapon {
 	public boolean hasGoodEnchant(){
 		return enchantment != null && !enchantment.curse();
 	}
-	public boolean hasCurseEnchant(){
-		return enchantment != null && enchantment.curse();
-	}
+	public boolean hasCurseEnchant(){ return enchantment instanceof WeaponCurse; }
 	protected boolean isVisiblyEnchanted() { return enchantment != null && enchantKnown; }
 
 	@Override

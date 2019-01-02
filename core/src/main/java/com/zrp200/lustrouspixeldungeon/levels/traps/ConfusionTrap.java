@@ -21,10 +21,7 @@
 
 package com.zrp200.lustrouspixeldungeon.levels.traps;
 
-import com.zrp200.lustrouspixeldungeon.Dungeon;
-import com.zrp200.lustrouspixeldungeon.actors.blobs.Blob;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.ConfusionGas;
-import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
 
 public class ConfusionTrap extends BlobTrap {
 

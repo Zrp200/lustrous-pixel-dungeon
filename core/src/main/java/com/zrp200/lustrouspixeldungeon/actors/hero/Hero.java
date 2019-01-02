@@ -592,8 +592,7 @@ public class Hero extends Char {
 		next();
 	}
 	
-	//FIXME this is a fairly crude way to track this, really it would be nice to have a short
-	//history of hero actions
+	//FIXME this is a fairly crude way to track this, really it would be nice to have a short history of hero actions
 	public boolean justMoved = false;
 	
 	private boolean actMove( HeroAction.Move action ) {
@@ -1140,9 +1139,7 @@ public class Hero extends Char {
 				Buff.affect(this, Momentum.class).gainStack();
 			}
 
-			//FIXME this is a fairly sloppy fix for a crash involving pitfall traps.
-			//really there should be a way for traps to specify whether action should continue or
-			//not when they are pressed.
+			//FIXME this is a fairly sloppy fix for a crash involving pitfall traps. really there should be a way for traps to specify whether action should continue or not when they are pressed.
 			return InterlevelScene.mode != InterlevelScene.Mode.FALL;
 
 		} else {

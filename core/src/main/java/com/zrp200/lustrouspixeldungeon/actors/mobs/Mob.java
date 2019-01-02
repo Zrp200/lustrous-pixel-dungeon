@@ -401,7 +401,6 @@ public abstract class Mob extends Char {
 
 			}
 
-
 			if (!newPath) {
 				//looks ahead for path validity, up to length-1 or 4, but always at least 1.
 				int lookAhead = (int)GameMath.gate(1, path.size()-1, 4);
@@ -421,9 +420,7 @@ public abstract class Mob extends Char {
 			}
 
 			//if hunting something, don't follow a path that is extremely inefficient
-			//FIXME this is fairly brittle, primarily it assumes that hunting mobs can't see through
-			// permanent terrain, such that if their path is inefficient it's always because
-			// of a temporary blockage, and therefore waiting for it to clear is the best option.
+			//FIXME this is fairly brittle, primarily it assumes that hunting mobs can't see through permanent terrain, such that if their path is inefficient it's always because of a temporary blockage, and therefore waiting for it to clear is the best option.
 			if (path == null ||
 					(state == HUNTING && path.size() > Math.max(9, 2*Dungeon.level.distance(pos, target)))) {
 				return false;
@@ -752,8 +749,7 @@ public abstract class Mob extends Char {
 			super.act(justAlerted);
 			if ( enemySeen || ( enemyInFOV() && justAlerted ) ) {
 				notice();
-				enemySeen = true;
-				alerted = true;
+				enemySeen = alerted = true;
 				state = HUNTING;
 				target = enemy.pos;
 
@@ -836,7 +832,7 @@ public abstract class Mob extends Char {
 			}
 
 			int oldPos = pos;
-			if (isTrapped()) {
+			if ( isTrapped() ) {
 				spend(TICK);
 				nowhereToRun();
 				return true;

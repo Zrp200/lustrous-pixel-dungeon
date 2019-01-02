@@ -22,7 +22,6 @@
 package com.zrp200.lustrouspixeldungeon.actors.buffs;
 
 import com.watabou.noosa.Image;
-import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
@@ -33,7 +32,7 @@ import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
 import com.zrp200.lustrouspixeldungeon.ui.BuffIndicator;
 
-public class FireImbue extends Buff {
+public class FireImbue extends ActiveBuff {
 	
 	{
 		type = buffType.POSITIVE;
@@ -42,27 +41,6 @@ public class FireImbue extends Buff {
 
 	public static final float DURATION	= 50f;
 
-	protected float left;
-
-	private static final String LEFT	= "left";
-
-	@Override
-	public void storeInBundle( Bundle bundle ) {
-		super.storeInBundle( bundle );
-		bundle.put( LEFT, left );
-
-	}
-
-	@Override
-	public void restoreFromBundle( Bundle bundle ) {
-		super.restoreFromBundle( bundle );
-		left = bundle.getFloat( LEFT );
-	}
-
-	public void set( float duration ) {
-		this.left = duration;
-	}
-
     @Override
 	public boolean act() {
 		if (Dungeon.level.map[target.pos] == Terrain.GRASS) {
@@ -70,15 +48,7 @@ public class FireImbue extends Buff {
 			GameScene.updateMap(target.pos);
 		}
 
-		spend(TICK);
-		left -= TICK;
-		if (left <= 0){
-			detach();
-		} else if (left < 5){
-			BuffIndicator.refreshHero();
-		}
-
-		return true;
+		return super.act();
 	}
 
 	public void proc(Char enemy){
@@ -101,11 +71,6 @@ public class FireImbue extends Buff {
 	@Override
 	public String toString() {
 		return Messages.get(this, "name");
-	}
-
-	@Override
-	public String desc() {
-		return Messages.get(this, "desc", dispTurns(left));
 	}
 
 	{

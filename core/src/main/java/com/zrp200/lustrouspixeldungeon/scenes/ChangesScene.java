@@ -74,6 +74,7 @@ import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Sword;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Bolas;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.ObsidianKnife;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Shuriken;
+import com.zrp200.lustrouspixeldungeon.levels.traps.InfernalTrap;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.plants.Earthroot;
 import com.zrp200.lustrouspixeldungeon.plants.Starflower;
@@ -121,6 +122,7 @@ public class ChangesScene extends PixelScene {
 		LUST000a("Lustrous v0.0.0a",  	12, 4,2018),
 		LUST000 ("Lustrous v0.0.0",		12, 1,2018),
 
+		SHPD071b("Shattered v0.7.1b", 	12,30,2018),
 		SHPD071 ("Shattered v0.7.1",	12,18,2018),
 		SHPD070 ("Shattered v0.7.0",	10,18,2018);
 
@@ -213,28 +215,55 @@ public class ChangesScene extends PixelScene {
         addSection("v0.0.2-BETA",true);
         ChangeInfo.generate("BETA-1",false,
 				// new content
-				// buffs
-				new ChangeButton(HeroSprite.avatar(HeroClass.HUNTRESS,6),"Sniper","Sniper now always pierces armor with ranged weapons."),
-				// changes
-				ChangeButton.bugfix(
-					"Ring of Accuracy's description is now fixed.",
-					"Curse removal revealing the existance of a curse enchant if hidden.",
-					"Skeletons' and Thieves' spawnrates being 10x the expected rates on floor 4",
-					"Crash bugs"
+				new ChangeButton(Icons.get(Icons.DEPTH),"Room Generation")
+						.append("_Secret Larder Rooms:_")
+						.appendList(
+								"Contents of the room are much more random, but overall has the same amount of food.",
+                                "Frozen Carpaccio and Rations can now be found in the room."
+						)
+						.appendLine("\n_Secret Maze Room:_").appendList("Prize is now visibly uncursed")
+						.appendLine("\n_Pixel Mart:_")
+                        .appendList(
+                        		"All upgradable are now identified",
+								"Now sells a greater variety of weapons, both thrown and melee"
+						),
+				new ChangeButton(Icons.get(Icons.CHALLENGE_ON),"Challenges").appendList(
+					"Blocked items are more likely to be replaced by valid items",
+					"Secret Larder Rooms no longer spawn for On Diet",
+					"Crypt Rooms no longer spawn for Faith is My Armor",
+					"Gardens no longer spawn for Barren Land",
+					"Pixel Mart now sells torches for Into Darkness"
 				),
-				new ChangeButton(Icons.get(Icons.LANGS),"Text Changes",
-					"_-_ Changed way missile weapons' descriptions are handled, and changed their content too."
+				// buffs
+				new ChangeButton(new InfernalTrap().getImage(),"Infernal and Blizzard Traps").appendList(
+						"Blob amounts are now identical to that of the toxic gas trap."
 				),
 				// nerfs
 				new ChangeButton( new ObsidianKnife() ).appendList(
-						"min-to-max surprise % is now 50%, down from 67%",
-						"lowered spawn rate"
+						"now deals 6-18 @ +2/+3 damage instead of 8-16 @ +2/+4 damage\n",
+						"min-to-max surprise % is now 50%, down from 67%\n",
+						"lowered spawn rate by 43% (2/9 -> 1/8 of t4s)"
 				),
 				new ChangeButton(new ItemSprite(new Longsword().enchant(new Chilling())),"Chilling",
 						"Reverted previous changes and added new behavior:\n",
 						"_-_ A proc will extend the current chill duration by 1-2 turns or set the "
-							+ "chill duration to a random number between 2 and 3 depending on which "
-							+ "action would result in a higher stack of chill."
+								+ "chill duration to a random number between 2 and 3 depending on which "
+								+ "action would result in a higher stack of chill."
+				),
+				// changes
+				ChangeButton.misc(
+						"One scroll of transmutation is now guaranteed to spawn at some point.\n",
+						"Warden sorrowmoss effect now stacks\n",
+						"Sniper now always pierces armor with thrown weapons regardless of distance.\n",
+						"Changed way missile weapons' descriptions are handled, and changed their content too."
+				),
+				ChangeButton.bugfix(
+					"Position of Chests teleported by teleportation bomb revealed to player immediately",
+                    "Ring of Accuracy's description is now fixed.",
+					"Curse removal revealing the existance of a curse enchant if hidden.",
+					"Weapon curses getting revealed briefly on pickup.",
+					"Skeletons' and Thieves' spawnrates being 10x the expected rates on floor 4",
+					"Crash bugs"
 				)
 		);
         ChangeInfo.newContent(
@@ -247,7 +276,7 @@ public class ChangesScene extends PixelScene {
 						"well as a way to untip darts via alchemy. See the changelog to see the various minor adjustments I've also made.",
 				Milestone.LUST001
 			),
-			new ChangeButton(new Image(Assets.TERRAIN_FEATURES, 16, 0, 16, 16),
+			new ChangeButton(new InfernalTrap().getImage(),
 				"Traps",
 				"Added two new traps: the Infernal and Blizzard traps!\n",
 					"_-_ Mirror Infernal and Blizzard brews, respectively",
@@ -326,7 +355,37 @@ public class ChangesScene extends PixelScene {
 						"Speaking of, the huntress once again starts with the holster."
 				)
 		);
-		addSection("Implemented Shattered v0.7.1a",true,CharSprite.WARNING);
+		addSection("Implemented Shattered v0.7.1",true,Window.SHPX_COLOR);
+		ChangeInfo.generate("0.7.1b",false,
+                new ChangeButton( new Image(Assets.HUNTRESS, 0, 15, 12, 15), "Hero Balance Changes",
+                "After pouring over some analytics numbers, I have decided to give out some hero buffs primarily focused on base power, and one nerf based on power in lategame:\n\n" +
+                        "Huntress:\n" +
+                        "_-_ Spirit bow damage scaling up 20%\n(now gets exactly +1/+2 dmg every level up)\n" +
+                        "_-_ Warden barkskin increased by 5 points\n\n" +
+                        "Rogue's cloak of shadows base charge speed increased by ~11%, scaling reduced to compensate.\n\n" +
+                        "Warlock's soul mark base chance increased to 15% from 10%, scaling reduced to compensate.\n\n" +
+                        "Warrior's shielding regen scaling reduced by ~15%. This is primarily a lategame nerf."),
+                new ChangeButton( new ItemSprite(ItemSpriteSheet.RING_DIAMOND, null), "Other Balance Changes",
+                "Similarly to heroes, I have gone over the balance of items, and am making several buffs + one nerf.\n\n" +
+                        "wand of fireblast buffed:\n" +
+                        "_-_ shot distance at 3 charges reduced by 1\n" +
+                        "_-_ damage at 1 charge reduced slightly\n" +
+                        "_-_ damage at 2/3 charges increased by ~15%\n" +
+                        "\n" +
+                        "_-_ vorpal enchant bleed reduced by 20%\n" +
+                        "_-_ glyph of potential wand charge bonus increased by 20%\n" +
+                        "_-_ glyph of stone evasion conversion efficiency increased to 75% from 60%\n" +
+                        "\n" +
+                        "_-_ ring of elements power increased to 16% from 12.5%\n" +
+                        "_-_ ring of energy charge speed increased to 25% from 20%\n" +
+                        "_-_ ring of wealth 'luck' bonus increased to 20% from 15%"),
+
+                ChangeButton.bugfix(
+                        "various rare spirit bow crashes (caused by 0.7.1)",
+                        "rare crashes involving alchemy" +
+                        "health potion limits not applying to prison guards"
+                )
+        );
 		ChangeInfo.newContent(
 				addDeveloperCommentary(
 						Icons.get(Icons.SHPX),
@@ -424,17 +483,17 @@ public class ChangesScene extends PixelScene {
 								"Base damage increased to 4-8 from 4-6",
 								"Durability reduced to 5 from 10"
 				)
-		);
+        );
 		ChangeInfo.generate("Not Implemented",false,CharSprite.NEGATIVE,
 				new ChangeButton(HeroSprite.avatar(HeroClass.HUNTRESS,6),"Minor subclass mechanics").appendList(
 						"Sniper not piercing armor when using ranged weapons on adjacent enemies."
 				),
-				ChangeButton.misc(
-						"New blocking weapon descriptions"
-				),
-				ChangeButton.bugfix(
-						"Warping and Teleportation traps working against flying enemies"
-				)
+				new ChangeButton( new ItemSprite(new ScaleArmor().inscribe(new Stone())),"Stone",
+                        "The stone changes are not applicable to current lustrous"
+                ),
+				new ChangeButton(  new Gloves()  ).appendList(  "Gloves base damage up to 1-6 from 1-5 (0.7.1b)"  ),
+                ChangeButton.misc( "New blocking weapon descriptions" ),
+				ChangeButton.bugfix("Warping and Teleportation traps working against flying enemies")
 		);
 		// v0.0.1
 		addSection("v0.0.1",true);
@@ -468,27 +527,16 @@ public class ChangesScene extends PixelScene {
 				),
 				new ChangeButton(
 						new ItemSprite(new Shortsword().image(), new Chaotic().glowing()),
-						"New Weapon Curse: Chaotic",
-						"_-_ Basically unstable for curses.\n",
-						"The following effects can be called by this curse:",
-						"_-_ Annoying",
-						"_-_ Displacing",
-						"_-_ Elastic",
-						"_-_ Exhausting",
-						"_-_ Fragile",
-						"_-_ Friendly",
-						"_-_ Sacrificial",
-						"_-_ Wayward",
-						"_-_ Anti-entropy (you or target)",
-						"_-_ Corrosion (target)",
-						"_-_ Displacement",
-						"_-_ Multiplicity",
-						"_-_ Overgrowth (you or target)",
-						"_-_ Stench (you or target)",
-						"_-_ Volatility (you or target)",
-						"_-_ Viscosity (you or target)"
-				)
-		);
+						"New Weapon Curse: Chaotic"
+                ).appendList("Basically unstable for curses.\n")
+                        .appendLine("The following effects can be called by this curse:")
+                        .appendList(
+                                "Annoying", "Displacing", "Elastic", "Exhausting", "Fragile", "Friendly",
+                                "Sacrificial", "Wayward", "Anti-entropy (you or target)", "Corrosion (target)",
+                                "Displacement", "Multiplicity", "Overgrowth (you or target)",
+                                "Stench (you or target)", "Volatility (you or target)", "Viscosity (you or target)"
+                        )
+        );
 		ChangeInfo.buffs(
 				new ChangeButton(
 						new KingSprite(),
@@ -797,11 +845,11 @@ public class ChangesScene extends PixelScene {
 								"_-_ The Knuckleduster now blocks up to 1 point of damage!"
 				),
 				new ChangeButton(new ItemSprite(ItemSpriteSheet.WAND_TRANSFUSION), "Wands")
-						.append("Wand of Transfusion:")
+						.appendLine("Wand of Transfusion:")
 						.appendList(
 								"Charm now scales by 2 (was 1)",
 								"Battlemage effect's proc rate boosted by 25% (1/10 -> 1/8)\n"
-						).append("Wand of Fireblast:")
+						).appendLine("Wand of Fireblast:")
 						.appendList("When consuming 3 charges at once, now applies both paralysis and cripple"),
 				new ChangeButton(
 						new Charm().getLargeIcon(), "Charm",
@@ -1106,7 +1154,7 @@ public class ChangesScene extends PixelScene {
 			this.title = Messages.titleCase(title);
 
 			this.message = "";
-			append(messages);
+			appendLines(messages);
 
 			layout();
 		}
@@ -1120,17 +1168,23 @@ public class ChangesScene extends PixelScene {
 
 		ChangeButton appendList(String... items ) {
 			for(String item : items)
-				append("_-_ " + item);
+				appendLine("_-_ " + item);
 			return this;
 		}
 		@SuppressWarnings("StringConcatenationInLoop")
-		public ChangeButton append(String... messages) {
-			for (String message : messages) {
-				if (!message.equals("")) this.message += "\n";
-				this.message += message;
-			}
-			return this;
+		public ChangeButton appendLine(String message) {
+		    if (!message.equals("")) append("\n");
+		    append(message);
+		    return this;
 		}
+		public ChangeButton appendLines(String... messages) {
+		    for(String message : messages) appendLine(message);
+		    return this;
+        }
+		public ChangeButton append(String message) {
+		    this.message += message;
+		    return this;
+        }
 
 		protected void onClick() {
 			LustrousPixelDungeon.scene().add(new ChangesWindow(new Image(icon), title, message));

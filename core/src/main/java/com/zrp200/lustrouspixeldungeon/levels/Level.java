@@ -61,6 +61,7 @@ import com.zrp200.lustrouspixeldungeon.items.artifacts.DriedRose;
 import com.zrp200.lustrouspixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.zrp200.lustrouspixeldungeon.items.food.SmallRation;
 import com.zrp200.lustrouspixeldungeon.items.potions.PotionOfStrength;
+import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfTransmutation;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.zrp200.lustrouspixeldungeon.items.stones.StoneOfEnchantment;
 import com.zrp200.lustrouspixeldungeon.items.stones.StoneOfIntuition;
@@ -189,12 +190,21 @@ public abstract class Level implements Bundlable {
 				addItemToSpawn( new Stylus() );
 				Dungeon.LimitedDrops.ARCANE_STYLI.count++;
 			}
-			//one scroll of transmutation is guaranteed to spawn somewhere on chapter 2-4
+			// one stone of enchantment is guaranteed to spawn somewhere on chapter 2-4
 			int enchChapter = (int)((Dungeon.seed / 10) % 3) + 1;
 			if ( Dungeon.depth / 5 == enchChapter &&
 					Dungeon.seed % 4 + 1 == Dungeon.depth % 5){
 				addItemToSpawn( new StoneOfEnchantment() );
 			}
+
+			// one scroll of transmutation is guaranteed to spawn... somewhere.
+			long tranSeed = Dungeon.seed / 7; // gotta love prime numbers.
+			int tranChapter = (int)(tranSeed % 3 + 1),
+				tranFloor   = (int)(tranSeed % 4 + 1);
+
+			if(tranChapter == 5 && tranFloor == 1) tranFloor++;
+			if(Dungeon.depth / 5 == tranChapter && Dungeon.depth % 5 == tranFloor)
+				addItemToSpawn( new ScrollOfTransmutation() );
 			
 			if ( Dungeon.depth == ((Dungeon.seed % 3) + 1)){
 				addItemToSpawn( new StoneOfIntuition() );

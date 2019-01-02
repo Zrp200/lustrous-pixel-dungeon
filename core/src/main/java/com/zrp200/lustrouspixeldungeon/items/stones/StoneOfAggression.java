@@ -31,7 +31,6 @@ import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.FlavourBuff;
 import com.zrp200.lustrouspixeldungeon.effects.CellEmitter;
 import com.zrp200.lustrouspixeldungeon.effects.Speck;
-import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
 
 public class StoneOfAggression extends Runestone {
@@ -81,12 +80,6 @@ public class StoneOfAggression extends Runestone {
 			super.restoreFromBundle( bundle );
 			object = bundle.getInt( OBJECT );
 		}
-		
-		@Override
-		public String toString() {
-			return Messages.get(this, "name");
-		}
-		
 	}
 	
 }

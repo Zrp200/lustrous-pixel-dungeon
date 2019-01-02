@@ -23,6 +23,7 @@ package com.zrp200.lustrouspixeldungeon.levels.rooms.special;
 
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
+import com.zrp200.lustrouspixeldungeon.Challenges;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
 import com.zrp200.lustrouspixeldungeon.levels.rooms.Room;
@@ -30,6 +31,7 @@ import com.zrp200.lustrouspixeldungeon.levels.rooms.Room;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+@SuppressWarnings("unchecked")
 public class SpecialRoom extends Room {
 	
 	@Override
@@ -62,20 +64,22 @@ public class SpecialRoom extends Room {
 			TreasuryRoom.class, TrapsRoom.class, StorageRoom.class, StatueRoom.class, VaultRoom.class, RunestoneRoom.class
 	) );
 	
-	public static ArrayList<Class<? extends Room>> runSpecials = new ArrayList<>();
-	public static ArrayList<Class<? extends Room>> floorSpecials = new ArrayList<>();
+	private static ArrayList<Class<? extends SpecialRoom>> runSpecials = new ArrayList<>();
+	private static ArrayList<Class<? extends SpecialRoom>> floorSpecials = new ArrayList<>();
 	
 	private static int pitNeededDepth = -1;
 	
 	public static void initForRun() {
-		runSpecials = (ArrayList<Class<?extends Room>>)ALL_SPEC.clone();
-		
+		runSpecials = (ArrayList<Class<?extends SpecialRoom>>)ALL_SPEC.clone();
+		if(Dungeon.isChallenged(Challenges.NO_HERBALISM)) runSpecials.remove(GardenRoom.class);
+		if(Dungeon.isChallenged(Challenges.NO_ARMOR)) runSpecials.remove(CryptRoom.class);
+
 		pitNeededDepth = -1;
 		Random.shuffle(runSpecials);
 	}
 	
 	public static void initForFloor(){
-		floorSpecials = (ArrayList<Class<?extends Room>>) runSpecials.clone();
+		floorSpecials = (ArrayList<Class<?extends SpecialRoom>>) runSpecials.clone();
 		
 		//laboratory rooms spawn at set intervals every chapter
 		if (Dungeon.depth%5 == (Dungeon.seed%3 + 2)){
@@ -83,7 +87,7 @@ public class SpecialRoom extends Room {
 		}
 	}
 	
-	private static void useType( Class<?extends Room> type ) {
+	private static void useType( Class<?extends SpecialRoom> type ) {
 		floorSpecials.remove( type );
 		if (runSpecials.remove( type )) {
 			runSpecials.add( type );
@@ -120,7 +124,7 @@ public class SpecialRoom extends Room {
 				floorSpecials.remove(WeakFloorRoom.class);
 			}
 			
-			Room r = null;
+			SpecialRoom r = null;
 			int index = floorSpecials.size();
 			for (int i = 0; i < 4; i++){
 				int newidx = Random.Int( floorSpecials.size() );
@@ -135,9 +139,9 @@ public class SpecialRoom extends Room {
 			if (r instanceof WeakFloorRoom){
 				pitNeededDepth = Dungeon.depth + 1;
 			}
-			
+
 			useType( r.getClass() );
-			return (SpecialRoom)r;
+			return r;
 		
 		}
 	}
@@ -148,7 +152,7 @@ public class SpecialRoom extends Room {
 	public static void restoreRoomsFromBundle( Bundle bundle ) {
 		runSpecials.clear();
 		if (bundle.contains( ROOMS )) {
-			for (Class<? extends Room> type : bundle.getClassArray(ROOMS)) {
+			for (Class<? extends SpecialRoom> type : bundle.getClassArray(ROOMS)) {
 				//pre-0.7.0 saves
 				if (type != null && type != LaboratoryRoom.class) {
 					runSpecials.add(type);
