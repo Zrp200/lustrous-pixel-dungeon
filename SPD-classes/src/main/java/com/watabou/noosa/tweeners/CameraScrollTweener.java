@@ -24,23 +24,16 @@ package com.watabou.noosa.tweeners;
 import com.watabou.noosa.Camera;
 import com.watabou.utils.PointF;
 
-public class CameraScrollTweener extends Tweener {
+public class CameraScrollTweener extends MoveTweener<Camera> {
 
-	public Camera camera;
-	
-	public PointF start;
-	public PointF end;
-	
-	public CameraScrollTweener( Camera camera, PointF pos, float time ) {
-		super( camera, time );
-		
-		this.camera = camera;
-		start = camera.scroll;
-		end = pos;
-	}
+    public CameraScrollTweener(Camera camera, PointF end, float time) {
+        super(camera, end, time);
+        current = start = target.scroll;
+    }
 
-	@Override
+    @Override
 	protected void updateValues( float progress ) {
-		camera.scroll = PointF.inter( start, end, progress );
+		super.updateValues(progress);
+		target.scroll = current;
 	}
 }

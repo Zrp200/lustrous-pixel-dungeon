@@ -41,6 +41,7 @@ public abstract class EquipableItem extends Item {
 	{
 		bones = true;
 	}
+
 	@Override
 	public ArrayList<String> actions(Hero hero ) {
 		ArrayList<String> actions = super.actions( hero );

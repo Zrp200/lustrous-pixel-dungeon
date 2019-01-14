@@ -22,38 +22,16 @@
 package com.zrp200.lustrouspixeldungeon.actors.buffs;
 
 import com.watabou.noosa.Image;
-import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.ui.BuffIndicator;
 import com.zrp200.lustrouspixeldungeon.utils.GLog;
 
-public class Ooze extends Buff {
+public class Ooze extends ActiveBuff {
 
 	{
 		type = buffType.NEGATIVE;
-		announced = true;
-	}
-	
-	private float left;
-	private static final String LEFT	= "left";
-	
-	@Override
-	public void storeInBundle( Bundle bundle ) {
-		super.storeInBundle( bundle );
-		bundle.put( LEFT, left );
-	}
-	
-	@Override
-	public void restoreFromBundle( Bundle bundle ) {
-		super.restoreFromBundle(bundle);
-		//pre-0.7.0
-		if (bundle.contains( LEFT )) {
-			left = bundle.getFloat(LEFT);
-		} else {
-			left = 20;
-		}
 	}
 	
 	@Override
@@ -67,22 +45,8 @@ public class Ooze extends Buff {
 	}
 
 	@Override
-	public String toString() {
-		return Messages.get(this, "name");
-	}
-
-	@Override
 	public String heroMessage() {
 		return Messages.get(this, "heromsg");
-	}
-
-	@Override
-	public String desc() {
-		return Messages.get(this, "desc", dispTurns(left));
-	}
-	
-	public void set(float left){
-		this.left = left;
 	}
 
 	@Override
@@ -96,11 +60,7 @@ public class Ooze extends Buff {
 				Dungeon.fail( getClass() );
 				GLog.n( Messages.get(this, "ondeath") );
 			}
-			spend( TICK );
-			left -= TICK;
-			if (left <= 0){
-				detach();
-			}
+			super.act();
 		} else {
 			detach();
 		}

@@ -201,7 +201,7 @@ public class SurfaceScene extends PixelScene {
 		private SmartTexture texture;
 		private FloatBuffer verticesBuffer;
 		
-		public Sky( boolean dayTime ) {
+		Sky(boolean dayTime) {
 			super( 0, 0, 1, 1 );
 
 			texture = TextureCache.createGradient( dayTime ? day : night );
@@ -260,7 +260,7 @@ public class SurfaceScene extends PixelScene {
 		
 		private static int lastIndex = -1;
 		
-		public Cloud( float y, boolean dayTime ) {
+		Cloud(float y, boolean dayTime) {
 			super( Assets.SURFACE );
 			
 			int index;
@@ -312,7 +312,7 @@ public class SurfaceScene extends PixelScene {
 		private static final int WIDTH	= 24;
 		private static final int HEIGHT	= 32;
 		
-		public Avatar( HeroClass cl ) {
+		Avatar(HeroClass cl) {
 			super( Assets.AVATARS );
 			frame( new TextureFilm( texture, WIDTH, HEIGHT ).get( cl.ordinal() ) );
 		}
@@ -345,7 +345,7 @@ public class SurfaceScene extends PixelScene {
 		
 		private boolean forward;
 		
-		public GrassPatch( float tx, float ty, boolean forward ) {
+		GrassPatch(float tx, float ty, boolean forward) {
 			
 			super( Assets.SURFACE );
 			

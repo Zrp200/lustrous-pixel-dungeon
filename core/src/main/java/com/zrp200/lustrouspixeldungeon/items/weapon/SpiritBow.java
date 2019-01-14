@@ -268,13 +268,13 @@ public class SpiritBow extends Weapon {
 			} else {
 				if (!curUser.shoot( enemy, this )) {
 					Splash.at(cell, 0xCC99FFFF, 1);
-				}
+				} else if(sniperSpecial && augment == Augment.DAMAGE) Surprise.hit(cell);
 				if (sniperSpecial && SpiritBow.this.augment != Augment.SPEED) sniperSpecial = false;
 			}
 		}
 		
 		int flurryCount = -1;
-		
+
 		@Override
 		public void cast(final Hero user, final int dst) {
 			final int cell = throwPos( user, dst );

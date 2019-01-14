@@ -67,7 +67,7 @@ public class WndInfoCell extends Window {
 		}
 
 
-		String desc = "";
+		StringBuilder desc = new StringBuilder();
 
 		IconTitle titlebar = new IconTitle();
 		if (customTile != null){
@@ -82,9 +82,9 @@ public class WndInfoCell extends Window {
 
 			String customDesc = customTile.desc(x, y);
 			if (customDesc != null) {
-				desc += customDesc;
+				desc.append(customDesc);
 			} else {
-				desc += Dungeon.level.tileDesc(tile);
+				desc.append(Dungeon.level.tileDesc(tile));
 			}
 
 		} else {
@@ -97,7 +97,7 @@ public class WndInfoCell extends Window {
 				titlebar.icon(DungeonTerrainTilemap.tile( cell, tile ));
 			}
 			titlebar.label(Dungeon.level.tileName(tile));
-			desc += Dungeon.level.tileDesc(tile);
+			desc.append(Dungeon.level.tileDesc(tile));
 
 		}
 		titlebar.setRect(0, 0, WIDTH, 0);
@@ -109,13 +109,13 @@ public class WndInfoCell extends Window {
 		for (Blob blob:Dungeon.level.blobs.values()) {
 			if (blob.volume > 0 && blob.cur[cell] > 0 && blob.tileDesc() != null) {
 				if (desc.length() > 0) {
-					desc += "\n\n";
+					desc.append("\n\n");
 				}
-				desc += blob.tileDesc();
+				desc.append(blob.tileDesc());
 			}
 		}
 		
-		info.text( desc.length() == 0 ? Messages.get(this, "nothing") : desc );
+		info.text( desc.length() == 0 ? Messages.get(this, "nothing") : desc.toString());
 		info.maxWidth(WIDTH);
 		info.setPos(titlebar.left(), titlebar.bottom() + GAP);
 		

@@ -235,12 +235,7 @@ public class EtherealChains extends Artifact {
 	public void charge(Hero target) {
 		int chargeTarget = 5+(level()*2);
 		if (charge < chargeTarget*2){
-			partialCharge += 0.5f;
-			if (partialCharge >= 1){
-				partialCharge--;
-				charge++;
-				updateQuickslot();
-			}
+			passiveBuff().gainCharge(0.5f);
 		}
 	}
 	
@@ -264,18 +259,10 @@ public class EtherealChains extends Artifact {
 		public boolean act() {
 			int chargeTarget = 5+(level()*2);
 			LockedFloor lock = target.buff(LockedFloor.class);
-			if (charge < chargeTarget && !cursed && (lock == null || lock.regenOn())) {
-				partialCharge += 1 / (40f - (chargeTarget - charge)*2f);
-			} else if (cursed && Random.Int(100) == 0){
+			if (cursed && Random.Int(100) == 0)
 				Buff.prolong( target, Cripple.class, 10f);
-			}
-
-			if (partialCharge >= 1) {
-				partialCharge --;
-				charge ++;
-			}
-
-			updateQuickslot();
+			else if ( charge < chargeTarget && (lock == null || lock.regenOn()) )
+				gainCharge(1f / (40f - (chargeTarget - charge)*2f));
 
 			spend( TICK );
 
@@ -291,7 +278,8 @@ public class EtherealChains extends Artifact {
 			if (charge > 5+(level()*2)){
 				levelPortion *= (5+((float)level()*2))/charge;
 			}
-			partialCharge += levelPortion*10f;
+
+			gainCharge(levelPortion*10f);
 
 			if (exp > 100+level()*50 && level() < levelCap){
 				exp -= 100+level()*50;

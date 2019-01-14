@@ -21,7 +21,7 @@
 
 package com.zrp200.lustrouspixeldungeon.items.spells;
 
-import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.zrp200.lustrouspixeldungeon.Challenges;
 import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
 import com.zrp200.lustrouspixeldungeon.effects.ItemChange;
 import com.zrp200.lustrouspixeldungeon.items.Generator;
@@ -46,6 +46,8 @@ public class Recycle extends InventorySpell {
 	{
 		image = ItemSpriteSheet.RECYCLE;
 		mode = WndBag.Mode.RECYCLABLE;
+
+		basePrice = (50+50)/8f; //prices of ingredients, divided by output quantity
 	}
 	
 	@Override
@@ -90,12 +92,6 @@ public class Recycle extends InventorySpell {
 				item instanceof Scroll ||
 				item instanceof Plant.Seed ||
 				item instanceof Runestone;
-	}
-	
-	@Override
-	public int price() {
-		//prices of ingredients, divided by output quantity
-		return Math.round(quantity * ((50 + 50) / 8f));
 	}
 	
 	public static class Recipe extends com.zrp200.lustrouspixeldungeon.items.Recipe.SimpleRecipe {

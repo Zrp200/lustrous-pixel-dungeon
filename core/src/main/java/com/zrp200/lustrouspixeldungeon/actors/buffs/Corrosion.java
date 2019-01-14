@@ -27,15 +27,14 @@ import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.ui.BuffIndicator;
 
-public class Corrosion extends ActiveBuff{
+public class Corrosion extends ActiveBuff {
 
 	private float damage = 1;
-	protected float left;
 
 	private static final String DAMAGE	= "damage";
+
 	{
 		type = buffType.NEGATIVE;
-		announced = true;
 	}
 
 	@Override

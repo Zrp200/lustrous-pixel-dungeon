@@ -23,6 +23,7 @@ package com.zrp200.lustrouspixeldungeon.actors.mobs;
 
 import com.watabou.utils.Bundle;
 import com.watabou.utils.GameMath;
+import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Badges;
 import com.zrp200.lustrouspixeldungeon.Challenges;
@@ -338,9 +339,9 @@ public abstract class Mob extends Char {
 	protected boolean canAttack( Char enemy ) {
 		return Dungeon.level.adjacent( pos, enemy.pos );
 	}
-	
+
 	protected boolean getCloser( int target ) {
-		
+
 		if (rooted || target == pos) {
 			return false;
 		}
@@ -401,40 +402,45 @@ public abstract class Mob extends Char {
 
 			}
 
-			if (!newPath) {
-				//looks ahead for path validity, up to length-1 or 4, but always at least 1.
-				int lookAhead = (int)GameMath.gate(1, path.size()-1, 4);
-				for (int i = 0; i < lookAhead; i++) {
-					int cell = path.get(i);
-					if (!Dungeon.level.passable[cell] || ( fieldOfView[cell] && Actor.findChar(cell) != null)) {
-						newPath = true;
-						break;
-					}
-				}
-			}
+			newPath = newPath || !pathValid(); // if the path is valid, we should PROBABLY
+
+			PathFinder.Path oldPath = path;
 
 			if (newPath) {
-				path = Dungeon.findPath(this, pos, target,
-						Dungeon.level.passable,
-						fieldOfView);
-			}
+				path = Dungeon.findPath(this, pos, target, Dungeon.level.passable, fieldOfView);
+				//if hunting something, don't follow a path that is extremely inefficient
+				// FIXME this is fairly brittle, primarily it assumes that hunting mobs can't see through permanent terrain, such that if their path is inefficient it's always because of a temporary blockage, and therefore waiting for it to clear is the best option.
+				if (path == null
+						|| (state == HUNTING && path.size() > Math.max(9, 2 * Dungeon.level.distance(pos, target)))) {
+					path = oldPath; // scrap the new path.
+				}
 
-			//if hunting something, don't follow a path that is extremely inefficient
-			//FIXME this is fairly brittle, primarily it assumes that hunting mobs can't see through permanent terrain, such that if their path is inefficient it's always because of a temporary blockage, and therefore waiting for it to clear is the best option.
-			if (path == null ||
-					(state == HUNTING && path.size() > Math.max(9, 2*Dungeon.level.distance(pos, target)))) {
-				return false;
 			}
+			if(!lookAhead(1)) return false; // wait if the next step is invalid.
 
 			step = path.removeFirst();
 		}
 		if (step != -1) {
 			move( step );
 			return true;
-		} else {
-			return false;
 		}
+		return false;
 	}
+
+	private boolean lookAhead(int distance) { //looks ahead for path validity
+		if(path == null) return false;
+		for (int i = 0; i < distance; i++) {
+			int cell = path.get(i);
+			if (!Dungeon.level.passable[cell] || (fieldOfView[cell] && Actor.findChar(cell) != null)) {
+				return false;
+			}
+		}
+		return true;
+	}
+	private boolean pathValid() {
+		return lookAhead((int)GameMath.gate(1, path.size()-1, 4));
+	}
+
 	boolean canGetFurther(int target) {
 		return !( rooted
 				|| target == pos

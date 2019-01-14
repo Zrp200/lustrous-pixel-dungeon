@@ -59,12 +59,12 @@ public class Ballistica {
 	}
 
 	private void build( int from, int to, boolean stopTarget, boolean stopChars, boolean stopTerrain ) {
-		int w = Dungeon.level.width();
+		int levelWidth = Dungeon.level.width();
 
-		int x0 = from % w;
-		int x1 = to % w;
-		int y0 = from / w;
-		int y1 = to / w;
+		int x0 = from % levelWidth;
+		int x1 = to % levelWidth;
+		int y0 = from / levelWidth;
+		int y1 = to / levelWidth;
 
 		int dx = x1 - x0;
 		int dy = y1 - y0;
@@ -75,21 +75,18 @@ public class Ballistica {
 		dx = Math.abs( dx );
 		dy = Math.abs( dy );
 
-		int stepA;
-		int stepB;
-		int dA;
-		int dB;
+		int stepA, stepB, dA, dB;
 
 		if (dx > dy) {
 
 			stepA = stepX;
-			stepB = stepY * w;
+			stepB = stepY * levelWidth;
 			dA = dx;
 			dB = dy;
 
 		} else {
 
-			stepA = stepY * w;
+			stepA = stepY * levelWidth;
 			stepB = stepX;
 			dA = dy;
 			dB = dx;

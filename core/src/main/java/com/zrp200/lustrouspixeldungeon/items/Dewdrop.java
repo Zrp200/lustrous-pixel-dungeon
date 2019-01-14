@@ -53,9 +53,10 @@ public class Dewdrop extends Item {
 			int heal = Math.round( hero.HT * 0.05f * quantity );
 			
 			int effect = Math.min( hero.HT - hero.HP, heal );
+			int effectiveUsed = effect*quantity/heal;
 			if (effect > 0) {
 				hero.HP += effect;
-				hero.sprite.emitter().burst( Speck.factory( Speck.HEALING ), 1 );
+				hero.sprite.emitter().burst( Speck.factory( Speck.HEALING ), 1+effectiveUsed );
 				hero.sprite.showStatus( CharSprite.POSITIVE, Messages.get(this, "value", effect) );
 			} else {
 				GLog.i( Messages.get(this, "already_full") );
@@ -68,13 +69,6 @@ public class Dewdrop extends Item {
 		hero.spendAndNext( TIME_TO_PICK_UP );
 		
 		return true;
-	}
-
-	@Override
-	//max of one dew in a stack
-	public Item quantity(int value) {
-		quantity = Math.min( value, 1);
-		return this;
 	}
 
 }

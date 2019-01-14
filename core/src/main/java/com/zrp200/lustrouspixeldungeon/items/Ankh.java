@@ -47,7 +47,7 @@ public class Ankh extends Item {
 		bones = true;
 	}
 
-	private Boolean blessed = false;
+	private boolean blessed = false;
 	
 	@Override
 	public boolean isUpgradable() {
@@ -77,7 +77,9 @@ public class Ankh extends Item {
 
 			DewVial vial = hero.belongings.getItem(DewVial.class);
 			if (vial != null){
-				blessed = true;
+				Ankh ankh = (Ankh) split(1);
+				ankh.blessed = true;
+				ankh.collect();
 				vial.empty();
 				GLog.p( Messages.get(this, "bless") );
 				hero.spend( 1f );
@@ -120,7 +122,7 @@ public class Ankh extends Item {
 
 	@Override
 	public boolean isSimilar(Item item) {
-		return item instanceof Ankh && blessed == ((Ankh) item).blessed;
+		return super.isSimilar(item) && blessed == ((Ankh) item).blessed;
 	}
 
 	@Override

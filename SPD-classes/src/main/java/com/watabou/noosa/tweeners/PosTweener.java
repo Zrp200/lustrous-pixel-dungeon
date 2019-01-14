@@ -24,23 +24,16 @@ package com.watabou.noosa.tweeners;
 import com.watabou.noosa.Visual;
 import com.watabou.utils.PointF;
 
-public class PosTweener extends Tweener {
-
-	public Visual visual;
-	
-	public PointF start;
-	public PointF end;
+public class PosTweener extends MoveTweener<Visual> {
 	
 	public PosTweener( Visual visual, PointF pos, float time ) {
-		super( visual, time );
-		
-		this.visual = visual;
-		start = visual.point();
-		end = pos;
+	    super( visual, pos, time );
+        current = start = target.point();
 	}
 
 	@Override
-	protected void updateValues( float progress ) {
-		visual.point( PointF.inter( start, end, progress ) );
+	protected void updateValues(float progress) {
+		super.updateValues(progress);
+		target.point(current);
 	}
 }

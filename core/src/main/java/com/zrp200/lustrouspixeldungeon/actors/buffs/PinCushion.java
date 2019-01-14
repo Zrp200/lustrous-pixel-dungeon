@@ -22,8 +22,6 @@
 package com.zrp200.lustrouspixeldungeon.actors.buffs;
 
 import com.watabou.utils.Bundle;
-import com.zrp200.lustrouspixeldungeon.Dungeon;
-import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.MissileWeapon;
 
 import java.util.ArrayList;
@@ -34,19 +32,24 @@ public class PinCushion extends Buff {
 	private ArrayList<MissileWeapon> items = new ArrayList<MissileWeapon>();
 
 	public void stick(MissileWeapon projectile){
-		for (Item item : items){
+		if( !projectile.attachedTo(this) ) {
+			projectile.stickTo(target); // this is actually a recursive call. you can call whatever's easier. They both need to be called though.
+			return;
+		}
+
+		for (MissileWeapon item : items){
 			if (item.isSimilar(projectile)){
 				item.merge(projectile);
 				return;
 			}
 		}
+
 		items.add(projectile);
 	}
 
 	@Override
 	public void detach() {
-		for (Item item : items)
-			Dungeon.level.drop( item, target.pos).sprite.drop();
+		for (MissileWeapon item : items) item.detach();
 		super.detach();
 	}
 

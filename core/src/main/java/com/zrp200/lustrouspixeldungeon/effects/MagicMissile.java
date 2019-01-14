@@ -31,6 +31,7 @@ import com.watabou.utils.ColorMath;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.actors.Actor;
+import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.effects.particles.CorrosionParticle;
 import com.zrp200.lustrouspixeldungeon.effects.particles.FlameParticle;
 import com.zrp200.lustrouspixeldungeon.effects.particles.LeafParticle;
@@ -83,7 +84,7 @@ public class MagicMissile extends Emitter {
 				callback);
 	}
 
-	public void reset( int type, PointF from, PointF to, Callback callback ) {
+	public synchronized void reset( int type, PointF from, PointF to, Callback callback ) {
 		this.callback = callback;
 		
 		revive();
@@ -154,8 +155,9 @@ public class MagicMissile extends Emitter {
 	//convenience method for the common case of a bolt going from a character to a tile or enemy
 	public static void boltFromChar(Group group, int type, Visual sprite, int to, Callback callback){
 		MagicMissile missile = ((MagicMissile)group.recycle( MagicMissile.class ));
-		if (Actor.findChar(to) != null){
-			missile.reset(type, sprite, Actor.findChar(to).sprite, callback);
+		Char target = Actor.findChar(to);
+		if (target != null){
+			missile.reset(type, sprite, target.sprite, callback);
 		} else {
 			missile.reset(type, sprite, to, callback);
 		}

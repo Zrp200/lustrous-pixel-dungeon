@@ -81,6 +81,16 @@ public class Armor extends EquipableItem {
 	public boolean glyphKnown = false;
 
 	@Override
+	public boolean isEnchantable() {
+		return true;
+	}
+
+	@Override
+	public boolean isDestroyable() {
+		return super.isDestroyable() && seal == null && !hasGoodGlyph();
+	}
+
+	@Override
 	public Item identify() {
 		if(glyph != null && !glyphKnown) revealGlyph();
 		glyphKnown = true;
@@ -157,7 +167,10 @@ public class Armor extends EquipableItem {
 	public void reset() {
 		super.reset();
 		//armor can be kept in bones between runs, the seal cannot.
-		seal = null;
+		if(seal != null) {
+			level(level() + 1);
+			seal = null;
+		}
 	}
 
 	@Override

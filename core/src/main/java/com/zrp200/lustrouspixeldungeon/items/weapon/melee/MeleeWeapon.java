@@ -26,6 +26,10 @@ import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
 
 public class MeleeWeapon extends Weapon {
 
+	{
+		basePrice = 20;
+	}
+
 	public int minScale() 	{ return 1;          }
 	public int maxScale() 	{ return tier+1;     }
 	public int minBase()  	{ return tier;       }
@@ -44,30 +48,8 @@ public class MeleeWeapon extends Weapon {
 		return defenseFactor(owner, level());
 	}
 
-	@Override
-	public int price() {
-		int price = 20 * tier;
-		if ( isVisiblyEnchanted() ) {
-			if( hasGoodEnchant() ) price *= 1.5;
-			else price /= 1.5;
-		}
-
-		if (cursedKnown) {
-			if(cursed) price *= enchantKnown ? 0.75 : 0.667;
-			else if( !levelKnown ) price *= 1.25; // prize items usually.
-		}
-		if (levelKnown && level() > 0) {
-			price *= (level() + 1);
-		}
-		if (price < 1) {
-			price = 1;
-		}
-		return price;
-	}
-
 	public static class Uncommon extends MeleeWeapon { // because this is used so often
-		@Override
-		public int maxBase() {
+		@Override public int maxBase() {
 			return 4*(tier+1);
 		}
 	}

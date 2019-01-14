@@ -28,6 +28,7 @@ import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.effects.BlobEmitter;
 import com.zrp200.lustrouspixeldungeon.levels.Level;
+import com.zrp200.lustrouspixeldungeon.messages.Messages;
 
 public class Blob extends Actor {
 
@@ -212,10 +213,11 @@ public class Blob extends Actor {
 		cur = new int[Dungeon.level.length()];
 		off = new int[Dungeon.level.length()];
 	}
-	
+
 	public String tileDesc() {
-		return null;
+		return Messages.get(this, "desc");
 	}
+
 	
 	public static<T extends Blob> T seed( int cell, int amount, Class<T> type ) {
 		return seed(cell, amount, type, Dungeon.level);

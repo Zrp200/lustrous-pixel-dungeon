@@ -45,7 +45,8 @@ public class AboutScene extends PixelScene {
 	private static final String TITLE_LPD = "Lustrous Pixel Dungeon";
 
 	private static final String TXT_LPD = "Code: Zrp200 \"Palkia\"\n" +
-			"Graphics: s0i5l3a1s, videogamer1002";
+			"Graphics: s0i5l3a1s, videogamer1002" + (
+					LustSettings.landscape() ? "\n\nAdditional Thanks to PD Suggestion Workshop and Pixel Dungeon discords!" : "");
 
 	private static final String TTL_SHPX = "Shattered Pixel Dungeon";
 
@@ -66,9 +67,10 @@ public class AboutScene extends PixelScene {
 	public void create() {
 		super.create();
 
-		final float colWidth = Camera.main.width / (LustSettings.landscape() ? 2 : 1);
-		final float colTop = (Camera.main.height / 2) - (LustSettings.landscape() ? 30 : 100);
-		final float wataOffset = LustSettings.landscape() ? colWidth : 0;
+		final float
+				colWidth = Camera.main.width / (LustSettings.landscape() ? 3 : 1),
+				colTop = (Camera.main.height / 2) - (LustSettings.landscape() ? 30 : 100),
+				offset = LustSettings.landscape() ? colWidth : 0;
 
 		Image zrp = new Image(Assets.ZRP200);
 		zrp.x = (colWidth - zrp.width()) / 2;
@@ -92,9 +94,9 @@ public class AboutScene extends PixelScene {
 
 
 		Image shpx = Icons.SHPX.get();
-		shpx.x = (colWidth - shpx.width()) / 2;
+		shpx.x = (colWidth - shpx.width()) / 2 + offset;
 		shpx.y = LustSettings.landscape() ?
-				colTop:
+				colTop :
 				lust.top() + lust.height() + 15;
 		align(shpx);
 		add( shpx );
@@ -106,7 +108,7 @@ public class AboutScene extends PixelScene {
 		align(shpxtitle);
 		add( shpxtitle );
 
-		shpxtitle.x = (colWidth - shpxtitle.width()) / 2;
+		shpxtitle.x = (colWidth - shpxtitle.width()) / 2 + offset;
 		shpxtitle.y = shpx.y + shpx.height + 5;
 		align(shpxtitle);
 
@@ -123,11 +125,11 @@ public class AboutScene extends PixelScene {
 		shpxtext.maxWidth((int)Math.min(colWidth, 120));
 		add( shpxtext );
 
-		shpxtext.setPos((colWidth - shpxtext.width()) / 2, shpxtitle.y + shpxtitle.height() + 10);
+		shpxtext.setPos((colWidth - shpxtext.width()) / 2 + offset, shpxtitle.y + shpxtitle.height() + 10);
 		align(shpxtext);
 
 		Image wata = Icons.WATA.get();
-		wata.x = wataOffset + (colWidth - wata.width()) / 2;
+		wata.x = offset*2 + (colWidth - wata.width()) / 2;
 		wata.y = LustSettings.landscape() ?
 						colTop:
 						shpxtext.top() + wata.height + 15;
@@ -140,7 +142,7 @@ public class AboutScene extends PixelScene {
 		wataTitle.hardlight(Window.TITLE_COLOR);
 		add( wataTitle );
 
-		wataTitle.x = (colWidth - wataTitle.width()) / 2;
+		wataTitle.x = (colWidth - wataTitle.width()) / 2 + offset*2;
 		wataTitle.y = wata.y + wata.height() + 10;
 		align(wataTitle);
 
@@ -157,7 +159,7 @@ public class AboutScene extends PixelScene {
 		wataText.maxWidth((int)Math.min(colWidth, 120));
 		add( wataText );
 
-		wataText.setPos(wataOffset + (colWidth - wataText.width()) / 2, wataTitle.y + wataTitle.height() + 10);
+		wataText.setPos(offset * 2 + (colWidth - wataText.width()) / 2, wataTitle.y + wataTitle.height() + 10);
 		align(wataText);
 		
 		Archs archs = new Archs();

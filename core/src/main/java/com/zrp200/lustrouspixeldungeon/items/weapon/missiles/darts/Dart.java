@@ -97,9 +97,4 @@ public class Dart extends MissileWeapon {
 		updateCrossbow();
 		return super.info();
 	}
-	
-	@Override
-	public boolean isUpgradable() {
-		return false;
-	}
 }

@@ -86,6 +86,10 @@ public class RingOfForce extends Ring {
 		}
 	}
 
+	protected String effect2Bonus() {
+		return null;
+	}
+
 	private class Force extends RingBuff {	}
 }
 

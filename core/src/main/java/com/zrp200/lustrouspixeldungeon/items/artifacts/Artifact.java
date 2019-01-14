@@ -29,10 +29,13 @@ import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.KindofMisc;
+import com.zrp200.lustrouspixeldungeon.items.rings.RingOfEnergy;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.utils.GLog;
 
 public class Artifact extends KindofMisc {
+
+	{ levelKnown = true; }
 
 	protected Buff passiveBuff;
 	protected Buff activeBuff;
@@ -67,7 +70,6 @@ public class Artifact extends KindofMisc {
 		} else {
 
 			if (super.doEquip( hero )){
-
 				identify();
 				return true;
 
@@ -124,11 +126,10 @@ public class Artifact extends KindofMisc {
 
 	@Override
 	public String info() {
-		if (cursed && cursedKnown && !isEquipped( Dungeon.hero )) {
+		if (visiblyCursed() && !isEquipped( Dungeon.hero )) {
 			return desc() + "\n\n" + Messages.get(Artifact.class, "curse_known");
-			
-		} else if (!isIdentified() && cursedKnown && !isEquipped( Dungeon.hero)) {
-			return desc()+ "\n\n" + Messages.get(Artifact.class, "not_cursed");
+	//	} else if (!isIdentified() && cursedKnown && !isEquipped( Dungeon.hero)) {
+	//		return desc()+ "\n\n" + Messages.get(Artifact.class, "not_cursed");
 			
 		} else {
 			return desc();
@@ -220,6 +221,24 @@ public class Artifact extends KindofMisc {
 
 		public boolean isCursed() {
 			return cursed;
+		}
+
+		protected void gainCharge(float amount) {
+			if( isCursed() ) return;
+			if(charge < chargeCap || chargeCap == 0) {
+				partialCharge += RingOfEnergy.artifactChargeMultiplier(target)*amount;
+				while(partialCharge >= 1) {
+					charge++;
+					partialCharge--;
+					if (charge >= chargeCap && chargeCap != 0) {
+						partialCharge = 0;
+						charge = chargeCap;
+						String chargeMessage = Messages.get(Artifact.this, "charged",name);
+						if(!chargeMessage.equals("")) GLog.p( chargeMessage );
+					}
+					updateQuickslot();
+				}
+			}
 		}
 
 	}

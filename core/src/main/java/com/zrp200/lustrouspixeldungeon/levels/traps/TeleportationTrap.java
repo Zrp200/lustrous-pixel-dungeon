@@ -84,7 +84,7 @@ public class TeleportationTrap extends Trap {
 		while (heap != null && respawn != -1) {
 			if (heap.type == Heap.Type.FOR_SALE) break;
 			if (heap.type == Heap.Type.HEAP) {
-				Dungeon.level.drop(heap.pickUp(), respawn);
+				heap.pickUp().drop(respawn);
 				heap = Dungeon.level.heaps.get(this.pos);
 				respawn = Dungeon.level.randomRespawnCell();
 			}

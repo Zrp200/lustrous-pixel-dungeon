@@ -427,22 +427,8 @@ public abstract class Char extends Actor {
 	}
 
 	public synchronized void add( Buff buff ) {
-		
 		buffs.add( buff );
 		Actor.add( buff );
-
-		if (sprite != null && buff.announced)
-			switch(buff.type){
-				case POSITIVE:
-					sprite.showStatus(CharSprite.POSITIVE, buff.toString());
-					break;
-				case NEGATIVE:
-					sprite.showStatus(CharSprite.NEGATIVE, buff.toString());
-					break;
-				case NEUTRAL: default:
-					sprite.showStatus(CharSprite.NEUTRAL, buff.toString());
-					break;
-			}
 
 	}
 	
@@ -574,7 +560,7 @@ public abstract class Char extends Actor {
 	}
 
 	public enum Property{
-		BOSS ( new HashSet<Class>( Arrays.asList(Grim.class, ScrollOfRetribution.class, ScrollOfPsionicBlast.class)),
+		BOSS ( new HashSet<Class>( Arrays.asList(Grim.class, ScrollOfRetribution.class, ScrollOfPsionicBlast.class, Burning.class, ToxicGas.class)),
 				new HashSet<Class>( Arrays.asList(Corruption.class) )),
 		MINIBOSS ( new HashSet<Class>(),
 				new HashSet<Class>( Arrays.asList(Corruption.class) )),

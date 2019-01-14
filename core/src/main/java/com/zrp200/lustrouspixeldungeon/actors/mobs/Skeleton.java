@@ -95,6 +95,7 @@ public class Skeleton extends Mob {
 		//50% chance of re-rolling tier 4 or 5 melee weapons
 		} while (((MeleeWeapon) loot).tier >= 4 && Random.Int(2) == 0);
 		loot.level(0);
+		loot.levelKnown = true;
 		return loot;
 	}
 	

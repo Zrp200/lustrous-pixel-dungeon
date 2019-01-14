@@ -124,20 +124,16 @@ public class GameScene extends PixelScene {
 	private DungeonWallsTilemap walls;
 	private WallBlockingTilemap wallBlocking;
 	private FogOfWar fog;
-	private HeroSprite hero;
 
 	private StatusPane pane;
 	
 	private GameLog log;
-	
-	private BusyIndicator busy;
+
 	private CircleArc counter;
 
 	private static CellSelector cellSelector;
-	
-	private Group terrain;
+
 	private Group customTiles;
-	private Group levelVisuals;
 	private Group customWalls;
 	private Group ripples;
 	private Group plants;
@@ -177,8 +173,8 @@ public class GameScene extends PixelScene {
 
 		scene = this;
 
-		terrain = new Group();
-		add( terrain );
+		Group terrain = new Group();
+		add(terrain);
 
 		water = new SkinnedBlock(
 			Dungeon.level.width() * DungeonTilemap.SIZE,
@@ -220,8 +216,8 @@ public class GameScene extends PixelScene {
 
 		terrainFeatures = new TerrainFeaturesTilemap(Dungeon.level.plants, Dungeon.level.traps);
 		terrain.add(terrainFeatures);
-		
-		levelVisuals = Dungeon.level.addVisuals();
+
+		Group levelVisuals = Dungeon.level.addVisuals();
 		add(levelVisuals);
 		
 		heaps = new Group();
@@ -289,11 +285,11 @@ public class GameScene extends PixelScene {
 		add( new TargetHealthIndicator() );
 		
 		add( emoicons );
-		
-		hero = new HeroSprite(Dungeon.hero);
+
+		HeroSprite hero = new HeroSprite(Dungeon.hero);
 		hero.place( Dungeon.hero.pos );
 		hero.updateArmor();
-		mobs.add( hero );
+		mobs.add(hero);
 		
 		add( cellSelector = new CellSelector( tiles ) );
 
@@ -330,11 +326,11 @@ public class GameScene extends PixelScene {
 
 		layoutTags();
 
-		busy = new BusyIndicator();
+		BusyIndicator busy = new BusyIndicator();
 		busy.camera = uiCamera;
 		busy.x = 1;
 		busy.y = pane.bottom() + 1;
-		add( busy );
+		add(busy);
 		
 		counter = new CircleArc(18, 4.25f);
 		counter.color( 0x808080, true );
@@ -344,7 +340,7 @@ public class GameScene extends PixelScene {
 		switch (InterlevelScene.mode) {
 		case RESURRECT:
 			ScrollOfTeleportation.appear( Dungeon.hero, Dungeon.level.entrance );
-			new Flare( 8, 32 ).color( 0xFFFF66, true ).show( hero, 2f ) ;
+			new Flare( 8, 32 ).color( 0xFFFF66, true ).show(hero, 2f ) ;
 			break;
 		case RETURN:
 			ScrollOfTeleportation.appear(  Dungeon.hero, Dungeon.hero.pos );
@@ -1006,7 +1002,7 @@ public class GameScene extends PixelScene {
 		}
 	}
 
-	public static void examineObject(Object o){
+	private static void examineObject(Object o){
 		if (o == Dungeon.hero){
 			GameScene.show( new WndHero() );
 		} else if ( o instanceof Mob ){

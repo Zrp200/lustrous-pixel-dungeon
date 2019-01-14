@@ -398,9 +398,9 @@ public class Generator {
 			MIS_T3.classes = new Class<?>[]{
 					ThrowingSpear.class,
 					Bolas.class,
-					Boomerang.class // coming soon?
+					Boomerang.class
 			};
-			MIS_T3.probs = new float[]{ 4, 3, 0 };
+			MIS_T3.probs = new float[]{ 4, 3, 1 };
 			
 			MIS_T4.classes = new Class<?>[]{
 					Javelin.class,

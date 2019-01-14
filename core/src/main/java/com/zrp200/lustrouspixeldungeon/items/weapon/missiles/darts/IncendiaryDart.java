@@ -22,7 +22,6 @@
 package com.zrp200.lustrouspixeldungeon.items.weapon.missiles.darts;
 
 import com.zrp200.lustrouspixeldungeon.Dungeon;
-import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.Blob;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.Fire;
@@ -38,14 +37,12 @@ public class IncendiaryDart extends TippedDart {
 	}
 	
 	@Override
-	protected void onThrow( int cell ) {
-		Char enemy = Actor.findChar( cell );
-		if ((enemy == null || enemy == curUser) && Dungeon.level.flamable[cell]) {
-			GameScene.add(Blob.seed(cell, 4, Fire.class));
-			Dungeon.level.drop(new Dart(), cell).sprite.drop();
-		} else{
-			super.onThrow(cell);
+	protected void onThrowComplete( int cell ) {
+		if ( curUser.pos != cell && !rangedHit && Dungeon.level.flamable[cell] ) {
+			GameScene.add( Blob.seed(cell, 1, Fire.class) );
+			useDurability();
 		}
+		super.onThrowComplete(cell);
 	}
 	
 	@Override

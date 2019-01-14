@@ -30,6 +30,7 @@ import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.PinCushion;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.actors.hero.HeroClass;
+import com.zrp200.lustrouspixeldungeon.items.Heap;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.bags.Bag;
 import com.zrp200.lustrouspixeldungeon.items.bags.MagicalHolster;
@@ -48,6 +49,8 @@ abstract public class MissileWeapon extends Weapon {
 		stackable = true;
 		levelKnown = true;
 
+		basePrice = 6;
+
 		bones = true;
 
 		defaultAction = AC_THROW;
@@ -55,9 +58,10 @@ abstract public class MissileWeapon extends Weapon {
 	}
 	
 	protected boolean sticky = true;
-	
-	protected static final float MAX_DURABILITY = 100;
+
+	private static final float MAX_DURABILITY = 100;
 	protected float durability = MAX_DURABILITY;
+	protected float durabilityCap = MAX_DURABILITY;
 	protected float baseUses = 10;
 
 	public boolean holster;
@@ -111,7 +115,7 @@ abstract public class MissileWeapon extends Weapon {
 
 				//try to put the upgraded into inventory, if it didn't already merge
 				if (upgraded.quantity() == 1 && !upgraded.collect()) {
-					Dungeon.level.drop(upgraded, Dungeon.hero.pos);
+					upgraded.drop(Dungeon.hero.pos);
 				}
 				updateQuickslot();
 				return upgraded;
@@ -134,6 +138,38 @@ abstract public class MissileWeapon extends Weapon {
 	}
 
 	@Override
+	public Weapon enchant(Enchantment ench, boolean visible) {
+		if (!bundleRestoring) {
+			if (quantity > 1) {
+				MissileWeapon enchanted = (MissileWeapon) split(1);
+				enchanted.parent = null;
+
+				enchanted = (MissileWeapon) enchanted.enchant(ench,visible);
+
+				//try to put the upgraded into inventory, if it didn't already merge
+				if (enchanted.quantity() == 1 && !enchanted.collect()) {
+					enchanted.drop(Dungeon.hero.pos);
+				}
+				updateQuickslot();
+				return enchanted;
+			} else {
+				durability = MAX_DURABILITY;
+				super.enchant(ench, visible);
+
+				Item similar = Dungeon.hero.belongings.getSimilar(this);
+				if (similar != null){
+					detach(Dungeon.hero.belongings.backpack);
+					return (Weapon) similar.merge(this);
+				}
+				updateQuickslot();
+				return this;
+			}
+		} else {
+			return super.enchant(ench,enchantKnown);
+		}
+	}
+
+	@Override
 	public ArrayList<String> actions( Hero hero ) {
 		ArrayList<String> actions = super.actions( hero );
 		actions.remove( AC_EQUIP );
@@ -143,6 +179,7 @@ abstract public class MissileWeapon extends Weapon {
 	@Override
 	public boolean collect(Bag container) {
 		if (container instanceof MagicalHolster) holster = true;
+		detach();
 		return super.collect(container);
 	}
 	
@@ -157,21 +194,39 @@ abstract public class MissileWeapon extends Weapon {
 	}
 
 	@Override
-	protected void onThrow( int cell ) {
-		Char enemy = Actor.findChar( cell );
-		if (enemy == null || enemy == curUser) {
-				parent = null;
-				super.onThrow( cell );
-		} else {
-			if (!curUser.shoot( enemy, this )) {
-				rangedMiss( cell );
-			} else {
-				
-				rangedHit( enemy, cell );
+	public int proc(Char attacker, Char defender, int damage) {
+		rangedHit = true;
+		useDurability();
+		stickTo(defender);
+		return super.proc(attacker, defender, damage);
+	}
 
+	private PinCushion embed = null;
+	public boolean stickTo(Char enemy) {
+		if(enemy != null && durability > 0 && sticky && enemy.isAlive()) {
+			PinCushion p = Buff.affect(enemy, PinCushion.class);
+			if (p.target == enemy){
+				embed = p; // important that this goes first.
+				p.stick(this);
+				return true;
 			}
 		}
+		return false;
 	}
+
+	public void detach() {
+		if(curUser.belongings.contains(this)) {
+			detachAll(curUser.belongings.backpack);
+			drop(curUser.pos);
+		}
+		else if(embed != null) {
+			int dropPos = embed.target.pos;
+			embed = null;
+			drop(dropPos);
+		}
+	}
+
+	public boolean attachedTo(PinCushion p) { return embed.equals(p); }
 	
 	@Override
 	public Item random() {
@@ -194,49 +249,33 @@ abstract public class MissileWeapon extends Weapon {
 	public float castDelay(Char user, int dst) {
 		return speedFactor( user );
 	}
-	
-	protected void rangedHit( Char enemy, int cell ){
-		//if this weapon was thrown from a source stack, degrade that stack.
-		//unless a weapon is about to break, then break the one being thrown
+
+	protected void useDurability() {
 		if (parent != null){
-			if (parent.durability <= parent.durabilityPerUse()){
+			if ( parent.durability <= parent.durabilityPerUse()){
 				durability = 0;
 				parent.durability = MAX_DURABILITY;
 			} else {
-				parent.durability -= parent.durabilityPerUse();
-				if (parent.durability > 0 && parent.durability <= parent.durabilityPerUse()){
-					if (level() <= 0)GLog.w(Messages.get(this, "about_to_break"));
-					else             GLog.n(Messages.get(this, "about_to_break"));
-				}
+				durability = parent.durability -= parent.durabilityPerUse()* (float) 1;
 			}
-			parent = null;
 		} else {
 			durability -= durabilityPerUse();
-			if (durability > 0 && durability <= durabilityPerUse()){
-				if (level() <= 0)GLog.w(Messages.get(this, "about_to_break"));
-				else             GLog.n(Messages.get(this, "about_to_break"));
-			}
 		}
-		if (durability > 0){
-			//attempt to stick the missile weapon to the enemy, just drop it if we can't.
-			if (enemy.isAlive() && sticky) {
-				PinCushion p = Buff.affect(enemy, PinCushion.class);
-				if (p.target == enemy){
-					p.stick(this);
-					return;
-				}
-			}
-			Dungeon.level.drop( this, enemy.pos ).sprite.drop();
+		MissileWeapon weapon = parent == null ? this : parent;
+		boolean willBreak = weapon.durability > 0 && weapon.durability <= weapon.durabilityPerUse();
+		if(willBreak) {
+			if (level() <= 0) GLog.w(Messages.get(this, "about_to_break"));
+			else GLog.n(Messages.get(this, "about_to_break"));
 		}
 	}
-	
-	protected void rangedMiss( int cell ) {
-		parent = null;
-		super.onThrow(cell);
-	}
+
+	@SuppressWarnings("WeakerAccess")
+	protected float durabilityScaling = 3f;
+	protected float enchantDurability = durabilityScaling/2;
 	
 	protected float durabilityPerUse(){
-		float usages = baseUses * (float)(Math.pow(3, level()));
+		float usages = baseUses * (float)(Math.pow(durabilityScaling, level()));
+		usages *= (enchantment != null ? enchantDurability : 1);
 		
 		if (Dungeon.hero.heroClass == HeroClass.HUNTRESS)   usages *= 1.5f;
 		if (holster)                                        usages *= MagicalHolster.HOLSTER_DURABILITY_FACTOR;
@@ -244,7 +283,7 @@ abstract public class MissileWeapon extends Weapon {
 		usages *= RingOfSharpshooting.durabilityMultiplier( Dungeon.hero );
 		
 		//at 100 uses, items just last forever.
-		if (usages >= 100f) return 0;
+		if (usages >= durabilityCap) return 0;
 
 		//add a tiny amount to account for rounding error for calculations like 1/3
 		return (MAX_DURABILITY/usages) + 0.001f;
@@ -315,11 +354,6 @@ abstract public class MissileWeapon extends Weapon {
 
 		return info;
 	}
-	
-	@Override
-	public int price() {
-		return 6 * tier * quantity * (level() + 1);
-	}
 
 	private static final String DURABILITY = "durability";
 	
@@ -346,5 +380,25 @@ abstract public class MissileWeapon extends Weapon {
 				quantity = (int)Math.ceil(quantity/5f);
 			}
 		}
+	}
+
+	protected boolean rangedHit = false;
+	@Override
+	protected void onThrow(int cell) {
+		Char enemy = Actor.findChar(cell);
+		if(Actor.findChar(cell) != null) rangedHit = curUser.shoot(enemy, this);
+		super.onThrow(cell);
+	}
+
+	@Override
+	public Heap drop(int pos) {
+		if(embed != null) return Dungeon.level.drop(null,pos);
+		return super.drop(pos);
+	}
+
+	@Override
+	protected void onThrowComplete(int cell) {
+		parent = null;
+		rangedHit = false;
 	}
 }

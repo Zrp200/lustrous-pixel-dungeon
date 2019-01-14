@@ -22,6 +22,7 @@
 package com.zrp200.lustrouspixeldungeon.actors.buffs;
 
 import com.watabou.utils.PointF;
+import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.effects.Splash;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
@@ -34,14 +35,17 @@ public class Bleeding extends ActiveBuff {
 
 	{
 		type = buffType.NEGATIVE;
-		announced = true;
 	}
 	
 	@Override
 	public int icon() {
 		return BuffIndicator.BLEEDING;
 	}
-	
+
+	public void afflict(float duration) {
+		extend( Random.NormalFloat(duration*0.125f,duration*0.75f) ); // so it's not TOTALLY useless if inflicting tiny amounts
+		set(duration);
+	}
 	@Override
 	public String toString() {
 		return Messages.get(this, "name");
@@ -80,6 +84,8 @@ public class Bleeding extends ActiveBuff {
 		
 		return true;
 	}
+
+
 
 	@Override
 	public String heroMessage() {

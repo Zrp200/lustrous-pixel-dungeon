@@ -61,6 +61,16 @@ public class Pickaxe extends Weapon {
 
 	}
 
+	@Override
+	public String info() {
+		return Messages.get(this,"desc");
+	}
+
+	@Override
+	public boolean isEnchantable() {
+		return false;
+	}
+
 	public int minBase() { return  2; }
 	public int maxBase() { return 15; }
 

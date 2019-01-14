@@ -51,8 +51,6 @@ public class RankingsScene extends PixelScene {
 	private static final float MAX_ROW_WIDTH    = 160;
 
 	private static final float GAP	= 4;
-	
-	private Archs archs;
 
 	@Override
 	public void create() {
@@ -65,10 +63,10 @@ public class RankingsScene extends PixelScene {
 		
 		int w = Camera.main.width;
 		int h = Camera.main.height;
-		
-		archs = new Archs();
+
+		Archs archs = new Archs();
 		archs.setSize( w, h );
-		add( archs );
+		add(archs);
 		
 		Rankings.INSTANCE.load();
 
@@ -173,7 +171,7 @@ public class RankingsScene extends PixelScene {
 		private Image classIcon;
 		private BitmapText level;
 		
-		public Record( int pos, boolean latest, Rankings.Record rec ) {
+		Record(int pos, boolean latest, Rankings.Record rec) {
 			super();
 			
 			this.rec = rec;

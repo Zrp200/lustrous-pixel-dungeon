@@ -155,12 +155,12 @@ public class BuffIndicator extends Component {
 					@Override
 					protected void updateValues( float progress ) {
 						super.updateValues( progress );
-						image.scale.set( 1 + 5 * progress );
+						target.scale.set( 1 + 5 * progress );
 					}
 					
 					@Override
 					protected void onComplete() {
-						image.killAndErase();
+						target.killAndErase();
 					}
 				} );
 				

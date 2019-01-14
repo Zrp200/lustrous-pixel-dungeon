@@ -24,16 +24,16 @@ package com.watabou.noosa.tweeners;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Gizmo;
 
-abstract public class Tweener extends Gizmo {
+abstract public class Tweener<Target extends Gizmo> extends Gizmo {
 
-	public Gizmo target;
+	public Target target;
 	
 	public float interval;
 	public float elapsed;
 	
 	public Listener listener;
 	
-	public Tweener( Gizmo target, float interval ) {
+	public Tweener( Target target, float interval ) {
 		super();
 		
 		this.target = target;
@@ -46,14 +46,12 @@ abstract public class Tweener extends Gizmo {
 	public void update() {
 		if (elapsed < 0){
 			onComplete();
-			kill();
 			return;
 		}
 		elapsed += Game.elapsed;
 		if (elapsed >= interval) {
 			updateValues( 1 );
 			onComplete();
-			kill();
 		} else {
 			updateValues( elapsed / interval );
 		}
@@ -67,6 +65,7 @@ abstract public class Tweener extends Gizmo {
 		if (listener != null) {
 			listener.onComplete( this );
 		}
+		kill();
 	}
 	
 	abstract protected void updateValues( float progress );

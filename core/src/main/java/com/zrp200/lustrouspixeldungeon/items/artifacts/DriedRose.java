@@ -314,18 +314,9 @@ public class DriedRose extends Artifact {
 			}
 			
 			LockedFloor lock = target.buff(LockedFloor.class);
-			if (charge < chargeCap && !cursed && (lock == null || lock.regenOn())) {
-				partialCharge += 1/5f; //500 turns to a full charge
-				if (partialCharge > 1){
-					charge++;
-					partialCharge--;
-					if (charge == chargeCap){
-						partialCharge = 0f;
-						GLog.p( Messages.get(DriedRose.class, "charged") );
-					}
-				}
+			if ( lock == null || lock.regenOn() ) {
+				gainCharge(1/5f );
 			} else if (cursed && Random.Int(100) == 0) {
-
 				ArrayList<Integer> spawnPoints = new ArrayList<Integer>();
 
 				for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {

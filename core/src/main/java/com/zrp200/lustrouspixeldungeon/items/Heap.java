@@ -249,8 +249,8 @@ public class Heap implements Bundlable {
 			} else if (item instanceof Dewdrop) {
 				items.remove( item );
 				evaporated = true;
-			} else if (item instanceof MysteryMeat) {
-				replace( item, ChargrilledMeat.cook( (MysteryMeat)item ) );
+			} else if (item.getClass() == MysteryMeat.class) {
+				replace( item, ChargrilledMeat.cook( (MysteryMeat) item ) );
 				burnt = true;
 			} else if (item instanceof Bomb) {
 				items.remove( item );
@@ -315,7 +315,7 @@ public class Heap implements Bundlable {
 					}
 
 				//unique and upgraded items can endure the blast
-				} else if (!(item.level() > 0 || item.unique))
+				} else if ( item.isDestroyable() )
 					items.remove( item );
 
 			}

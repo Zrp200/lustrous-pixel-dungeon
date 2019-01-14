@@ -21,15 +21,13 @@
 
 package com.zrp200.lustrouspixeldungeon.utils;
 
-import android.util.Log;
-
-import com.watabou.utils.Signal;
 import com.watabou.utils.DeviceCompat;
+import com.watabou.utils.Signal;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 
 public class GLog {
 
-	public static final String TAG = "GAME";
+	private static final String TAG = "GAME";
 	
 	public static final String POSITIVE		= "++ ";
 	public static final String NEGATIVE		= "-- ";

@@ -24,23 +24,15 @@ package com.watabou.noosa.tweeners;
 import com.watabou.noosa.Visual;
 import com.watabou.utils.PointF;
 
-public class ScaleTweener extends Tweener {
-
-	public Visual visual;
-	
-	public PointF start;
-	public PointF end;
-	
+public class ScaleTweener extends MoveTweener<Visual> {
 	public ScaleTweener( Visual visual, PointF scale, float time ) {
-		super( visual, time );
-		
-		this.visual = visual;
-		start = visual.scale;
-		end = scale;
+		super( visual, scale, time );
+		current = start = target.scale;
 	}
 
 	@Override
 	protected void updateValues( float progress ) {
-		visual.scale = PointF.inter( start, end, progress );
+		super.updateValues(progress);
+		target.scale = current;
 	}
 }

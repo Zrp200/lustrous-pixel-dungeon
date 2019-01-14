@@ -62,7 +62,7 @@ public class DungeonSeed {
 
 		//this almost gives us the right answer, but its 0-p instead of A-Z
 		String interrim = Long.toString(seed, 26);
-		String result = "";
+		StringBuilder result = new StringBuilder();
 
 		//so we convert
 		for (int i = 0; i < 9; i++) {
@@ -72,15 +72,15 @@ public class DungeonSeed {
 				if (c <= '9') c += 17; //convert 0-9 to A-J
 				else          c -= 22; //convert a-p to K-Z
 
-				result += c;
+				result.append(c);
 
 			} else {
-				result = 'A' + result; //pad with A (zeroes) until we reach length of 9
+				result.insert(0, 'A'); //pad with A (zeroes) until we reach length of 9
 
 			}
 		}
 
-		return result;
+		return result.toString();
 	}
 
 	//Using this we can let users input 'fun' plaintext seeds and convert them to a long equivalent.

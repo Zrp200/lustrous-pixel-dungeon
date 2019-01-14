@@ -104,7 +104,7 @@ public class WandOfTransfusion extends Wand {
 			//charms an enemy
 			} else {
 				
-				Buff.affect(ch , Charm.class, 2*( 2 + level() ) ).object = curUser.id();
+				Buff.affect(ch , Charm.class, 1.5f*( 2 + level() ) ).object = curUser.id();
 
 				ch.sprite.centerEmitter().start( Speck.factory( Speck.HEART ), 0.2f, 5 );
 

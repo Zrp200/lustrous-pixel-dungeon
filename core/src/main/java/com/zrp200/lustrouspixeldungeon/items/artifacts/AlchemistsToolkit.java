@@ -113,18 +113,7 @@ public class AlchemistsToolkit extends Artifact {
 		}
 		
 		partialCharge += energy/3f;
-		while (partialCharge >= 1){
-			
-			partialCharge -= 1;
-			charge++;
-			
-			if (charge >= chargeCap){
-				charge = chargeCap;
-				partialCharge = 0;
-				break;
-			}
-		}
-		updateQuickslot();
+		passiveBuff().gainCharge(0); // syncs I think
 		
 	}
 
@@ -169,32 +158,14 @@ public class AlchemistsToolkit extends Artifact {
 		
 		public void gainCharge(float levelPortion) {
 			alchemyReady = true;
-			
-			if (cursed) return;
-			
-			if (charge < chargeCap) {
 				
-				//generates 2 energy every hero level, +0.1 energy per toolkit level
-				//to a max of 12 energy per hero level
-				//This means that energy absorbed into the kit is recovered in 6.67 hero levels (as 33% of input energy is kept)
-				//exp towards toolkit levels is included here
-				float effectiveLevel = GameMath.gate(0, level() + exp/10f, 10);
-				partialCharge += (2 + (1f * effectiveLevel)) * levelPortion;
-				
-				//charge is in increments of 1/10 max hunger value.
-				while (partialCharge >= 1) {
-					charge++;
-					partialCharge -= 1;
-					
-					if (charge == chargeCap){
-						GLog.p( Messages.get(AlchemistsToolkit.class, "full") );
-						partialCharge = 0;
-					}
-					
-					updateQuickslot();
-				}
-			} else
-				partialCharge = 0;
+			//generates 2 energy every hero level, +0.1 energy per toolkit level
+			//to a max of 12 energy per hero level
+			//This means that energy absorbed into the kit is recovered in 6.67 hero levels (as 33% of input energy is kept)
+			//exp towards toolkit levels is included here
+			float effectiveLevel = GameMath.gate(0, level() + exp/10f, 10);
+			super.gainCharge((2+effectiveLevel)*levelPortion);
+			//charge is in increments of 1/10 max hunger value.
 		}
 		
 		@Override

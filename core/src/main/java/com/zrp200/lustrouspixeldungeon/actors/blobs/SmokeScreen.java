@@ -26,7 +26,6 @@ import com.zrp200.lustrouspixeldungeon.effects.BlobEmitter;
 import com.zrp200.lustrouspixeldungeon.effects.Speck;
 import com.zrp200.lustrouspixeldungeon.levels.Level;
 import com.zrp200.lustrouspixeldungeon.levels.Terrain;
-import com.zrp200.lustrouspixeldungeon.messages.Messages;
 
 public class SmokeScreen extends Blob {
 	
@@ -62,11 +61,6 @@ public class SmokeScreen extends Blob {
 	public void fullyClear() {
 		super.fullyClear();
 		Dungeon.level.buildFlagMaps();
-	}
-	
-	@Override
-	public String tileDesc() {
-		return Messages.get(this, "desc");
 	}
 	
 }

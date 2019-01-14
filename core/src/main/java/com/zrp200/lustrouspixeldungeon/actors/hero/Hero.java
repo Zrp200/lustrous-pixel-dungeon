@@ -417,7 +417,7 @@ public class Hero extends Char {
     }
 
 	public boolean canAttack(Char enemy){
-		if (enemy == null || pos == enemy.pos) {
+		if (enemy == null || pos == enemy.pos || isCharmedBy(enemy)) {
 			return false;
 		}
 
@@ -705,13 +705,15 @@ public class Hero extends Char {
 						boolean important =
 								(item instanceof ScrollOfUpgrade && ((Scroll)item).isKnown()) ||
 								(item instanceof PotionOfStrength && ((Potion)item).isKnown());
+						String name = item.name();
+						if(item.quantity() > 1) name += " x" + item.quantity();
 						if (important) {
-							GLog.p( Messages.get(this, "you_now_have", item.name()) );
+							GLog.p( Messages.get(this, "you_now_have", name ));
 						} else {
-							GLog.i( Messages.get(this, "you_now_have", item.name()) );
+							GLog.i( Messages.get(this, "you_now_have", name ) );
 						}
 					}
-					
+
 					curAction = null;
 				} else {
 					heap.sprite.drop();

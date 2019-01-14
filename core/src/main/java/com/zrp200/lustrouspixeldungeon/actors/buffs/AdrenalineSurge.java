@@ -26,20 +26,20 @@ import com.watabou.utils.Bundle;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.ui.BuffIndicator;
 
-public class AdrenalineSurge extends Buff {
+public class AdrenalineSurge extends FlavourBuff {
 	
 	{
 		type = buffType.POSITIVE;
 		announced = true;
 	}
 	
-	private int boost;
+	private int boost=1;
 	private float interval;
 	
-	public void reset(int boost, float interval){
-		this.boost = boost;
-		this.interval = interval;
-		spend(interval - cooldown());
+	public void set(int boost, float interval){
+		this.boost = Math.max(this.boost,boost);
+		this.interval = Math.max(this.interval,interval);
+		spend(this.interval - cooldown() );
 	}
 	
 	public int boost(){
@@ -48,7 +48,7 @@ public class AdrenalineSurge extends Buff {
 
 	@Override
 	public void tintIcon(Image icon) {
-		greyIcon(icon,300, cooldown() );
+		greyIcon(icon,Math.max(5,interval*0.375f), cooldown() );
 	}
 
 	@Override
@@ -66,12 +66,7 @@ public class AdrenalineSurge extends Buff {
 	public int icon() {
 		return BuffIndicator.FURY;
 	}
-	
-	@Override
-	public String toString() {
-		return Messages.get(this, "name");
-	}
-	
+
 	@Override
 	public String desc() {
 		return Messages.get(this, "desc", boost, dispTurns(cooldown()+1));

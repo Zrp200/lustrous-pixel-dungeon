@@ -21,7 +21,6 @@
 
 package com.zrp200.lustrouspixeldungeon.actors.buffs;
 
-import com.watabou.noosa.Image;
 import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
@@ -36,7 +35,6 @@ public class FireImbue extends ActiveBuff {
 	
 	{
 		type = buffType.POSITIVE;
-		announced = true;
 	}
 
 	public static final float DURATION	= 50f;
@@ -61,11 +59,6 @@ public class FireImbue extends ActiveBuff {
 	@Override
 	public int icon() {
 		return BuffIndicator.FIRE;
-	}
-	
-	@Override
-	public void tintIcon(Image icon) {
-		FlavourBuff.greyIcon(icon, 5f, left);
 	}
 
 	@Override

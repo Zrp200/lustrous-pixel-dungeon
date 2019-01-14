@@ -39,7 +39,7 @@ public class Albino extends Rat {
 	public int attackProc( Char enemy, int damage ) {
 		damage = super.attackProc( enemy, damage );
 		if (Random.Int( 2 ) == 0) {
-			Buff.affect( enemy, Bleeding.class ).set( damage );
+			Buff.affect( enemy, Bleeding.class ).afflict( damage );
 		}
 		
 		return damage;

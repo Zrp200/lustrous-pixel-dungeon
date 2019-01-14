@@ -38,7 +38,7 @@ public class CellSelector extends TouchArea {
 
 	public Listener listener = null;
 	
-	public boolean enabled;
+	private boolean enabled;
 	
 	private float dragThreshold;
 	

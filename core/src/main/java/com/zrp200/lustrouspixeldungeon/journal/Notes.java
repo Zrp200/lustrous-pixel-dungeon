@@ -87,7 +87,7 @@ public class Notes {
 		
 		public LandmarkRecord() {}
 		
-		public LandmarkRecord(Landmark landmark, int depth ) {
+		LandmarkRecord(Landmark landmark, int depth) {
 			this.landmark = landmark;
 			this.depth = depth;
 		}
@@ -123,9 +123,7 @@ public class Notes {
 		
 		protected Key key;
 		
-		public KeyRecord() {}
-		
-		public KeyRecord( Key key ){
+		KeyRecord(Key key){
 			this.key = key;
 		}
 		

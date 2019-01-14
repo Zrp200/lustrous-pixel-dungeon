@@ -27,8 +27,6 @@ import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.Badges;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
-import com.zrp200.lustrouspixeldungeon.actors.Char;
-import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.items.BrokenSeal;
 import com.zrp200.lustrouspixeldungeon.items.EquipableItem;
 import com.zrp200.lustrouspixeldungeon.items.Item;
@@ -49,7 +47,7 @@ import com.zrp200.lustrouspixeldungeon.windows.WndQuest;
 
 import java.util.ArrayList;
 
-public class Blacksmith extends NPC {
+public class Blacksmith extends Noncombatant {
 	
 	{
 		spriteClass = BlacksmithSprite.class;
@@ -60,6 +58,7 @@ public class Blacksmith extends NPC {
 	@Override
 	protected boolean act() {
 		throwItem();
+		if( !Quest.reforged && Dungeon.level.heroFOV[pos] ) Notes.add( Notes.Landmark.TROLL );
 		return super.act();
 	}
 	
@@ -88,8 +87,6 @@ public class Blacksmith extends NPC {
 					}
 				}
 			} );
-			
-			Notes.add( Notes.Landmark.TROLL );
 			
 		} else if (!Quest.completed) {
 			if (Quest.alternative) {
@@ -222,22 +219,6 @@ public class Blacksmith extends NPC {
 		Quest.reforged = true;
 		
 		Notes.remove( Notes.Landmark.TROLL );
-	}
-	
-	@Override
-	public int defenseSkill( Char enemy ) {
-		return 1000;
-	}
-	
-	@Override
-	public void damage( int dmg, Object src,boolean magic ) { }
-	
-	@Override
-	public void add( Buff buff ) { }
-	
-	@Override
-	public boolean reset() {
-		return true;
 	}
 
 	public static class Quest {

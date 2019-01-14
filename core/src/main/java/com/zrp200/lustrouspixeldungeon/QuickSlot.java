@@ -68,7 +68,7 @@ public class QuickSlot {
 		return -1;
 	}
 
-	public Boolean isPlaceholder(int slot){
+	private Boolean isPlaceholder(int slot){
 		return getItem(slot) != null && getItem(slot).quantity() == 0;
 	}
 
@@ -103,9 +103,9 @@ public class QuickSlot {
 		}
 	}
 
-	public Item randomNonePlaceholder(){
+	Item randomNonePlaceholder(){
 
-		ArrayList<Item> result = new ArrayList<Item>();
+		ArrayList<Item> result = new ArrayList<>();
 		for (int i = 0; i < SIZE; i ++)
 		if (getItem(i) != null && !isPlaceholder(i))
 				result.add(getItem(i));
@@ -122,7 +122,7 @@ public class QuickSlot {
 	 * we can reconstruct them perfectly.
 	 */
 
-	public void storePlaceholders(Bundle bundle){
+	void storePlaceholders(Bundle bundle){
 		ArrayList<Item> placeholders = new ArrayList<Item>(SIZE);
 		boolean[] placements = new boolean[SIZE];
 
@@ -135,7 +135,7 @@ public class QuickSlot {
 		bundle.put( PLACEMENTS, placements );
 	}
 
-	public void restorePlaceholders(Bundle bundle){
+	void restorePlaceholders(Bundle bundle){
 		Collection<Bundlable> placeholders = bundle.getCollection(PLACEHOLDERS);
 		boolean[] placements = bundle.getBooleanArray( PLACEMENTS );
 

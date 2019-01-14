@@ -212,6 +212,7 @@ public class Belongings implements Iterable<Item> {
 			if (item instanceof EquipableItem || item instanceof Wand) {
 				item.cursedKnown = true;
 			}
+			if(item instanceof Armor) ((Armor)item).glyphKnown = true;
 		}
 	}
 	

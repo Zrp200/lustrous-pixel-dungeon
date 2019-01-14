@@ -105,14 +105,7 @@ public class TalismanOfForesight extends Artifact {
 	
 	@Override
 	public void charge(Hero target) {
-		if (charge < chargeCap){
-			charge += 4f;
-			if (charge >= chargeCap) {
-				charge = chargeCap;
-				partialCharge = 0;
-				GLog.p( Messages.get(this, "full_charge") );
-			}
-		}
+		passiveBuff().gainCharge(4f);
 	}
 
 	@Override
@@ -188,18 +181,7 @@ public class TalismanOfForesight extends Artifact {
 
 			//fully charges in 2000 turns at lvl=0, scaling to 667 turns at lvl = 10.
 			LockedFloor lock = target.buff(LockedFloor.class);
-			if (charge < chargeCap && !cursed && (lock == null || lock.regenOn())) {
-				partialCharge += 0.05+(level()*0.01);
-
-				if (partialCharge > 1 && charge < chargeCap) {
-					partialCharge--;
-					charge++;
-					updateQuickslot();
-				} else if (charge >= chargeCap) {
-					partialCharge = 0;
-					GLog.p( Messages.get(this, "full_charge") );
-				}
-			}
+			if ( lock == null || lock.regenOn() ) gainCharge(0.01f * ( 5+level() ) );
 
 			return true;
 		}

@@ -70,11 +70,6 @@ public class SnipersMark extends FlavourBuff implements ActionIndicator.Action {
 	public int icon() {
 		return BuffIndicator.MARK;
 	}
-	
-	@Override
-	public String toString() {
-		return Messages.get(this, "name");
-	}
 
 	@Override
 	public String desc() {

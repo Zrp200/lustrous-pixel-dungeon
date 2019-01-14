@@ -43,12 +43,7 @@ public class Adrenaline extends FlavourBuff {
 	public void tintIcon(Image icon) {
 		greyIcon(icon, 5f, cooldown());
 	}
-	
-	@Override
-	public String toString() {
-		return Messages.get(this, "name");
-	}
-	
+
 	@Override
 	public String desc() {
 		return Messages.get(this, "desc", dispTurns());

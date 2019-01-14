@@ -139,14 +139,7 @@ public class TimekeepersHourglass extends Artifact {
 	
 	@Override
 	public void charge(Hero target) {
-		if (charge < chargeCap){
-			partialCharge += 0.25f;
-			if (partialCharge >= 1){
-				partialCharge--;
-				charge++;
-				updateQuickslot();
-			}
-		}
+		passiveBuff().gainCharge(0.25f);
 	}
 
 	@Override
@@ -211,19 +204,11 @@ public class TimekeepersHourglass extends Artifact {
 		public boolean act() {
 
 			LockedFloor lock = target.buff(LockedFloor.class);
-			if (charge < chargeCap && !cursed && (lock == null || lock.regenOn())) {
-				partialCharge += 1 / (90f - (chargeCap - charge)*3f);
-
-				if (partialCharge >= 1) {
-					partialCharge --;
-					charge ++;
-
-					if (charge == chargeCap){
-						partialCharge = 0;
-					}
-				}
-			} else if (cursed && Random.Int(10) == 0)
+			if (cursed && Random.Int(10) == 0)
 				((Hero) target).spend( TICK );
+			else if ( lock == null || lock.regenOn() ) {
+				gainCharge( 1 / (90f - (chargeCap - charge)*3f) );
+			}
 
 			updateQuickslot();
 

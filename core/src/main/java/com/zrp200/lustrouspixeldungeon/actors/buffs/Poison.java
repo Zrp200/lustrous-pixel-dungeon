@@ -22,47 +22,18 @@
 package com.zrp200.lustrouspixeldungeon.actors.buffs;
 
 import com.watabou.noosa.Image;
-import com.watabou.utils.Bundle;
 import com.zrp200.lustrouspixeldungeon.Badges;
-import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.effects.CellEmitter;
 import com.zrp200.lustrouspixeldungeon.effects.particles.PoisonParticle;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.ui.BuffIndicator;
-import com.zrp200.lustrouspixeldungeon.utils.GLog;
 
-public class Poison extends Buff implements Hero.Doom {
-	
-	protected float left;
-	
-	private static final String LEFT	= "left";
+public class Poison extends ActiveBuff implements Hero.Doom {
 
 	{
 		type = buffType.NEGATIVE;
-		announced = true;
-	}
-	
-	@Override
-	public void storeInBundle( Bundle bundle ) {
-		super.storeInBundle( bundle );
-		bundle.put( LEFT, left );
-		
-	}
-	
-	@Override
-	public void restoreFromBundle( Bundle bundle ) {
-		super.restoreFromBundle( bundle );
-		left = bundle.getFloat( LEFT );
-	}
-	
-	public void set( float duration ) {
-		this.left = Math.max(duration, left);
-	}
-
-	public void extend( float duration ) {
-		this.left += duration;
 	}
 	
 	@Override
@@ -73,21 +44,12 @@ public class Poison extends Buff implements Hero.Doom {
 	@Override
 	public void tintIcon(Image icon) {
 		icon.hardlight(0.6f, 0.2f, 0.6f);
-	}
-	
-	@Override
-	public String toString() {
-		return Messages.get(this, "name");
+		super.tintIcon(icon);
 	}
 
 	@Override
 	public String heroMessage() {
 		return Messages.get(this, "heromsg");
-	}
-
-	@Override
-	public String desc() {
-		return Messages.get(this, "desc", dispTurns(left));
 	}
 
 	@Override
@@ -106,14 +68,10 @@ public class Poison extends Buff implements Hero.Doom {
 			target.damage( (int)left / 3 + 1, this );
 			spend( TICK );
 			
-			if ((left -= TICK) <= 0) {
-				detach();
-			}
+			super.act();
 			
 		} else {
-			
 			detach();
-			
 		}
 		
 		return true;
@@ -122,8 +80,6 @@ public class Poison extends Buff implements Hero.Doom {
 	@Override
 	public void onDeath() {
 		Badges.validateDeathFromPoison();
-		
-		Dungeon.fail( getClass() );
-		GLog.n( Messages.get(this, "ondeath") );
+		super.onDeath();
 	}
 }

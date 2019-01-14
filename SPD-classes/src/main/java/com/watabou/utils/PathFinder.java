@@ -35,7 +35,7 @@ public class PathFinder {
 	private static int size = 0;
 	private static int width = 0;
 
-	private static int[] dir;
+	private static int[] directions;
 	private static int[] dirLR;
 
 	//performance-light shortcuts for some common pathfinder cases
@@ -61,7 +61,7 @@ public class PathFinder {
 		maxVal = new int[size];
 		Arrays.fill(maxVal, Integer.MAX_VALUE);
 
-		dir = new int[]{-1, +1, -width, +width, -width-1, -width+1, +width-1, +width+1};
+		directions = new int[]{-1, +1, -width, +width, -width-1, -width+1, +width-1, +width+1};
 		dirLR = new int[]{-1-width, -1, -1+width, -width, +width, +1-width, +1, +1+width};
 
 		NEIGHBOURS4 = new int[]{-width, -1, +1, +width};
@@ -86,11 +86,11 @@ public class PathFinder {
 		do {
 			int minD = distance[s];
 			int mins = s;
-			
-			for (int i=0; i < dir.length; i++) {
-				
-				int n = s + dir[i];
-				
+
+			for (int direction : directions) {
+
+				int n = s + direction;
+
 				int thisD = distance[n];
 				if (thisD < minD) {
 					minD = thisD;
@@ -115,10 +115,10 @@ public class PathFinder {
 		int best = from;
 		
 		int step, stepD;
-		
-		for (int i=0; i < dir.length; i++) {
 
-			if ((stepD = distance[step = from + dir[i]]) < minD) {
+		for (int direction : directions) {
+
+			if ((stepD = distance[step = from + direction]) < minD) {
 				minD = stepD;
 				best = step;
 			}
@@ -137,17 +137,15 @@ public class PathFinder {
 			return -1;
 		}
 
-		int s = cur;
-		
 		// From the starting position we are making one step downwards
-		int minD = distance[s];
-		int mins = s;
-		
-		for (int i=0; i < dir.length; i++) {
+		int minD = distance[cur];
+		int mins = cur;
 
-			int n = s + dir[i];
+		for (int direction : directions) {
+
+			int n = cur + direction;
 			int thisD = distance[n];
-			
+
 			if (thisD < minD) {
 				minD = thisD;
 				mins = n;
@@ -349,16 +347,15 @@ public class PathFinder {
 			// Remove from queue
 			int step = queue[head++];
 			int nextDistance = distance[step] + 1;
-			
+
 			int start = (step % width == 0 ? 3 : 0);
 			int end   = ((step+1) % width == 0 ? 3 : 0);
 			for (int i = start; i < dirLR.length - end; i++) {
-
-				int n = step + dirLR[i];
-				if (n >= 0 && n < size && passable[n] && (distance[n] > nextDistance)) {
+				int test = step + dirLR[i];
+				if (test >= 0 && test < size && passable[test] && (distance[test] > nextDistance)) {
 					// Add to queue
-					queue[tail++] = n;
-					distance[n] = nextDistance;
+					queue[tail++] = test;
+					distance[test] = nextDistance;
 				}
 					
 			}

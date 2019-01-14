@@ -27,8 +27,8 @@ public class RingOfAccuracy extends Ring {
 	private static final float BONUS_SCALING = 1.3f;
 
 	@Override
-	protected String statsInfo() {
-		return statsInfo(BONUS_SCALING);
+	protected String effect2Bonus() {
+		return visualMultiplier(BONUS_SCALING);
 	}
 
 	@Override

@@ -36,7 +36,6 @@ import com.zrp200.lustrouspixeldungeon.actors.buffs.Combo;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.effects.Speck;
 import com.zrp200.lustrouspixeldungeon.items.bags.Bag;
-import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Boomerang;
 import com.zrp200.lustrouspixeldungeon.journal.Catalog;
 import com.zrp200.lustrouspixeldungeon.mechanics.Ballistica;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
@@ -114,7 +113,7 @@ public class Item implements Bundlable {
 	
 	public void doDrop( Hero hero ) {
 		hero.spendAndNext(TIME_TO_DROP);
-		Dungeon.level.drop(detachAll(hero.belongings.backpack), hero.pos).sprite.drop(hero.pos);
+		detachAll(hero.belongings.backpack).drop(hero.pos);
 	}
 
 	//resets an item's properties, to ensure consistency between runs
@@ -153,12 +152,12 @@ public class Item implements Bundlable {
 	public void execute( Hero hero ) {
 		execute( hero, defaultAction );
 	}
-	
-	protected void onThrow( int cell ) {
-		Heap heap = Dungeon.level.drop( this, cell );
-		if (!heap.isEmpty()) {
-			heap.sprite.drop( cell );
-		}
+
+	protected void onThrow(int cell) {
+		onThrowComplete(cell);
+	}
+	protected void onThrowComplete(int cell) {
+		drop(cell);
 	}
 	
 	//takes two items and merges them (if possible)
@@ -169,7 +168,13 @@ public class Item implements Bundlable {
 		}
 		return this;
 	}
-	
+
+	public Heap drop(int pos) {
+		Heap heap = Dungeon.level.drop(this,pos);
+		if(!heap.isEmpty()) heap.sprite.drop();
+		return heap;
+	}
+
 	public boolean collect( Bag container ) {
 		
 		ArrayList<Item> items = container.items;
@@ -188,7 +193,7 @@ public class Item implements Bundlable {
 			for (Item item:items) {
 				if (isSimilar( item )) {
 					item.merge( this );
-					item.updateQuickslot();
+					updateQuickslot();
 					return true;
 				}
 			}
@@ -250,7 +255,7 @@ public class Item implements Bundlable {
 		} else
 		if (quantity == 1) {
 
-			if (stackable || this instanceof Boomerang){
+			if (stackable){
 				Dungeon.quickslot.convertToPlaceholder(this);
 			}
 
@@ -346,7 +351,12 @@ public class Item implements Bundlable {
 	public boolean isUpgradable() {
 		return true;
 	}
-	
+
+	public boolean isEnchantable() { return false; }
+
+	public boolean isDestroyable() {
+		return !(unique || level() > 0);
+	}
 	public boolean isIdentified() {
 		return levelKnown && cursedKnown;
 	}
@@ -420,14 +430,14 @@ public class Item implements Bundlable {
 		quantity = value;
 		return this;
 	}
-	
+
+	protected float basePrice;
 	public int price() {
-		return 0;
+		return Math.round(basePrice*quantity);
 	}
 	
 	public Item virtual(){
 		try {
-			
 			Item item = getClass().newInstance();
 			item.quantity = 0;
 			item.level = level;
@@ -510,33 +520,26 @@ public class Item implements Bundlable {
 		
 		final float delay = castDelay(user, dst);
 
+		Callback callback = new Callback() {
+			@Override
+			public void call() {
+				curUser = user;
+				onCastComplete(cell);
+				user.spendAndNext(delay);
+			}
+		};
+
+		MissileSprite projectile = (MissileSprite) user.sprite.parent.recycle(MissileSprite.class);
+
 		if (enemy != null) {
-			((MissileSprite) user.sprite.parent.recycle(MissileSprite.class)).
-					reset(user.sprite,
-							enemy.sprite,
-							this,
-							new Callback() {
-						@Override
-						public void call() {
-							curUser = user;
-							Item.this.detach(user.belongings.backpack).onThrow(cell);
-							user.spendAndNext(delay);
-						}
-					});
+			projectile.reset(user.sprite, enemy.pos, this, callback);
 		} else {
-			((MissileSprite) user.sprite.parent.recycle(MissileSprite.class)).
-					reset(user.sprite,
-							cell,
-							this,
-							new Callback() {
-						@Override
-						public void call() {
-							curUser = user;
-							Item.this.detach(user.belongings.backpack).onThrow(cell);
-							user.spendAndNext(delay);
-						}
-					});
+			projectile.reset(user.sprite, cell, this, callback);
 		}
+	}
+
+	protected void onCastComplete(int cell) {
+		detach(curUser.belongings.backpack).onThrow(cell);
 	}
 	
 	public float castDelay( Char user, int dst ){

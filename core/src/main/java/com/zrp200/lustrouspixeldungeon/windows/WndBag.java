@@ -51,9 +51,7 @@ import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfTransmutation;
 import com.zrp200.lustrouspixeldungeon.items.spells.Recycle;
 import com.zrp200.lustrouspixeldungeon.items.stones.StoneOfDetectCurse;
 import com.zrp200.lustrouspixeldungeon.items.wands.Wand;
-import com.zrp200.lustrouspixeldungeon.items.weapon.SpiritBow;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.MeleeWeapon;
-import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Boomerang;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.plants.Plant.Seed;
@@ -392,9 +390,9 @@ public class WndBag extends WndTabbed {
 						mode == Mode.UNCURSABLE && ScrollOfRemoveCurse.uncursable(item) ||
 						mode == Mode.CURSABLE && ((item instanceof EquipableItem && !(item instanceof MissileWeapon)) || item instanceof Wand) ||
 						mode == Mode.QUICKSLOT && (item.defaultAction != null) ||
-						mode == Mode.WEAPON && (item instanceof MeleeWeapon || item instanceof Boomerang) ||
+						mode == Mode.WEAPON && (item instanceof MeleeWeapon) ||
 						mode == Mode.ARMOR && (item instanceof Armor) ||
-						mode == Mode.ENCHANTABLE && (item instanceof MeleeWeapon || item instanceof SpiritBow || item instanceof Armor) ||
+						mode == Mode.ENCHANTABLE && item.isEnchantable() ||
 						mode == Mode.WAND && (item instanceof Wand) ||
 						mode == Mode.SEED && (item instanceof Seed) ||
 						mode == Mode.FOOD && (item instanceof Food) ||

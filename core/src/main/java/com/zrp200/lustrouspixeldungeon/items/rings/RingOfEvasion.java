@@ -32,8 +32,8 @@ public class RingOfEvasion extends Ring {
 	}
 
 	@Override
-	protected String statsInfo() {
-		return statsInfo(BONUS_SCALING);
+	protected String effect2Bonus() {
+		return visualMultiplier(BONUS_SCALING);
 	}
 
 	public static float evasionMultiplier(Char target ){

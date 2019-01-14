@@ -24,8 +24,6 @@ package com.zrp200.lustrouspixeldungeon.items.weapon.missiles.darts;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
-import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
-import com.zrp200.lustrouspixeldungeon.actors.buffs.PinCushion;
 import com.zrp200.lustrouspixeldungeon.actors.hero.HeroSubClass;
 import com.zrp200.lustrouspixeldungeon.items.Generator;
 import com.zrp200.lustrouspixeldungeon.items.Item;
@@ -54,27 +52,33 @@ public abstract class TippedDart extends Dart {
 
 		//so that slightly more than 1.5x durability is needed for 2 uses
 		baseUses = 0.65f;
+
+		durabilityScaling = 1.8f; // half as effective
+		enchantDurability = 1.3f;
+
 	}
 	
 	//exact same damage as regular darts, despite being higher tier.
-	
-	@Override
-	protected void rangedHit(Char enemy, int cell) {
-		super.rangedHit( enemy, cell);
 
+
+	public Dart untip() {
+		Dart d = new Dart();
+		d.level(level());
+		d.enchantment = enchantment;
+		return d;
+	}
+
+	@Override
+	public int proc(Char attacker, Char defender, int damage) {
+		damage = super.proc(attacker,defender,damage);
 		//need to spawn a dart
 		if (durability <= 0){
 			//attempt to stick the dart to the enemy, just drop it if we can't.
-			Dart d = new Dart();
-			if (enemy.isAlive() && sticky) {
-				PinCushion p = Buff.affect(enemy, PinCushion.class);
-				if (p.target == enemy){
-					p.stick(d);
-					return;
-				}
-			}
-			Dungeon.level.drop( d, enemy.pos ).sprite.drop();
+			Dart d = untip();
+			if(!d.stickTo(defender))
+				d.drop(defender.pos);
 		}
+		return damage;
 	}
 	
 	@Override
@@ -157,29 +161,30 @@ public abstract class TippedDart extends Dart {
 		
 		@Override
 		public Item brew(ArrayList<Item> ingredients) {
-			if (!testIngredients(ingredients)) return null;
-			
-			int produced = Math.min(2, ingredients.get(0).quantity());
+			Item output = sampleOutput(ingredients);
+			if(output == null) return null;
+			int produced = output.quantity();
 			
 			ingredients.get(0).quantity(ingredients.get(0).quantity() - produced);
 			ingredients.get(1).quantity(ingredients.get(1).quantity() - 1);
 			
-			try{
-				return types.get(ingredients.get(1).getClass()).newInstance().quantity(produced);
-			} catch (Exception e) {
-				LustrousPixelDungeon.reportException(e);
-				return null;
-			}
+			return output;
 			
 		}
 		
 		@Override
 		public Item sampleOutput(ArrayList<Item> ingredients) {
 			if (!testIngredients(ingredients)) return null;
+			Dart darts = (Dart) ingredients.get(0);
+			int upgradeLevel = darts.level();
+			Enchantment enchantment = darts.enchantment;
 			
 			try{
 				int produced = Math.min(2, ingredients.get(0).quantity());
-				return types.get(ingredients.get(1).getClass()).newInstance().quantity( produced );
+				TippedDart output = (TippedDart) (types.get(ingredients.get(1).getClass()).newInstance().quantity( produced ));
+				output.level(upgradeLevel);
+				output.enchantment = enchantment;
+				return output;
 			} catch (Exception e) {
 				LustrousPixelDungeon.reportException(e);
 				return null;
@@ -189,8 +194,15 @@ public abstract class TippedDart extends Dart {
 	public static class UntipDart extends Recipe{
 			@Override
 			public boolean testIngredients(ArrayList<Item> ingredients) {
-				for(Item ingredient : ingredients) {
-					if(!(ingredient instanceof TippedDart)) return false;
+				for(Item ingredient1 : ingredients) for (Item ingredient2 : ingredients) {
+					if (!(ingredient1 instanceof TippedDart && ingredient2 instanceof TippedDart))
+						return false;
+					Dart[] darts = {(Dart) ingredient1, (Dart) ingredient2};
+					if (darts[0].level() != darts[1].level()) return false;
+					if (	!(		darts[0].enchantment == darts[1].enchantment
+											|| darts[0].enchantment.getClass().equals(darts[1].enchantment.getClass())
+							)
+						) return false;
 				}
 				return !ingredients.isEmpty();
 			}
@@ -218,7 +230,7 @@ public abstract class TippedDart extends Dart {
 				try{
 					int produced = 0;
 					for(Item ingredient : ingredients) produced += ingredient.quantity();
-					return new Dart().quantity(produced);
+					return ((TippedDart) ingredients.get(0)).untip().quantity(produced);
 				} catch (Exception e) {
 					LustrousPixelDungeon.reportException(e);
 					return null;

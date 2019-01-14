@@ -162,8 +162,7 @@ public class SandalsOfNature extends Artifact {
 		public void charge() {
 			if (level() > 0 && charge < target.HT){
 				//gain 1+(1*level)% of the difference between current charge and max HP.
-				charge+= (Math.round( (target.HT-charge) * (.01+ level()*0.01) ));
-				updateQuickslot();
+				gainCharge((target.HT-charge) * .01f * (1 + level() ) );
 			}
 		}
 	}

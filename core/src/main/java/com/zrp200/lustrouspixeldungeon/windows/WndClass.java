@@ -38,34 +38,31 @@ public class WndClass extends WndTabbed {
 
 	private HeroClass cl;
 
-	private PerksTab tabPerks;
-	private MasteryTab tabMastery;
-
 	public WndClass( HeroClass cl ) {
 
 		super();
 
 		this.cl = cl;
 
-		tabPerks = new PerksTab();
-		add( tabPerks );
+		PerksTab tabPerks = new PerksTab();
+		add(tabPerks);
 
-		Tab tab = new RankingTab( cl.title().toUpperCase(), tabPerks );
+		Tab tab = new RankingTab( cl.title().toUpperCase(), tabPerks);
 		tab.setSize( TAB_WIDTH, tabHeight() );
 		add( tab );
 
 		if (Badges.isUnlocked( cl.masteryBadge() )) {
-			tabMastery = new MasteryTab();
-			add( tabMastery );
+			MasteryTab tabMastery = new MasteryTab();
+			add(tabMastery);
 
-			tab = new RankingTab( Messages.get(this, "mastery"), tabMastery );
+			tab = new RankingTab( Messages.get(this, "mastery"), tabMastery);
 			add( tab );
 
 			resize(
 					(int)Math.max( tabPerks.width, tabMastery.width ),
 					(int)Math.max( tabPerks.height, tabMastery.height ) );
 		} else {
-			resize( (int)tabPerks.width, (int)tabPerks.height );
+			resize( (int) tabPerks.width, (int) tabPerks.height );
 		}
 
 		layoutTabs();

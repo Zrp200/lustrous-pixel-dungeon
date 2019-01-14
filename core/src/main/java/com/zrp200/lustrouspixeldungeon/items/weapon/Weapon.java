@@ -75,6 +75,11 @@ abstract public class Weapon extends KindOfWeapon {
 
 	public int tier;
 
+	@Override
+	public boolean isEnchantable() {
+		return true;
+	}
+
 	public enum Augment {
 		SPEED   (0.7f, 0.6667f),
 		DAMAGE  (1.5f, 1.6667f),
@@ -131,6 +136,11 @@ abstract public class Weapon extends KindOfWeapon {
 	public Item identify() {
 		enchantKnown = true;
 		return super.identify();
+	}
+
+	@Override
+	public boolean isIdentified() {
+		return super.isIdentified() && enchantKnown;
 	}
 
 	private void revealEnchant() {
@@ -212,8 +222,15 @@ abstract public class Weapon extends KindOfWeapon {
 		return info;
 	}
 
-	public String statsInfo(){
+	protected String statsInfo(){
 		return Messages.get(this, "stats_desc");
+	}
+
+	@Override
+	public Item virtual() {
+		Weapon placeholder = (Weapon)super.virtual();
+		placeholder.enchantment = enchantment;
+		return placeholder;
 	}
 
 	private static final String
@@ -322,7 +339,29 @@ abstract public class Weapon extends KindOfWeapon {
 	public String name() {
 		return isVisiblyEnchanted() ? enchantment.name( super.name() ) : super.name();
 	}
-	
+	@Override
+	public int price() {
+		int price = super.price()*tier;
+
+		if ( isVisiblyEnchanted() ) {
+			if( hasGoodEnchant() ) price *= 1.5;
+			else price /= 1.5;
+		}
+
+		if (cursedKnown) {
+			if(cursed) price *= enchantKnown ? 0.75 : 0.667;
+			else if( !levelKnown ) price *= 1.25; // prize items usually.
+		}
+
+		if(visiblyUpgraded() > 0) price *= visiblyUpgraded();
+
+		if (price < 1) {
+			price = 1;
+		}
+		return price;
+	}
+
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public Item random() {
@@ -375,10 +414,19 @@ abstract public class Weapon extends KindOfWeapon {
 		return enchant(true);
 	}
 
+
 	public boolean hasEnchant(Class<?extends Enchantment> type, Char owner) {
 		return enchantment != null && enchantment.getClass() == type && owner.buff(MagicImmune.class) == null;
 	}
-	
+
+	@Override
+	public boolean isSimilar(Item item) {
+		if(!(item instanceof Weapon)) return false;
+		Weapon w = (Weapon) item;
+		return super.isSimilar(item)
+				&& (enchantment == null ? w.enchantment == null : w.enchantment != null && enchantment.getClass().equals(w.enchantment.getClass()) );
+	}
+
 	//these are not used to process specific enchant effects, so magic immune doesn't affect them
 	public boolean hasGoodEnchant(){
 		return enchantment != null && !enchantment.curse();
@@ -509,7 +557,7 @@ abstract public class Weapon extends KindOfWeapon {
 			}
 		}
 
-		@SuppressWarnings("unchecked")
+		@SuppressWarnings({"unchecked", "ConstantConditions"})
 		public static Enchantment randomCurse( Class<? extends Enchantment> ... toIgnore ){
 			try {
 				ArrayList<Class<?extends Enchantment>> enchants = new ArrayList<>(Arrays.asList(curses));

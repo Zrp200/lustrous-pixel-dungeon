@@ -32,7 +32,6 @@ public class ToxicImbue extends ActiveBuff {
 	
 	{
 		type = buffType.POSITIVE;
-		announced = true;
 	}
 
 	public static final int DURATION = 50;

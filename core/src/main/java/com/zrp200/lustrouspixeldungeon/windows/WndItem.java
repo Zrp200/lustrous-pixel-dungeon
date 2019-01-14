@@ -181,13 +181,7 @@ public class WndItem extends Window {
 	private static Comparator<RedButton> widthComparator = new Comparator<RedButton>() {
 		@Override
 		public int compare(RedButton lhs, RedButton rhs) {
-			if (lhs.width() < rhs.width()){
-				return -1;
-			} else if (lhs.width() == rhs.width()){
-				return 0;
-			} else {
-				return 1;
-			}
+			return Float.compare(lhs.width(), rhs.width());
 		}
 	};
 }

@@ -24,11 +24,17 @@ package com.zrp200.lustrouspixeldungeon.items.rings;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 
 public class RingOfEnergy extends Ring {
-	private static final float BONUS_SCALING = 1.25f;
+	private static final float WAND_BONUS_SCALING = 1.225f;
+	private static final float ARTIFACT_BONUS_SCALING = 1.09f;
 
 	@Override
-	protected String statsInfo() {
-		return statsInfo(BONUS_SCALING);
+	protected String effect1Bonus() {
+		return visualMultiplier(WAND_BONUS_SCALING); // two different multipliers
+	}
+
+	@Override
+	protected String effect2Bonus() {
+		return visualMultiplier(ARTIFACT_BONUS_SCALING);
 	}
 
 	@Override
@@ -37,7 +43,11 @@ public class RingOfEnergy extends Ring {
 	}
 	
 	public static float wandChargeMultiplier( Char target ){
-		return (float)Math.pow(BONUS_SCALING,getBonus(target,Energy.class));
+		return (float)Math.pow(WAND_BONUS_SCALING,getBonus(target,Energy.class));
+	}
+
+	public static float artifactChargeMultiplier(Char target) {
+		return (float)Math.pow(ARTIFACT_BONUS_SCALING,getBonus(target,Energy.class));
 	}
 	
 	public class Energy extends RingBuff {

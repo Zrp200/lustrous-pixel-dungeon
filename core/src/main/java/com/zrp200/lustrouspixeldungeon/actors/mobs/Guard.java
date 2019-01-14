@@ -134,6 +134,7 @@ public class Guard extends Mob {
 				//50% chance of re-rolling tier 4 or 5 items
 			} while (loot.tier >= 4 && Random.Int(2) == 0);
 			loot.level(0);
+			loot.levelKnown = true;
 			return loot;
 		//otherwise, we may drop a health potion. overall chance is 1/8 * (6-potions dropped)/6
 		//with 0 potions dropped that simplifies to 1/8

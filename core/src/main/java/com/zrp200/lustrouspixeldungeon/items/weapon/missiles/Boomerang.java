@@ -22,115 +22,64 @@
 package com.zrp200.lustrouspixeldungeon.items.weapon.missiles;
 
 import com.zrp200.lustrouspixeldungeon.Dungeon;
-import com.zrp200.lustrouspixeldungeon.actors.Char;
-import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
-import com.zrp200.lustrouspixeldungeon.items.Item;
-import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
-import com.zrp200.lustrouspixeldungeon.messages.Messages;
+import com.zrp200.lustrouspixeldungeon.actors.Actor;
+import com.zrp200.lustrouspixeldungeon.levels.Terrain;
+import com.zrp200.lustrouspixeldungeon.levels.traps.DisarmingTrap;
+import com.zrp200.lustrouspixeldungeon.levels.traps.ExplosiveTrap;
+import com.zrp200.lustrouspixeldungeon.levels.traps.TeleportationTrap;
+import com.zrp200.lustrouspixeldungeon.levels.traps.Trap;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
 import com.zrp200.lustrouspixeldungeon.sprites.MissileSprite;
-
-import java.util.ArrayList;
 
 public class Boomerang extends MissileWeapon {
 
 	{
 		image = ItemSpriteSheet.BOOMERANG;
 
-		stackable = false;
+		tier = 3;
+		sticky = false;
 
-		unique = true;
-		bones = false;
-		
-		tier = 1;
-	}
-
-	@Override
-	public ArrayList<String> actions(Hero hero) {
-		ArrayList<String> actions = super.actions( hero );
-		if (!isEquipped(hero)) actions.add(AC_EQUIP);
-		return actions;
+		baseUses = 8;
+		durabilityScaling = 1.625f; // down from 3
+		enchantDurability = 1.3125f; // down from 1.5
 	}
 
 	@Override
-	public int min(int lvl) {
-		return  1 +
-				lvl;
+	public int minScale() { return 1; }
+
+	@Override
+	public int minBase() {
+		int min;
+		tier--; // one tier lower
+		try {min = super.minBase();} finally { tier++; }
+		return min;
 	}
 
 	@Override
-	public int max(int lvl) {
-		return  6 +     //half the base damage of a tier-1 weapon
-				2 * lvl;//scales the same as a tier 1 weapon
-	}
-	
-	@Override
-	public boolean isIdentified() {
-		return levelKnown && cursedKnown;
-	}
-	
-	@Override
-	public Item upgrade( boolean enchant ) {
-		super.upgrade( enchant );
-		
-		updateQuickslot();
-		
-		return this;
-	}
-	
-	@Override
-	protected float durabilityPerUse() {
-		return 0;
-	}
-	
-	@Override
-	public void rangedHit( Char enemy, int cell ) {
-		circleBack(cell, curUser);
+	public int max(int lvl) { // 10 base, scaling by 2 each level.
+		int value;
+		tier--;
+		try { value = super.max(lvl); } finally { tier++; }
+		return value;
 	}
 
-	@Override
-	protected void rangedMiss( int cell ) {
-		circleBack( cell, curUser );
-	}
+	protected void onThrowComplete(int cell) {
+		MissileSprite sprite = ((MissileSprite) curUser.sprite.parent.recycle(MissileSprite.class));
+		Trap trapAtCell = Dungeon.level.traps.get(cell);
+		if(!trapAtCell.active) trapAtCell = null;
+		if(!rangedHit && Actor.findChar(cell) == null) {
+			if (!Dungeon.level.pit[cell] && (trapAtCell != null || Dungeon.level.map[cell] == Terrain.DOOR)) {
+				drop(cell); // quickly.
+				if (trapAtCell instanceof TeleportationTrap || trapAtCell instanceof DisarmingTrap)
+					return;
+				if (trapAtCell instanceof ExplosiveTrap && isDestroyable()) return;
+			} else {
 
-	private void circleBack( int from, Hero owner ) {
-
-		((MissileSprite)curUser.sprite.parent.recycle( MissileSprite.class )).
-				reset( from, owner.sprite, curItem, null );
-
-		if (throwEquiped) {
-			owner.belongings.weapon = this;
-			owner.spend( -TIME_TO_EQUIP );
-			Dungeon.quickslot.replacePlaceholder(this);
-			updateQuickslot();
-		} else
-		if (!collect( curUser.belongings.backpack )) {
-			Dungeon.level.drop( this, owner.pos ).sprite.drop();
+			}
 		}
-	}
-
-	private boolean throwEquiped;
-
-	@Override
-	public void cast( Hero user, int dst ) {
-		throwEquiped = isEquipped( user ) && !cursed;
-		if (throwEquiped) Dungeon.quickslot.convertToPlaceholder(this);
-		super.cast( user, dst );
-	}
-	
-	@Override
-	public String desc() {
-		String info = super.desc();
-		switch (augment) {
-			case SPEED:
-				info += "\n\n" + Messages.get(Weapon.class, "faster");
-				break;
-			case DAMAGE:
-				info += "\n\n" + Messages.get(Weapon.class, "stronger");
-				break;
-			case NONE:
+		sprite.reset(cell, curUser.sprite, curItem, null);
+		if (!collect(curUser.belongings.backpack)) {
+			drop(curUser.pos);
 		}
-
-		return info;
 	}
 }

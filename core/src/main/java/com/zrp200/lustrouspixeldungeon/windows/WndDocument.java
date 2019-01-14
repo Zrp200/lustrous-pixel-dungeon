@@ -48,8 +48,7 @@ public class WndDocument extends Window {
 	private static final int HEIGHT_L   = 128;
 	
 	private static final int ITEM_HEIGHT	= 18;
-	
-	private ScrollPane list;
+
 	private ArrayList<docPage> pages = new ArrayList<>();
 	
 	public WndDocument( Document doc ){
@@ -58,19 +57,19 @@ public class WndDocument extends Window {
 		int h = LustSettings.landscape() ? HEIGHT_L : HEIGHT_P;
 		
 		resize(w, h);
-		
-		list = new ScrollPane( new Component() ){
+
+		ScrollPane list = new ScrollPane(new Component()) {
 			@Override
-			public void onClick( float x, float y ) {
+			public void onClick(float x, float y) {
 				int size = pages.size();
-				for (int i=0; i < size; i++) {
-					if (pages.get( i ).onClick( x, y )) {
+				for (int i = 0; i < size; i++) {
+					if (pages.get(i).onClick(x, y)) {
 						break;
 					}
 				}
 			}
 		};
-		add( list );
+		add(list);
 		
 		list.setRect( 0, 0, w, h);
 		

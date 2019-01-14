@@ -22,6 +22,7 @@
 package com.zrp200.lustrouspixeldungeon.items;
 
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Bundle;
 import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.ShieldBuff;
@@ -148,6 +149,18 @@ public class BrokenSeal extends Item {
 				setShield(0);
 			}
 			return dmg;
+		}
+
+		@Override
+		public void storeInBundle(Bundle bundle) {
+			super.storeInBundle(bundle);
+			bundle.put("armor",armor);
+		}
+
+		@Override
+		public void restoreFromBundle(Bundle bundle) {
+			super.restoreFromBundle(bundle);
+			armor = (Armor) bundle.get("armor");
 		}
 	}
 }

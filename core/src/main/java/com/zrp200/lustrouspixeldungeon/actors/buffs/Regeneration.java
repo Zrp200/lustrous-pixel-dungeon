@@ -24,6 +24,7 @@ package com.zrp200.lustrouspixeldungeon.actors.buffs;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.items.artifacts.ChaliceOfBlood;
+import com.zrp200.lustrouspixeldungeon.items.rings.RingOfEnergy;
 
 public class Regeneration extends Buff {
 	
@@ -55,7 +56,7 @@ public class Regeneration extends Buff {
 				if (regenBuff.isCursed())
 					spend( REGENERATION_DELAY * 1.5f );
 				else
-					spend( REGENERATION_DELAY - regenBuff.itemLevel()*0.9f );
+					spend( (REGENERATION_DELAY - regenBuff.itemLevel()*0.9f)/RingOfEnergy.artifactChargeMultiplier(target) );
 			else
 				spend( REGENERATION_DELAY );
 			

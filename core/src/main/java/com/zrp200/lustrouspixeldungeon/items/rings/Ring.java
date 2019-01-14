@@ -47,7 +47,7 @@ public abstract class Ring extends KindofMisc {
 
 	private static final float UPGRADE_CURSE_REMOVAL = .8f;
 	
-	protected Buff buff;
+	protected Buff buff=buff();
 	
 	private static final Class<?>[] rings = {
 		RingOfAccuracy.class,	RingOfEvasion.class,	RingOfElements.class,
@@ -184,12 +184,7 @@ public abstract class Ring extends KindofMisc {
 		return desc;
 	}
 
-	abstract protected String statsInfo();
-	final String statsInfo(float bonusScaling) { // the "default" method
-		float multiplier = (float)Math.pow(bonusScaling, visualSoloBonus() );
-		String visualMultiplier = new DecimalFormat("#.#"+(multiplier<1?"#":"")).format(
-				100 * (bonusScaling > 1 ? multiplier - 1f : 1f - multiplier )
-		);
+	String statsInfo() { // the "default" method
 
 		StringBuilder message = new StringBuilder();
 		message.append(Messages.get(this,"stats")).append(" ");
@@ -199,13 +194,26 @@ public abstract class Ring extends KindofMisc {
 
 		if( !(effect1.equals( "" ) ) )
 			message.append( effect1 ).append( " by _" )
-					.append( (int) visualSoloBonus() )
+					.append( effect1Bonus() )
 					.append("_ and ");
 
 		message.append( Messages.get(this, "effect2") )
-				.append(" by _")
-				.append( visualMultiplier ).append( "%._" );
+				.append(" by _").append( effect2Bonus() ).append( "._" );
 		return message.toString();
+	}
+
+	protected String effect1Bonus() { // typically the flast boost, but some rings are different.
+		return String.valueOf( (int)Math.round( visualSoloBonus() ) );
+	}
+
+	abstract protected String effect2Bonus();
+	final String visualMultiplier(float bonusScaling) {
+		float multiplier = (float)Math.pow(bonusScaling, visualSoloBonus() );
+		return new DecimalFormat( "#.#" + (multiplier < 1 ? "#" : "") )
+				.format(
+				100 * (bonusScaling > 1 ? multiplier - 1f : 1f - multiplier)
+		) +
+				"%";
 	}
 
 	protected float visualSoloBonus() {

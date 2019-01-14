@@ -116,14 +116,4 @@ public class Terrain {
 		}
 	}
 
-	//removes signs, places floors instead
-	public static int[] convertTilesFrom0_6_0b(int[] map){
-		for (int i = 0; i < map.length; i++){
-			if (map[i] == 23){
-				map[i] = 1;
-			}
-		}
-		return map;
-	}
-
 }

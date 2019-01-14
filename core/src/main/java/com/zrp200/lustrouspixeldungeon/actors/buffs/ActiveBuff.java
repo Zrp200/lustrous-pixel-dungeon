@@ -1,11 +1,14 @@
 package com.zrp200.lustrouspixeldungeon.actors.buffs;
 
+import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.ui.BuffIndicator;
 
 public class ActiveBuff extends Buff {
+    @SuppressWarnings("WeakerAccess")
     protected float left, initial;
+    protected float startGrey = 5;
 
     public void set( float duration ) {
         left = Math.max(left, duration);
@@ -20,13 +23,17 @@ public class ActiveBuff extends Buff {
     @Override
     public boolean act() {
         spend(TICK);
-        left -= TICK;
-        if (left <= 0){
+        if ( (left -= TICK) <= 0 ){
             detach();
-        } else if (left < 5){
+        } else if (left < startGrey){
             BuffIndicator.refreshHero();
         }
         return true;
+    }
+
+    @Override
+    public void tintIcon(Image icon) {
+        greyIcon(icon,startGrey,left);
     }
 
     @Override

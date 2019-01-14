@@ -30,8 +30,8 @@ public class RingOfMight extends Ring {
 	private static final float BONUS_SCALING = 1.035f;
 
 	@Override
-	protected String statsInfo() {
-		return statsInfo(BONUS_SCALING);
+	protected String effect2Bonus() {
+		return visualMultiplier(BONUS_SCALING);
 	}
 
 	@Override

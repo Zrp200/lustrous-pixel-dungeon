@@ -34,7 +34,7 @@ public class PotionOfHolyFuror extends ExoticPotion {
 	@Override
 	public void apply( Hero hero ) {
 		setKnown();
-		Buff.append(hero, Bless.class, 100f);
+		Buff.affect(hero, Bless.class, 100f);
 	}
 	
 }

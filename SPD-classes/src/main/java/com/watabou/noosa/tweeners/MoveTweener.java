@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2019 Evan Debenham
+ * Copyright (C) 2014-2018 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,18 +22,21 @@
 package com.watabou.noosa.tweeners;
 
 import com.watabou.noosa.Gizmo;
+import com.watabou.utils.PointF;
 
-public class Delayer extends Tweener<Gizmo> {
-	
-	public Delayer() {
-		super( null, 0 );
-	}
-	
-	public Delayer( float time ) {
-		super( null, time );
-	}
+public abstract class MoveTweener<Target extends Gizmo> extends Tweener<Target> {
+    public PointF start, end;
+    protected PointF current;
 
-	@Override
-	protected void updateValues( float progress ) {
-	}
+    public MoveTweener(Target target, PointF end, float time ) {
+        super( target, time );
+        this.end = end;
+    }
+
+    @Override
+    protected void updateValues( float progress ) {
+        current = PointF.inter( start, end, progress );
+    }
+
+
 }

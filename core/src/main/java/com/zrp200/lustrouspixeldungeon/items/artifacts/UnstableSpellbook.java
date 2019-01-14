@@ -173,14 +173,7 @@ public class UnstableSpellbook extends Artifact {
 	
 	@Override
 	public void charge(Hero target) {
-		if (charge < chargeCap){
-			partialCharge += 0.1f;
-			if (partialCharge >= 1){
-				partialCharge--;
-				charge++;
-				updateQuickslot();
-			}
-		}
+		passiveBuff().gainCharge( 0.1f );
 	}
 
 	@Override
@@ -237,20 +230,9 @@ public class UnstableSpellbook extends Artifact {
 		@Override
 		public boolean act() {
 			LockedFloor lock = target.buff(LockedFloor.class);
-			if (charge < chargeCap && !cursed && (lock == null || lock.regenOn())) {
-				partialCharge += 1 / (120f - (chargeCap - charge)*5f);
-
-				if (partialCharge >= 1) {
-					partialCharge --;
-					charge ++;
-
-					if (charge == chargeCap){
-						partialCharge = 0;
-					}
-				}
+			if (lock == null || lock.regenOn()) {
+				gainCharge(1 / (120f - (chargeCap - charge)*5f));
 			}
-
-			updateQuickslot();
 
 			spend( TICK );
 

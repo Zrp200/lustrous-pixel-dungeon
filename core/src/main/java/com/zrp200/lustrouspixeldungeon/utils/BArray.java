@@ -106,8 +106,8 @@ public class BArray {
 		
 		for (int i=0; i < length; i++) {
 			result[i] = false;
-			for (int j=0; j < nv; j++) {
-				if (a[i] == v[j]) {
+			for (int aV : v) {
+				if (a[i] == aV) {
 					result[i] = true;
 					break;
 				}
@@ -143,8 +143,8 @@ public class BArray {
 		
 		for (int i=0; i < length; i++) {
 			result[i] = true;
-			for (int j=0; j < nv; j++) {
-				if (a[i] == v[j]) {
+			for (int aV : v) {
+				if (a[i] == aV) {
 					result[i] = false;
 					break;
 				}

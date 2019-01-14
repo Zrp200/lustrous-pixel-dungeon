@@ -29,11 +29,15 @@ import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
+import com.zrp200.lustrouspixeldungeon.sprites.CharSprite;
 import com.zrp200.lustrouspixeldungeon.ui.BuffIndicator;
 import com.zrp200.lustrouspixeldungeon.utils.GLog;
 
 import java.text.DecimalFormat;
 import java.util.HashSet;
+
+import static com.zrp200.lustrouspixeldungeon.actors.buffs.Buff.buffType.NEUTRAL;
+import static com.zrp200.lustrouspixeldungeon.sprites.CharSprite.POSITIVE;
 
 public class Buff extends Actor implements Hero.Doom {
 	
@@ -46,7 +50,7 @@ public class Buff extends Actor implements Hero.Doom {
 	//determines how the buff is announced when it is shown.
 	public enum buffType {POSITIVE, NEGATIVE, NEUTRAL}
 
-    public buffType type = buffType.NEUTRAL;
+    public buffType type = NEUTRAL;
 	
 	//whether or not the buff announces its name
 	public boolean announced = false;
@@ -73,10 +77,16 @@ public class Buff extends Actor implements Hero.Doom {
 		if (target.isImmune( getClass() )) {
 			return false;
 		}
-		
 		this.target = target;
 		target.add( this );
-
+		if (target.sprite != null && announced) {
+			int color = CharSprite.NEUTRAL;
+			if (type == buffType.POSITIVE)
+				color = POSITIVE;
+			else if (type == buffType.NEGATIVE)
+				color = CharSprite.NEGATIVE;
+			target.sprite.showStatus(color, toString());
+		}
 		if (target.buffs().contains(this)){
 			if (target.sprite != null) fx( true );
 			return true;

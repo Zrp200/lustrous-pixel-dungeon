@@ -85,11 +85,6 @@ public class King extends Mob {
 		nextPedestal = bundle.getBoolean( PEDESTAL );
 		BossHealthBar.assignBoss(this);
 	}
-	@Override
-	protected boolean act() {
-		if(HP < HT) HP++;
-		return super.act();
-	}
 
 	@Override
 	public int damageRoll() {
@@ -124,6 +119,7 @@ public class King extends Mob {
 	
 	@Override
 	protected boolean act() {
+		if(HP < HT) HP++;
 		if (canTryToSummon() && pos == ((CityBossLevel)Dungeon.level).pedestal( nextPedestal )) {
 			summon();
 			return true;
@@ -311,7 +307,7 @@ public class King extends Mob {
 			return Random.NormalIntRange(0, 5);
 		}
 		{
-		    resistances.add( Paralysis.class);
+		    immunities.add( Paralysis.class);
 		    resistances.add( Slow.class );
 		}
 	}
