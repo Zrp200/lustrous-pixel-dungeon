@@ -106,7 +106,7 @@ public class GamesInProgress {
 			} catch (IOException e) {
 				info = null;
 			} catch (Exception e){
-				ShatteredPixelDungeon.reportException( e );
+				LustrousPixelDungeon.reportException( e );
 				info = null;
 			}
 			

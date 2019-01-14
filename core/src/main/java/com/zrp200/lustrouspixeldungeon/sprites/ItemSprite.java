@@ -23,6 +23,7 @@ package com.zrp200.lustrouspixeldungeon.sprites;
 
 import android.graphics.Bitmap;
 
+import com.watabou.gltextures.SmartTexture;
 import com.watabou.gltextures.TextureCache;
 import com.watabou.glwrap.Matrix;
 import com.watabou.glwrap.Vertexbuffer;

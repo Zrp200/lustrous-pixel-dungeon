@@ -22,7 +22,6 @@
 package com.zrp200.lustrouspixeldungeon.effects;
 
 import android.annotation.SuppressLint;
-import android.util.SparseArray;
 
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
