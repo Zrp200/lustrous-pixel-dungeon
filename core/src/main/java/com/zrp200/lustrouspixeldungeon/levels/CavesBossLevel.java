@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2018 Evan Debenham
+ * Copyright (C) 2014-2019 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -106,10 +106,10 @@ public class CavesBossLevel extends Level {
 		Rect space = new Rect();
 
 		space.set(
-				Random.IntRange(2, 2 + (int)(width*0.2f)),
-				Random.IntRange(2, 2 + (int)(height*0.2f)),
-				Random.IntRange((int)(width * 0.8f - 2), width-2 ),
-				Random.IntRange((int)(height * 0.8f - 2), height-2 )
+				Random.IntRange(2, 6),
+				Random.IntRange(2, 6),
+				Random.IntRange(width-6, width-2),
+				Random.IntRange(height-6, height-2)
 		);
 
 		Painter.fillEllipse( this, space, Terrain.EMPTY );

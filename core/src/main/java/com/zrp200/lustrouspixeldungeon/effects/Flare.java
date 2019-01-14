@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2018 Evan Debenham
+ * Copyright (C) 2014-2019 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,8 +20,6 @@
  */
 
 package com.zrp200.lustrouspixeldungeon.effects;
-
-import android.annotation.SuppressLint;
 
 import com.watabou.gltextures.SmartTexture;
 import com.watabou.gltextures.TextureCache;
@@ -51,7 +49,6 @@ public class Flare extends Visual {
 	
 	private int nRays;
 	
-	@SuppressLint("FloatMath")
 	public Flare( int nRays, float radius ) {
 		
 		super( 0, 0, 0, 0 );

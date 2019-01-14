@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2018 Evan Debenham
+ * Copyright (C) 2014-2019 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -396,9 +396,12 @@ public class GameScene extends PixelScene {
 			//TODO currently items are only ported to boss rooms, so this works well
 			//might want to have a 'near entrance' function if items can be ported elsewhere
 			int pos;
+			//try to find a tile with no heap, otherwise just stick items onto a heap.
+			int tries = 100;
 			do {
 				pos = Dungeon.level.randomRespawnCell();
-			} while (Dungeon.level.heaps.get(pos) != null);
+				tries--;
+			} while (tries > 0 && Dungeon.level.heaps.get(pos) != null);
 			for (Item item : ported) {
 				Dungeon.level.drop( item, pos ).type = Heap.Type.CHEST;
 			}

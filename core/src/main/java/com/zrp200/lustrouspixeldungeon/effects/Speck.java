@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2018 Evan Debenham
+ * Copyright (C) 2014-2019 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@ import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.ColorMath;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
+import com.watabou.utils.SparseArray;
 import com.zrp200.lustrouspixeldungeon.Assets;
 
 public class Speck extends Image {
@@ -79,7 +80,7 @@ public class Speck extends Image {
 	
 	private static TextureFilm film;
 	
-	private static SparseArray<Emitter.Factory> factories = new SparseArray<Emitter.Factory>();
+	private static SparseArray<Emitter.Factory> factories = new SparseArray<>();
 	
 	public Speck() {
 		super();
@@ -366,8 +367,7 @@ public class Speck extends Image {
 		
 		left = lifespan;
 	}
-	
-	@SuppressLint("FloatMath")
+
 	@Override
 	public void update() {
 		super.update();

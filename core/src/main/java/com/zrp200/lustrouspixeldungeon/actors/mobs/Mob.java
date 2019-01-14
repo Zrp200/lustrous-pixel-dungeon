@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2018 Evan Debenham
+ * Copyright (C) 2014-2019 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -536,13 +536,10 @@ public abstract class Mob extends Char {
 
 		if (buff(SoulMark.class) != null) {
 			int restoration = Math.min(damage, HP);
-			if(restoration/2 > 0) {
-				Dungeon.hero.buff(Hunger.class).satisfy(restoration * 0.5f);
-				Integer toHeal = Math.min(HT - HP, Math.round(restoration*0.25f) );
-				HP += toHeal;
-				if(toHeal > 0) sprite.showStatus( CharSprite.POSITIVE,toHeal.toString() );
-				Dungeon.hero.sprite.emitter().burst(Speck.factory(Speck.HEALING), 1);
-			}
+			if(restoration/2 > 0) {Dungeon.hero.buff(Hunger.class).satisfy(restoration);
+			Integer toHeal =Math.min(HT-HP, Math.round(restoration*0.33f));
+			HP += toHeal;
+				if(toHeal > 0) sprite.showStatus( CharSprite.POSITIVE,toHeal.toString() );Dungeon.hero.sprite.emitter().burst( Speck.factory(Speck.HEALING), 1 );}
 		}
 
 		return damage;

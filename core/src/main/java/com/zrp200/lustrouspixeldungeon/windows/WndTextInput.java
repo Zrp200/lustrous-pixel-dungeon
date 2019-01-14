@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2018 Evan Debenham
+ * Copyright (C) 2014-2019 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,6 +44,7 @@ import com.zrp200.lustrouspixeldungeon.ui.RenderedTextMultiline;
 import com.zrp200.lustrouspixeldungeon.ui.Window;
 
 //This class makes use of the android EditText component to handle text input
+//TODO externalize android-specific code to SPD-classes
 public class WndTextInput extends Window {
 
 	private EditText textInput;

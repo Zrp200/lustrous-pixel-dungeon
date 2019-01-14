@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2018 Evan Debenham
+ * Copyright (C) 2014-2019 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@ import com.watabou.gltextures.TextureCache;
 import com.watabou.noosa.Image;
 import com.zrp200.lustrouspixeldungeon.scenes.PixelScene;
 
+//TODO externalize bitmap stuff to SPD-classes
 public class Halo extends Image {
 	
 	private static final Object CACHE_KEY = Halo.class;

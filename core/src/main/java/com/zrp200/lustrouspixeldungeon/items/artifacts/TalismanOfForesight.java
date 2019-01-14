@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2018 Evan Debenham
+ * Copyright (C) 2014-2019 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -106,7 +106,12 @@ public class TalismanOfForesight extends Artifact {
 	@Override
 	public void charge(Hero target) {
 		if (charge < chargeCap){
-			partialCharge += 4f;
+			charge += 4f;
+			if (charge >= chargeCap) {
+				charge = chargeCap;
+				partialCharge = 0;
+				GLog.p( Messages.get(this, "full_charge") );
+			}
 		}
 	}
 

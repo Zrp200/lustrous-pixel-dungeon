@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2018 Evan Debenham
+ * Copyright (C) 2014-2019 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -328,11 +328,11 @@ public class ItemSprite extends MovieClip {
 	}
 
 	public static int pick( int index, int x, int y ) {
-		Bitmap bmp = TextureCache.get( Assets.ITEMS ).bitmap;
-		int rows = bmp.getWidth() / SIZE;
+		SmartTexture tx = TextureCache.get( Assets.ITEMS );
+		int rows = tx.width / SIZE;
 		int row = index / rows;
 		int col = index % rows;
-		return bmp.getPixel( col * SIZE + x, row * SIZE + y );
+		return tx.getPixel( col * SIZE + x, row * SIZE + y );
 	}
 	
 	public static class Glowing {

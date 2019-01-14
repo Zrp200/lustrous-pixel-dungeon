@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2018 Evan Debenham
+ * Copyright (C) 2014-2019 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 
 package com.zrp200.lustrouspixeldungeon.items.spells;
 
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
 import com.zrp200.lustrouspixeldungeon.effects.ItemChange;
 import com.zrp200.lustrouspixeldungeon.items.Generator;
@@ -76,7 +77,7 @@ public class Recycle extends InventorySpell {
 			} else {
 				result = Generator.random(Generator.Category.STONE);
 			}
-		} while (result.getClass() == item.getClass());
+		} while (result.getClass() == item.getClass() || Challenges.isItemBlocked(result));
 		
 		item.detach(curUser.belongings.backpack);
 		GLog.p(Messages.get(this, "recycled", result.name()));
