@@ -62,6 +62,7 @@ public class King extends Mob {
 		HP = HT = 300;
 		EXP = 40;
 		defenseSkill = 25;
+		armor = 14;
 		
 		Undead.count = 0;
 
@@ -94,11 +95,6 @@ public class King extends Mob {
 	@Override
 	public int attackSkill( Char target ) {
 		return 32;
-	}
-	
-	@Override
-	public int drRoll() {
-		return Random.NormalIntRange(0, 14);
 	}
 	
 	@Override
@@ -223,7 +219,6 @@ public class King extends Mob {
 	}
 	
 	{
-		resistances.add( ToxicGas.class );
 		resistances.add( Amok.class );
 		resistances.add( Blindness.class );
 		resistances.add( Paralysis.class );
@@ -244,6 +239,7 @@ public class King extends Mob {
 			
 			HP = HT = 28;
 			defenseSkill = 15;
+			armor = 5;
 			
 			EXP = 0;
 			
@@ -302,12 +298,8 @@ public class King extends Mob {
 			}
 		}
 
-		@Override
-		public int drRoll() {
-			return Random.NormalIntRange(0, 5);
-		}
 		{
-		    immunities.add( Paralysis.class);
+		    immunities.add( Paralysis.class );
 		    resistances.add( Slow.class );
 		}
 	}

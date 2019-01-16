@@ -21,7 +21,6 @@
 
 package com.zrp200.lustrouspixeldungeon.actors.mobs;
 
-import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Berserk;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
@@ -35,15 +34,13 @@ public class Shielded extends Brute {
 		spriteClass = ShieldedSprite.class;
 		EXP = 9; // from being rare
 		defenseSkill = 20;
+		armor += 2;
 
 		Buff.affect(this, BrokenSeal.WarriorShield.class).setArmor(new PlateArmor());
 
 	}
 
 	@Override
-	public int drRoll() {
-		return Random.NormalIntRange(0, 10);
-	}
 	public int defenseProc(Char enemy, int damage) {
 		if(damage > 0) Buff.affect(this, Berserk.class).damage(damage); // Let's make this interesting shall we?
 		return super.defenseProc(enemy,damage);

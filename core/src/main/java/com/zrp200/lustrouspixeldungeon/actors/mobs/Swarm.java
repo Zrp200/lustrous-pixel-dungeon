@@ -26,9 +26,11 @@ import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.ActiveBuff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Burning;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Corruption;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.FlavourBuff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Poison;
 import com.zrp200.lustrouspixeldungeon.effects.Pushing;
 import com.zrp200.lustrouspixeldungeon.items.Item;
@@ -39,6 +41,8 @@ import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
 import com.zrp200.lustrouspixeldungeon.sprites.SwarmSprite;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 
 public class Swarm extends Mob {
 
@@ -59,7 +63,7 @@ public class Swarm extends Mob {
 	
 	private static final float SPLIT_DELAY	= 1f;
 	
-	int generation	= 0;
+	private int generation	= 0;
 	
 	private static final String GENERATION	= "generation";
 	
@@ -80,39 +84,17 @@ public class Swarm extends Mob {
 	public int damageRoll() {
 		return Random.NormalIntRange( 1, 4 );
 	}
-	
+
+	@Override
+	public void damage(int dmg, Object src, boolean magic) {
+		super.damage(dmg, src, magic);
+		if( isAlive() && needsToSplit ) split();
+	}
+
+	private boolean needsToSplit = false;
 	@Override
 	public int defenseProc( Char enemy, int damage ) {
-
-		if (HP >= damage + 2) {
-			ArrayList<Integer> candidates = new ArrayList<>();
-			boolean[] solid = Dungeon.level.solid;
-			
-			int[] neighbours = {pos + 1, pos - 1, pos + Dungeon.level.width(), pos - Dungeon.level.width()};
-			for (int n : neighbours) {
-				if (!solid[n] && Actor.findChar( n ) == null) {
-					candidates.add( n );
-				}
-			}
-	
-			if (candidates.size() > 0) {
-				
-				Swarm clone = split();
-				clone.HP = (HP - damage) / 2;
-				clone.pos = Random.element( candidates );
-				clone.state = clone.HUNTING;
-				
-				if (Dungeon.level.map[clone.pos] == Terrain.DOOR) {
-					Door.enter( clone.pos );
-				}
-				
-				GameScene.add( clone, SPLIT_DELAY );
-				Actor.addDelayed( new Pushing( clone, pos, clone.pos ), -1 );
-				
-				HP -= clone.HP;
-			}
-		}
-		
+		needsToSplit = true;
 		return super.defenseProc(enemy, damage);
 	}
 	
@@ -121,20 +103,54 @@ public class Swarm extends Mob {
 		return 10;
 	}
 	
-	private Swarm split() {
+	private void split() {
+		needsToSplit = false;
+		ArrayList<Integer> candidates = new ArrayList<>();
+		boolean[] solid = Dungeon.level.solid;
+
+		int[] neighbours = {pos + 1, pos - 1, pos + Dungeon.level.width(), pos - Dungeon.level.width()};
+		for (int n : neighbours) if (!solid[n] && Actor.findChar( n ) == null) {
+			candidates.add( n );
+		}
+
+		if ( candidates.isEmpty() ) return;
 		Swarm clone = new Swarm();
 		clone.generation = generation + 1;
+		clone.HP = HP / 2;
+		clone.pos = Random.element(candidates);
+		clone.state = clone.HUNTING;
 		clone.EXP = 0;
-		if (buff( Burning.class ) != null) {
-			Buff.affect( clone, Burning.class ).reignite( clone );
+		for(FlavourBuff buff : buffs(FlavourBuff.class)) {
+			float c = buff.cooldown();
+			Buff.detach(buff);
+			for(Char ch : Arrays.asList(this,clone)) {
+				Buff.affect(ch,buff.getClass(),c/2);
+			}
 		}
-		if (buff( Poison.class ) != null) {
-			Buff.affect( clone, Poison.class ).set(2);
+		for(Buff buff : buffs(Buff.class)) {
+			Buff.affect(clone,buff.getClass());
 		}
-		if (buff(Corruption.class ) != null) {
-			Buff.affect( clone, Corruption.class);
+		HashSet<ActiveBuff> activeBuffs = buffs(ActiveBuff.class);
+		for (ActiveBuff activeBuff : activeBuffs) { // side benefit of defining this as a class
+			Buff.affect(clone, activeBuff.getClass()).set(activeBuff.getLeft() / 2);
+			activeBuff.set(activeBuff.getLeft() / 2);
 		}
-		return clone;
+		if (buff(Burning.class) != null) {
+			Buff.affect(clone, Burning.class).reignite(clone);
+		}
+
+		if (buff(Corruption.class) != null) {
+			Buff.affect(clone, Corruption.class);
+		}
+
+		if (Dungeon.level.map[clone.pos] == Terrain.DOOR) {
+			Door.enter(clone.pos);
+		}
+
+		GameScene.add(clone, SPLIT_DELAY);
+		Actor.addDelayed(new Pushing(clone, pos, clone.pos), -1);
+
+		HP -= clone.HP;
 	}
 	
 	@Override

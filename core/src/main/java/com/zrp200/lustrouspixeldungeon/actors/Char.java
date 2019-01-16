@@ -64,6 +64,7 @@ import com.zrp200.lustrouspixeldungeon.actors.buffs.Vertigo;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.actors.hero.HeroSubClass;
 import com.zrp200.lustrouspixeldungeon.items.BrokenSeal;
+import com.zrp200.lustrouspixeldungeon.items.Heap;
 import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.Brimstone;
 import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.Potential;
 import com.zrp200.lustrouspixeldungeon.items.rings.RingOfElements;
@@ -96,6 +97,8 @@ public abstract class Char extends Actor {
 	
 	public int HT;
 	public int HP;
+
+	protected int armor=0;
 	
 	protected float baseSpeed	= 1;
 	protected PathFinder.Path path;
@@ -118,14 +121,30 @@ public abstract class Char extends Actor {
 	public boolean[] fieldOfView = null;
 	
 	private HashSet<Buff> buffs = new HashSet<>();
-	
-	@Override
-	protected boolean act() {
+
+	protected void updateFieldOfView() {
 		if (fieldOfView == null || fieldOfView.length != Dungeon.level.length()){
 			fieldOfView = new boolean[Dungeon.level.length()];
 		}
 		Dungeon.level.updateFieldOfView( this, fieldOfView );
+	}
+	
+	@Override
+	protected boolean act() {
+		updateFieldOfView();
+		if(properties().contains(Property.IMMOVABLE)) throwItem();
 		return false;
+	}
+
+	protected void throwItem() {
+		Heap heap = Dungeon.level.heaps.get( pos );
+		if (heap != null) {
+			int n;
+			do {
+				n = pos + PathFinder.NEIGHBOURS8[Random.Int( 8 )];
+			} while (!Dungeon.level.passable[n] && !Dungeon.level.avoid[n]);
+			Dungeon.level.drop( heap.pickUp(), n ).sprite.drop( pos );
+		}
 	}
 	
 	protected static final String POS       = "pos";
@@ -277,7 +296,7 @@ public abstract class Char extends Actor {
 	}
 	
 	public int drRoll() {
-		return 0;
+		return Random.NormalIntRange(0,armor);
 	}
 	
 	public int damageRoll() {
@@ -438,7 +457,7 @@ public abstract class Char extends Actor {
 		Actor.remove( buff );
 
 	}
-	
+
 	public synchronized void remove( Class<? extends Buff> buffClass ) {
 		for (Buff buff : buffs( buffClass )) {
 			remove( buff );

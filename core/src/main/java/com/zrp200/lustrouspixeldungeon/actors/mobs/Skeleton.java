@@ -86,17 +86,14 @@ public class Skeleton extends Mob {
 			GLog.n( Messages.get(this, "explo_kill") );
 		}
 	}
-	
+
 	@Override
 	protected Item createLoot() {
-		Item loot;
-		do {
-			loot = Generator.randomWeapon();
-		//50% chance of re-rolling tier 4 or 5 melee weapons
-		} while (((MeleeWeapon) loot).tier >= 4 && Random.Int(2) == 0);
+		MeleeWeapon loot = (MeleeWeapon)super.createLoot();
 		loot.level(0);
 		loot.levelKnown = true;
-		return loot;
+		//50% chance of re-rolling tier 4 or 5 melee weapons
+		return loot.tier < 4 || Random.Int(2) == 0 ? loot : createLoot();
 	}
 	
 	@Override

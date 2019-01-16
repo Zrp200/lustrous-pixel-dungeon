@@ -52,6 +52,7 @@ import com.zrp200.lustrouspixeldungeon.effects.Wound;
 import com.zrp200.lustrouspixeldungeon.items.Generator;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.artifacts.TimekeepersHourglass;
+import com.zrp200.lustrouspixeldungeon.items.potions.Potion;
 import com.zrp200.lustrouspixeldungeon.items.rings.Ring;
 import com.zrp200.lustrouspixeldungeon.items.rings.RingOfWealth;
 import com.zrp200.lustrouspixeldungeon.items.stones.StoneOfAggression;
@@ -85,6 +86,7 @@ public abstract class Mob extends Char {
 	protected int target = -1;
 	
 	protected int defenseSkill = 0;
+	protected int armor=0;
 	
 	public int EXP = 1;
 	public int maxLvl = Hero.MAX_LEVEL;
@@ -189,9 +191,10 @@ public abstract class Mob extends Char {
 	}
 
 	public boolean enemyInFOV() {
+		updateFieldOfView();
 		return enemy != null
 				&& enemy.isAlive()
-				&& (fieldOfView == null || enemy.pos >= fieldOfView.length || fieldOfView[enemy.pos])
+				&& fieldOfView[enemy.pos]
 				&& enemy.invisible <= 0;
 	}
 	
@@ -247,7 +250,7 @@ public abstract class Mob extends Char {
 
 	protected HashSet<Char> findEnemies() {
 		HashSet<Char> enemies = new HashSet<>();
-		if(fieldOfView == null) return enemies;
+		updateFieldOfView();
 
 		//if the mob is amoked...
 		if ( buff(Amok.class) != null) {
@@ -341,7 +344,6 @@ public abstract class Mob extends Char {
 	}
 
 	protected boolean getCloser( int target ) {
-
 		if (rooted || target == pos) {
 			return false;
 		}
@@ -384,15 +386,16 @@ public abstract class Mob extends Char {
 
 					} else if (!path.isEmpty()) {
 						//if the new target is simply 1 earlier in the path shorten the path
-						if (path.getLast() != target) {
-							if (Dungeon.level.adjacent(target, path.getLast())) {
-								path.add(target);
+						if (path.getLast() == target) {
 
-								//if the new target is further away, need to extend the path
-							} else {
-								path.add(last);
-								path.add(target);
-							}
+							//if the new target is closer/same, need to modify end of path
+						} else if (Dungeon.level.adjacent(target, path.getLast())) {
+							path.add(target);
+
+							//if the new target is further away, need to extend the path
+						} else {
+							path.add(last);
+							path.add(target);
 						}
 					}
 
@@ -402,29 +405,31 @@ public abstract class Mob extends Char {
 
 			}
 
-			newPath = newPath || !pathValid(); // if the path is valid, we should PROBABLY
-
-			PathFinder.Path oldPath = path;
+			newPath = newPath || !pathValid();
 
 			if (newPath) {
-				path = Dungeon.findPath(this, pos, target, Dungeon.level.passable, fieldOfView);
-				//if hunting something, don't follow a path that is extremely inefficient
-				// FIXME this is fairly brittle, primarily it assumes that hunting mobs can't see through permanent terrain, such that if their path is inefficient it's always because of a temporary blockage, and therefore waiting for it to clear is the best option.
-				if (path == null
-						|| (state == HUNTING && path.size() > Math.max(9, 2 * Dungeon.level.distance(pos, target)))) {
-					path = oldPath; // scrap the new path.
-				}
-
+				path = Dungeon.findPath(this, pos, target,
+						Dungeon.level.passable,
+						fieldOfView);
 			}
-			if(!lookAhead(1)) return false; // wait if the next step is invalid.
+
+			//if hunting something, don't follow a path that is extremely inefficient
+			//FIXME this is fairly brittle, primarily it assumes that hunting mobs can't see through
+			// permanent terrain, such that if their path is inefficient it's always because
+			// of a temporary blockage, and therefore waiting for it to clear is the best option.
+			if (path == null ||
+					(state == HUNTING && path.size() > Math.max(9, 2*Dungeon.level.distance(pos, target)))) {
+				return false;
+			}
 
 			step = path.removeFirst();
 		}
 		if (step != -1) {
 			move( step );
 			return true;
+		} else {
+			return false;
 		}
-		return false;
 	}
 
 	private boolean lookAhead(int distance) { //looks ahead for path validity
@@ -438,7 +443,7 @@ public abstract class Mob extends Char {
 		return true;
 	}
 	private boolean pathValid() {
-		return lookAhead((int)GameMath.gate(1, path.size()-1, 4));
+		return path != null && lookAhead((int)GameMath.gate(1, path.size()-1, 4));
 	}
 
 	boolean canGetFurther(int target) {
@@ -447,6 +452,7 @@ public abstract class Mob extends Char {
 				|| Dungeon.flee(this, pos, target, Dungeon.level.passable, fieldOfView) == -1
 		);
 	}
+
 	protected boolean getFurther( int target ) {
 		if(!canGetFurther(target)) return false;
 		move( Dungeon.flee(this, pos, target, Dungeon.level.passable, fieldOfView) );
@@ -497,19 +503,15 @@ public abstract class Mob extends Char {
 	}
 
 	public boolean enemySeen() { // just double checks things
-		return enemySeen && enemyInFOV();
+	    return enemySeen && enemyInFOV();
 	}
 
 	@Override
 	public int defenseSkill( Char enemy ) {
-		boolean seen = (enemySeen() && enemy.invisible == 0);
-		if (enemy == Dungeon.hero && !Dungeon.hero.canSurpriseAttack()) seen = true;
-		if ( seen
-				&& paralysed == 0
-				&& !(alignment == Alignment.ALLY && enemy == Dungeon.hero)) {
-			return this.defenseSkill;
-		} else {
+		if ( surprisedBy(enemy) || paralysed == 0 || alignment == Alignment.ALLY && enemy == Dungeon.hero) {
 			return 0;
+		} else {
+			return this.defenseSkill;
 		}
 	}
 	
@@ -522,8 +524,7 @@ public abstract class Mob extends Char {
 			hitWithRanged = true;
 		}
 
-		if ((!enemySeen() || enemy.invisible > 0)
-				&& enemy == Dungeon.hero && Dungeon.hero.canSurpriseAttack()) {
+		if ( surprisedBy(enemy) ){
 			Statistics.sneakAttacks++;
 			Badges.validateRogueUnlock();
 			if (enemy.buff(Preparation.class) != null) {
@@ -543,16 +544,17 @@ public abstract class Mob extends Char {
 		if (buff(SoulMark.class) != null) {
 			int restoration = Math.min(damage, HP);
 			if(restoration/2 > 0) {Dungeon.hero.buff(Hunger.class).satisfy(restoration);
-			Integer toHeal =Math.min(HT-HP, Math.round(restoration*0.33f));
+			Integer toHeal=Math.min(HT-HP, Math.round(restoration*0.33f));
 			HP += toHeal;
-				if(toHeal > 0) sprite.showStatus( CharSprite.POSITIVE,toHeal.toString() );Dungeon.hero.sprite.emitter().burst( Speck.factory(Speck.HEALING), 1 );}
+				if(toHeal > 0) Dungeon.hero.sprite.showStatus( CharSprite.POSITIVE,toHeal.toString() );
+				Dungeon.hero.sprite.emitter().burst( Speck.factory(Speck.HEALING), 1 );}
 		}
 
 		return damage;
 	}
 
 	public boolean surprisedBy( Char enemy ){
-		return !enemySeen();
+		return (!enemySeen() || enemy.invisible > 0) && (!(enemy instanceof Hero) || ((Hero)enemy).canSurpriseAttack());
 	}
 
 	public void aggro( Char ch ) {
@@ -623,6 +625,7 @@ public abstract class Mob extends Char {
 	
 	public void rollToDropLoot(){
 		if (Dungeon.hero.lvl > maxLvl + 2) return;
+		if (loot instanceof Potion && Dungeon.level.pit[pos]) return;
 		
 		float lootChance = this.lootChance;
 		lootChance *= RingOfWealth.dropChanceMultiplier( Dungeon.hero );
@@ -630,7 +633,7 @@ public abstract class Mob extends Char {
 		if (Random.Float() < lootChance) {
 			Item loot = createLoot();
 			if (loot != null) {
-				Dungeon.level.drop(loot, pos).sprite.drop();
+				loot.drop(pos);
 			}
 		}
 		

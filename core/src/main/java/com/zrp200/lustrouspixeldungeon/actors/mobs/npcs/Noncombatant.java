@@ -5,13 +5,17 @@ import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 
 public abstract class Noncombatant extends NPC {
 
+    {
+        state = PASSIVE;
+    }
+
     @Override
     public int defenseSkill( Char enemy ) {
         return 1000;
     }
 
     @Override
-    public void damage( int dmg, Object src ) { }
+    public void damage( int dmg, Object src, boolean magic ) { }
 
     @Override
     public void add( Buff buff ) { }
@@ -22,7 +26,11 @@ public abstract class Noncombatant extends NPC {
     }
 
     @Override
-    public boolean reset() {
-        return true;
-    }
+    public boolean surprisedBy(Char enemy) { return false; }
+
+    @Override
+    public void aggro(Char ch) { }
+
+    @Override
+    public boolean reset() { return true; }
 }

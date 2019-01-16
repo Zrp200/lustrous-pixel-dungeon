@@ -61,8 +61,6 @@ public class Imp extends Noncombatant {
 			seenBefore = false;
 		}
 		
-		throwItem();
-		
 		return super.act();
 	}
 	

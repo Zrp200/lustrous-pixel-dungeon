@@ -22,6 +22,7 @@
 package com.zrp200.lustrouspixeldungeon.actors.mobs.npcs;
 
 import com.zrp200.lustrouspixeldungeon.Dungeon;
+import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.effects.CellEmitter;
 import com.zrp200.lustrouspixeldungeon.effects.particles.ElmoParticle;
@@ -43,16 +44,18 @@ public class Shopkeeper extends NPC {
 	
 	@Override
 	protected boolean act() {
-
-		throwItem();
-		
 		sprite.turnTo( pos, Dungeon.hero.pos );
 		spend( TICK );
-		return true;
+		return super.act();
 	}
-	
+
 	@Override
-	public void damage( int dmg, Object src ) {
+	public int defenseSkill(Char enemy) {
+		return 0;
+	}
+
+	@Override
+	public void damage( int dmg, Object src, boolean magic ) {
 		flee();
 	}
 	

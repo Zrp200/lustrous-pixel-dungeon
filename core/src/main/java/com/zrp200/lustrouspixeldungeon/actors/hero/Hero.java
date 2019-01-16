@@ -137,9 +137,11 @@ public class Hero extends Char {
 		alignment = Alignment.ALLY;
 	}
 	
-	public static final int MAX_LEVEL = 30;
-
-	private static final int STARTING_STR = 10;
+	public static final int
+			MAX_LEVEL    	= 30,
+			STARTING_STR 	= 10;
+	private static final int ACCURACY     	= 9;
+	private static final int EVASION     	= 4;
 	
 	private static final float TIME_TO_REST		    = 1f;
 	private static final float TIME_TO_SEARCH	    = 2f;
@@ -148,8 +150,8 @@ public class Hero extends Char {
 	public HeroClass heroClass = HeroClass.ROGUE;
 	public HeroSubClass subClass = HeroSubClass.NONE;
 	
-	private int attackSkill = 10;
-	private int defenseSkill = 5;
+	private int attackSkill = ACCURACY;
+	private int defenseSkill = EVASION;
 
 	public boolean ready = false;
 	private boolean damageInterrupt = true;
@@ -213,8 +215,6 @@ public class Hero extends Char {
 		return (buff(Weakness.class) != null) ? STR - 2 : STR;
 	}
 
-	private static final String ATTACK		= "attackSkill";
-	private static final String DEFENSE		= "defenseSkill";
 	private static final String STRENGTH	= "STR";
 	private static final String LEVEL		= "lvl";
 	private static final String EXPERIENCE	= "exp";
@@ -227,9 +227,6 @@ public class Hero extends Char {
 		
 		heroClass.storeInBundle( bundle );
 		subClass.storeInBundle( bundle );
-		
-		bundle.put( ATTACK, attackSkill );
-		bundle.put( DEFENSE, defenseSkill );
 		
 		bundle.put( STRENGTH, STR );
 		
@@ -248,8 +245,8 @@ public class Hero extends Char {
 		heroClass = HeroClass.restoreInBundle( bundle );
 		subClass = HeroSubClass.restoreInBundle( bundle );
 		
-		attackSkill = bundle.getInt( ATTACK );
-		defenseSkill = bundle.getInt( DEFENSE );
+		attackSkill = ACCURACY; // base
+		defenseSkill = EVASION; // base
 		
 		STR = bundle.getInt( STRENGTH );
 		
@@ -281,9 +278,10 @@ public class Hero extends Char {
 		return name.equals(Messages.get(this, "name")) ? className() : name;
 	}
 	
-	public void live() {
+	public Hero live() {
 		Buff.affect( this, Regeneration.class );
 		Buff.affect( this, Hunger.class );
+		return this;
 	}
 	
 	public int tier() {
@@ -312,7 +310,7 @@ public class Hero extends Char {
 	public int attackSkill( Char target ) {
 		KindOfWeapon wep = belongings.weapon;
 		
-		float accuracy = 1;
+		float accuracy = attackSkill + lvl;
 		accuracy *= RingOfAccuracy.accuracyMultiplier( this );
 
 		if (wep instanceof MissileWeapon){
@@ -324,17 +322,14 @@ public class Hero extends Char {
 		}
 		if(wep instanceof FishingSpear && target instanceof Piranha) accuracy *= 1.5f;
 		
-		if (wep != null) {
-			return (int)(attackSkill * accuracy * wep.accuracyFactor( this ));
-		} else {
-			return (int)(attackSkill * accuracy);
-		}
+		if (wep != null) accuracy *= wep.accuracyFactor(this);
+		return (int)accuracy;
 	}
 	
 	@Override
 	public int defenseSkill( Char enemy ) {
 		
-		float evasion = defenseSkill;
+		float evasion = defenseSkill + lvl;
 		
 		evasion *= RingOfEvasion.evasionMultiplier( this );
 		
