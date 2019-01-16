@@ -34,6 +34,7 @@ import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.Badges;
 import com.zrp200.lustrouspixeldungeon.Chrome;
 import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
+import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Bleeding;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Charm;
@@ -172,11 +173,6 @@ public class ChangesScene extends PixelScene {
 		new ChangeInfo("v0.0.2-BETA",true);
 		new ChangeInfo("BETA-2",false).addButtons(
 				// new content
-				new ChangeButton(
-						new ItemSprite(
-								((MissileWeapon)Random.oneOf(Random.oneOf(Generator.misTiers).classes).newInstance()).enchant()
-						), "Enchantable Missile Weapons!"
-				),
 				new ChangeButton( new Boomerang() )
 						.append("Added another missile weapon, this time for tier-3 missiles:")
 						.appendLine( "Stats" )
@@ -184,24 +180,49 @@ public class ChangesScene extends PixelScene {
 								"Deals 3-10 damage with +1/+2 scaling",
 								"8 base uses",
 								"Durability scaling via upgrades reduced by ~46% (3 --> 1.625)",
-								"Durability boost from enchantments is 1.3125x"
-						),
-				new ChangeButton( new Bleeding(), "Bleeding can now stack, albeit rather inconsistently." )
+								"Durability boost from enchantments is 1.3125x"),
+				new ChangeButton(
+						new ItemSprite(
+								((MissileWeapon)Random.oneOf(Random.oneOf(Generator.misTiers).classes).newInstance()).enchant()
+						), "Enchantable Missile Weapons!")
+						.appendLine("Missile Weapons can now be enchanted! ")
+						.append("Enchanting a missile weapon will enchant ONE missile of that stack, ")
+						.append("boosting durability by 50% as well as adding an enchantment."),
+				new ChangeButton( new TenguSprite(), "Implemented 0.7.1c")
+					.appendList(
+							"Boss mechanics implemented... across ALL bosses.",
+							"Mage buffs implemented"),
+				new ChangeButton( new ItemSprite(ItemSpriteSheet.RING_TOPAZ), "Ring of Energy",
+						"Reduced wand charge boost slightly (+25% --> 22.5%) and added an "
+								+ "artifact charge boost (+9% base). This should make the ring a bit "
+								+ "more interesting to use."),
+				new ChangeButton( new Bleeding(), "Bleeding can now stack, albeit rather inconsistently." ),
+				ChangeButton.misc(
+						"Guards and Skeletons now drop visually unupgraded equipment",
+						"Flies now split more logically (aka lucky interacts properly now)",
+						"Ring of Tenacity now gives both numbers.",
+						"Graves are now half as likely to give gold."),
+				ChangeButton.bugfix(
+						"Holy furor not applying its buff properly.",
+						"Pickaxe description containing !!!NO TEXT FOUND!!!",
+						"Incendiary Darts untipping when used on flammable terrain",
+						"Ankhs not working as I intended.",
+						"Dewdrops not stacking (wealth issue)",
+						"Rotberry warden effect overriding a current adrenaline surge",
+						"Visual display issue with about scene. Added an extra message for landscape.")
 		);
 		new ChangeInfo("BETA-1",false).addButtons(
 				// new content
 				new ChangeButton(Icons.get(Icons.DEPTH),"Room Generation")
 						.append("_Secret Larder Rooms:_")
 						.appendList(
-								"Contents of the room are much more random, but overall has the same amount of food.",
-								"Frozen Carpaccio and Rations can now be found in the room."
-						)
+							"Contents of the room are much more random, but overall has the same amount of food.",
+							"Frozen Carpaccio and Rations can now be found in the room.")
 						.appendLine("\n_Secret Maze Room:_").appendList("Prize is now visibly uncursed")
 						.appendLine("\n_Pixel Mart:_")
 						.appendList(
-								"All upgradable are now identified",
-								"Now sells a greater variety of weapons, both thrown and melee"
-						),
+							"All upgradable are now identified",
+							"Now sells a greater variety of weapons, both thrown and melee"),
 				new ChangeButton(Icons.get(Icons.CHALLENGE_ON),"Challenges").appendList(
 						"Blocked items are more likely to be replaced by valid items",
 						"Secret Larder Rooms no longer spawn for On Diet",
@@ -331,12 +352,7 @@ public class ChangesScene extends PixelScene {
 				)
 		);
 	}
-	private void enumerateChanges() {
-		try {
-			add002Changes();
-		} catch(Exception e) {
-			LustrousPixelDungeon.reportException(e);
-		}
+	private void add071Changes() {
 		new ChangeInfo("Implemented Shattered v0.7.1",true,Window.SHPX_COLOR);
 		new ChangeInfo("0.7.1b",false).addButtons(
 				new ChangeButton( new Image(Assets.HUNTRESS, 0, 15, 12, 15), "Hero Balance Changes",
@@ -477,6 +493,14 @@ public class ChangesScene extends PixelScene {
 				ChangeButton.misc( "New blocking weapon descriptions" ),
 				ChangeButton.bugfix("Warping and Teleportation traps working against flying enemies")
 		);
+	}
+	private void enumerateChanges() {
+		try {
+			add002Changes(); // Lustrous v0.0.2
+			add071Changes(); // Shattered v0.7.1
+		} catch(Exception e) {
+			LustrousPixelDungeon.reportException(e);
+		}
 		// v0.0.1
 		new ChangeInfo("v0.0.1",true);
 		new ChangeInfo(ChangeInfo.Template.NEW_CONTENT).addButtons(
@@ -1169,6 +1193,9 @@ public class ChangesScene extends PixelScene {
 
 		ChangeButton( Item item, String... messages ){
 			this( new ItemSprite(item), item.name(), messages);
+		}
+		ChangeButton(Char ch, String... messages) {
+			this( ch.sprite, ch.name, messages);
 		}
 		ChangeButton( Buff buff, String... messages) {
 			this( buff.getLargeIcon(), buff.toString(), messages);

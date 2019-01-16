@@ -96,8 +96,8 @@ public class Random {
 		int length = chances.length;
 		
 		float sum = 0;
-		for (int i=0; i < length; i++) {
-			sum += chances[i];
+		for (float chance : chances) {
+			sum += chance;
 		}
 		
 		float value = Float( sum );

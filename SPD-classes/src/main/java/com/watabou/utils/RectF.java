@@ -41,10 +41,7 @@ public class RectF {
 	}
 	
 	public RectF( float left, float top, float right, float bottom ) {
-		this.left	= left;
-		this.top	= top;
-		this.right	= right;
-		this.bottom	= bottom;
+		set(left, top, right, bottom);
 	}
 	
 	public float width() {
@@ -102,12 +99,12 @@ public class RectF {
 	}
 	
 	public RectF union( RectF other ){
-		RectF result = new RectF();
-		result.left		= Math.min( left, other.left );
-		result.right	= Math.max( right, other.right );
-		result.top		= Math.min( top, other.top );
-		result.bottom	= Math.max( bottom, other.bottom );
-		return result;
+		return new RectF(
+				Math.min( left, other.left),
+				Math.max( right, other.right ),
+				Math.min( top, other.top ),
+				Math.max( bottom, other.bottom )
+		);
 	}
 	
 	public RectF union( float x, float y ) {

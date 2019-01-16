@@ -33,22 +33,18 @@ public class PointF {
 	public float x;
 	public float y;
 	
-	public PointF() {
-	}
+	public PointF() { }
 	
 	public PointF( float x, float y ) {
-		this.x = x;
-		this.y = y;
+		set(x,y);
 	}
 	
 	public PointF( PointF p ) {
-		this.x = p.x;
-		this.y = p.y;
+		set( p );
 	}
 	
 	public PointF( Point p ) {
-		this.x = p.x;
-		this.y = p.y;
+		set( p.x, p.y );
 	}
 	
 	public PointF clone() {
@@ -56,15 +52,11 @@ public class PointF {
 	}
 	
 	public PointF scale( float f ) {
-		this.x *= f;
-		this.y *= f;
-		return this;
+		return set(x*f, y*f);
 	}
 	
 	public PointF invScale( float f ) {
-		this.x /= f;
-		this.y /= f;
-		return this;
+		return scale(1/f);
 	}
 	
 	public PointF set( float x, float y ) {
@@ -74,15 +66,11 @@ public class PointF {
 	}
 	
 	public PointF set( PointF p ) {
-		this.x = p.x;
-		this.y = p.y;
-		return this;
+		return set(p.x,p.y);
 	}
 	
 	public PointF set( float v ) {
-		this.x = v;
-		this.y = v;
-		return this;
+		return set(v, v);
 	}
 	
 	public PointF polar( float a, float l ) {
@@ -92,28 +80,20 @@ public class PointF {
 	}
 	
 	public PointF offset( float dx, float dy ) {
-		x += dx;
-		y += dy;
-		return this;
+		return set(x+dx, y+dy);
 	}
 	
 	public PointF offset( PointF p ) {
-		x += p.x;
-		y += p.y;
-		return this;
+		return offset(p.x,p.y);
 	}
 	
 	public PointF negate() {
-		x = -x;
-		y = -y;
-		return this;
+		return set(-x,-y);
 	}
 	
 	public PointF normalize() {
 		float l = length();
-		x /= l;
-		y /= l;
-		return this;
+		return set(x/l,y/l);
 	}
 	
 	public Point floor() {

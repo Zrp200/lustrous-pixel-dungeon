@@ -10,6 +10,10 @@ public class ActiveBuff extends Buff {
     protected float left, initial;
     protected float startGrey = 5;
 
+    public float getLeft() {
+        return left;
+    }
+
     public void set( float duration ) {
         left = Math.max(left, duration);
         initial = Math.max(initial, left);

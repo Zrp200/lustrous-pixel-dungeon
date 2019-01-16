@@ -466,10 +466,10 @@ public class Hero extends Char {
 		spend( time );
 		next();
 	}
-	
+
 	@Override
 	public boolean act() {
-		
+
 		//calls to dungeon.observe will also update hero's local FOV.
 		fieldOfView = Dungeon.level.heroFOV;
 
@@ -482,7 +482,7 @@ public class Hero extends Char {
 				Dungeon.level.updateFieldOfView(this, fieldOfView);
 			}
 		}
-		
+
 		checkVisibleMobs();
 		if (buff(FlavourBuff.class) != null) {
 			BuffIndicator.refreshHero();

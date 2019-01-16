@@ -72,8 +72,8 @@ public class Highlighter {
 	}
 
 	public boolean isHighlighted() {
-		for (int i=0; i < mask.length; i++) {
-			if (mask[i]) {
+		for (boolean aMask : mask) {
+			if (aMask) {
 				return true;
 			}
 		}

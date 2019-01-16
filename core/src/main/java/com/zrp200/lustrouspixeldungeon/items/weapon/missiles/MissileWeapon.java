@@ -155,8 +155,7 @@ abstract public class MissileWeapon extends Weapon {
 			} else {
 				durability = MAX_DURABILITY;
 				super.enchant(ench, visible);
-
-				Item similar = Dungeon.hero.belongings.getSimilar(this);
+				Item similar = (Dungeon.hero != null) ? Dungeon.hero.belongings.getSimilar(this) : null;
 				if (similar != null){
 					detach(Dungeon.hero.belongings.backpack);
 					return (Weapon) similar.merge(this);
@@ -215,7 +214,7 @@ abstract public class MissileWeapon extends Weapon {
 	}
 
 	public void detach() {
-		if(curUser.belongings.contains(this)) {
+		if(curUser != null && curUser.belongings.contains(this)) {
 			detachAll(curUser.belongings.backpack);
 			drop(curUser.pos);
 		}
@@ -400,5 +399,6 @@ abstract public class MissileWeapon extends Weapon {
 	protected void onThrowComplete(int cell) {
 		parent = null;
 		rangedHit = false;
+		super.onThrowComplete(cell);
 	}
 }

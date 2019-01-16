@@ -235,8 +235,7 @@ public class Dungeon {
 
 		Generator.reset();
 		Generator.initArtifacts();
-		hero = new Hero();
-		hero.live();
+		hero = new Hero().live();
 		
 		Badges.reset();
 		

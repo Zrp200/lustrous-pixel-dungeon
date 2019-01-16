@@ -25,18 +25,15 @@ public class Point {
 
 	public int x;
 	public int y;
-	
-	public Point() {
-	}
+
+	public Point() { }
 	
 	public Point( int x, int y ) {
-		this.x = x;
-		this.y = y;
+		set(x,y);
 	}
 	
 	public Point( Point p ) {
-		this.x = p.x;
-		this.y = p.y;
+		this(p.x,p.y);
 	}
 	
 	public Point set( int x, int y ) {
@@ -44,10 +41,9 @@ public class Point {
 		this.y = y;
 		return this;
 	}
-	
+
 	public Point set( Point p ) {
-		x = p.x;
-		y = p.y;
+		set(p.x,p.y);
 		return this;
 	}
 	
@@ -60,19 +56,17 @@ public class Point {
 		this.y *= f;
 		return this;
 	}
-	
+
 	public Point offset( int dx, int dy ) {
 		x += dx;
 		y += dy;
 		return this;
 	}
-	
+
 	public Point offset( Point d ) {
-		x += d.x;
-		y += d.y;
-		return this;
+		return offset(d.x,d.y);
 	}
-	
+
 	@Override
 	public boolean equals( Object obj ) {
 		if (obj instanceof Point) {

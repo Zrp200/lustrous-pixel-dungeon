@@ -42,6 +42,9 @@ import com.zrp200.lustrouspixeldungeon.ui.QuickSlotButton;
 
 import java.util.ArrayList;
 
+import static com.zrp200.lustrouspixeldungeon.items.weapon.Weapon.Augment.SPEED;
+
+
 public class SpiritBow extends Weapon {
 	
 	private static final String AC_SHOOT		= "SHOOT";
@@ -236,7 +239,10 @@ public class SpiritBow extends Weapon {
 		
 		@Override
 		public int proc(Char attacker, Char defender, int damage) {
-			if(sniperSpecial && augment == Augment.DAMAGE) Surprise.hit(defender);
+			if(sniperSpecial && augment == Augment.DAMAGE) {
+				Surprise.hit(defender);
+				sniperSpecial = false;
+			}
 			return SpiritBow.this.proc(attacker, defender, damage);
 		}
 		
@@ -268,18 +274,18 @@ public class SpiritBow extends Weapon {
 			} else {
 				if (!curUser.shoot( enemy, this )) {
 					Splash.at(cell, 0xCC99FFFF, 1);
-				} else if(sniperSpecial && augment == Augment.DAMAGE) Surprise.hit(cell);
-				if (sniperSpecial && SpiritBow.this.augment != Augment.SPEED) sniperSpecial = false;
+				}
+				if (sniperSpecial && SpiritBow.this.augment != SPEED) sniperSpecial = false;
 			}
 		}
-		
+
 		int flurryCount = -1;
 
 		@Override
 		public void cast(final Hero user, final int dst) {
 			final int cell = throwPos( user, dst );
 			SpiritBow.this.targetPos = cell;
-			if (sniperSpecial && SpiritBow.this.augment == Augment.SPEED){
+			if (sniperSpecial && SpiritBow.this.augment == SPEED){
 				if (flurryCount == -1) flurryCount = 3;
 				
 				final Char enemy = Actor.findChar( cell );
