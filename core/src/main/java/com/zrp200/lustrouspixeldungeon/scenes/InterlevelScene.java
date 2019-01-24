@@ -31,6 +31,7 @@ import com.watabou.noosa.NoosaScriptNoLighting;
 import com.watabou.noosa.RenderedText;
 import com.watabou.noosa.SkinnedBlock;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.DeviceCompat;
 import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.GamesInProgress;
@@ -138,6 +139,11 @@ public class InterlevelScene extends PixelScene {
 		else if (loadingDepth <= 25)    loadingAsset = Assets.LOADING_HALLS;
 		else                            loadingAsset = Assets.SHADOW;
 		
+		//speed up transition when debugging
+		if (DeviceCompat.isDebug()){
+			fadeTime /= 2;
+		}
+
 		SkinnedBlock bg = new SkinnedBlock(Camera.main.width, Camera.main.height, loadingAsset ){
 			@Override
 			protected NoosaScript script() {

@@ -43,6 +43,7 @@ import com.zrp200.lustrouspixeldungeon.ui.ChangesButton;
 import com.zrp200.lustrouspixeldungeon.ui.ExitButton;
 import com.zrp200.lustrouspixeldungeon.ui.PrefsButton;
 import com.zrp200.lustrouspixeldungeon.windows.WndStartGame;
+import com.watabou.utils.DeviceCompat;
 
 public class TitleScene extends PixelScene {
 	
@@ -126,7 +127,7 @@ public class TitleScene extends PixelScene {
 			@Override
 			protected boolean onLongClick() {
 				//making it easier to start runs quickly while debugging
-				if (BuildConfig.DEBUG) {
+				if (DeviceCompat.isDebug()) {
 					TitleScene.this.add( new WndStartGame(1) );
 					return true;
 				}

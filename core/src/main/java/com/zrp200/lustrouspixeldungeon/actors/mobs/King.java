@@ -63,7 +63,7 @@ public class King extends Mob {
 		EXP = 40;
 		defenseSkill = 25;
 		armor = 14;
-		
+
 		Undead.count = 0;
 
 		properties.add(Property.BOSS);
@@ -96,12 +96,18 @@ public class King extends Mob {
 	public int attackSkill( Char target ) {
 		return 32;
 	}
-	
+
 	@Override
 	protected boolean getCloser( int target ) {
 		return canTryToSummon() ?
 			super.getCloser( ((CityBossLevel)Dungeon.level).pedestal( nextPedestal ) ) :
 			super.getCloser( target );
+	}
+@Override
+	protected boolean canAttack( Char enemy ) {
+		return canTryToSummon() ?
+				pos == ((CityBossLevel)Dungeon.level).pedestal( nextPedestal ) :
+				Dungeon.level.adjacent( pos, enemy.pos );
 	}
 
 	private boolean canTryToSummon() {
@@ -240,7 +246,7 @@ public class King extends Mob {
 			HP = HT = 28;
 			defenseSkill = 15;
 			armor = 5;
-			
+
 			EXP = 0;
 			
 			state = WANDERING;
