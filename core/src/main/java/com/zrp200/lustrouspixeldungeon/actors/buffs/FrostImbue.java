@@ -23,6 +23,7 @@ package com.zrp200.lustrouspixeldungeon.actors.buffs;
 
 import com.watabou.noosa.Image;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
+import com.zrp200.lustrouspixeldungeon.actors.mobs.Shaman;
 import com.zrp200.lustrouspixeldungeon.effects.particles.SnowParticle;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.ui.BuffIndicator;
@@ -62,6 +63,8 @@ public class FrostImbue extends FlavourBuff {
 	}
 	
 	{
+		resistances.add(Shaman.Frost.class);
+
 		immunities.add( Frost.class );
 		immunities.add( Chill.class );
 	}

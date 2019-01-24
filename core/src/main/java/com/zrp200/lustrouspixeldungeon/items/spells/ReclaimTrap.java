@@ -53,8 +53,7 @@ public class ReclaimTrap extends TargetedSpell {
 			
 			Sample.INSTANCE.play( Assets.SND_LIGHTNING );
 			hero.sprite.parent.addToFront( new Lightning(DungeonTilemap.tileCenterToWorld(t.pos), hero.sprite.center(), null) );
-			
-			ScrollOfRecharging.charge(hero);
+
 			Buff.prolong(hero, Recharging.class, 15f);
 			Buff.affect(hero, ArtifactRecharge.class).set( 15 );
 			

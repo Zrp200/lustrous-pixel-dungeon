@@ -105,6 +105,7 @@ public class Swarm extends Mob {
 	
 	private void split() {
 		needsToSplit = false;
+		if(HP/2 < 2) return;
 		ArrayList<Integer> candidates = new ArrayList<>();
 		boolean[] solid = Dungeon.level.solid;
 
@@ -116,7 +117,7 @@ public class Swarm extends Mob {
 		if ( candidates.isEmpty() ) return;
 		Swarm clone = new Swarm();
 		clone.generation = generation + 1;
-		clone.HP = HP / 2;
+		clone.HP = HP/2;
 		clone.pos = Random.element(candidates);
 		clone.state = clone.HUNTING;
 		clone.EXP = 0;

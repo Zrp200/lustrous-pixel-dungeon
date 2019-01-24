@@ -178,9 +178,9 @@ public class HallsBossLevel extends Level {
 	}
 	
 	@Override
-	public void press( int cell, Char hero ) {
+	public boolean press( int cell, Char hero ) {
 		
-		super.press( cell, hero );
+		boolean result = super.press( cell, hero );
 		
 		if (!enteredArena && hero == Dungeon.hero && cell != entrance) {
 			
@@ -212,6 +212,7 @@ public class HallsBossLevel extends Level {
 			stairs = entrance;
 			entrance = -1;
 		}
+		return result;
 	}
 	
 	private void doMagic( int cell ) {

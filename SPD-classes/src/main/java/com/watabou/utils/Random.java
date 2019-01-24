@@ -78,6 +78,11 @@ public class Random {
 		return min + (int)((Float() + Float()) * (max - min + 1) / 2f);
 	}
 
+	// returns a triangularly distributed int in the range [0, max]
+	public static int NormalInt( int max ) {
+		return NormalIntRange(0, max);
+	}
+
 	//returns a uniformly distributed long in the range [-2^63, 2^63)
 	public static long Long() {
 		return rand.nextLong();

@@ -494,7 +494,7 @@ public class DriedRose extends Artifact {
 		}
 		
 		@Override
-		protected float attackDelay() {
+		public float attackDelay() {
 			float delay = super.attackDelay();
 			if (rose != null && rose.weapon != null){
 				delay *= rose.weapon.speedFactor(this);
@@ -541,8 +541,8 @@ public class DriedRose extends Artifact {
 		public void damage(int dmg, Object src, boolean magic ) {
 			//TODO improve this when I have proper damage source logic
 			if (rose != null && rose.armor != null && rose.armor.hasGlyph(AntiMagic.class, this)
-					&& AntiMagic.RESISTS.contains(src.getClass())){
-				dmg -= Random.NormalIntRange(rose.armor.DRMin(), rose.armor.DRMax())/3;
+					&& AntiMagic.RESISTS.contains( src.getClass() ) && magic){
+				dmg -= rose.armor.DRRoll() * AntiMagic.REDUCTION;
 			}
 			
 			super.damage(dmg, src, magic);
@@ -585,7 +585,7 @@ public class DriedRose extends Artifact {
 		public int drRoll() {
 			int block = 0;
 			if (rose != null && rose.armor != null){
-				block += Random.NormalIntRange( rose.armor.DRMin(), rose.armor.DRMax());
+				block += rose.armor.DRRoll();
 			}
 			if (rose != null && rose.weapon != null){
 				block += Random.NormalIntRange( 0, rose.weapon.defenseFactor( this ));

@@ -28,6 +28,7 @@ import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Point;
+import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
 import com.watabou.utils.SparseArray;
 import com.zrp200.lustrouspixeldungeon.Assets;
@@ -767,22 +768,22 @@ public abstract class Level implements Bundlable {
 	}
 	
 	//characters which are not the hero 'soft' press cells by default
-	public void press( int cell, Char ch){
-		press( cell, ch, ch == Dungeon.hero);
+	public boolean press( int cell, Char ch){
+		return press( cell, ch, ch == Dungeon.hero);
 	}
 	
 	//a 'soft' press ignores hidden traps
 	//a 'hard' press triggers all things
 	//generally a 'hard' press should be forced is something is moving forcefully (e.g. thrown)
-	public void press( int cell, Char ch, boolean hard ) {
-
+	public boolean press( int cell, Char ch, boolean hard ) {
+		boolean didSomething = false;
 		if (ch != null && pit[cell] && !ch.flying) {
 			if (ch == Dungeon.hero) {
 				Chasm.heroFall(cell);
 			} else if (ch instanceof Mob) {
 				Chasm.mobFall( (Mob)ch );
 			}
-			return;
+			return true;
 		}
 		
 		Trap trap = null;
@@ -793,6 +794,7 @@ public abstract class Level implements Bundlable {
 			if (hard) {
 				trap = traps.get( cell );
 				GLog.i(Messages.get(Level.class, "hidden_trap", trap.name));
+				didSomething = true;
 			}
 			break;
 			
@@ -803,6 +805,7 @@ public abstract class Level implements Bundlable {
 		case Terrain.HIGH_GRASS:
 		case Terrain.FURROWED_GRASS:
 			HighGrass.trample( this, cell, ch );
+			didSomething = true;
 			break;
 			
 		case Terrain.WELL:
@@ -811,13 +814,14 @@ public abstract class Level implements Bundlable {
 			
 		case Terrain.DOOR:
 			Door.enter( cell );
+			didSomething = true;
 			break;
 		}
 
 		if (trap != null) {
-			
 			TimekeepersHourglass.timeFreeze timeFreeze =
 					Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+			didSomething = true;
 			
 			if (timeFreeze == null) {
 
@@ -841,7 +845,9 @@ public abstract class Level implements Bundlable {
 		Plant plant = plants.get( cell );
 		if (plant != null) {
 			plant.trigger();
+			return true;
 		}
+		return didSomething;
 	}
 	
 	public void updateFieldOfView( Char c, boolean[] fieldOfView ) {
@@ -994,6 +1000,7 @@ public abstract class Level implements Bundlable {
 	public int pointToCell( Point p ){
 		return p.x + p.y*width();
 	}
+	public int pointToCell( PointF p) { return pointToCell(new Point(Math.round(p.x),Math.round(p.y))); }
 	
 	public String tileName( int tile ) {
 		

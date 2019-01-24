@@ -110,15 +110,13 @@ public class PrismaticImage extends HeroImage {
 	
 	@Override
 	public int drRoll() {
-		if (hero != null){
-			return hero.drRoll();
-		} else {
-			return 0;
-		}
+		int dr = super.drRoll();
+		if(hero != null) dr += hero.drRoll();
+		return dr;
 	}
 
 	@Override
-	protected float attackDelay() {
+	public float attackDelay() {
 		return super.attackDelay();
 	}
 

@@ -466,7 +466,7 @@ public abstract class Mob extends Char {
 			sprite.add( CharSprite.State.PARALYSED );
 	}
 	
-	protected float attackDelay() {
+	public float attackDelay() {
 		float delay = 1f;
 		if ( buff(Adrenaline.class) != null) delay /= 1.5f;
 		return delay;
@@ -508,7 +508,7 @@ public abstract class Mob extends Char {
 
 	@Override
 	public int defenseSkill( Char enemy ) {
-		if ( surprisedBy(enemy) || paralysed == 0 || alignment == Alignment.ALLY && enemy == Dungeon.hero) {
+		if (surprisedBy(enemy) || paralysed > 0) {
 			return 0;
 		} else {
 			return this.defenseSkill;
@@ -554,7 +554,8 @@ public abstract class Mob extends Char {
 	}
 
 	public boolean surprisedBy( Char enemy ){
-		return (!enemySeen() || enemy.invisible > 0) && (!(enemy instanceof Hero) || ((Hero)enemy).canSurpriseAttack());
+		return (!enemySeen() || enemy.invisible > 0 || paralysed > 0 || (enemy instanceof Hero && alignment == Alignment.ALLY))
+				&& (!(enemy instanceof Hero) || ((Hero)enemy).canSurpriseAttack());
 	}
 
 	public void aggro( Char ch ) {

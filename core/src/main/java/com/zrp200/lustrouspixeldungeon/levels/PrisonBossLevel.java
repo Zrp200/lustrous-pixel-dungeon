@@ -178,10 +178,7 @@ public class PrisonBossLevel extends Level {
 	}
 
 	@Override
-	public void press( int cell, Char ch ) {
-
-		super.press(cell, ch);
-
+	public boolean press( int cell, Char ch ) {
 		if (ch == Dungeon.hero){
 			//hero enters tengu's chamber
 			if (state == State.START
@@ -195,6 +192,7 @@ public class PrisonBossLevel extends Level {
 				progress();
 			}
 		}
+		return super.press(cell, ch);
 	}
 
 	@Override

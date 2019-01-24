@@ -21,42 +21,29 @@
 
 package com.zrp200.lustrouspixeldungeon.actors.buffs;
 
-import com.watabou.noosa.Image;
-import com.watabou.utils.Bundle;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.ui.BuffIndicator;
 
-public class WellFed extends Buff {
+public class WellFed extends ActiveBuff {
 	
 	{
 		type = buffType.POSITIVE;
-		announced = true;
-	}
-	
-	int left;
-	
-	@Override
-	public boolean act() {
-		left --;
-		if (left < 0){
-			detach();
-			return true;
-		} else if (left % 10 == 0){
-			target.HP = Math.min(target.HT, target.HP + 1);
-		}
-		
-		spend(TICK);
-		return true;
+		startGrey = 150f;
 	}
 
 	@Override
-	public void tintIcon(Image icon) {
-		greyIcon(icon,150,left);
+	public boolean act() {
+		super.act();
+		int left = Math.round(this.left);
+		if(left != 0 && left % 10 == 0) {
+			target.HP = Math.max(target.HP++,target.HT);
+		}
+		return true;
 	}
 
 	public void reset(){
 		//heals one HP every 10 turns for 450 turns
-		left = (int)Hunger.STARVING;
+		set(Hunger.STARVING);
 	}
 	
 	@Override
@@ -72,19 +59,5 @@ public class WellFed extends Buff {
 	@Override
 	public String desc() {
 		return Messages.get(this, "desc", left + 1);
-	}
-	
-	private static final String LEFT = "left";
-	
-	@Override
-	public void storeInBundle(Bundle bundle) {
-		super.storeInBundle(bundle);
-		bundle.put(LEFT, left);
-	}
-	
-	@Override
-	public void restoreFromBundle(Bundle bundle) {
-		super.restoreFromBundle(bundle);
-		left = bundle.getInt(LEFT);
 	}
 }

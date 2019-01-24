@@ -6,8 +6,11 @@ import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.ui.BuffIndicator;
 
 public class ActiveBuff extends Buff {
+    {
+        announced = true;
+    }
     @SuppressWarnings("WeakerAccess")
-    protected float left, initial;
+    protected float left, initial, turnReduction = TICK;
     protected float startGrey = 5;
 
     public float getLeft() {
@@ -27,7 +30,7 @@ public class ActiveBuff extends Buff {
     @Override
     public boolean act() {
         spend(TICK);
-        if ( (left -= TICK) <= 0 ){
+        if ( (left -= turnReduction) <= 0 ){
             detach();
         } else if (left < startGrey){
             BuffIndicator.refreshHero();

@@ -45,12 +45,11 @@ public class ScrollOfRecharging extends Scroll {
 
 		Buff.affect(curUser, Recharging.class, BUFF_DURATION);
 		charge(curUser);
-		
+
 		Sample.INSTANCE.play( Assets.SND_READ );
 		Invisibility.dispel();
 
 		GLog.i( Messages.get(this, "surge") );
-		SpellSprite.show( curUser, SpellSprite.CHARGE );
 		setKnown();
 
 		readAnimation();

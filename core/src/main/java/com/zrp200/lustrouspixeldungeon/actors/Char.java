@@ -296,7 +296,7 @@ public abstract class Char extends Actor {
 	}
 	
 	public int drRoll() {
-		return Random.NormalIntRange(0,armor);
+		return Random.NormalInt(armor);
 	}
 	
 	public int damageRoll() {

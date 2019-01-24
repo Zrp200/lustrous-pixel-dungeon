@@ -176,7 +176,6 @@ public class Item implements Bundlable {
 	}
 
 	public boolean collect( Bag container ) {
-		
 		ArrayList<Item> items = container.items;
 		
 		if (items.contains( this )) {
@@ -212,7 +211,6 @@ public class Item implements Bundlable {
 			return true;
 			
 		} else {
-			
 			GLog.n( Messages.get(Item.class, "pack_full", name()) );
 			return false;
 			

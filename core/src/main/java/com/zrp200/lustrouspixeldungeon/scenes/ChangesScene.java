@@ -171,6 +171,18 @@ public class ChangesScene extends PixelScene {
 
 	private void add002Changes() throws InstantiationException, IllegalAccessException {
 		new ChangeInfo("v0.0.2-BETA",true);
+		new ChangeInfo("BETA-3",false).addButtons(
+				new ChangeButton( new Boomerang(), "In addition to now working properly, " +
+						"the boomerang has been greatly modified:").appendList(
+								"Durability nerfs reverted.", "Now returns to the user on a delay, " +
+								"moving 3 tiles per turn.", "Scaling now +2/+2.", "Now has completed description."),
+				new ChangeButton( new ItemSprite(new PlateArmor().inscribe(new HolyProvidence())), "Holy Providence")
+						.appendList("Proc rate boosted to 1/15 base",
+								"Can now grant haste (12), earth imbue (14), frost imbue (16), recharging (18), and adrenaline surge (20) in addition to previous effects"),
+				ChangeButton.bugfix(
+					"Antimagic not working properly with sad ghost","Thrown weapons not working", "All attacks by hero ignoring evasion of enemy","Invincible swarms"
+				)
+		);
 		new ChangeInfo("BETA-2",false).addButtons(
 				// new content
 				new ChangeButton( new Boomerang() )

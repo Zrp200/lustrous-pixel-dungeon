@@ -43,8 +43,7 @@ public class CorpseDust extends Item {
 	{
 		image = ItemSpriteSheet.DUST;
 		
-		cursed = true;
-		cursedKnown = true;
+		cursed = cursedKnown = true;
 		
 		unique = true;
 	}
@@ -125,18 +124,18 @@ public class CorpseDust extends Item {
 			}
 		}
 
-		private static String SPAWNPOWER = "spawnpower";
+		private static String SPAWN_POWER = "spawnpower";
 
 		@Override
 		public void storeInBundle(Bundle bundle) {
 			super.storeInBundle(bundle);
-			bundle.put( SPAWNPOWER, spawnPower );
+			bundle.put( SPAWN_POWER, spawnPower );
 		}
 
 		@Override
 		public void restoreFromBundle(Bundle bundle) {
 			super.restoreFromBundle(bundle);
-			spawnPower = bundle.getInt( SPAWNPOWER );
+			spawnPower = bundle.getInt( SPAWN_POWER );
 		}
 	}
 

@@ -47,7 +47,7 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 
 	private static final float SPEED	= 240f;
 	
-	private Callback callback;
+	protected Callback callback;
 	
 	public void reset( int from, int to, Item item, Callback listener ) {
 		reset( DungeonTilemap.tileToWorld( from ), DungeonTilemap.tileToWorld( to ), item, listener);
@@ -100,7 +100,7 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 	}
 
 	//TODO it might be nice to have a source and destination angle, to improve thrown weapon visuals
-	private void setup( PointF from, PointF to, Item item, Callback listener ){
+	protected void setup(PointF from, PointF to, Item item, Callback listener){
 
 		originToCenter();
 

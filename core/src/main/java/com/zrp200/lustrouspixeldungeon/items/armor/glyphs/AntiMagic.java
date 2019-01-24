@@ -38,6 +38,8 @@ import java.util.HashSet;
 public class AntiMagic extends Armor.Glyph {
 
 	private static ItemSprite.Glowing TEAL = new ItemSprite.Glowing( 0x88EEFF );
+
+	public static final float REDUCTION = 5/12f;
 	
 	public static final HashSet<Class> RESISTS = new HashSet<>();
 	static {

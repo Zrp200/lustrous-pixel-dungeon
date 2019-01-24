@@ -42,7 +42,7 @@ public class MirrorImage extends HeroImage {
 		Buff.affect(this, MirrorInvis.class, Short.MAX_VALUE);
 	}
 
-	protected float attackDelay() {
+	public float attackDelay() {
 		float modifier = weapon() != null ? weapon().speedFactor(hero) : RingOfFuror.attackDelayMultiplier(hero) * 0.5f;
 		return modifier * super.attackDelay();
 	}

@@ -308,6 +308,10 @@ public class Armor extends EquipableItem {
 			return lvl;
 		}
 	}
+
+	public final int DRRoll() {
+		return Random.NormalIntRange(DRMin(),DRMax());
+	}
 	
 	public float evasionFactor( Char owner, float evasion ){
 		

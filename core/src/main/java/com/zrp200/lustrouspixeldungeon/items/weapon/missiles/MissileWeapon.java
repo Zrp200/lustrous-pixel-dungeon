@@ -249,13 +249,13 @@ abstract public class MissileWeapon extends Weapon {
 		return speedFactor( user );
 	}
 
-	protected void useDurability() {
+	public void useDurability() {
 		if (parent != null){
 			if ( parent.durability <= parent.durabilityPerUse()){
 				durability = 0;
 				parent.durability = MAX_DURABILITY;
 			} else {
-				durability = parent.durability -= parent.durabilityPerUse()* (float) 1;
+				durability = parent.durability -= parent.durabilityPerUse();
 			}
 		} else {
 			durability -= durabilityPerUse();
@@ -301,7 +301,7 @@ abstract public class MissileWeapon extends Weapon {
 			durability += ((MissileWeapon)other).durability;
 			durability -= MAX_DURABILITY;
 			while (durability <= 0){
-				quantity -= 1;
+				quantity--;
 				durability += MAX_DURABILITY;
 			}
 		}
@@ -385,13 +385,13 @@ abstract public class MissileWeapon extends Weapon {
 	@Override
 	protected void onThrow(int cell) {
 		Char enemy = Actor.findChar(cell);
-		if(Actor.findChar(cell) != null) rangedHit = curUser.shoot(enemy, this);
+		if(Actor.findChar(cell) != null && curUser.pos != cell) curUser.shoot(enemy, this);
 		super.onThrow(cell);
 	}
 
 	@Override
 	public Heap drop(int pos) {
-		if(embed != null) return Dungeon.level.drop(null,pos);
+		if(embed != null || durability <= 0) return Dungeon.level.drop(null,pos);
 		return super.drop(pos);
 	}
 

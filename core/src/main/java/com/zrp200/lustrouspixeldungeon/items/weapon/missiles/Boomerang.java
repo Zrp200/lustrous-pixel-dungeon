@@ -21,15 +21,20 @@
 
 package com.zrp200.lustrouspixeldungeon.items.weapon.missiles;
 
+import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Actor;
-import com.zrp200.lustrouspixeldungeon.levels.Terrain;
+import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.levels.traps.DisarmingTrap;
 import com.zrp200.lustrouspixeldungeon.levels.traps.ExplosiveTrap;
 import com.zrp200.lustrouspixeldungeon.levels.traps.TeleportationTrap;
 import com.zrp200.lustrouspixeldungeon.levels.traps.Trap;
+import com.zrp200.lustrouspixeldungeon.mechanics.Ballistica;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
 import com.zrp200.lustrouspixeldungeon.sprites.MissileSprite;
+
+import java.util.ArrayList;
 
 public class Boomerang extends MissileWeapon {
 
@@ -40,18 +45,13 @@ public class Boomerang extends MissileWeapon {
 		sticky = false;
 
 		baseUses = 8;
-		durabilityScaling = 1.625f; // down from 3
-		enchantDurability = 1.3125f; // down from 1.5
 	}
 
 	@Override
-	public int minScale() { return 1; }
-
-	@Override
-	public int minBase() {
+	public int min(int lvl) {
 		int min;
 		tier--; // one tier lower
-		try {min = super.minBase();} finally { tier++; }
+		try {  min = super.min(lvl); } finally {  tier++; }
 		return min;
 	}
 
@@ -63,23 +63,123 @@ public class Boomerang extends MissileWeapon {
 		return value;
 	}
 
-	protected void onThrowComplete(int cell) {
-		MissileSprite sprite = ((MissileSprite) curUser.sprite.parent.recycle(MissileSprite.class));
-		Trap trapAtCell = Dungeon.level.traps.get(cell);
-		if(!trapAtCell.active) trapAtCell = null;
-		if(!rangedHit && Actor.findChar(cell) == null) {
-			if (!Dungeon.level.pit[cell] && (trapAtCell != null || Dungeon.level.map[cell] == Terrain.DOOR)) {
-				drop(cell); // quickly.
-				if (trapAtCell instanceof TeleportationTrap || trapAtCell instanceof DisarmingTrap)
-					return;
-				if (trapAtCell instanceof ExplosiveTrap && isDestroyable()) return;
-			} else {
-
-			}
+	protected void onThrowComplete(final int cell) {
+		if(cell == curUser.pos) {
+			super.onThrowComplete(cell);
+			return;
 		}
-		sprite.reset(cell, curUser.sprite, curItem, null);
-		if (!collect(curUser.belongings.backpack)) {
-			drop(curUser.pos);
+
+		Trap trapAtCell = Dungeon.level.traps.get(cell);
+		if(!rangedHit && Actor.findChar(cell) == null) {
+			if (!Dungeon.level.pit[cell]) {
+				if(trapAtCell != null && (
+						trapAtCell instanceof TeleportationTrap
+								|| trapAtCell instanceof DisarmingTrap
+								|| trapAtCell instanceof ExplosiveTrap && isDestroyable() )
+				) {
+					super.onThrowComplete(cell);
+					return; // it's not coming back.
+				} else Dungeon.level.press(cell, null,true);
+			}
+			// TODO implement smooth return
+		}
+		Actor.add(new Return(cell));
+		parent = null;
+		rangedHit = false;
+	}
+	class Return extends Actor {
+		{ actPriority = HERO_PRIO+1; }
+
+		ArrayList<Integer> path;
+		int distancePerTurn = 3, // hopefully soon this can be played around with a bit more...
+			distanceThisTurn, lastVisible, curPos;
+
+		MissileSprite sprite() {
+			return (MissileSprite) curUser.sprite.parent.recycle(MissileSprite.class);
+		}
+		void progress() {
+			distanceThisTurn--;
+			curPos = path.remove(0);
+		}
+
+		private Return(int from) {
+			distanceThisTurn = distancePerTurn
+					= Math.max(1,Math.round( distancePerTurn / speedFactor(curUser) ) );
+			Ballistica trajectory = new Ballistica(from,curUser.pos,Ballistica.STOP_TARGET);
+			path = new ArrayList<>(trajectory.subPath(0,trajectory.path.indexOf(trajectory.collisionPos)));
+			lastVisible = path.get(0);
+		}
+
+		@Override
+		protected boolean act() {
+			if(lastVisible == curUser.pos) { // you basically just dived for it.
+				if(!collect()) drop(curUser.pos);
+				remove(Return.this);
+				return true;
+			}
+			if( path.isEmpty() ) { // it's come full "circle"
+				drop( lastVisible );
+				remove(this);
+				return true;
+			}
+			if(distanceThisTurn<=0) {
+				distanceThisTurn = Math.min(distancePerTurn, path.size() );
+				spend(TICK);
+				return true;
+			}
+			while(distanceThisTurn>0 && !path.isEmpty()) {
+				progress();
+				final Char occupant = findChar(curPos);
+				if (occupant != null) {
+					sprite().reset(lastVisible, occupant.sprite, Boomerang.this, new Callback() {
+						@Override
+						public void call() {
+							if (occupant == curUser) {
+								collect();
+								remove(Return.this);
+							} else if(lastVisible != occupant.pos) {
+								curUser.shoot(occupant,Boomerang.this);
+								if (durability <= 0) remove(Return.this);
+							}
+							next();
+						}
+					});
+					return false; // it'll just call itself again I think
+				}
+			}
+			sprite().reset(
+					lastVisible,
+					lastVisible = curPos,
+					Boomerang.this,
+					new Callback() { @Override public void call() { next(); } } );
+			return false;
+		}
+
+		@Override
+		public void storeInBundle(Bundle bundle) {
+			super.storeInBundle(bundle);
+
+			bundle.put("curPos",curPos);
+			bundle.put("lastVisible",lastVisible);
+			bundle.put("distancePerTurn",distancePerTurn);
+			bundle.put("distanceThisTurn",distanceThisTurn);
+
+			int[] path = new int[this.path.size()];
+			for(int i=0;i<path.length;i++) path[i] = this.path.get(i);
+			bundle.put("path",path);
+		}
+
+		@Override
+		public void restoreFromBundle(Bundle bundle) {
+			super.restoreFromBundle(bundle);
+
+			path = new ArrayList<>();
+			for (int pos : bundle.getIntArray("path")) path.add(pos);
+
+			lastVisible = bundle.getInt("lastVisible");
+			curPos = bundle.getInt("curPos");
+			distanceThisTurn = bundle.getInt("distanceThisTurn");
+			distancePerTurn = bundle.getInt("distancePerTurn");
 		}
 	}
 }

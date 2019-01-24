@@ -93,7 +93,7 @@ public class Statue extends Mob {
 	}
 	
 	@Override
-	protected float attackDelay() {
+	public float attackDelay() {
 		return super.attackDelay()*weapon.speedFactor( this );
 	}
 
@@ -104,7 +104,8 @@ public class Statue extends Mob {
 
 	@Override
 	public int drRoll() {
-		return Random.NormalIntRange(0, Dungeon.depth + weapon.defenseFactor(this));
+		return super.drRoll()
+				+ Random.NormalInt(Dungeon.depth + weapon.defenseFactor(this));
 	}
 	
 	@Override

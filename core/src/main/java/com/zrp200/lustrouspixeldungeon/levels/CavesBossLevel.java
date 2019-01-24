@@ -216,9 +216,9 @@ public class CavesBossLevel extends Level {
 	}
 	
 	@Override
-	public void press( int cell, Char hero ) {
+	public boolean press( int cell, Char hero ) {
 		
-		super.press( cell, hero );
+		boolean result = super.press( cell, hero );
 		
 		if (!enteredArena && outsideEntraceRoom( cell ) && hero == Dungeon.hero) {
 			
@@ -252,6 +252,7 @@ public class CavesBossLevel extends Level {
 			Camera.main.shake( 3, 0.7f );
 			Sample.INSTANCE.play( Assets.SND_ROCKS );
 		}
+		return result;
 	}
 	
 	@Override

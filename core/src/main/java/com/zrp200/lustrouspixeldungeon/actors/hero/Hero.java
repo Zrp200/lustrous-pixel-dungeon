@@ -1449,7 +1449,7 @@ public class Hero extends Char {
 			}
 		}
 	}
-	
+
 	@Override
 	public void onAttackComplete() {
 		

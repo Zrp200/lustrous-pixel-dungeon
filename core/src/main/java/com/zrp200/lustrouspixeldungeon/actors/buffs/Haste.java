@@ -29,6 +29,7 @@ public class Haste extends FlavourBuff {
 	
 	{
 		type = buffType.POSITIVE;
+		announced = true;
 	}
 	
 	public static final float DURATION	= 20f;
