@@ -297,13 +297,10 @@ abstract public class MissileWeapon extends Weapon {
 	@Override
 	public Item merge(Item other) {
 		super.merge(other);
-		if (isSimilar(other)) {
-			durability += ((MissileWeapon)other).durability;
-			durability -= MAX_DURABILITY;
-			while (durability <= 0){
-				quantity--;
-				durability += MAX_DURABILITY;
-			}
+		durability = Math.min(((MissileWeapon)other).durability,durability);
+		while (durability <= 0){
+			quantity--;
+			durability += MAX_DURABILITY;
 		}
 		return this;
 	}
@@ -391,7 +388,7 @@ abstract public class MissileWeapon extends Weapon {
 
 	@Override
 	public Heap drop(int pos) {
-		if(embed != null || durability <= 0) return Dungeon.level.drop(null,pos);
+		if((embed != null && embed.target.isAlive()) || durability <= 0) return Dungeon.level.drop(null,pos);
 		return super.drop(pos);
 	}
 

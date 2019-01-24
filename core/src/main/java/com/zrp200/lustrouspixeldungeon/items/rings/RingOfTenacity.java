@@ -38,16 +38,32 @@ public class RingOfTenacity extends Ring {
 		return visualMultiplier(BONUS_SCALING);
 	}
 
-	public static float damageMultiplier(Char t ){
+	@Override
+	protected String effect1Bonus() {
+		String result;
+		Hero h = curUser; // idk I like curUser
+		curUser = Dungeon.hero;
+		int hp = curUser.HP;
+		try {
+			curUser.HP = 0; // ;)
+			result = effect2Bonus();
+		} finally {
+			curUser.HP = hp;
+			curUser = h;
+		}
+		return "up to " + result + ",";
+	}
+
+	public static float damageMultiplier(Char target ){
 		//(HT - HP)/HT = heroes current % missing health.
-		return (float)Math.pow(BONUS_SCALING,getBonus( t, Tenacity.class )*((float)(t.HT - t.HP)/t.HT));
+		return (float)Math.pow(BONUS_SCALING,getBonus( target, Tenacity.class )*((float)(target.HT - target.HP)/target.HT));
 	}
 
 	@Override
 	protected float visualSoloBonus() {
 		float level = super.visualSoloBonus();
 		Hero hero = Dungeon.hero;
-		if(hero != null) level *= (hero.HT - hero.HP) / hero.HT;
+		if(hero != null) level *= (float)(hero.HT - hero.HP) / hero.HT;
 		return level;
 	}
 
