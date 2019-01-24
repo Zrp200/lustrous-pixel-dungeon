@@ -108,6 +108,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import static com.zrp200.lustrouspixeldungeon.ui.Icons.*;
+
 //TODO: update this class with relevant info as new versions come out.
 public class ChangesScene extends PixelScene {
 
@@ -179,6 +181,7 @@ public class ChangesScene extends PixelScene {
 				new ChangeButton( new ItemSprite(new PlateArmor().inscribe(new HolyProvidence())), "Holy Providence")
 						.appendList("Proc rate boosted to 1/15 base",
 								"Can now grant haste (12), earth imbue (14), frost imbue (16), recharging (18), and adrenaline surge (20) in addition to previous effects"),
+				new ChangeButton( get(SHPX), "Implemented Shattered 0.7.1d","Will release shattered changelog later."),
 				ChangeButton.bugfix(
 					"Antimagic not working properly with sad ghost","Thrown weapons not working", "All attacks by hero ignoring evasion of enemy","Invincible swarms"
 				)
@@ -225,7 +228,7 @@ public class ChangesScene extends PixelScene {
 		);
 		new ChangeInfo("BETA-1",false).addButtons(
 				// new content
-				new ChangeButton(Icons.get(Icons.DEPTH),"Room Generation")
+				new ChangeButton(get(DEPTH),"Room Generation")
 						.append("_Secret Larder Rooms:_")
 						.appendList(
 							"Contents of the room are much more random, but overall has the same amount of food.",
@@ -235,7 +238,7 @@ public class ChangesScene extends PixelScene {
 						.appendList(
 							"All upgradable are now identified",
 							"Now sells a greater variety of weapons, both thrown and melee"),
-				new ChangeButton(Icons.get(Icons.CHALLENGE_ON),"Challenges").appendList(
+				new ChangeButton(get(CHALLENGE_ON),"Challenges").appendList(
 						"Blocked items are more likely to be replaced by valid items",
 						"Secret Larder Rooms no longer spawn for On Diet",
 						"Crypt Rooms no longer spawn for Faith is My Armor",
@@ -348,7 +351,7 @@ public class ChangesScene extends PixelScene {
 						"Affection and thorns not scaling properly with upgrades"
 				),
 				new ChangeButton(
-						Icons.get(Icons.LANGS),
+						get(LANGS),
 						"Text Adjustments",
 						"Changed how some things are worded, including:\n",
 						"_-_ Ring of Tenacity description",
@@ -398,7 +401,7 @@ public class ChangesScene extends PixelScene {
 		);
 		new ChangeInfo(ChangeInfo.Template.NEW_CONTENT).addButtons(
 				addDeveloperCommentary(
-						Icons.get(Icons.SHPX),
+						get(SHPX),
 						Milestone.SHPD071,
 						"This update overhauls the huntress! She has a new signature item (a bow!), " +
 								"as well as significantly reworked subclass abilities.\n\n" +
@@ -896,7 +899,7 @@ public class ChangesScene extends PixelScene {
 						"_-_ Stones of Augmentation and Enchantment can now drop as rare stones."
 				),
 				new ChangeButton(
-						Icons.get(Icons.DEPTH),
+						get(DEPTH),
 						"Mob Spawn Changes",
 						"_-_ Shamans now spawn on floors 11 and 12 (0 -> 1) \n",
 						"Rare Mob spawns adjusted:",
@@ -911,7 +914,7 @@ public class ChangesScene extends PixelScene {
 						"_-_ Evil Eyes now spawn on floor 19 (0 -> .01)"
 				),
 				new ChangeButton(
-						Icons.get(Icons.PREFS),
+						get(PREFS),
 						"Misc Changes",
 						"_-_ There's now a post-halls tier generation table, so crypt rooms in " +
 								"floors 22-24 are even less likely to give low tier armor now.\n",
@@ -928,7 +931,7 @@ public class ChangesScene extends PixelScene {
 				),
 				ChangeButton.bugfix("Attacks by Stunning weapons potentially instantly breaking paralysis"),
 				new ChangeButton(
-						Icons.get(Icons.LANGS),
+						get(LANGS),
 						"Removed Translations",
 						"The ability to play the game in other languages than English has been " +
 								"removed for the time being. This mod is not on transifex, and thus has no " +
@@ -1175,7 +1178,7 @@ public class ChangesScene extends PixelScene {
 	private static class ChangeButton extends Component {
 
 		private static ChangeButton misc(String... changes) {
-			return new ChangeButton(Icons.get(Icons.PREFS),Messages.get(ChangesScene.class,"misc")).appendList(changes);
+			return new ChangeButton(get(PREFS),Messages.get(ChangesScene.class,"misc")).appendList(changes);
 		}
 
         private static ChangeButton bugfix(String...fixes) { // it's flawed but it's still better than nothing
