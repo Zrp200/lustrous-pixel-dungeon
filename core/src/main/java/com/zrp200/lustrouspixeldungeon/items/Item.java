@@ -183,7 +183,7 @@ public class Item implements Bundlable {
 		}
 		
 		for (Item item:items) {
-			if (item instanceof Bag && ((Bag)item).grab( this )) {
+			if (item instanceof Bag && ((Bag)item).grab( this ) && ((Bag)item).size > ((Bag)item).items.size()) {
 				return collect( (Bag)item );
 			}
 		}
@@ -217,7 +217,7 @@ public class Item implements Bundlable {
 		}
 	}
 	
-	public boolean collect() {
+	public final boolean collect() {
 		return collect( Dungeon.hero.belongings.backpack );
 	}
 	

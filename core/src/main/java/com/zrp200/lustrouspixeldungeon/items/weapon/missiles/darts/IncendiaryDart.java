@@ -42,7 +42,7 @@ public class IncendiaryDart extends TippedDart {
 			GameScene.add( Blob.seed(cell, 1, Fire.class) );
 			useDurability();
 		}
-		super.onThrowComplete(cell);
+		super.onThrowComplete(cell); // TippedDart#drop handles untipping.
 	}
 	
 	@Override

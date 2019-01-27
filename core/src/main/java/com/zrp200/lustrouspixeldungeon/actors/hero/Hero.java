@@ -128,6 +128,7 @@ import com.zrp200.lustrouspixeldungeon.windows.WndTradeItem;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 
 public class Hero extends Char {
 
@@ -735,18 +736,11 @@ public class Hero extends Char {
 		if (Dungeon.level.adjacent( pos, dst ) || pos == dst) {
 			
 			Heap heap = Dungeon.level.heaps.get( dst );
-			if (heap != null && (heap.type != Type.HEAP && heap.type != Type.FOR_SALE)) {
-				
-				if ((heap.type == Type.LOCKED_CHEST && Notes.keyCount(new GoldenKey(Dungeon.depth)) < 1)
-					|| (heap.type == Type.CRYSTAL_CHEST && Notes.keyCount(new CrystalKey(Dungeon.depth)) < 1)){
-
-						GLog.w( Messages.get(this, "locked_chest") );
-						ready();
-						return false;
-
-				}
-				
+			if (heap != null) {
 				switch (heap.type) {
+				case FOR_SALE: HEAP:
+					ready();
+					return false;
 				case TOMB:
 					Sample.INSTANCE.play( Assets.SND_TOMB );
 					Camera.main.shake( 1, 0.5f );
@@ -754,12 +748,18 @@ public class Hero extends Char {
 				case SKELETON:
 				case REMAINS:
 					break;
+				case CRYSTAL_CHEST:
+				case LOCKED_CHEST:
+					if(!hasKey(heap.type == Type.LOCKED_CHEST ? GoldenKey.class : CrystalKey.class)) {
+						GLog.w( Messages.get(this, "locked_chest") );
+						ready();
+						return false;
+					}
 				default:
 					Sample.INSTANCE.play( Assets.SND_UNLOCK );
 				}
 				
 				sprite.operate( dst );
-				
 			} else {
 				ready();
 			}
@@ -775,25 +775,54 @@ public class Hero extends Char {
 			return false;
 		}
 	}
-	
+
+	private boolean hasKey( Class<?extends Key> keyClass) {
+		Key key;
+		try {
+			key = keyClass.newInstance();
+		} catch (Exception e) {
+			LustrousPixelDungeon.reportException(e);
+			return false;
+		}
+		key.depth = Dungeon.depth;
+		if (Notes.keyCount(key) > 0) return true;
+		if (keyClass == CrystalKey.class) { // prevent exploits
+			int chests = 0;
+			for (Heap heap : Dungeon.level.heaps.values()) {
+				if (heap.type == Heap.Type.CRYSTAL_CHEST) chests++;
+			}
+			if (chests < 2) {
+				GLog.w("The lock shifts every time you try to pick the lock...");
+				return false;
+			}
+		}
+		for (Heap heap : Dungeon.level.heaps.values()) {
+			for (Item item : heap.items)
+				if (keyClass.isInstance(item)) {
+					return false;
+				}
+		}
+		GLog.p("You were somehow able to pick the lock!");
+		return true;
+	}
+
 	private boolean actUnlock( HeroAction.Unlock action ) {
 		int doorCell = action.dst;
 		if (Dungeon.level.adjacent( pos, doorCell )) {
 			
 			boolean hasKey = false;
+
 			int door = Dungeon.level.map[doorCell];
 			
-			if (door == Terrain.LOCKED_DOOR
-					&& Notes.keyCount(new IronKey(Dungeon.depth)) > 0) {
-				
-				hasKey = true;
-				
+			if (door == Terrain.LOCKED_DOOR) {
+				hasKey = hasKey(IronKey.class);
+
 			} else if (door == Terrain.LOCKED_EXIT
 					&& Notes.keyCount(new SkeletonKey(Dungeon.depth)) > 0) {
-
 				hasKey = true;
 				
 			}
+
 			
 			if (hasKey) {
 				

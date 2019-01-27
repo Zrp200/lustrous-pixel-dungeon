@@ -21,6 +21,7 @@
 
 package com.zrp200.lustrouspixeldungeon.items.bags;
 
+import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.potions.Potion;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
@@ -30,7 +31,7 @@ public class PotionBandolier extends Bag {
 	{
 		image = ItemSpriteSheet.BANDOLIER;
 
-		size = 20;
+		limitedDrop = Dungeon.LimitedDrops.POTION_BANDOLIER;
 	}
 
 	@Override

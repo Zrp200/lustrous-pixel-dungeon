@@ -24,8 +24,12 @@ package com.zrp200.lustrouspixeldungeon.journal;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
+import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
+import com.zrp200.lustrouspixeldungeon.items.Heap;
+import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.keys.Key;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
+import com.zrp200.lustrouspixeldungeon.utils.GLog;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -222,7 +226,7 @@ public class Notes {
 			}
 		}
 	}
-	
+
 	public static int keyCount( Key key ){
 		KeyRecord k = new KeyRecord( key );
 		if (records.contains(k)){

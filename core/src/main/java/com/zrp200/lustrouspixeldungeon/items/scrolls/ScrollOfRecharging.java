@@ -21,8 +21,11 @@
 
 package com.zrp200.lustrouspixeldungeon.items.scrolls;
 
+import android.os.Bundle;
+
 import com.watabou.noosa.audio.Sample;
 import com.zrp200.lustrouspixeldungeon.Assets;
+import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Invisibility;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Recharging;
@@ -44,7 +47,7 @@ public class ScrollOfRecharging extends Scroll {
 	public void doRead() {
 
 		Buff.affect(curUser, Recharging.class, BUFF_DURATION);
-		charge(curUser);
+		Recharging.showVFX(curUser);
 
 		Sample.INSTANCE.play( Assets.SND_READ );
 		Invisibility.dispel();
@@ -61,8 +64,8 @@ public class ScrollOfRecharging extends Scroll {
 		Buff.append(curUser, Recharging.class, BUFF_DURATION/3f);
 	}
 	
-	public static void charge( Hero hero ) {
-		hero.sprite.centerEmitter().burst( EnergyParticle.FACTORY, 15 );
+	public static void charge( Char target ) {
+		target.sprite.centerEmitter().burst( EnergyParticle.FACTORY, 15 );
 	}
 	
 	@Override

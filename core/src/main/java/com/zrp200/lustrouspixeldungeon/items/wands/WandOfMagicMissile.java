@@ -65,7 +65,6 @@ public class WandOfMagicMissile extends DamageWand {
 	public void onHit(MagesStaff staff, Char attacker, Char defender, int damage) {
 		Buff.prolong( attacker, Recharging.class, 1 + staff.level()/2f);
 		SpellSprite.show(attacker, SpellSprite.CHARGE);
-
 	}
 	
 	protected int initialCharges() {

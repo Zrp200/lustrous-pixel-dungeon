@@ -61,6 +61,7 @@ import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.zrp200.lustrouspixeldungeon.levels.Terrain;
 import com.zrp200.lustrouspixeldungeon.levels.traps.CursingTrap;
 import com.zrp200.lustrouspixeldungeon.levels.traps.ShockingTrap;
+import com.zrp200.lustrouspixeldungeon.levels.traps.StormTrap;
 import com.zrp200.lustrouspixeldungeon.levels.traps.SummoningTrap;
 import com.zrp200.lustrouspixeldungeon.mechanics.Ballistica;
 import com.zrp200.lustrouspixeldungeon.messages.Languages;
@@ -277,10 +278,8 @@ public class CursedWand {
 
 			//shock and recharge
 			case 3:
-				new ShockingTrap().set( user.pos ).activate();
-				Buff.prolong(user, Recharging.class, 20f);
-				ScrollOfRecharging.charge(user);
-				SpellSprite.show(user, SpellSprite.CHARGE);
+				new StormTrap().set( user.pos ).activate();
+				Buff.affect(user, Recharging.class, 20f);
 				wand.wandUsed();
 				break;
 		}

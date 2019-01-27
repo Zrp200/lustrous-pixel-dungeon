@@ -23,8 +23,10 @@ package com.zrp200.lustrouspixeldungeon.actors.buffs;
 
 import com.watabou.noosa.Image;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
+import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.effects.SpellSprite;
 import com.zrp200.lustrouspixeldungeon.effects.particles.EnergyParticle;
+import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfRecharging;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.ui.BuffIndicator;
 
@@ -40,15 +42,13 @@ public class Recharging extends FlavourBuff {
 	}
 
 	@Override
-	public boolean attachTo(Char target) {
-		SpellSprite.show( target, SpellSprite.CHARGE );
-		target.sprite.centerEmitter().burst( EnergyParticle.FACTORY, 15 );
-		return super.attachTo(target);
-	}
-
-	@Override
 	public void tintIcon(Image icon) {
 		FlavourBuff.greyIcon(icon, 5f, cooldown());
+	}
+
+	public static void showVFX(Char target) { // the lazy person in me HATES this
+		SpellSprite.show( target, SpellSprite.CHARGE );
+		ScrollOfRecharging.charge(target);
 	}
 	
 	@Override

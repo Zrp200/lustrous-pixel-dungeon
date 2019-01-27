@@ -92,7 +92,6 @@ public class Armor extends EquipableItem {
 
 	@Override
 	public Item identify() {
-		if(glyph != null && !glyphKnown) revealGlyph();
 		glyphKnown = true;
 		return super.identify();
 	}
@@ -246,7 +245,7 @@ public class Armor extends EquipableItem {
 			Badges.validateItemLevelAquired(this);
 		}
 		if (isEquipped(Dungeon.hero)){
-			Buff.affect(Dungeon.hero, BrokenSeal.WarriorShield.class).setArmor(this);
+			activate(Dungeon.hero);
 		}
 	}
 

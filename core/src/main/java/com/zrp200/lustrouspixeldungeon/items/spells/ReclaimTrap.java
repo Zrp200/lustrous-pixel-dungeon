@@ -56,6 +56,7 @@ public class ReclaimTrap extends TargetedSpell {
 
 			Buff.prolong(hero, Recharging.class, 15f);
 			Buff.affect(hero, ArtifactRecharge.class).set( 15 );
+			Recharging.showVFX(hero);
 			
 		} else {
 			GLog.w(Messages.get(this, "no_trap"));

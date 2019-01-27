@@ -27,6 +27,7 @@ import com.zrp200.lustrouspixeldungeon.Badges;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
+import com.zrp200.lustrouspixeldungeon.items.Heap;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
 import com.zrp200.lustrouspixeldungeon.windows.WndBag;
@@ -45,13 +46,27 @@ public class Bag extends Item implements Iterable<Item> {
 
 		unique = true;
 	}
+	protected Dungeon.LimitedDrops limitedDrop = null;
 	
 	public Char owner;
 	
 	public ArrayList<Item> items = new ArrayList<>();
 	
-	public int size = 1;
-	
+	public int size = 20;
+
+	private void acquire() {
+		if(limitedDrop != null) limitedDrop.drop();
+	}
+	public boolean dropped() {
+		return limitedDrop.dropped();
+	}
+
+	@Override
+	public Heap drop(int pos) {
+		acquire();
+		return super.drop(pos);
+	}
+
 	@Override
 	public void execute( Hero hero, String action ) {
 
@@ -83,6 +98,7 @@ public class Bag extends Item implements Iterable<Item> {
 		if (super.collect( container )) {
 			
 			owner = container.owner;
+			acquire();
 			
 			Badges.validateAllBagsBought( this );
 			

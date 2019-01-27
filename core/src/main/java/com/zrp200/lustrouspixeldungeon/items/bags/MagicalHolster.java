@@ -21,6 +21,7 @@
 
 package com.zrp200.lustrouspixeldungeon.items.bags;
 
+import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.bombs.Bomb;
 import com.zrp200.lustrouspixeldungeon.items.wands.Wand;
@@ -31,8 +32,8 @@ public class MagicalHolster extends Bag {
 
 	{
 		image = ItemSpriteSheet.HOLSTER;
-		
-		size = 20;
+
+		limitedDrop = Dungeon.LimitedDrops.MAGICAL_HOLSTER;
 	}
 
 	public static final float HOLSTER_SCALE_FACTOR = 0.85f;
@@ -46,31 +47,18 @@ public class MagicalHolster extends Bag {
 	@Override
 	public boolean collect( Bag container ) {
 		if (super.collect( container )) {
-			if (owner != null) {
-				for (Item item : items) {
-					if (item instanceof Wand) {
-						((Wand) item).charge(owner, HOLSTER_SCALE_FACTOR);
-					} else if (item instanceof MissileWeapon){
-						((MissileWeapon) item).holster = true;
-					}
-				}
-			}
+			if (owner != null) for (Item item : items) if (item instanceof Wand)
+				( (Wand) item ).charge(owner, HOLSTER_SCALE_FACTOR);
 			return true;
-		} else {
-			return false;
 		}
+		return false;
 	}
 
 	@Override
 	public void onDetach( ) {
 		super.onDetach();
-		for (Item item : items) {
-			if (item instanceof Wand) {
-				((Wand)item).stopCharging();
-			} else if (item instanceof MissileWeapon){
-				((MissileWeapon) item).holster = false;
-			}
-		}
+		for (Item item : items) if (item instanceof Wand)
+			( (Wand) item ).stopCharging();
 	}
 	
 	@Override

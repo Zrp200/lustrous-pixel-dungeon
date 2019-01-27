@@ -21,6 +21,7 @@
 
 package com.zrp200.lustrouspixeldungeon.items.bags;
 
+import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.stones.Runestone;
 import com.zrp200.lustrouspixeldungeon.plants.Plant;
@@ -30,8 +31,8 @@ public class VelvetPouch extends Bag {
 
 	{
 		image = ItemSpriteSheet.POUCH;
-		
-		size = 20;
+
+		limitedDrop = Dungeon.LimitedDrops.VELVET_POUCH;
 	}
 	
 	@Override

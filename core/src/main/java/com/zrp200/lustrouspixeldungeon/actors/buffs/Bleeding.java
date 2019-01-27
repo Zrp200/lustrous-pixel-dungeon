@@ -42,10 +42,6 @@ public class Bleeding extends ActiveBuff {
 		return BuffIndicator.BLEEDING;
 	}
 
-	public void afflict(float duration) {
-		extend( Random.NormalFloat(duration*0.125f,duration*0.75f) ); // so it's not TOTALLY useless if inflicting tiny amounts
-		set(duration);
-	}
 	@Override
 	public String toString() {
 		return Messages.get(this, "name");
