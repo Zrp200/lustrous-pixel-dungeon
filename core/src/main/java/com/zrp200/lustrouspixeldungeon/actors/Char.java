@@ -231,7 +231,7 @@ public abstract class Char extends Actor {
 			//TODO: consider revisiting this and shaking in more cases.
 			float shake = 0f;
 			if (enemy == Dungeon.hero)
-				shake = effectiveDamage / (enemy.HT / 4);
+				shake = effectiveDamage / (enemy.HT / 4f);
 
 			if (shake > 1f)
 				Camera.main.shake( GameMath.gate( 1, shake, 5), 0.3f );
@@ -376,7 +376,7 @@ public abstract class Char extends Actor {
 		if (buff( Paralysis.class ) != null)
 			buff( Paralysis.class ).processDamage(dmg);
 	}
-	public void damage(int damage, Object src) {
+	public final void damage(int damage, Object src) {
 		damage(damage, src, false);
 	}
 	

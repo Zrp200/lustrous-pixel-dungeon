@@ -150,8 +150,12 @@ abstract public class Weapon extends KindOfWeapon {
 
 	@Override
 	public boolean doEquip(Hero hero) {
-		if( !isVisiblyEnchanted() && hasGoodEnchant() ) revealEnchant(); // make it obvious
+		if( hasHiddenEnchant() ) revealEnchant(); // make it obvious
 		return super.doEquip(hero);
+	}
+
+	private boolean hasHiddenEnchant() {
+		return enchantment != null && !enchantKnown;
 	}
 
 	@Override

@@ -26,6 +26,7 @@ import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.hero.HeroSubClass;
 import com.zrp200.lustrouspixeldungeon.items.Generator;
+import com.zrp200.lustrouspixeldungeon.items.Heap;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.Recipe;
 import com.zrp200.lustrouspixeldungeon.plants.Blindweed;
@@ -53,34 +54,22 @@ public abstract class TippedDart extends Dart {
 		//so that slightly more than 1.5x durability is needed for 2 uses
 		baseUses = 0.65f;
 
-		durabilityScaling = 1.8f; // half as effective
-		enchantDurability = 1.3f;
+		durabilityScaling = 1.8f;
+		enchantDurability = 1.25f;
 
 	}
 	
 	//exact same damage as regular darts, despite being higher tier.
 
 
-	public Dart untip() {
+	private Dart untip() {
 		Dart d = new Dart();
+		d.quantity(quantity);
 		d.level(level());
 		d.enchantment = enchantment;
 		return d;
 	}
 
-	@Override
-	public int proc(Char attacker, Char defender, int damage) {
-		damage = super.proc(attacker,defender,damage);
-		//need to spawn a dart
-		if (durability <= 0){
-			//attempt to stick the dart to the enemy, just drop it if we can't.
-			Dart d = untip();
-			if(!d.stickTo(defender))
-				d.drop(defender.pos);
-		}
-		return damage;
-	}
-	
 	@Override
 	protected float durabilityPerUse() {
 		float use = super.durabilityPerUse();
@@ -91,7 +80,20 @@ public abstract class TippedDart extends Dart {
 
 		return use;
 	}
-	
+
+	@Override
+	protected void onRangedHit(Char enemy, int cell) {
+		super.onRangedHit( enemy, cell);
+
+		//need to spawn a dart
+		if (durability <= 0){
+			//attempt to stick the dart to the enemy, just drop it if we can't.
+			Dart d = untip();
+			d.quantity(1);
+			if( !d.stickTo(enemy) ) d.drop(enemy.pos);
+		}
+	}
+
 	private static HashMap<Class<?extends Plant.Seed>, Class<?extends TippedDart>> types = new HashMap<>();
 	static {
 		types.put(Blindweed.Seed.class,     BlindingDart.class);

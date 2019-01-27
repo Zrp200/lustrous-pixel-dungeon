@@ -50,7 +50,7 @@ import com.zrp200.lustrouspixeldungeon.utils.GLog;
 
 import java.util.HashMap;
 
-public abstract class Shaman extends Mob implements Callback {
+public abstract class Shaman extends Mob {
     private final static HashMap<Class<?extends Shaman>, Float> probs = new HashMap<Class<? extends Shaman>,Float>() {
     	{
 			put(  Shaman.MagicMissile.class,    5f   );
@@ -97,7 +97,8 @@ public abstract class Shaman extends Mob implements Callback {
 		return new Ballistica(pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos == enemy.pos;
 	}
 
-	void applyZap(int damage) {
+	@SuppressWarnings("WeakerAccess")
+	final protected void applyZap(int damage) {
 		enemy.damage(damage, this, true);
 		if (enemy == Dungeon.hero && !enemy.isAlive()) {
 			Dungeon.fail(getClass());
@@ -121,17 +122,15 @@ public abstract class Shaman extends Mob implements Callback {
 			return super.doAttack( enemy );
 		else return doZap();
 	}
-	public void onZapComplete() {
+	public void onZapComplete(boolean next) {
 		if (hit(this, enemy, true))
 			applyZap();
 		else
 			enemy.sprite.showStatus( CharSprite.NEUTRAL,  enemy.defenseVerb() );
-		next();
+		if(next) next();
 	}
-
-	@Override
-	public void call() {
-		next();
+	public final void onZapComplete() { // this is just a way to avoid having to pass an argument
+		onZapComplete(true);
 	}
 
 	public static class Lightning extends Shaman {
@@ -159,11 +158,14 @@ public abstract class Shaman extends Mob implements Callback {
 			enemy.sprite.burst(0xFFFFFFFF,2);
 			applyZap( Random.NormalIntRange(4,12) );
 		}
-		public void onZapComplete() {
+		public void onZapComplete(boolean next) {
 			zapping = true; // this boosts its accuracy temporarily
-			try { super.onZapComplete(); } finally {
+			try { // we have to override this manually
+				super.onZapComplete(false);
+			} finally {
 				zapping = false;  // deactivate said boost
 			}
+			if(next) next();
 		}
 
 		@Override
@@ -184,9 +186,9 @@ public abstract class Shaman extends Mob implements Callback {
         }
 
 		@Override
-		public void onZapComplete() {
-			super.onZapComplete();
+		public void onZapComplete(boolean next) {
 			GameScene.add( Blob.seed( enemy.pos , 1, Fire.class ) );
+        	super.onZapComplete(next);
 		}
 
 		protected void applyZap() {

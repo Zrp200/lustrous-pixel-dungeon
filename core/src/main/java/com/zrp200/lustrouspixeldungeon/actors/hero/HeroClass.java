@@ -137,7 +137,6 @@ public enum HeroClass {
 		}
 		
 		new PotionBandolier().collect();
-		Dungeon.LimitedDrops.POTION_BANDOLIER.drop();
 
 		new PotionOfHealing().identify();
 		new ScrollOfRage().identify();
@@ -154,7 +153,6 @@ public enum HeroClass {
 		Dungeon.quickslot.setSlot(0, staff);
 
 		new ScrollHolder().collect();
-		Dungeon.LimitedDrops.SCROLL_HOLDER.drop();
 
 		new ScrollOfUpgrade().identify();
 		new PotionOfLiquidFlame().identify();
@@ -173,7 +171,6 @@ public enum HeroClass {
 		Dungeon.quickslot.setSlot(0, cloak);
 		Dungeon.quickslot.setSlot(1, knives);
 
-		new VelvetPouch().collect();
 		Dungeon.LimitedDrops.VELVET_POUCH.drop();
 
 		new ScrollOfMagicMapping().identify();
@@ -189,7 +186,6 @@ public enum HeroClass {
 		Dungeon.quickslot.setSlot(0, bow);
 
 		new MagicalHolster().collect();
-		Dungeon.LimitedDrops.MAGICAL_HOLSTER.drop();
 
 		new PotionOfMindVision().identify();
 		new ScrollOfLullaby().identify();

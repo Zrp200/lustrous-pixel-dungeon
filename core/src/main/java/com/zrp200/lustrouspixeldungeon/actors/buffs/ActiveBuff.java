@@ -2,10 +2,11 @@ package com.zrp200.lustrouspixeldungeon.actors.buffs;
 
 import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.ui.BuffIndicator;
 
-public class ActiveBuff extends Buff {
+public class ActiveBuff extends Buff { // this uses an internal counter so it can act every turn.
     {
         announced = true;
     }
@@ -25,6 +26,11 @@ public class ActiveBuff extends Buff {
     public void extend( float duration ) {
         left += duration;
         initial = Math.max(initial, left);
+    }
+
+    public void afflict(float duration) { // sort of a mix between #set and #extend, used by negative buffs
+        extend( Random.Float(duration) );
+        set( duration );
     }
 
     @Override

@@ -64,6 +64,7 @@ import com.zrp200.lustrouspixeldungeon.levels.painters.Painter;
 import com.zrp200.lustrouspixeldungeon.plants.Plant;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ShopRoom extends SpecialRoom {
 
@@ -248,52 +249,38 @@ public class ShopRoom extends SpecialRoom {
 		return itemsToSpawn;
 	}
 
-	protected static Bag ChooseBag(Belongings pack){
-	
-		//0=pouch, 1=holder, 2=bandolier, 3=holster
-		int[] bagItems = new int[4];
+	@SuppressWarnings("ConstantConditions")
+    protected static Bag ChooseBag(Belongings pack) {
 
-		//count up items in the main bag
-		for (Item item : pack.backpack.items) {
-			if (item instanceof Plant.Seed || item instanceof Runestone)    bagItems[0]++;
-			if (item instanceof Scroll || item instanceof Spell)            bagItems[1]++;
-			if (item instanceof Potion)                                     bagItems[2]++;
-			if (item instanceof Wand
-					|| item instanceof MissileWeapon
-					|| item instanceof Bomb)      							bagItems[3]++;
-		}
-		
-		//disqualify bags that have already been dropped
-		if (Dungeon.LimitedDrops.VELVET_POUCH.dropped())                    bagItems[0] = -1;
-		if (Dungeon.LimitedDrops.SCROLL_HOLDER.dropped())                   bagItems[1] = -1;
-		if (Dungeon.LimitedDrops.POTION_BANDOLIER.dropped())                bagItems[2] = -1;
-		if (Dungeon.LimitedDrops.MAGICAL_HOLSTER.dropped())                 bagItems[3] = -1;
-		
-		//find the best bag to drop. This does give a preference to later bags, if counts are equal
-		int bestBagIdx = 0;
-		for (int i = 1; i <= 3; i++){
-			if (bagItems[bestBagIdx] <= bagItems[i]){
-				bestBagIdx = i;
-			}
-		}
-		
-		//drop it, or return nothing if no bag works
-		if (bagItems[bestBagIdx] == -1) return null;
-		switch (bestBagIdx){
-			case 0: default:
-				Dungeon.LimitedDrops.VELVET_POUCH.drop();
-				return new VelvetPouch();
-			case 1:
-				Dungeon.LimitedDrops.SCROLL_HOLDER.drop();
-				return new ScrollHolder();
-			case 2:
-				Dungeon.LimitedDrops.POTION_BANDOLIER.drop();
-				return new PotionBandolier();
-			case 3:
-				Dungeon.LimitedDrops.MAGICAL_HOLSTER.drop();
-				return new MagicalHolster();
-		}
+        //0=pouch, 1=holder, 2=bandolier, 3=holster
+        HashMap<Bag, Integer> bagItems = new HashMap<Bag, Integer>() {
+            {
+                put(new VelvetPouch(), 0);
+                put(new ScrollHolder(), 0);
+                put(new MagicalHolster(), 0);
+                put(new PotionBandolier(), 0);
+            }
 
-	}
+		};
 
+        //count up items in the main bag
+        for (Item item : pack.backpack.items) {
+            for (Bag bag : bagItems.keySet()) {
+                if ( item.getClass() == bag.getClass() ) bagItems.put(bag, -1);
+                if (bagItems.get(bag) == -1) continue;
+                if (bag.grab(item)) bagItems.put(bag, bagItems.get(bag) + 1);
+            }
+        }
+        Bag bestBag = null;
+        int bestValue = -1;
+        for (Bag bag : bagItems.keySet()) {
+        	if( bag.dropped() ) bagItems.put(bag, Math.min(bagItems.get(bag),0)); // a bit of padding hopefully for if shit goes wrong.
+            int value = bagItems.get(bag);
+            if (value > bestValue) {
+                bestBag = bag;
+                bestValue = value;
+            }
+        }
+        return bestBag;
+    }
 }

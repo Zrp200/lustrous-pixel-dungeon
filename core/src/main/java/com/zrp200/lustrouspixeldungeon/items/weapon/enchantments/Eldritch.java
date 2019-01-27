@@ -40,15 +40,17 @@ public class Eldritch extends Weapon.Enchantment {
 		// lvl 0 - 20%
 		// lvl 1 - 33%
 		// lvl 2 - 43%
-		int level = Math.max( 0, weapon.level() );
+		int rating = 5 + weapon.level(); // just works out that it's the same number over and over.
 		
-		if (Random.Int( level + 5 ) >= 4) {
+		if (Random.Int( rating ) >= 4) {
 
 			if (defender == Dungeon.hero || defender.isImmune(Terror.class)) {
-				Buff.affect( defender, Vertigo.class, 3+level );
+				Buff.affect( defender, Vertigo.class, rating );
 			} else {
-				//damage will reduce by 5 turns, so effectively 1+0.5*level free hits
-				Buff.affect( defender, Terror.class, 2.5f * ( 5+level) ).object = attacker.id();
+				//damage will reduce by 5 turns, so effectively 3+0.5*level free hits
+				Terror t = Buff.affect( defender, Terror.class );
+				t.afflict( 2*rating + 5 );
+				t.object = attacker.id();
 			}
 
 		}

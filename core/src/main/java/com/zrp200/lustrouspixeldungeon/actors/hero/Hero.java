@@ -781,19 +781,32 @@ public class Hero extends Char {
 		if (Dungeon.level.adjacent( pos, doorCell )) {
 			
 			boolean hasKey = false;
+
 			int door = Dungeon.level.map[doorCell];
 			
-			if (door == Terrain.LOCKED_DOOR
-					&& Notes.keyCount(new IronKey(Dungeon.depth)) > 0) {
-				
-				hasKey = true;
-				
+			if (door == Terrain.LOCKED_DOOR) {
+				hasKey = Notes.keyCount(new IronKey(Dungeon.depth)) > 0;
+				boolean noKeys = true;
+				if(!hasKey) {
+					search:
+					for(Heap heap : Dungeon.level.heaps.values()) {
+						for(Item item : heap.items) if(item instanceof IronKey) {
+							noKeys = false;
+							break search;
+						}
+					}
+					if(noKeys) { // level gen screwed up
+						GLog.p("You somehow managed to pick the lock!");
+						hasKey = true;
+					}
+				}
+
 			} else if (door == Terrain.LOCKED_EXIT
 					&& Notes.keyCount(new SkeletonKey(Dungeon.depth)) > 0) {
-
 				hasKey = true;
 				
 			}
+
 			
 			if (hasKey) {
 				

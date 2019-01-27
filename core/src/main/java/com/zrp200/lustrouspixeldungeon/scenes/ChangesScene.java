@@ -58,6 +58,8 @@ import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.HolyProvidence;
 import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.Stone;
 import com.zrp200.lustrouspixeldungeon.items.bags.MagicalHolster;
 import com.zrp200.lustrouspixeldungeon.items.bombs.TeleportationBomb;
+import com.zrp200.lustrouspixeldungeon.items.keys.IronKey;
+import com.zrp200.lustrouspixeldungeon.items.keys.SkeletonKey;
 import com.zrp200.lustrouspixeldungeon.items.rings.RingOfEnergy;
 import com.zrp200.lustrouspixeldungeon.items.rings.RingOfForce;
 import com.zrp200.lustrouspixeldungeon.items.rings.RingOfFuror;
@@ -141,13 +143,11 @@ public class ChangesScene extends PixelScene {
 		DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
 
 		if(release != null) { // compare release date to milestones if possible
-
 			message.append( "_-_ Released on " )
 					.append(  dateFormat.format( release.releaseDate )  )
 					.append("\n");
 
 			if ( eventsToCompare != null ) for ( Milestone event : eventsToCompare ) {
-
 				message.append("_-_ ");
 
 				// convert milliseconds to days
@@ -156,9 +156,7 @@ public class ChangesScene extends PixelScene {
 				message.append(daysSinceEvent)
 						.append(" day")
 						.append(daysSinceEvent != 1 ? "s" : "") // "1 days" makes no sense.
-						.append(" after ")
-						.append(event.name)
-						.append("\n");
+						.append(" after ").append(event.name).append("\n");
 			}
 			message.append("\n");
 		}
@@ -173,6 +171,35 @@ public class ChangesScene extends PixelScene {
 
 	private void add002Changes() throws InstantiationException, IllegalAccessException {
 		new ChangeInfo("v0.0.2-BETA",true);
+		new ChangeInfo("BETA-4",false).addButtons(
+				new ChangeButton(new ItemSprite(new Longsword().enchant(new Eldritch())), "Eldritch").appendList(
+						"now applies more terror (now 15 base + 2.5*level) and can stack it like bleeding.",
+						"vertigo base duration boosted by 2."
+				),
+				new ChangeButton( new Starflower.Seed(), "Gives recharging to wardens again; only now realized why it did so in the first place."),
+
+				new ChangeButton( new ItemSprite(ItemSpriteSheet.MISSILE_HOLDER),"Tipped Darts").appendList(
+						"Incendiary darts no longer instantly break when thrown on a flammable tile",
+						"Rot darts are now affected by durability; all durability boosts are 73% less effective on it, however."
+				),
+				new ChangeButton( new ItemSprite( new IronKey() ),"Lockpicking",
+						"I'm aware of a bug where keys are not spawning, but I can't figure out what's causing it exactly. However, I do realize that this bug can be game-ending, so I've done some... temporary measures to ward against this:").appendList(
+						"If there are locked doors on the depth that cannot be opened as a result of a key shortage, " +
+								"the hero will now be able to pick the lock.")
+						.appendLine("\nThis change should prevent the bug from destroying runs, making this bug far more observable than it would be otherwise. This change is retroactive, so runs that previously had this issue will now be able to go back and open previously inaccessible doors."),
+				ChangeButton.misc(
+						"Cursed Wand effect \"Shock and Recharge\" now uses storm trap effect rather than shocking trap",
+						"Bleeding now stacks upon itself more randomly than in BETA-2"
+				),
+				ChangeButton.bugfix(
+					"Recharging vfx giving too many particles or none at all (caused by BETA-3).",
+					"MM shamans stopping game execution (I think).",
+					"Shopkeeper not dropping bags (not retroactive unfort).",
+					"Missile weapon bugs not truely getting fixed by BETA-3.",
+					"Swarm intelligence messing with terror.",
+					"Armor enchants showing their vfx when forcefully identified (eg by well or scroll)."
+				)
+		);
 		new ChangeInfo("BETA-3",false).addButtons(
 				new ChangeButton( new Boomerang(), "In addition to now working properly, " +
 						"the boomerang has been greatly modified:").appendList(
@@ -183,8 +210,9 @@ public class ChangesScene extends PixelScene {
 								"Can now grant haste (12), earth imbue (14), frost imbue (16), recharging (18), and adrenaline surge (20) in addition to previous effects"),
 				new ChangeButton( get(SHPX), "Implemented Shattered 0.7.1d","Will release shattered changelog later."),
 				ChangeButton.bugfix(
-					"Antimagic not working properly with sad ghost","Thrown weapons not working", "All attacks by hero ignoring evasion of enemy","Invincible swarms"
+						"Invincible Swarms","All attacks by hero ignoring evasion of enemy","Anti-magic not working properly with sad ghost"
 				)
+
 		);
 		new ChangeInfo("BETA-2",false).addButtons(
 				// new content

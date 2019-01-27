@@ -33,9 +33,6 @@ public class ShamanSprite extends MobSprite {
 	protected int boltType;
 
 	public ShamanSprite(String textureFile) {
-		super();
-
-
 		texture(textureFile);
 
 		TextureFilm frames = new TextureFilm(textureFile, 12, 15);
@@ -80,7 +77,12 @@ public class ShamanSprite extends MobSprite {
 		public void zapEnemy() {
 			Shaman shaman = (Shaman) ch;
 			Char enemy = shaman.getEnemy();
-			parent.add(new com.zrp200.lustrouspixeldungeon.effects.Lightning(shaman.pos, enemy.pos, shaman));
+			parent.add(new com.zrp200.lustrouspixeldungeon.effects.Lightning(shaman.pos, enemy.pos, new Callback() {
+				@Override
+				public void call() {
+					ch.next();
+				}
+			}));
 			zap(enemy.pos);
 			shaman.onZapComplete();
 		}

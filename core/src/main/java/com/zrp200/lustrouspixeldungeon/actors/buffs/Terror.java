@@ -23,18 +23,46 @@ package com.zrp200.lustrouspixeldungeon.actors.buffs;
 
 import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
+import com.zrp200.lustrouspixeldungeon.actors.Char;
+import com.zrp200.lustrouspixeldungeon.actors.mobs.Mob;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.ui.BuffIndicator;
 
-public class Terror extends FlavourBuff {
+public class Terror extends ActiveBuff {
 
 	public int object = 0;
+
+	Mob target; // now a mob instance
 
 	private static final String OBJECT    = "object";
 
 	{
 		type = buffType.NEGATIVE;
-		announced = true;
+	}
+
+	@Override
+	public boolean act() {
+		boolean result = super.act();
+		if( target.buffs().contains(this) ) target.state = target.FLEEING;
+		return result;
+	}
+
+	@Override
+	public void detach() {
+		target.state = target.HUNTING;
+		super.detach();
+	}
+
+	@Override
+	public boolean attachTo(Char target) {
+		if(target instanceof Mob && super.attachTo(target) ) {
+			this.target = (Mob) super.target;
+			for(Amok buff : this.target.buffs(Amok.class))
+				buff.detach();
+			this.target.state = this.target.FLEEING; // right away.
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -54,25 +82,10 @@ public class Terror extends FlavourBuff {
 		return BuffIndicator.TERROR;
 	}
 
-	@Override
-	public String toString() {
-		return Messages.get(this, "name");
-	}
-
-	@Override
-	public String desc() {
-		return Messages.get(this, "desc", dispTurns());
-	}
-
 	public void recover() {
-		spend(-5f);
-		if (cooldown() <= 0){
+		left -= 5f;
+		if (left <= 0){
 			detach();
 		}
-	}
-
-	@Override
-	public void tintIcon(Image icon) {
-		greyIcon(icon,5,cooldown());
 	}
 }

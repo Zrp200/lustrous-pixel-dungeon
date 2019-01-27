@@ -21,6 +21,7 @@
 
 package com.zrp200.lustrouspixeldungeon.items.bags;
 
+import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.Scroll;
 import com.zrp200.lustrouspixeldungeon.items.spells.Spell;
@@ -30,8 +31,8 @@ public class ScrollHolder extends Bag {
 
 	{
 		image = ItemSpriteSheet.HOLDER;
-		
-		size = 20;
+
+		limitedDrop = Dungeon.LimitedDrops.SCROLL_HOLDER;
 	}
 	
 	@Override

@@ -6,5 +6,12 @@ public class InfernalTrap extends BlobTrap {
     {
         color = RED;
         blobClass = Inferno.class;
+
+        name = "Infernal Trap";
+    }
+
+    @Override
+    public String desc() {
+        return "When activated, this trap will summon a destructive inferno that will ignite anything it touches in flames.";
     }
 }

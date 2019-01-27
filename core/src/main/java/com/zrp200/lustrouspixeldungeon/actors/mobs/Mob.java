@@ -322,14 +322,18 @@ public abstract class Mob extends Char {
 	public void add( Buff buff ) {
 		super.add( buff );
 		if(buff instanceof Corruption) state = HUNTING;
-		if (buff instanceof Amok || buff instanceof Corruption) state = HUNTING;
-		else if (buff instanceof Terror) state = FLEEING;
+		if (buff instanceof Amok) {
+			for(Terror t : buffs(Terror.class)) {
+				t.detach();
+			}
+			state = HUNTING;
+		}
 		if (buff instanceof Sleep) {
 			state = SLEEPING;
 			postpone( Sleep.SWS );
 		}
 	}
-	
+
 	@Override
 	public void remove( Buff buff ) {
 		super.remove( buff );
@@ -559,6 +563,10 @@ public abstract class Mob extends Char {
 	}
 
 	public void aggro( Char ch ) {
+		Terror t = buff(Terror.class);
+		if(t != null) t.recover();
+		if(buff(Terror.class) != null) return;
+
 		enemy = ch;
 		if (state != PASSIVE){
 			state = HUNTING;

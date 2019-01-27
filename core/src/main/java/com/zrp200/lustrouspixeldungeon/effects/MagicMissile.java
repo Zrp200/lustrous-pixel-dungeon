@@ -162,6 +162,10 @@ public class MagicMissile extends Emitter {
 			missile.reset(type, sprite, to, callback);
 		}
 	}
+	public static void boltFromChar(Group group, int type, Visual sprite, Visual to, Callback callback) {
+		MagicMissile missile = ((MagicMissile)group.recycle( MagicMissile.class ));
+		missile.reset(type, sprite, to, callback);
+	}
 	
 	@Override
 	public void update() {
