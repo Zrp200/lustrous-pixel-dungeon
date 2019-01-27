@@ -823,7 +823,7 @@ public class Hero extends Char {
 				
 			}
 
-			
+
 			if (hasKey) {
 				
 				sprite.operate( doorCell );
