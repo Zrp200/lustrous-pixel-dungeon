@@ -30,6 +30,7 @@ import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.effects.Splash;
 import com.zrp200.lustrouspixeldungeon.effects.Surprise;
+import com.zrp200.lustrouspixeldungeon.items.Heap;
 import com.zrp200.lustrouspixeldungeon.items.rings.RingOfFuror;
 import com.zrp200.lustrouspixeldungeon.items.rings.RingOfSharpshooting;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.MissileWeapon;
@@ -42,6 +43,7 @@ import com.zrp200.lustrouspixeldungeon.ui.QuickSlotButton;
 
 import java.util.ArrayList;
 
+import static com.zrp200.lustrouspixeldungeon.items.weapon.Weapon.Augment.NONE;
 import static com.zrp200.lustrouspixeldungeon.items.weapon.Weapon.Augment.SPEED;
 
 
@@ -111,14 +113,14 @@ public class SpiritBow extends Weapon {
 
 		if (cursed && isEquipped( Dungeon.hero )) {
 			info += "\n\n" + Messages.get(Weapon.class, "cursed_worn");
-		} else if (cursedKnown && cursed) {
+		} else if ( visiblyCursed() ) {
 			info += "\n\n" + Messages.get(Weapon.class, "cursed");
 		} else if (!isIdentified() && cursedKnown){
 			info += "\n\n" + Messages.get(Weapon.class, "not_cursed");
 		}
 
 		info += "\n\n" + Messages.get(MissileWeapon.class, "distance");
-		
+
 		return info;
 	}
 	
@@ -152,31 +154,32 @@ public class SpiritBow extends Weapon {
 
 	@Override
 	public int max(int lvl) {
-		return Math.max(0,maxBase() + (int)(Dungeon.hero.lvl/2.5f) + RingOfSharpshooting.levelDamageBonus(Dungeon.hero)*maxScale());
+		return Math.max(0,maxBase() + (int)(Dungeon.hero.lvl/2.5f)
+				+ RingOfSharpshooting.levelDamageBonus(Dungeon.hero)*maxScale());
 	}
 	
 	private int targetPos;
 	
 	@Override
 	public int damageRoll(Char owner) {
-		int damage = super.damageRoll(owner);
+		float damage = super.damageRoll(owner);
 		
 		if (sniperSpecial){
 			switch (augment){
 				case NONE:
-					damage = Math.round(damage * 0.667f);
+					damage *= 0.667f;
 					break;
 				case SPEED:
-					damage = Math.round(damage * 0.5f);
+					damage /= 2f;
 					break;
 				case DAMAGE:
 					int distance = Dungeon.level.distance(owner.pos, targetPos) - 1;
-					damage = Math.round(damage * (1f + 0.1f * distance));
+					damage *= 0.1f *( 10 + distance ); // +10% for each space of distance.
 					break;
 			}
 		}
 		
-		return damage;
+		return Math.round(damage);
 	}
 	
 	@Override
@@ -225,7 +228,11 @@ public class SpiritBow extends Weapon {
 		
 		{
 			image = ItemSpriteSheet.SPIRIT_ARROW;
+			enchantment = SpiritBow.this.enchantment;
+			augment = SpiritBow.this.augment;
+			enchantKnown = true; // for fun visual effects
 		}
+		boolean hit = false;
 		
 		@Override
 		public int damageRoll(Char owner) {
@@ -233,50 +240,39 @@ public class SpiritBow extends Weapon {
 		}
 
 		@Override
-		public boolean hasEnchant(Class<? extends Enchantment> type, Char owner) {
-			return SpiritBow.this.hasEnchant(type, owner);
+		public int level() {
+			return SpiritBow.this.level();
 		}
-		
-		@Override
-		public int proc(Char attacker, Char defender, int damage) {
-			if(sniperSpecial && augment == Augment.DAMAGE) {
-				Surprise.hit(defender);
-				sniperSpecial = false;
-			}
-			return SpiritBow.this.proc(attacker, defender, damage);
+
+		public SpiritBow getBow() { // for one specific use
+			return SpiritBow.this;
 		}
 		
 		@Override
 		public float castDelay(Char user, int dst) {
 			return SpiritBow.this.speedFactor(user);
 		}
-		
+
+        @Override
+        public Heap drop(int pos) { // this'll prevent weird stuff from happening!
+			if( !hit && Dungeon.level.heroFOV[pos] ) Splash.at( pos, 0xCC99FFFF, 1 );
+			return Dungeon.level.drop(null,pos);
+        }
+
 		@Override
-		public float accuracyFactor(Char owner) {
-			if (sniperSpecial && SpiritBow.this.augment == Augment.DAMAGE){
-				return Float.POSITIVE_INFINITY;
-			} else {
-				return super.accuracyFactor(owner);
-			}
+		public boolean stickTo(Char enemy) {
+			return hit = true;
 		}
-		
+
 		@Override
 		public int STRReq(int lvl) {
 			return SpiritBow.this.STRReq(lvl);
 		}
-		
+
 		@Override
-		protected void onThrow( int cell ) {
-			Char enemy = Actor.findChar( cell );
-			if (enemy == null || enemy == curUser) {
-				parent = null;
-				Splash.at( cell, 0xCC99FFFF, 1 );
-			} else {
-				if (!curUser.shoot( enemy, this )) {
-					Splash.at(cell, 0xCC99FFFF, 1);
-				}
-				if (sniperSpecial && SpiritBow.this.augment != SPEED) sniperSpecial = false;
-			}
+		protected void onThrowComplete(int cell) {
+			if (sniperSpecial && augment == NONE) sniperSpecial = false;
+			super.onThrowComplete(cell);
 		}
 
 		int flurryCount = -1;
@@ -284,8 +280,8 @@ public class SpiritBow extends Weapon {
 		@Override
 		public void cast(final Hero user, final int dst) {
 			final int cell = throwPos( user, dst );
-			SpiritBow.this.targetPos = cell;
-			if (sniperSpecial && SpiritBow.this.augment == SPEED){
+			targetPos = cell;
+			if (sniperSpecial && augment == SPEED){
 				if (flurryCount == -1) flurryCount = 3;
 				
 				final Char enemy = Actor.findChar( cell );

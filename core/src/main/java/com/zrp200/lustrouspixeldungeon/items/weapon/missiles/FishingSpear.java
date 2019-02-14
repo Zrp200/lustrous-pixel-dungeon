@@ -22,6 +22,7 @@
 package com.zrp200.lustrouspixeldungeon.items.weapon.missiles;
 
 import com.zrp200.lustrouspixeldungeon.actors.Char;
+import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.Piranha;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
 
@@ -32,7 +33,15 @@ public class FishingSpear extends MissileWeapon {
 		
 		tier = 2;
 	}
-	
+
+	@Override
+	public float accuracyFactor(Char owner) {
+		boolean modify = owner instanceof Hero && ((Hero)owner).enemy() instanceof Piranha;
+		float acc = super.accuracyFactor(owner);
+		if(modify) acc *= 1.5;
+		return acc;
+	}
+
 	@Override
 	public int proc(Char attacker, Char defender, int damage) {
 		if (defender instanceof Piranha){

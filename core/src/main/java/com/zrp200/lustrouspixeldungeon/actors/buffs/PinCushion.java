@@ -29,11 +29,11 @@ import java.util.Collection;
 
 public class PinCushion extends Buff {
 
-	private ArrayList<MissileWeapon> items = new ArrayList<MissileWeapon>();
+	private ArrayList<MissileWeapon> items = new ArrayList<>();
 
 	public void stick(MissileWeapon projectile){
 		if( !projectile.attachedTo(this) ) {
-			projectile.stickTo(target); // this is actually a recursive call. you can call whatever's easier. They both need to be called though.
+			projectile.stickTo(target); // this is actually a recursive call. you can call whatever's easier.
 			return;
 		}
 
@@ -57,13 +57,16 @@ public class PinCushion extends Buff {
 
 	@Override
 	public void storeInBundle(Bundle bundle) {
-		bundle.put( ITEMS , items );
 		super.storeInBundle(bundle);
+		bundle.put( ITEMS , items );
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void restoreFromBundle(Bundle bundle) {
-		items = new ArrayList<MissileWeapon>((Collection<MissileWeapon>)((Collection<?>)bundle.getCollection( ITEMS )));
 		super.restoreFromBundle( bundle );
+		items = new ArrayList<>((Collection<MissileWeapon>)(Collection<?>)bundle.getCollection( ITEMS ));
+		for(MissileWeapon weapon : items)
+			stick(weapon); // this updates the items as well while removing the need for them to store their embed
 	}
 }

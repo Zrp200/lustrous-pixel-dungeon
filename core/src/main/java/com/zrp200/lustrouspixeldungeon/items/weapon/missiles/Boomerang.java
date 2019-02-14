@@ -21,12 +21,25 @@
 
 package com.zrp200.lustrouspixeldungeon.items.weapon.missiles;
 
+import com.watabou.noosa.Visual;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.noosa.tweeners.Tweener;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
+import com.watabou.utils.PointF;
+import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
+import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
+import com.zrp200.lustrouspixeldungeon.actors.hero.HeroAction;
+import com.zrp200.lustrouspixeldungeon.actors.hero.HeroSubClass;
+import com.zrp200.lustrouspixeldungeon.items.Heap;
+import com.zrp200.lustrouspixeldungeon.items.Item;
+import com.zrp200.lustrouspixeldungeon.items.bags.Bag;
 import com.zrp200.lustrouspixeldungeon.levels.traps.DisarmingTrap;
+import com.zrp200.lustrouspixeldungeon.levels.traps.DisintegrationTrap;
 import com.zrp200.lustrouspixeldungeon.levels.traps.ExplosiveTrap;
 import com.zrp200.lustrouspixeldungeon.levels.traps.TeleportationTrap;
 import com.zrp200.lustrouspixeldungeon.levels.traps.Trap;
@@ -36,6 +49,8 @@ import com.zrp200.lustrouspixeldungeon.sprites.MissileSprite;
 
 import java.util.ArrayList;
 
+import static com.zrp200.lustrouspixeldungeon.Dungeon.depth;
+
 public class Boomerang extends MissileWeapon {
 
 	{
@@ -44,22 +59,57 @@ public class Boomerang extends MissileWeapon {
 		tier = 3;
 		sticky = false;
 
-		baseUses = 8;
+		baseUses = 7.5f;
+
+		value = 7;
+	}
+
+	private Boomerang.Returning returning;
+
+
+	@Override
+	public boolean collect(Bag container) {
+		if(super.collect(container)) {
+			terminateFlight();
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public synchronized Heap drop(int pos) {
+		terminateFlight();
+		return super.drop(pos);
+	}
+
+	private void terminateFlight() {
+		if(returning != null) {
+			returning.detach();
+			returning = null;
+		}
 	}
 
 	@Override
 	public int min(int lvl) {
 		int min;
-		tier--; // one tier lower
-		try {  min = super.min(lvl); } finally {  tier++; }
+		try {
+			tier--; // one tier lower
+			min = super.min(lvl);
+		} finally {
+			tier++;
+		}
 		return min;
 	}
 
 	@Override
 	public int max(int lvl) { // 10 base, scaling by 2 each level.
 		int value;
-		tier--;
-		try { value = super.max(lvl); } finally { tier++; }
+		try {
+			tier--;
+			value = super.max(lvl);
+		} finally {
+			tier++;
+		}
 		return value;
 	}
 
@@ -75,7 +125,7 @@ public class Boomerang extends MissileWeapon {
 				if(trapAtCell != null && (
 						trapAtCell instanceof TeleportationTrap
 								|| trapAtCell instanceof DisarmingTrap
-								|| trapAtCell instanceof ExplosiveTrap && isDestroyable() )
+								|| (trapAtCell instanceof ExplosiveTrap || trapAtCell instanceof DisintegrationTrap) && isDestroyable() )
 				) {
 					super.onThrowComplete(cell);
 					return; // it's not coming back.
@@ -83,90 +133,140 @@ public class Boomerang extends MissileWeapon {
 			}
 			// TODO implement smooth return
 		}
-		Actor.add(new Return(cell));
+		returning = Buff.append(curUser,Returning.class).initialize(this,cell);
+
 		parent = null;
 		rangedHit = false;
 	}
-	class Return extends Actor {
-		{ actPriority = HERO_PRIO+1; }
 
+	public static class Returning extends Buff {
+		{
+			actPriority = (HERO_PRIO + BLOB_PRIO)/2;
+		}
+
+		int depthOfOrigin = depth;
+		public int pos;
 		ArrayList<Integer> path;
-		int distancePerTurn = 3, // hopefully soon this can be played around with a bit more...
-			distanceThisTurn, lastVisible, curPos;
 
-		MissileSprite sprite() {
-			return (MissileSprite) curUser.sprite.parent.recycle(MissileSprite.class);
-		}
-		void progress() {
-			distanceThisTurn--;
-			curPos = path.remove(0);
-		}
+		private static final float
+				MIN_SPEED = 1.5f,
+				TURNS_TO_RETURN = 3f;
 
-		private Return(int from) {
-			distanceThisTurn = distancePerTurn
-					= Math.max(1,Math.round( distancePerTurn / speedFactor(curUser) ) );
-			Ballistica trajectory = new Ballistica(from,curUser.pos,Ballistica.STOP_TARGET);
+		float distancePerTurn;
+		private Sprite sprite;
+		public Boomerang boomerang;
+
+		Returning initialize(Boomerang boomerang, int from) { // use this to set up stuff
+			this.boomerang = boomerang;
+			Ballistica trajectory = new Ballistica(from,target.pos,Ballistica.STOP_TARGET);
+			distancePerTurn = Math.max(MIN_SPEED, trajectory.dist/TURNS_TO_RETURN);
 			path = new ArrayList<>(trajectory.subPath(0,trajectory.path.indexOf(trajectory.collisionPos)));
-			lastVisible = path.get(0);
+			pos = path.remove(0);
+			sprite();
+			return this;
+		}
+
+		public Sprite sprite() {
+			if(sprite == null) sprite = new Sprite(); // you'll never get a null from this
+			try { target.sprite.parent.add(sprite); } catch (NullPointerException ignored) {}
+			return sprite;
+		}
+		public void refreshSprite() {
+			sprite().reset(pos,pos,boomerang,null);
+		}
+
+		void instantPickUp() {
+			if(target == null) return;
+			detach();
+			if ( boomerang.collect() ) {
+				Sample.INSTANCE.play( Assets.SND_ITEM );
+			} else {
+				boomerang.drop(pos);
+			}
+		}
+
+		public Chase heroChase() {
+			return new Chase();
 		}
 
 		@Override
-		protected boolean act() {
-			if(lastVisible == curUser.pos) { // you basically just dived for it.
-				if(!collect()) drop(curUser.pos);
-				remove(Return.this);
+		protected void onRemove() {
+			sprite().killAndErase();
+		}
+		public boolean isActive() {
+			return depth == depthOfOrigin;
+		}
+
+		boolean killIfNeeded() {
+			if(pos == target.pos) {
+				instantPickUp();
 				return true;
 			}
-			if( path.isEmpty() ) { // it's come full "circle"
-				drop( lastVisible );
-				remove(this);
+			if( path.isEmpty() ) {
+				boomerang.drop(pos);
 				return true;
 			}
-			if(distanceThisTurn<=0) {
-				distanceThisTurn = Math.min(distancePerTurn, path.size() );
-				spend(TICK);
+
+			return false;
+		}
+
+		@Override
+		public boolean act() {
+			if(!isActive()) { // wait
+				spend(1);
 				return true;
 			}
-			while(distanceThisTurn>0 && !path.isEmpty()) {
-				progress();
-				final Char occupant = findChar(curPos);
-				if (occupant != null) {
-					sprite().reset(lastVisible, occupant.sprite, Boomerang.this, new Callback() {
-						@Override
-						public void call() {
-							if (occupant == curUser) {
-								collect();
-								remove(Return.this);
-							} else if(lastVisible != occupant.pos) {
-								curUser.shoot(occupant,Boomerang.this);
-								if (durability <= 0) remove(Return.this);
-							}
-							next();
-						}
-					});
-					return false; // it'll just call itself again I think
+			if( killIfNeeded() ) return true;
+			spend(1f/distancePerTurn);
+
+			final int dest = path.remove(0);
+			sprite().reset(dest, new Callback() {
+				@Override
+				public void call() {
+					pos = dest;
+					onCharCollision( findChar(pos) );
+					next();
+				}
+			});
+			return false;
+		}
+		public void onCharCollision(Char ch) {
+			if (ch != null && !killIfNeeded()) {
+
+				float 	rangeBoost      = boomerang.rangeBoost,
+						adjacentPenalty = boomerang.adjacentPenalty;
+
+				HeroSubClass subClass = ((Hero)target).subClass;
+				try {
+					((Hero) target).subClass = HeroSubClass.NONE; // nope.
+					boomerang.rangeBoost = boomerang.adjacentPenalty = 1f; // nullify these
+
+					if (curUser.shoot(ch, boomerang)) {
+						boomerang.useDurability();
+						if (boomerang.durability <= 0) Returning.this.detach();
+					}
+
+				} finally {
+					boomerang.rangeBoost      = rangeBoost;
+					boomerang.adjacentPenalty = adjacentPenalty;
+					((Hero)target).subClass   = subClass;
 				}
 			}
-			sprite().reset(
-					lastVisible,
-					lastVisible = curPos,
-					Boomerang.this,
-					new Callback() { @Override public void call() { next(); } } );
-			return false;
 		}
 
 		@Override
 		public void storeInBundle(Bundle bundle) {
 			super.storeInBundle(bundle);
 
-			bundle.put("curPos",curPos);
-			bundle.put("lastVisible",lastVisible);
+			bundle.put("pos",pos);
 			bundle.put("distancePerTurn",distancePerTurn);
-			bundle.put("distanceThisTurn",distanceThisTurn);
 
 			int[] path = new int[this.path.size()];
 			for(int i=0;i<path.length;i++) path[i] = this.path.get(i);
 			bundle.put("path",path);
+
+			bundle.put("boomerang",boomerang);
+			bundle.put("depthOfOrigin",depthOfOrigin);
 		}
 
 		@Override
@@ -176,10 +276,53 @@ public class Boomerang extends MissileWeapon {
 			path = new ArrayList<>();
 			for (int pos : bundle.getIntArray("path")) path.add(pos);
 
-			lastVisible = bundle.getInt("lastVisible");
-			curPos = bundle.getInt("curPos");
-			distanceThisTurn = bundle.getInt("distanceThisTurn");
+			pos = bundle.getInt("pos");
 			distancePerTurn = bundle.getInt("distancePerTurn");
+			boomerang = (Boomerang) bundle.get("boomerang");
+			depthOfOrigin = bundle.getInt("depthOfOrigin");
+		}
+
+		class Sprite extends MissileSprite { // yay multiple inheritance
+
+			Sprite() {
+                try {
+                    drySetup(worldToCamera(pos),worldToCamera(pos),boomerang);
+                } catch(NullPointerException ignored) {}
+            }
+
+			public void reset(int to, Callback listener) { reset(pos,to,boomerang,listener); }
+			public void reset(Visual to, Callback listener) { reset(pos,to,boomerang,listener); }
+
+			boolean angleSet = false;
+
+			protected void setupAngle(PointF d) {
+				if(!angleSet) super.setupAngle(d);
+				angleSet = true;
+			}
+
+			@Override
+			protected void setup(PointF from, PointF to, Item item, Callback listener) {
+				super.setup(from, to, item, listener);
+				angularSpeed *= 0.75;
+			}
+
+			@Override
+			public synchronized void onComplete(Tweener tweener) {
+				super.onComplete(tweener);
+				revive(); // 80% sure this will work
+			}
+		}
+		public class Chase extends HeroAction { // this allows it to be stored.
+			// >no multiple inheritance
+			public Returning getBuff() {
+				return Returning.this;
+			}
+			public HeroAction getAction() {
+				if( curUser.buffs(Returning.this.getClass() ).contains(Returning.this)) return new HeroAction.Move(pos);
+				if( Dungeon.level.containsItem(boomerang) ) return new HeroAction.PickUp(pos);
+				return null;
+			}
+
 		}
 	}
 }

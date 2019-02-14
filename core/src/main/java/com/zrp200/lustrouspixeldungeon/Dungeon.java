@@ -35,6 +35,7 @@ import com.zrp200.lustrouspixeldungeon.actors.buffs.Awareness;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Light;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.MindVision;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
+import com.zrp200.lustrouspixeldungeon.actors.hero.HeroClass;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.Mob;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.npcs.Ghost;
@@ -45,12 +46,13 @@ import com.zrp200.lustrouspixeldungeon.items.Generator;
 import com.zrp200.lustrouspixeldungeon.items.Heap;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.artifacts.DriedRose;
-import com.zrp200.lustrouspixeldungeon.items.keys.Key;
 import com.zrp200.lustrouspixeldungeon.items.potions.Potion;
 import com.zrp200.lustrouspixeldungeon.items.rings.Ring;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.Scroll;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.zrp200.lustrouspixeldungeon.items.weapon.SpiritBow;
+import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Gloves;
+import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Boomerang;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.darts.TippedDart;
 import com.zrp200.lustrouspixeldungeon.journal.Notes;
 import com.zrp200.lustrouspixeldungeon.levels.CavesBossLevel;
@@ -656,14 +658,22 @@ public class Dungeon {
 		hero = null;
 		hero = (Hero)bundle.get( HERO );
 
+		ArrayList<Item> versionItems = new ArrayList<>();
 		//pre-0.7.0 saves, back when alchemy had a window which could store items
 		if (bundle.contains("alchemy_inputs")){
 			for (Bundlable item : bundle.getCollection("alchemy_inputs")){
-				
-				//try to add normally, force-add otherwise.
-				if (!((Item)item).collect(hero.belongings.backpack)){
-					hero.belongings.backpack.items.add((Item)item);
-				}
+				versionItems.add((Item)item);
+			}
+		}
+		if(version <= LustrousPixelDungeon.v001 && hero.heroClass == HeroClass.HUNTRESS) {
+			//try to add normally, force-add otherwise.
+			versionItems.add(new SpiritBow());
+			versionItems.add(new Gloves());
+		}
+		for(Item item : versionItems) {
+			//try to add normally, force-add otherwise.
+			if (!((Item) item).collect(hero.belongings.backpack)) {
+				hero.belongings.backpack.items.add((Item) item);
 			}
 		}
 
@@ -739,6 +749,14 @@ public class Dungeon {
 			Rankings.INSTANCE.submit( false, cause );
 		}
 	}
+
+	public static HashSet<Boomerang.Returning> boomerangsThisDepth() { // a quick way to get all boomerangs with minimum errors
+		HashSet<Boomerang.Returning> boomerangs = new HashSet<>();
+		for(Boomerang.Returning returning : hero.buffs(Boomerang.Returning.class)) {
+			if( returning.isActive() ) boomerangs.add(returning);
+		}
+		return boomerangs;
+	}
 	
 	public static void win( Class cause ) {
 
@@ -807,6 +825,9 @@ public class Dungeon {
 				BArray.or( level.visited, level.heroFOV, h.pos - 1 + level.width(), 3, level.visited );
 				GameScene.updateFog(h.pos, 2);
 			}
+		}
+		for(Boomerang.Returning returnBuff : boomerangsThisDepth() ) {
+			if(level.heroFOV[returnBuff.pos]) returnBuff.refreshSprite();
 		}
 
 		GameScene.afterObserve();

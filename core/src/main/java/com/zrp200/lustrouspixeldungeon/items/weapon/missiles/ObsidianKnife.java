@@ -31,6 +31,7 @@ public class ObsidianKnife extends ThrowingKnife {
 
         tier = 4;
         surpriseToMax = 0.5f;
+        value = 7;
     }
 
     @Override

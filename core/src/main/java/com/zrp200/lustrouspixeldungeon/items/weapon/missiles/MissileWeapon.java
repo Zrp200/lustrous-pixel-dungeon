@@ -22,7 +22,9 @@
 package com.zrp200.lustrouspixeldungeon.items.weapon.missiles;
 
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
+import com.zrp200.lustrouspixeldungeon.Challenges;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
@@ -30,13 +32,13 @@ import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.PinCushion;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.actors.hero.HeroClass;
+import com.zrp200.lustrouspixeldungeon.items.Generator;
 import com.zrp200.lustrouspixeldungeon.items.Heap;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.bags.Bag;
 import com.zrp200.lustrouspixeldungeon.items.bags.MagicalHolster;
 import com.zrp200.lustrouspixeldungeon.items.rings.RingOfSharpshooting;
 import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
-import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Projecting;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.darts.TippedDart;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.utils.GLog;
@@ -49,7 +51,7 @@ abstract public class MissileWeapon extends Weapon {
 		stackable = true;
 		levelKnown = true;
 
-		basePrice = 6;
+		value = 6;
 
 		bones = true;
 
@@ -57,9 +59,9 @@ abstract public class MissileWeapon extends Weapon {
 		usesTargeting = true;
 	}
 	
-	protected boolean sticky = true;
+	boolean sticky = true;
 
-	protected static final float MAX_DURABILITY = 100;
+	private static final float MAX_DURABILITY = 100;
 	protected float durability = MAX_DURABILITY;
 	protected float durabilityCap = MAX_DURABILITY;
 	protected float baseUses = 10;
@@ -73,7 +75,10 @@ abstract public class MissileWeapon extends Weapon {
 
 	@Override
 	public int min() {
-		return Math.max(0, min( level() + RingOfSharpshooting.levelDamageBonus(Dungeon.hero) ));
+		return Math.max(
+				0,
+				min( level() + RingOfSharpshooting.levelDamageBonus(Dungeon.hero) )
+		);
 	}
 
 	@Override
@@ -105,69 +110,85 @@ abstract public class MissileWeapon extends Weapon {
 		return (7 + tier * 2) - (int)(Math.sqrt(8 * lvl + 1) - 1)/2;
 	}
 
+	@SuppressWarnings("WeakerAccess")
+	protected float
+			rangeBoost = 1.5f,
+			adjacentPenalty = 0.5f;
+
 	@Override
-	//FIXME some logic here assumes the items are in the player's inventory. Might need to adjust
-	public Item upgrade() {
-		if (!bundleRestoring) {
-			if (quantity > 1) {
-				MissileWeapon upgraded = (MissileWeapon) split(1);
-				upgraded.parent = null;
+	public float accuracyFactor(Char owner) {
+		Hero user = (Hero)owner;
+		float accuracy = super.accuracyFactor(owner);
+		return accuracy * (Dungeon.level.adjacent(owner.pos,user.enemy().pos) ? adjacentPenalty : rangeBoost);
+	}
 
-				upgraded = (MissileWeapon) upgraded.upgrade();
+	private abstract class EnhanceCallback implements Callback {
+		MissileWeapon toEnhance = quantity == 1
+				? MissileWeapon.this
+				: split(1);
+	}
 
-				//try to put the upgraded into inventory, if it didn't already merge
-				if (upgraded.quantity() <= 1 && !upgraded.collect()) {
-					upgraded.drop(Dungeon.hero.pos);
-				}
-				updateQuickslot();
-				return upgraded;
-			} else {
-				durability = MAX_DURABILITY;
-				super.upgrade();
+	private MissileWeapon enhance(EnhanceCallback operation) {
+		MissileWeapon enhanced = operation.toEnhance;
+		bundleRestoring = true;
+		operation.call();
+		bundleRestoring = false;
 
-				Item similar = Dungeon.hero.belongings.getSimilar(this);
-				if (similar != null){
-					detach(Dungeon.hero.belongings.backpack);
-					return similar.merge(this);
-				}
-				updateQuickslot();
-				return this;
+		//try to put the upgraded into inventory, if it didn't already merge
+		if(enhanced == this) {
+			Item similar = Dungeon.hero.belongings.getSimilar(this);
+			if (similar != null) {
+				detach(Dungeon.hero.belongings.backpack);
+				return (MissileWeapon)similar.merge(this);
 			}
-
-		} else {
-			return super.upgrade();
+		} else
+			if (enhanced.quantity() <= 1 && !enhanced.collect()) {
+			enhanced.drop(Dungeon.hero.pos);
 		}
+		enhanced.durability = MAX_DURABILITY;
+		updateQuickslot();
+		return enhanced;
 	}
 
 	@Override
-	public Weapon enchant(Enchantment ench, boolean visible) {
-		if (!bundleRestoring) {
-			if (quantity > 1) {
-				MissileWeapon enchanted = (MissileWeapon) split(1);
-				enchanted.parent = null;
-
-				enchanted = (MissileWeapon) enchanted.enchant(ench,visible);
-
-				//try to put the upgraded into inventory, if it didn't already merge
-				if (enchanted.quantity() == 1 && !enchanted.collect()) {
-					enchanted.drop(Dungeon.hero.pos);
-				}
-				updateQuickslot();
-				return enchanted;
-			} else {
-				durability = MAX_DURABILITY;
-				super.enchant(ench, visible);
-				Item similar = (Dungeon.hero != null) ? Dungeon.hero.belongings.getSimilar(this) : null;
-				if (similar != null){
-					detach(Dungeon.hero.belongings.backpack);
-					return (Weapon) similar.merge(this);
-				}
-				updateQuickslot();
-				return this;
+	public MissileWeapon upgrade(final boolean enchant) {
+		return bundleRestoring ? (MissileWeapon)super.upgrade(enchant) : enhance(new EnhanceCallback() {
+			@Override
+			public void call() {
+				toEnhance.upgrade(enchant);
 			}
-		} else {
-			return super.enchant(ench,enchantKnown);
-		}
+		});
+	}
+	@Override
+	public Weapon enchant(final Enchantment ench, final boolean visible) {
+		return bundleRestoring ? super.enchant(ench, visible) : enhance(new EnhanceCallback() {
+			@Override
+			public void call() {
+				toEnhance.enchant(ench,visible);
+			}
+		});
+	}
+
+	@Override
+	public MissileWeapon transmute(boolean dry) {
+		MissileWeapon result = (MissileWeapon)Generator.random( Generator.misTiers[tier-1] )
+				.emulate(this)
+				.quantity(1);
+		result.durability = MAX_DURABILITY;
+		return Challenges.isItemBlocked(result) || result.getClass() == getClass()
+				? transmute(dry)
+				: result;
+	}
+
+	@Override
+	public void augment(final Augment augment) {
+		if(bundleRestoring) super.augment(augment);
+		else enhance(new EnhanceCallback() {
+			@Override
+			public void call() {
+				toEnhance.augment(augment);
+			}
+		});
 	}
 
 	@Override
@@ -182,33 +203,25 @@ abstract public class MissileWeapon extends Weapon {
 		detach();
 		return super.collect(container);
 	}
-	
-	@Override
-	public int throwPos(Hero user, int dst) {
-		if (hasEnchant(Projecting.class, user)
-				&& !Dungeon.level.solid[dst] && Dungeon.level.distance(user.pos, dst) <= 4){
-			return dst;
-		} else {
-			return super.throwPos(user, dst);
-		}
-	}
 
 	@Override
 	public int proc(Char attacker, Char defender, int damage) {
 		rangedHit = true;
+		onRangedHit(defender,defender.pos);
 		if( hasHiddenEnchant() ) enchantKnown = true;
+
 		return super.proc(attacker, defender, damage);
 	}
 
 	private PinCushion embed = null;
 	public boolean stickTo(Char enemy) {
-		if(enemy != null && sticky && enemy.isAlive() && durability > 0) {
+		if(enemy != null && sticky && durability > 0) {
 			PinCushion p = Buff.affect(enemy, PinCushion.class);
-			if (p.target == enemy){
+			if (p != null && p.target == enemy){
 				embed = p; // important that this goes first.
 				p.stick(this);
 				return true;
-			}
+			} else return false;
 		}
 		return false;
 	}
@@ -310,17 +323,17 @@ abstract public class MissileWeapon extends Weapon {
 	}
 	
 	@Override
-	public Item split(int amount) {
+	public MissileWeapon split(int amount) {
+		boolean bundleState = bundleRestoring;
 		bundleRestoring = true;
-		Item split = super.split(amount);
-		bundleRestoring = false;
+		MissileWeapon split = (MissileWeapon)super.split(amount);
+		bundleRestoring = bundleState;
 
 		//unless the thrown weapon will break, split off a max durability item and
 		//have it reduce the durability of the main stack. Cleaner to the player this way
 		if (split != null){
-			MissileWeapon m = (MissileWeapon)split;
-			m.durability = MAX_DURABILITY;
-			m.parent = this;
+			split.durability = MAX_DURABILITY;
+			split.parent = this;
 		}
 		
 		return split;
@@ -361,7 +374,6 @@ abstract public class MissileWeapon extends Weapon {
 	public void storeInBundle(Bundle bundle) {
 		super.storeInBundle(bundle);
 		bundle.put(DURABILITY, durability);
-		bundle.put("embed",embed);
 	}
 	
 	private static boolean bundleRestoring = false;
@@ -381,16 +393,13 @@ abstract public class MissileWeapon extends Weapon {
 				quantity = (int)Math.ceil(quantity/5f);
 			}
 		}
-		embed = (PinCushion) bundle.get("embed");
 	}
 
 	protected boolean rangedHit = false;
 	@Override
 	protected void onThrow(int cell) {
 		Char enemy = Actor.findChar(cell);
-		if(enemy != null && enemy != curUser && curUser.shoot(enemy, this)) { // this runs if the enemy was hit
-            onRangedHit(enemy,cell);
-		}
+		if(enemy != null && enemy != curUser) curUser.shoot(enemy, this); // this runs if the enemy was hit
 		super.onThrow(cell);
 	}
 	protected void onRangedHit(Char enemy, int cell) { // called after the hit is done processing

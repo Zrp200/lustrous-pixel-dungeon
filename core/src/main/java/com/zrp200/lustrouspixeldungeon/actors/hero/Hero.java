@@ -103,6 +103,7 @@ import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.zrp200.lustrouspixeldungeon.items.weapon.SpiritBow;
 import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Flail;
+import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Boomerang;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.FishingSpear;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.zrp200.lustrouspixeldungeon.journal.Notes;
@@ -130,6 +131,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
+import static com.zrp200.lustrouspixeldungeon.Dungeon.depth;
+
 public class Hero extends Char {
 
 	{
@@ -139,38 +142,36 @@ public class Hero extends Char {
 	}
 	
 	public static final int
-			MAX_LEVEL    	= 30,
-			STARTING_STR 	= 10;
-	private static final int ACCURACY     	= 9;
-	private static final int EVASION     	= 4;
+        MAX_LEVEL    	= 30,
+        STARTING_STR 	= 10,
+        ACCURACY        =  9,
+        EVASION         =  4;
 	
-	private static final float TIME_TO_REST		    = 1f;
-	private static final float TIME_TO_SEARCH	    = 2f;
-	private static final float HUNGER_FOR_SEARCH	= 6f;
+	private static final float
+        TIME_TO_REST	    = 1f,
+        TIME_TO_SEARCH	    = 2f,
+        HUNGER_FOR_SEARCH	= 6f;
 	
 	public HeroClass heroClass = HeroClass.ROGUE;
 	public HeroSubClass subClass = HeroSubClass.NONE;
-	
-	private int attackSkill = ACCURACY;
-	private int defenseSkill = EVASION;
 
 	public boolean ready = false;
 	private boolean damageInterrupt = true;
-	public HeroAction curAction = null;
-	public HeroAction lastAction = null;
+
+	public HeroAction
+        curAction = null,
+        lastAction = null;
 
 	private Char enemy;
 	
 	public boolean resting = false;
 	
 	public Belongings belongings;
-	
-	public int STR;
 
-	public int lvl = 1;
-	public int exp = 0;
-	
-	public int HTBoost = 0;
+	public int STR,
+            lvl     = 1,
+            exp     = 0,
+            HTBoost = 0;
 	
 	private ArrayList<Mob> visibleEnemies;
 
@@ -246,9 +247,6 @@ public class Hero extends Char {
 		heroClass = HeroClass.restoreInBundle( bundle );
 		subClass = HeroSubClass.restoreInBundle( bundle );
 		
-		attackSkill = ACCURACY; // base
-		defenseSkill = EVASION; // base
-		
 		STR = bundle.getInt( STRENGTH );
 		
 		lvl = bundle.getInt( LEVEL );
@@ -284,25 +282,32 @@ public class Hero extends Char {
 		Buff.affect( this, Hunger.class );
 		return this;
 	}
-	
+
+	public Armor armor() { return belongings.armor; }
+	public KindOfWeapon weapon() { return belongings.weapon; }
 	public int tier() {
-		return belongings.armor == null ? 0 : belongings.armor.tier;
+		return armor() == null ? 0 : armor().tier;
 	}
 
 	//this variable is only needed because of the boomerang, remove if/when it is no longer equippable
 	private boolean rangedAttack = false;
 	
-	public boolean shoot( Char enemy, MissileWeapon wep ) {
+	public boolean shoot( Char enemy, Weapon wep ) {
 
 		//temporarily set the hero's weapon to the missile weapon being used
 		KindOfWeapon equipped = belongings.weapon;
 		boolean result;
+		Char trueEnemy = this.enemy;
 		try {
+			this.enemy = enemy;
 			belongings.weapon = wep;
 			result = attack(enemy);
 			Invisibility.dispel();
 		}
-		finally {belongings.weapon = equipped;} // prevent weird run-destroying issues.
+		finally {
+			belongings.weapon = equipped;
+			this.enemy = trueEnemy;
+		} // prevent weird run-destroying issues.
 
 		return result;
 	}
@@ -311,26 +316,18 @@ public class Hero extends Char {
 	public int attackSkill( Char target ) {
 		KindOfWeapon wep = belongings.weapon;
 		
-		float accuracy = attackSkill + lvl;
+		float accuracy = ACCURACY + lvl;
 		accuracy *= RingOfAccuracy.accuracyMultiplier( this );
-
-		if (wep instanceof MissileWeapon){
-			if (Dungeon.level.adjacent( pos, target.pos )) {
-				accuracy *= 0.5f;
-			} else {
-				accuracy *= 1.5f;
-			}
-		}
-		if(wep instanceof FishingSpear && target instanceof Piranha) accuracy *= 1.5f;
 		
 		if (wep != null) accuracy *= wep.accuracyFactor(this);
+
 		return (int)accuracy;
 	}
 	
 	@Override
 	public int defenseSkill( Char enemy ) {
 		
-		float evasion = defenseSkill + lvl;
+		float evasion = EVASION + lvl;
 		
 		evasion *= RingOfEvasion.evasionMultiplier( this );
 		
@@ -338,8 +335,8 @@ public class Hero extends Char {
 			evasion /= 2;
 		}
 
-		if (belongings.armor != null) {
-			evasion = belongings.armor.evasionFactor(this, evasion);
+		if (armor() != null) {
+			evasion = armor().evasionFactor(this, evasion);
 		}
 
 		return Math.round(evasion);
@@ -350,18 +347,18 @@ public class Hero extends Char {
 		int dr = 0;
 		Barkskin bark = buff(Barkskin.class);
 
-		if (belongings.armor != null) {
-			int armDr = Random.NormalIntRange( belongings.armor.DRMin(), belongings.armor.DRMax());
-			if (STR() < belongings.armor.STRReq()){
-				armDr -= 2*(belongings.armor.STRReq() - STR());
+		if (armor() != null) {
+			int armDr = Random.NormalIntRange( armor().DRMin(), armor().DRMax());
+			if (STR() < armor().STRReq()){
+				armDr -= 2*(armor().STRReq() - STR());
 			}
 			if (armDr > 0) dr += armDr;
 		}
 		if (belongings.weapon != null)  {
-			int wepDr = Random.NormalIntRange( 0 , belongings.weapon.defenseFactor( this ) ); // strength already factored in
+			int wepDr = Random.NormalInt( belongings.weapon.defenseFactor( this ) ); // strength already factored in
 			if (wepDr > 0) dr += wepDr;
 		}
-		if (bark != null)               dr += Random.NormalIntRange( 0 , bark.level() );
+		if (bark != null)   dr += Random.NormalInt( bark.level() );
 
 		return dr;
 	}
@@ -392,8 +389,8 @@ public class Hero extends Char {
 
 		speed *= RingOfHaste.speedMultiplier(this);
 		
-		if (belongings.armor != null) {
-			speed = belongings.armor.speedFactor(this, speed);
+		if (armor() != null) {
+			speed = armor().speedFactor(this, speed);
 		}
 		
 		Momentum momentum = buff(Momentum.class);
@@ -499,23 +496,20 @@ public class Hero extends Char {
 		
 		boolean actResult;
 		if (curAction == null) {
-			
 			if (resting) {
 				spend( TIME_TO_REST );
 				next();
-			} else {
-				ready();
-			}
+			} else ready();
 
 			actResult = false;
 			
 		} else {
 			
-			resting = false;
+			resting = ready = false;
 			
-			ready = false;
-			
-			if (curAction instanceof HeroAction.Move) {
+			if(curAction instanceof Boomerang.Returning.Chase) {
+				actResult = actChase((Boomerang.Returning.Chase) curAction);
+			} else if (curAction instanceof HeroAction.Move) {
 				actResult = actMove( (HeroAction.Move)curAction );
 				
 			} else if (curAction instanceof HeroAction.Interact) {
@@ -601,6 +595,17 @@ public class Hero extends Char {
 			ready();
 			return false;
 		}
+	}
+	private boolean actChase( Boomerang.Returning.Chase action ) {
+		HeroAction trueAction = action.getAction();
+		if(trueAction == null) {
+			ready();
+			return false;
+		}
+
+		return trueAction instanceof HeroAction.Move
+			? actMove  ( ( HeroAction.Move ) trueAction)
+			: actPickUp( (HeroAction.PickUp) trueAction);
 	}
 	
 	private boolean actInteract( HeroAction.Interact action ) {
@@ -738,7 +743,8 @@ public class Hero extends Char {
 			Heap heap = Dungeon.level.heaps.get( dst );
 			if (heap != null) {
 				switch (heap.type) {
-				case FOR_SALE: HEAP:
+				case FOR_SALE:
+                case HEAP:
 					ready();
 					return false;
 				case TOMB:
@@ -750,8 +756,9 @@ public class Hero extends Char {
 					break;
 				case CRYSTAL_CHEST:
 				case LOCKED_CHEST:
-					if(!hasKey(heap.type == Type.LOCKED_CHEST ? GoldenKey.class : CrystalKey.class)) {
-						GLog.w( Messages.get(this, "locked_chest") );
+					boolean hasKey = hasKey(heap.type == Type.LOCKED_CHEST ? GoldenKey.class : CrystalKey.class);
+					if(!hasKey) {
+						GLog.w(Messages.get(this, "locked_chest"));
 						ready();
 						return false;
 					}
@@ -784,26 +791,8 @@ public class Hero extends Char {
 			LustrousPixelDungeon.reportException(e);
 			return false;
 		}
-		key.depth = Dungeon.depth;
-		if (Notes.keyCount(key) > 0) return true;
-		if (keyClass == CrystalKey.class) { // prevent exploits
-			int chests = 0;
-			for (Heap heap : Dungeon.level.heaps.values()) {
-				if (heap.type == Heap.Type.CRYSTAL_CHEST) chests++;
-			}
-			if (chests < 2) {
-				GLog.w("The lock shifts every time you try to pick the lock...");
-				return false;
-			}
-		}
-		for (Heap heap : Dungeon.level.heaps.values()) {
-			for (Item item : heap.items)
-				if (keyClass.isInstance(item)) {
-					return false;
-				}
-		}
-		GLog.p("You were somehow able to pick the lock!");
-		return true;
+		key.depth = depth;
+		return Notes.keyCount(key) > 0;
 	}
 
 	private boolean actUnlock( HeroAction.Unlock action ) {
@@ -818,7 +807,7 @@ public class Hero extends Char {
 				hasKey = hasKey(IronKey.class);
 
 			} else if (door == Terrain.LOCKED_EXIT
-					&& Notes.keyCount(new SkeletonKey(Dungeon.depth)) > 0) {
+					&& hasKey(SkeletonKey.class)) {
 				hasKey = true;
 				
 			}
@@ -837,14 +826,7 @@ public class Hero extends Char {
 
 			return false;
 
-		} else if (getCloser( doorCell )) {
-
-			return true;
-
-		} else {
-			ready();
-			return false;
-		}
+		} else return actMove( new HeroAction.Move(doorCell) );
 	}
 	
 	private boolean actDescend( HeroAction.Descend action ) {
@@ -861,21 +843,14 @@ public class Hero extends Char {
 
 			return false;
 
-		} else if (getCloser( stairs )) {
-
-			return true;
-
-		} else {
-			ready();
-			return false;
-		}
+		} else return actMove( new HeroAction.Move(stairs) );
 	}
 	
 	private boolean actAscend( HeroAction.Ascend action ) {
 		int stairs = action.dst;
 		if (pos == stairs && pos == Dungeon.level.entrance) {
 			
-			if (Dungeon.depth == 1) {
+			if (depth == 1) {
 				
 				if (belongings.getItem( Amulet.class ) == null) {
 					GameScene.show( new WndMessage( Messages.get(this, "leave") ) );
@@ -988,8 +963,8 @@ public class Hero extends Char {
 			berserk.damage(damage);
 		}
 		
-		if (belongings.armor != null) {
-			damage = belongings.armor.proc( enemy, this, damage );
+		if (armor() != null) {
+			damage = armor().proc( enemy, this, damage );
 		}
 		
 		Earthroot.Armor armor = buff( Earthroot.Armor.class );
@@ -1005,7 +980,8 @@ public class Hero extends Char {
 		if (buff(TimekeepersHourglass.timeStasis.class) != null)
 			return;
 
-		if (!(src instanceof Hunger || src instanceof Viscosity.DeferedDamage || src instanceof Mob) && damageInterrupt) {
+		if (!(src instanceof Hunger || src instanceof Viscosity.DeferedDamage)
+				&& (src instanceof Mob || damageInterrupt)) {
 			interrupt();
 			resting = false;
 		}
@@ -1023,13 +999,12 @@ public class Hero extends Char {
 		dmg = (int)Math.ceil(dmg * RingOfTenacity.damageMultiplier( this ));
 
 		//TODO improve this when I have proper damage source logic
-		Armor armor = belongings.armor;
-		if (armor != null)
-			if(armor.hasGlyph(AntiMagic.class, this)
+		if (armor() != null)
+			if(armor().hasGlyph(AntiMagic.class, this)
 				&& AntiMagic.RESISTS.contains(src.getClass()) && magic) // it's supposed to block magic you know
-				    dmg -= Random.NormalIntRange(armor.DRMin(), armor.DRMax())/2;
-			else if( armor.hasGlyph(Stone.class, this) && (src instanceof Char) )
-				dmg = ((Stone) (armor.glyph)).reduceDamage(armor, this, (Char)src, magic, dmg);
+				    dmg -= armor().DRRoll()*AntiMagic.REDUCTION;
+			else if( armor().hasGlyph(Stone.class, this) && (src instanceof Char) )
+				dmg = ((Stone) (armor().glyph)).reduceDamage(this, (Char)src, magic, dmg);
 
 
 		super.damage( dmg, src, magic );
@@ -1184,7 +1159,7 @@ public class Hero extends Char {
 		
 		Char ch;
 		Heap heap;
-		
+
 		if (Dungeon.level.map[cell] == Terrain.ALCHEMY && cell != pos) {
 			
 			curAction = new HeroAction.Alchemy( cell );
@@ -1192,11 +1167,10 @@ public class Hero extends Char {
 		} else if (fieldOfView[cell] && (ch = Actor.findChar( cell )) instanceof Mob) {
 
 			if (ch instanceof NPC) {
-				curAction = new HeroAction.Interact( (NPC)ch );
+				curAction = new HeroAction.Interact((NPC) ch);
 			} else {
-				curAction = new HeroAction.Attack( ch );
+				curAction = new HeroAction.Attack(ch);
 			}
-
 		} else if ((heap = Dungeon.level.heaps.get( cell )) != null
 				//moving to an item doesn't auto-pickup when enemies are near...
 				&& (visibleEnemies.size() == 0 || cell == pos ||
@@ -1220,7 +1194,7 @@ public class Hero extends Char {
 			
 			curAction = new HeroAction.Unlock( cell );
 			
-		} else if (cell == Dungeon.level.exit && Dungeon.depth < 26) {
+		} else if (cell == Dungeon.level.exit && depth < 26) {
 			
 			curAction = new HeroAction.Descend( cell );
 			
@@ -1229,6 +1203,13 @@ public class Hero extends Char {
 			curAction = new HeroAction.Ascend( cell );
 			
 		} else  {
+
+			for( Boomerang.Returning airborne : Dungeon.boomerangsThisDepth() ) {
+				if(airborne.pos == cell) {
+					curAction = airborne.heroChase();
+					return true;
+				}
+			}
 			
 			curAction = new HeroAction.Move( cell );
 			lastAction = null;
@@ -1263,8 +1244,6 @@ public class Hero extends Char {
 				levelUp = true;
 
 				updateHT( true );
-				attackSkill++;
-				defenseSkill++;
 
 			} else {
 				Buff.prolong(this, Bless.class, 30f);
@@ -1291,7 +1270,6 @@ public class Hero extends Char {
 	public int maxExp() {
 		return maxExp( lvl );
 	}
-	
 	public static int maxExp( int lvl ){
 		return 5 + lvl * 5;
 	}
@@ -1334,8 +1312,8 @@ public class Hero extends Char {
 	public float stealth() {
 		float stealth = super.stealth();
 		
-		if (belongings.armor != null){
-			stealth = belongings.armor.stealthFactor(this, stealth);
+		if (armor() != null){
+			stealth = armor().stealthFactor(this, stealth);
 		}
 		
 		return stealth;
@@ -1512,10 +1490,10 @@ public class Hero extends Char {
 			int door = Dungeon.level.map[doorCell];
 
 			if (door == Terrain.LOCKED_DOOR){
-				Notes.remove(new IronKey(Dungeon.depth));
+				Notes.remove(new IronKey(depth));
 				Level.set( doorCell, Terrain.DOOR );
 			} else {
-				Notes.remove(new SkeletonKey(Dungeon.depth));
+				Notes.remove(new SkeletonKey(depth));
 				Level.set( doorCell, Terrain.UNLOCKED_EXIT );
 			}
 			GameScene.updateKeyDisplay();
@@ -1530,9 +1508,9 @@ public class Hero extends Char {
 			if (heap.type == Type.SKELETON || heap.type == Type.REMAINS) {
 				Sample.INSTANCE.play( Assets.SND_BONES );
 			} else if (heap.type == Type.LOCKED_CHEST){
-				Notes.remove(new GoldenKey(Dungeon.depth));
+				Notes.remove(new GoldenKey(depth));
 			} else if (heap.type == Type.CRYSTAL_CHEST){
-				Notes.remove(new CrystalKey(Dungeon.depth));
+				Notes.remove(new CrystalKey(depth));
 			}
 			GameScene.updateKeyDisplay();
 			heap.open( this );
@@ -1603,11 +1581,11 @@ public class Hero extends Char {
 							
 						//unintentional trap detection scales from 40% at floor 0 to 30% at floor 25
 						} else if (Dungeon.level.map[p] == Terrain.SECRET_TRAP) {
-							chance = 0.4f - (Dungeon.depth / 250f);
+							chance = 0.4f - (depth / 250f);
 							
 						//unintentional door detection scales from 20% at floor 0 to 0% at floor 20
 						} else {
-							chance = 0.2f - (Dungeon.depth / 100f);
+							chance = 0.2f - (depth / 100f);
 						}
 						
 						if (Random.Float() < chance) {

@@ -76,7 +76,7 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 				item,
 				listener );
 	}
-	
+
 	private static final int DEFAULT_ANGULAR_SPEED = 720;
 	
 	private static final HashMap<Class<?extends Item>, Integer> ANGULAR_SPEEDS = new HashMap<>();
@@ -102,35 +102,8 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 	//TODO it might be nice to have a source and destination angle, to improve thrown weapon visuals
 	protected void setup(PointF from, PointF to, Item item, Callback listener){
 
-		originToCenter();
-
+		drySetup(from,to,item);
 		this.callback = listener;
-
-		point( from );
-
-		PointF d = PointF.diff( to, from );
-		speed.set(d).normalize().scale(SPEED);
-		
-		angularSpeed = DEFAULT_ANGULAR_SPEED;
-		for (Class<?extends Item> cls : ANGULAR_SPEEDS.keySet()){
-			if (cls.isAssignableFrom(item.getClass())){
-				angularSpeed = ANGULAR_SPEEDS.get(cls);
-				break;
-			}
-		}
-		
-		angle = 135 - (float)(Math.atan2( d.x, d.y ) / Math.PI * 180);
-		
-		if (d.x >= 0){
-			flipHorizontal = false;
-			updateFrame();
-			
-		} else {
-			angularSpeed = -angularSpeed;
-			angle += 90;
-			flipHorizontal = true;
-			updateFrame();
-		}
 		
 		float speed = SPEED;
 		if (item instanceof Dart && Dungeon.hero.belongings.weapon instanceof Crossbow)
@@ -141,11 +114,46 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 		if(item instanceof SpiritBow.SpiritArrow || item instanceof ScorpioSprite.ScorpioShot){
 			speed *= 1.5f;
 		}
-		PosTweener tweener = new PosTweener( this, to, d.length() / speed );
-		tweener.listener = this;
-		parent.add( tweener );
+		try {
+			PosTweener tweener = new PosTweener(this, to, PointF.diff(to,from).length() / speed);
+			tweener.listener = this;
+			parent.add(tweener);
+		} catch(NullPointerException ignored) {}
+	}
+	protected void drySetup(PointF from, PointF to, Item item) {
+		originToCenter();
+
+		point( from );
+
+		PointF d = PointF.diff( to, from );
+		speed.set(d).normalize().scale(SPEED);
+
+		angularSpeed = DEFAULT_ANGULAR_SPEED;
+		for (Class<?extends Item> cls : ANGULAR_SPEEDS.keySet()){
+			if (cls.isAssignableFrom(item.getClass())){
+				angularSpeed = ANGULAR_SPEEDS.get(cls);
+				break;
+			}
+		}
+		setupAngle(d);
 	}
 
+	protected void setupAngle(PointF d) {
+		angle = 135 - (float)(Math.atan2( d.x, d.y ) / Math.PI * 180);
+
+		if (d.x >= 0){
+			flipHorizontal = false;
+			updateFrame();
+
+		} else {
+			angularSpeed = -angularSpeed;
+			angle += 90;
+			flipHorizontal = true;
+			updateFrame();
+		}
+	}
+
+	protected boolean killOnComplete = true;
 	@Override
 	public void onComplete( Tweener tweener ) {
 		kill();
