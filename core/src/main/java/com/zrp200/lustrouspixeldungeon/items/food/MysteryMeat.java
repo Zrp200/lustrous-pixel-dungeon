@@ -41,16 +41,6 @@ public class MysteryMeat extends Food {
 		image = ItemSpriteSheet.MEAT;
 		energy = Hunger.HUNGRY/2f;
 	}
-	
-	@Override
-	protected void satisfy(Hero hero) {
-		super.satisfy(hero);
-		effect(hero);
-	}
-
-	public int price() {
-		return 5 * quantity;
-	}
 
 	public void effect(Hero hero){
 		switch (Random.Int( 5 )) {
@@ -70,23 +60,6 @@ public class MysteryMeat extends Food {
 				GLog.w( Messages.get(MysteryMeat.class, "stuffed") );
 				Buff.prolong( hero, Slow.class, Slow.DURATION );
 				break;
-		}
-	}
-	
-	public static class PlaceHolder extends MysteryMeat {
-		
-		{
-			image = ItemSpriteSheet.FOOD_HOLDER;
-		}
-		
-		@Override
-		public boolean isSimilar(Item item) {
-			return item instanceof MysteryMeat;
-		}
-		
-		@Override
-		public String info() {
-			return "";
 		}
 	}
 }

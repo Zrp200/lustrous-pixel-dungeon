@@ -21,18 +21,13 @@
 
 package com.zrp200.lustrouspixeldungeon.items.food;
 
-import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
 
-public class ChargrilledMeat extends MysteryMeat {
+public class ChargrilledMeat extends Meat {
 
 	{
 		image = ItemSpriteSheet.STEAK;
-	}
-	
-	@Override
-	public int price() {
-		return 8 * quantity;
+		value = 8;
 	}
 	
 	public static Food cook( MysteryMeat ingredient ) {
@@ -40,7 +35,4 @@ public class ChargrilledMeat extends MysteryMeat {
 		result.quantity = ingredient.quantity();
 		return result;
 	}
-
-	@Override
-	public void effect(Hero hero) { }
 }

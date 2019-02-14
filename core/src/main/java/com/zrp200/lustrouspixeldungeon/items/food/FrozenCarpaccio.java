@@ -38,10 +38,11 @@ import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
 import com.zrp200.lustrouspixeldungeon.utils.GLog;
 
-public class FrozenCarpaccio extends MysteryMeat {
+public class FrozenCarpaccio extends Meat {
 
 	{
 		image = ItemSpriteSheet.CARPACCIO;
+		value = 10;
 	}
 	
 	public int price() {

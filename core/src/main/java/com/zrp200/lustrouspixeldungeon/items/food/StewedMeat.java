@@ -24,10 +24,11 @@ package com.zrp200.lustrouspixeldungeon.items.food;
 import com.zrp200.lustrouspixeldungeon.items.Recipe;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
 
-public class StewedMeat extends ChargrilledMeat {
+public class StewedMeat extends MysteryMeat {
 	
 	{
 		image = ItemSpriteSheet.STEWED;
+		value = 6;
 	}
 	
 	public static class oneMeat extends Recipe.SimpleRecipe{
