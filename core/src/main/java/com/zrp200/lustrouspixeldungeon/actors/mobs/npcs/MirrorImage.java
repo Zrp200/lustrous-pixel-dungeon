@@ -28,6 +28,7 @@ import com.zrp200.lustrouspixeldungeon.actors.buffs.Invisibility;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.items.KindOfWeapon;
 import com.zrp200.lustrouspixeldungeon.items.rings.RingOfFuror;
+import com.zrp200.lustrouspixeldungeon.items.weapon.melee.BlockingWeapon;
 import com.zrp200.lustrouspixeldungeon.ui.BuffIndicator;
 
 public class MirrorImage extends HeroImage {
@@ -70,8 +71,8 @@ public class MirrorImage extends HeroImage {
 	
 	@Override
 	public int drRoll() {
-		if (hero != null && weapon() != null){
-			return Random.NormalIntRange(0, weapon().defenseFactor(this)/2);
+		if (hero != null && weapon() instanceof BlockingWeapon){
+			return (int)Math.ceil( ( weapon()).defenseFactor(hero) / 2f );
 		} else {
 			return 0;
 		}

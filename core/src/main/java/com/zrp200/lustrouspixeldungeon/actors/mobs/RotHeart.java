@@ -59,15 +59,9 @@ public class RotHeart extends Mob {
 			destroy();
 			sprite.die();
 		} else {
+			GameScene.add(Blob.seed(pos, 20, ToxicGas.class));
 			super.damage(dmg, src, magic);
 		}
-	}
-
-	@Override
-	public int defenseProc(Char enemy, int damage) {
-		GameScene.add(Blob.seed(pos, 20, ToxicGas.class));
-
-		return super.defenseProc(enemy, damage);
 	}
 
 	@Override

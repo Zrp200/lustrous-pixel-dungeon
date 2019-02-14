@@ -69,10 +69,17 @@ public class Golem extends Mob {
 		
 		super.rollToDropLoot();
 	}
-	
+
+	@Override
+	public float resist(Class effect) {
+		float resist = super.resist(effect);
+		if(effect == Amok.class) resist /= 4; // Amok is 0.25x effective, up from 0x
+		return resist;
+	}
+
 	{
-		immunities.add( Amok.class );
-		immunities.add( Terror.class );
+		resistances.add( Terror.class );
+
 		immunities.add( Sleep.class );
 	}
 }

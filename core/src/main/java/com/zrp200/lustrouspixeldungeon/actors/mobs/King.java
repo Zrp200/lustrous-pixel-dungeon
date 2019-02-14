@@ -34,6 +34,7 @@ import com.zrp200.lustrouspixeldungeon.actors.blobs.ToxicGas;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Amok;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Blindness;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.Burning;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.LockedFloor;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Paralysis;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Slow;
@@ -113,7 +114,7 @@ public class King extends Mob {
 	private boolean canTryToSummon() {
 		if (Undead.count < maxArmySize()) {
 			Char ch = Actor.findChar( ((CityBossLevel)Dungeon.level).pedestal( nextPedestal ) );
-			return ch == this || ch == null;
+			return ch == this || ch == null && !rooted;
 		} else {
 			return false;
 		}
@@ -190,8 +191,8 @@ public class King extends Mob {
 		PathFinder.buildDistanceMap( pos, passable, undeadsToSummon );
 		PathFinder.distance[pos] = Integer.MAX_VALUE;
 		int dist = 1;
-		
-	undeadLabel:
+
+	raisingDead:
 		for (int i=0; i < undeadsToSummon; i++) {
 			do {
 				for (int j=0; j < Dungeon.level.length(); j++) {
@@ -202,11 +203,12 @@ public class King extends Mob {
 						GameScene.add( undead );
 						
 						ScrollOfTeleportation.appear( undead, j );
-						new Flare( 3, 32 ).color( 0x000000, false ).show( undead.sprite, 2f ) ;
+						new Flare( 3, 32 ).color( 0x000000, false )
+                                .show( undead.sprite, 2f ) ;
 						
 						PathFinder.distance[j] = Integer.MAX_VALUE;
 						
-						continue undeadLabel;
+						continue raisingDead;
 					}
 				}
 				dist++;
@@ -224,15 +226,25 @@ public class King extends Mob {
 		yell( Messages.get(this, "notice") );
 	}
 	
-	{
-		resistances.add( Amok.class );
-		resistances.add( Blindness.class );
-		resistances.add( Paralysis.class );
+	{ // standard resists, of which he has basically none.
 		resistances.add( Undead.class ); // yes he resists them.
+		resistances.add( Slow.class );
 	}
-	
+
+	@Override // special resists, of which there are many.
+	public float resist(Class effect) {
+		float effectiveness = super.resist(effect);
+
+		if(effect == ToxicGas.class
+                || effect == Burning.class)     effectiveness *= 0.75f; // results in a net 0.75x effectiveness
+		if(effect == Paralysis.class
+				|| effect == Vertigo.class
+				|| effect == Blindness.class)   effectiveness *= 0.25f;
+
+		return effectiveness;
+	}
+
 	{
-		immunities.add( Vertigo.class );
 		immunities.add( Terror.class );
 	}
 	

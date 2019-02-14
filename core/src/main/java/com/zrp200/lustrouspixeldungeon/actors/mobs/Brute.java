@@ -25,6 +25,7 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.Amok;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Terror;
 import com.zrp200.lustrouspixeldungeon.items.Gold;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
@@ -79,8 +80,18 @@ public class Brute extends Mob {
 			}
 		}
 	}
-	
-	{
-		immunities.add( Terror.class );
+
+	@Override
+	public float resist(Class effect) {
+		float effectiveness = super.resist(effect);
+		if(effect == Amok.class) effectiveness *= enraged ? 1.5f : 1.25f;
+		if(effect == Terror.class) effectiveness *= 0.25f;
+		return effectiveness;
+	}
+
+	@Override
+	public boolean isImmune(Class effect) {
+		if(effect == Terror.class && enraged) return true;
+		return super.isImmune(effect);
 	}
 }

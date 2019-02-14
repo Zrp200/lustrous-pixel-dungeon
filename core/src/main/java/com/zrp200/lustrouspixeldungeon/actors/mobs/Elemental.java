@@ -24,6 +24,7 @@ package com.zrp200.lustrouspixeldungeon.actors.mobs;
 import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.Bleeding;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Burning;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Chill;
@@ -88,5 +89,8 @@ public class Elemental extends Mob {
 		}
 	}
 
-	{ immunities.add(Cripple.class); }
+	{
+		resistances.add(Bleeding.class); // they're not EXACTLY mortal per-se
+		immunities.add(Cripple.class);
+	}
 }

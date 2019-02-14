@@ -68,7 +68,10 @@ public class GnollTrickster extends RangeExclusiveMob {
 	@Override
 	public int attackProc( Char enemy, int damage ) {
 		damage = super.attackProc( enemy, damage );
-		if(Dungeon.level.adjacent(pos, enemy.pos)) return damage;
+		if(Dungeon.level.adjacent(pos, enemy.pos)) {
+			combo = 0;
+			return damage;
+		}
 		//The gnoll's attacks get more severe the more the player lets it hit them
 		combo++;
 		int effect = Random.Int(4) + combo;
@@ -78,7 +81,7 @@ public class GnollTrickster extends RangeExclusiveMob {
 					GameScene.add(Blob.seed(enemy.pos, 4, Fire.class));
 				Buff.affect(enemy, Burning.class).reignite(enemy);
 			} else if(effect <= 6 && enemy.buff(Chill.class) == null && enemy.buff(Burning.class) == null) {
-				Buff.affect(enemy, Chill.class, effect - 2);
+				Buff.affect(enemy, Chill.class, effect/2f);
 			} else
 				Buff.affect( enemy, Poison.class).set((effect-2) );
 

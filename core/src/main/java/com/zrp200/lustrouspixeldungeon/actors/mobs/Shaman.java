@@ -55,7 +55,7 @@ public abstract class Shaman extends Mob {
     	{
 			put(  Shaman.MagicMissile.class,    5f   );
 			put(  Shaman.Lightning.class,       3f   );
-			put(  Shaman.Frost.class,           2f   );
+			put(  Shaman.Frost.class,           1f   );
 			put(  Shaman.Firebolt.class,        1f   );
 
 		}
@@ -210,7 +210,7 @@ public abstract class Shaman extends Mob {
 		}
 		protected void applyZap() {
 			enemy.sprite.burst( 0xFF99CCFF, 3 );
-			applyZap( Random.NormalIntRange(6,10));
+			applyZap( Random.NormalIntRange(6,10) );
 			Buff.prolong( enemy, Chill.class, Random.Float(1,5) );
 			Heap heap = Dungeon.level.heaps.get(enemy.pos);
 			if(heap != null) heap.freeze();

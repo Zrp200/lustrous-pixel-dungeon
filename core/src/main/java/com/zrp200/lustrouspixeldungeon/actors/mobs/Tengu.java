@@ -31,6 +31,7 @@ import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.ToxicGas;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.Burning;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.LockedFloor;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Poison;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Terror;
@@ -40,6 +41,7 @@ import com.zrp200.lustrouspixeldungeon.effects.Speck;
 import com.zrp200.lustrouspixeldungeon.items.TomeOfMastery;
 import com.zrp200.lustrouspixeldungeon.items.artifacts.LloydsBeacon;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfMagicMapping;
+import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.zrp200.lustrouspixeldungeon.levels.Level;
 import com.zrp200.lustrouspixeldungeon.levels.PrisonBossLevel;
 import com.zrp200.lustrouspixeldungeon.levels.Terrain;
@@ -57,9 +59,23 @@ public class Tengu extends Mob {
 		
 		HP = HT = 120;
 		EXP = 20;
+		armor = 5;
 		defenseSkill = 20;
+		enemy = Dungeon.hero;
 
-		HUNTING = new Hunting();
+		HUNTING = new Hunting() {
+			@Override
+			public boolean act(boolean justAlerted) { // tengu is always hunting
+				enemySeen = enemyInFOV(); // sync I guess
+				if ( enemySeen && !isCharmedBy( enemy ) && canAttack( enemy ) ) return doAttack( enemy );
+				else {
+					if (!enemySeen) chooseEnemy();
+					if (enemy != null) { target = enemy.pos; }
+					spend( TICK );
+					return true;
+				}
+			}
+		};
 
 		flying = true; //doesn't literally fly, but he is fleet-of-foot enough to avoid hazards
 
@@ -81,11 +97,6 @@ public class Tengu extends Mob {
 	@Override
 	public int attackSkill( Char target ) {
 		return 20;
-	}
-	
-	@Override
-	public int drRoll() {
-		return Random.NormalIntRange(0, 5);
 	}
 
 	@Override
@@ -118,6 +129,8 @@ public class Tengu extends Mob {
 
 		//phase 2 of the fight is over
 		if (HP == 0 && state == PrisonBossLevel.State.FIGHT_ARENA) {
+			if(src == Dungeon.hero && Dungeon.hero.belongings.weapon instanceof MissileWeapon)
+				((MissileWeapon) Dungeon.hero.belongings.weapon).stickTo(this);
 			((PrisonBossLevel)Dungeon.level).progress();
 			return;
 		}
@@ -250,8 +263,8 @@ public class Tengu extends Mob {
 	}
 	
 	{
-		resistances.add( ToxicGas.class );
 		resistances.add( Poison.class );
+		resistances.add( Burning.class );
 	}
 
 	@Override
@@ -261,31 +274,4 @@ public class Tengu extends Mob {
 		if (HP <= HT/2) BossHealthBar.bleed(true);
 	}
 
-	//tengu is always hunting
-	private class Hunting extends Mob.Hunting{
-
-		@Override
-		public boolean act(boolean justAlerted) {
-			enemySeen = enemyInFOV(); //sync I guess
-			if (enemyInFOV() && !isCharmedBy( enemy ) && canAttack( enemy )) {
-
-				return doAttack( enemy );
-
-			} else {
-
-				if (enemyInFOV()) {
-					target = enemy.pos;
-				} else {
-					chooseEnemy();
-					if (enemy != null) {
-						target = enemy.pos;
-					}
-				}
-
-				spend( TICK );
-				return true;
-
-			}
-		}
-	}
 }

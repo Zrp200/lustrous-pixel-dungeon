@@ -228,10 +228,16 @@ public class Eye extends Mob {
 		beamCharged = bundle.getBoolean(BEAM_CHARGED);
 	}
 
+	@Override
+	public float resist(Class effect) {
+		float effectiveness =  super.resist(effect);
+		if(effect == WandOfDisintegration.class) effectiveness *= 0.75f; // disint is 0.75x effective, up from 0.5x
+		if(effect == Terror.class)				 effectiveness *= 0.33f; // terror is 0.33x effective, up from 0x
+		return effectiveness;
+	}
+
 	{
-		resistances.add( WandOfDisintegration.class );
 		resistances.add( Grim.class );
-		resistances.add( Terror.class);
 
 		resistances.add( DisintegrationTrap.class );
 		resistances.add( GrimTrap.class );

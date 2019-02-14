@@ -34,6 +34,7 @@ import com.zrp200.lustrouspixeldungeon.actors.blobs.Blob;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.Electricity;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.ToxicGas;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Adrenaline;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.Amok;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Bleeding;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Bless;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
@@ -55,8 +56,10 @@ import com.zrp200.lustrouspixeldungeon.actors.buffs.Ooze;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Paralysis;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Poison;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Preparation;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.Roots;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.ShieldBuff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Slow;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.SnipersMark;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Speed;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Stamina;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Terror;
@@ -75,6 +78,7 @@ import com.zrp200.lustrouspixeldungeon.items.wands.WandOfLightning;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Blazing;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Grim;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Shocking;
+import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Boomerang;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.darts.ShockingDart;
 import com.zrp200.lustrouspixeldungeon.levels.Terrain;
@@ -138,12 +142,12 @@ public abstract class Char extends Actor {
 
 	protected void throwItem() {
 		Heap heap = Dungeon.level.heaps.get( pos );
-		if (heap != null) {
+		if (heap != null && !heap.isEmpty()) {
 			int n;
 			do {
 				n = pos + PathFinder.NEIGHBOURS8[Random.Int( 8 )];
 			} while (!Dungeon.level.passable[n] && !Dungeon.level.avoid[n]);
-			Dungeon.level.drop( heap.pickUp(), n ).sprite.drop( pos );
+			heap.pickUp().drop(n).sprite.drop(pos);
 		}
 	}
 	
@@ -388,6 +392,9 @@ public abstract class Char extends Actor {
 	public void die( Object src ) {
 		destroy();
 		if (src != Chasm.class) sprite.die();
+
+        SnipersMark mark = Dungeon.hero.buff(SnipersMark.class);
+        if(mark != null && id() == mark.object) mark.detach();
 	}
 	
 	public boolean isAlive() {
@@ -511,6 +518,12 @@ public abstract class Char extends Actor {
 		if (!flying) {
 			Dungeon.level.press( pos, this );
 		}
+
+		for(Boomerang.Returning returning : Dungeon.boomerangsThisDepth() ) {
+			if(returning.pos == pos) {
+				returning.onCharCollision(this);
+			}
+		}
 	}
 	
 	public int distance( Char other ) {
@@ -579,8 +592,11 @@ public abstract class Char extends Actor {
 	}
 
 	public enum Property{
-		BOSS ( new HashSet<Class>( Arrays.asList(Grim.class, ScrollOfRetribution.class, ScrollOfPsionicBlast.class, Burning.class, ToxicGas.class)),
-				new HashSet<Class>( Arrays.asList(Corruption.class) )),
+		BOSS (
+		        new HashSet<Class>(
+		                Arrays.asList(
+		                        Grim.class, ScrollOfRetribution.class, ScrollOfPsionicBlast.class, Terror.class)
+                ), new HashSet<Class>( Arrays.asList(Corruption.class, Amok.class) ) ),
 		MINIBOSS ( new HashSet<Class>(),
 				new HashSet<Class>( Arrays.asList(Corruption.class) )),
 		UNDEAD,
@@ -597,7 +613,7 @@ public abstract class Char extends Actor {
 				new HashSet<Class>( Arrays.asList(Ooze.class))),
 		ELECTRIC ( new HashSet<Class>( Arrays.asList(WandOfLightning.class, Shocking.class, Potential.class, Electricity.class, ShockingDart.class)),
 				new HashSet<Class>()),
-		IMMOVABLE;
+		IMMOVABLE (new HashSet<Class>(),new HashSet<Class>(Arrays.asList(Roots.class)));
 		
 		private HashSet<Class> resistances;
 		private HashSet<Class> immunities;

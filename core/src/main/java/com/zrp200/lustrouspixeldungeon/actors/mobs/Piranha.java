@@ -26,6 +26,7 @@ import com.zrp200.lustrouspixeldungeon.Badges;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.Statistics;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
+import com.zrp200.lustrouspixeldungeon.actors.blobs.Electricity;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Burning;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Vertigo;
 import com.zrp200.lustrouspixeldungeon.items.food.MysteryMeat;
@@ -47,8 +48,6 @@ public class Piranha extends Mob {
 		
 		loot = MysteryMeat.class;
 		lootChance = 1f;
-		
-		HUNTING = new Hunting();
 		
 		properties.add(Property.BLOB_IMMUNE);
 	}
@@ -142,25 +141,30 @@ public class Piranha extends Mob {
 			return false;
 		}
 	}
-	
-	{
+
+	{ // Immunities
 		immunities.add( Burning.class );
 		immunities.add( Vertigo.class );
 	}
-	
-	private class Hunting extends Mob.Hunting{
-		
-		@Override
-		public boolean act(boolean justAlerted) {
-			boolean result = super.act(justAlerted);
-			//this causes piranha to move away when a door is closed on them in a pool room.
-			if (state == WANDERING && Dungeon.level instanceof RegularLevel){
-				Room curRoom = ((RegularLevel)Dungeon.level).room(pos);
-				if (curRoom instanceof PoolRoom) {
-					target = Dungeon.level.pointToCell(curRoom.random(1));
+
+	@Override
+	public boolean isImmune(Class effect) {
+		if(effect == Electricity.class) return false; // dirty way of reverting this.
+		return super.isImmune(effect);
+	}
+
+	{ // AI
+		HUNTING = new Hunting() {
+			@Override
+			public boolean act(boolean justAlerted) {
+				boolean result = super.act(justAlerted);
+				//this causes piranha to move away when a door is closed on them in a pool room.
+				if (state == WANDERING && Dungeon.level instanceof RegularLevel){
+					Room curRoom = ((RegularLevel)Dungeon.level).room(pos);
+					if (curRoom instanceof PoolRoom) target = Dungeon.level.pointToCell(curRoom.random(1));
 				}
+				return result;
 			}
-			return result;
-		}
+		};
 	}
 }

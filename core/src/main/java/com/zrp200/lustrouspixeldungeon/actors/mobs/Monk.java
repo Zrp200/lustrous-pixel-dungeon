@@ -110,10 +110,10 @@ public class Monk extends Mob {
 		
 		return damage;
 	}
-	
+
 	{
-		immunities.add( Amok.class );
-		immunities.add( Terror.class );
+		resistances.add( Terror.class );
+		resistances.add( Amok.class );
 	}
 
 	private static String DISARMHITS = "hitsToDisarm";
