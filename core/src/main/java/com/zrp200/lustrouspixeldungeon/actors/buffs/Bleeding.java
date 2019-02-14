@@ -21,6 +21,7 @@
 
 package com.zrp200.lustrouspixeldungeon.actors.buffs;
 
+import com.watabou.noosa.Image;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
@@ -35,6 +36,8 @@ public class Bleeding extends ActiveBuff {
 
 	{
 		type = buffType.NEGATIVE;
+		startGrey = Dungeon.hero != null ? Dungeon.hero.HT/10f : 3;
+		turnReduction = 0; // handled manually
 	}
 	
 	@Override
@@ -43,17 +46,17 @@ public class Bleeding extends ActiveBuff {
 	}
 
 	@Override
-	public String toString() {
-		return Messages.get(this, "name");
+	public String desc() {
+		return Messages.get(this, "desc", Math.round(left));
 	}
-	
+
 	@Override
 	public boolean act() {
 		if (target.isAlive()) {
-			
+
 			left = NormalFloat(left / 2f, left);
 			int dmg = Math.round(left);
-			
+
 			if (dmg > 0) {
 				
 				target.damage( dmg, this );
@@ -66,8 +69,8 @@ public class Bleeding extends ActiveBuff {
 					Dungeon.fail( getClass() );
 					GLog.n( Messages.get(this, "ondeath") );
 				}
-				
-				spend( TICK );
+
+				super.act();
 			} else {
 				detach();
 			}
@@ -81,15 +84,9 @@ public class Bleeding extends ActiveBuff {
 		return true;
 	}
 
-
-
 	@Override
 	public String heroMessage() {
 		return Messages.get(this, "heromsg");
 	}
 
-	@Override
-	public String desc() {
-		return Messages.get(this, "desc", Math.round(left));
-	}
 }

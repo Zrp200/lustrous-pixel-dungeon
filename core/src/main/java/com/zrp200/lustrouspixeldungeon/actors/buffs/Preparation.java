@@ -45,6 +45,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static com.zrp200.lustrouspixeldungeon.Dungeon.hero;
+
 public class Preparation extends Buff implements ActionIndicator.Action {
 	
 	{
@@ -103,7 +105,7 @@ public class Preparation extends Buff implements ActionIndicator.Action {
 	public boolean act() {
 		if (target.invisible > 0){
 			turnsInvis++;
-			if (AttackLevel.getLvl(turnsInvis).blinkDistance > 0 && target == Dungeon.hero){
+			if (AttackLevel.getLvl(turnsInvis).blinkDistance > 0 && target == hero){
 				ActionIndicator.setAction(this);
 			}
 			BuffIndicator.refreshHero();
@@ -234,14 +236,14 @@ public class Preparation extends Buff implements ActionIndicator.Action {
 		public void onSelect(Integer cell) {
 			if (cell == null) return;
 			final Char enemy = Actor.findChar( cell );
-			if (enemy == null || Dungeon.hero.isCharmedBy(enemy) || enemy instanceof NPC){
+			if (enemy == null || hero.isCharmedBy(enemy) || enemy instanceof NPC){
 				GLog.w(Messages.get(Preparation.class, "no_target"));
 			} else {
 				
 				//just attack them then!
-				if (Dungeon.hero.canAttack(enemy)){
-					if (Dungeon.hero.handle( cell )) {
-						Dungeon.hero.next();
+				if (hero.canAttack(enemy)){
+					if (hero.handle( cell )) {
+						hero.next();
 					}
 					return;
 				}
@@ -249,7 +251,7 @@ public class Preparation extends Buff implements ActionIndicator.Action {
 				AttackLevel lvl = AttackLevel.getLvl(turnsInvis);
 				
 				boolean[] passable = Dungeon.level.passable.clone();
-				PathFinder.buildDistanceMap(Dungeon.hero.pos, passable, lvl.blinkDistance+1);
+				PathFinder.buildDistanceMap(hero.pos, passable, lvl.blinkDistance+hero.weapon().reachFactor(hero));
 				if (PathFinder.distance[cell] == Integer.MAX_VALUE){
 					GLog.w(Messages.get(Preparation.class, "out_of_reach"));
 					return;
@@ -258,31 +260,40 @@ public class Preparation extends Buff implements ActionIndicator.Action {
 				//we can move through enemies when determining blink distance,
 				// but not when actually jumping to a location
 				for (Char ch : Actor.chars()){
-					if (ch != Dungeon.hero)  passable[ch.pos] = false;
+					if (ch != hero)  passable[ch.pos] = false;
 				}
 				
-				PathFinder.Path path = PathFinder.find(Dungeon.hero.pos, cell, passable);
-				int attackPos = path == null ? -1 : path.get(path.size()-2);
+				PathFinder.Path path = PathFinder.find(hero.pos, cell, passable);
+				int attackPos = -1;
+				int originalPos = hero.pos;
+				try {
+					if(path != null) for( int pos : path.subList(0, path.size() - 2) ) {
+						hero.pos = pos;
+						if(hero.canAttack(enemy)) {
+							attackPos = pos;
+							break;
+						}
+					}
+				} finally { hero.pos = originalPos; }
 				
-				if (attackPos == -1 ||
-						Dungeon.level.distance(attackPos, Dungeon.hero.pos) > lvl.blinkDistance){
+				if (attackPos == -1 || Dungeon.level.distance(attackPos, hero.pos) > lvl.blinkDistance){
 					GLog.w(Messages.get(Preparation.class, "out_of_reach"));
 					return;
 				}
 				
-				Dungeon.hero.pos = attackPos;
-				Dungeon.level.press(Dungeon.hero.pos, Dungeon.hero);
+				hero.pos = attackPos;
+				Dungeon.level.press(hero.pos, hero);
 				//prevents the hero from being interrupted by seeing new enemies
 				Dungeon.observe();
-				Dungeon.hero.checkVisibleMobs();
+				hero.checkVisibleMobs();
 				
-				Dungeon.hero.sprite.place( Dungeon.hero.pos );
-				Dungeon.hero.sprite.turnTo( Dungeon.hero.pos, cell);
-				CellEmitter.get( Dungeon.hero.pos ).burst( Speck.factory( Speck.WOOL ), 6 );
+				hero.sprite.place( hero.pos );
+				hero.sprite.turnTo( hero.pos, cell);
+				CellEmitter.get( hero.pos ).burst( Speck.factory( Speck.WOOL ), 6 );
 				Sample.INSTANCE.play( Assets.SND_PUFF );
 				
-				if (Dungeon.hero.handle( cell )) {
-					Dungeon.hero.next();
+				if (hero.handle( cell )) {
+					hero.next();
 				}
 			}
 		}

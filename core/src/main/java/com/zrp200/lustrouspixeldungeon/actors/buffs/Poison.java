@@ -44,7 +44,6 @@ public class Poison extends ActiveBuff implements Hero.Doom {
 	@Override
 	public void tintIcon(Image icon) {
 		icon.hardlight(0.6f, 0.2f, 0.6f);
-		super.tintIcon(icon);
 	}
 
 	@Override
@@ -63,18 +62,8 @@ public class Poison extends ActiveBuff implements Hero.Doom {
 
 	@Override
 	public boolean act() {
-		if (target.isAlive()) {
-			
-			target.damage( (int)left / 3 + 1, this );
-			spend( TICK );
-			
-			super.act();
-			
-		} else {
-			detach();
-		}
-		
-		return true;
+		target.damage( (int)Math.ceil(left / 3), this );
+		return super.act();
 	}
 
 	@Override

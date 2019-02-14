@@ -25,7 +25,9 @@ import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.Blob;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.StenchGas;
+import com.zrp200.lustrouspixeldungeon.actors.blobs.ToxicGas;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.Corrosion;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Ooze;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.npcs.Ghost;
 import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
@@ -45,6 +47,7 @@ public class FetidRat extends Rat {
 
 		properties.add(Property.MINIBOSS);
 		properties.add(Property.DEMONIC);
+		properties.add(Property.ACIDIC);
 	}
 
 	@Override
@@ -61,7 +64,7 @@ public class FetidRat extends Rat {
 	public int attackProc( Char enemy, int damage ) {
 		damage = super.attackProc( enemy, damage );
 		if (Random.Int(3) == 0) {
-			Buff.affect(enemy, Ooze.class).set( 20f );
+			Buff.affect(enemy, Ooze.class).afflict( Ooze.DURATION );
 		}
 
 		return damage;
@@ -81,7 +84,7 @@ public class FetidRat extends Rat {
 
 		Ghost.Quest.process();
 	}
-	
+
 	{
 		immunities.add( StenchGas.class );
 	}

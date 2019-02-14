@@ -29,7 +29,7 @@ public class ActiveBuff extends Buff { // this uses an internal counter so it ca
     }
 
     public void afflict(float duration) { // sort of a mix between #set and #extend, used by negative buffs
-        extend( Random.Float(duration) );
+        extend( Random.Float(duration*.667f) );
         set( duration );
     }
 
@@ -59,7 +59,6 @@ public class ActiveBuff extends Buff { // this uses an internal counter so it ca
         super.storeInBundle( bundle );
         bundle.put( "initial", initial );
         bundle.put( "left", left );
-
     }
 
     @Override

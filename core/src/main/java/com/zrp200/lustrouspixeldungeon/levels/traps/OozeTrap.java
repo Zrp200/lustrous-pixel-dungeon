@@ -38,9 +38,9 @@ public class OozeTrap extends Trap {
 	@Override
 	public void activate() {
 		for (int i : PathFinder.NEIGHBOURS9) {
-			Splash.at(pos+i, 0x000000, 5);
-			Char ch = Actor.findChar(pos+i);
-			if (ch != null) Buff.affect(ch, Ooze.class).set( 20f );
+			Splash.at(pos + i, 0x000000, 5);
+			Char ch = Actor.findChar(pos + i);
+			if (ch != null) Buff.affect(ch, Ooze.class).afflict(Ooze.DURATION);
 		}
 	}
 }

@@ -36,7 +36,7 @@ public class WellFed extends ActiveBuff {
 		super.act();
 		int left = Math.round(this.left);
 		if(left != 0 && left % 10 == 0) {
-			target.HP = Math.max(target.HP++,target.HT);
+			target.HP = Math.min(++target.HP,target.HT);
 		}
 		return true;
 	}
@@ -52,12 +52,7 @@ public class WellFed extends ActiveBuff {
 	}
 	
 	@Override
-	public String toString() {
-		return Messages.get(this, "name");
-	}
-	
-	@Override
 	public String desc() {
-		return Messages.get(this, "desc", left + 1);
+		return Messages.get(this, "desc", Math.round(left+1));
 	}
 }
