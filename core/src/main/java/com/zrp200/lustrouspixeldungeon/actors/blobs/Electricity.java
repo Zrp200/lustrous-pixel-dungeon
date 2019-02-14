@@ -28,6 +28,8 @@ import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Paralysis;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.Recharging;
+import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.effects.BlobEmitter;
 import com.zrp200.lustrouspixeldungeon.effects.particles.SparkParticle;
 import com.zrp200.lustrouspixeldungeon.items.Heap;
@@ -37,6 +39,7 @@ import com.zrp200.lustrouspixeldungeon.items.weapon.melee.MagesStaff;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 
 public class Electricity extends Blob {
+	private static final float CHARGE_BONUS = 0.33f;
 	
 	{
 		//acts after mobs, to give them a chance to resist paralysis
@@ -73,15 +76,16 @@ public class Electricity extends Blob {
 						if (cur[cell] % 2 == 1) {
 							ch.damage(Math.round(Random.Float(2 + Dungeon.depth / 5f)), this);
 						}
+						if(ch instanceof Hero) ((Hero) ch).belongings.charge(Wand.Charger.CHARGE_BUFF_BONUS);
 					}
 					
 					Heap h = Dungeon.level.heaps.get( cell );
 					if (h != null){
 						Item toShock = h.peek();
 						if (toShock instanceof Wand){
-							((Wand) toShock).gainCharge(0.333f);
+							((Wand) toShock).gainCharge(CHARGE_BONUS);
 						} else if (toShock instanceof MagesStaff){
-							((MagesStaff) toShock).gainCharge(0.333f);
+							((MagesStaff) toShock).gainCharge(CHARGE_BONUS);
 						}
 					}
 					
