@@ -81,7 +81,7 @@ public class LoopBuilder extends RegularBuilder {
 		entrance.setSize();
 		entrance.setPos(0, 0);
 		
-		float startAngle = Random.Float(0, 360);
+		float startAngle = Random.Float(360);
 		
 		ArrayList<Room> loop = new ArrayList<>();
 		int roomsOnLoop = (int)(multiConnections.size()*pathLength) + Random.chances(pathLenJitterChances);

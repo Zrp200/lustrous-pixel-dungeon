@@ -45,8 +45,6 @@ public class Spinner extends Mob {
 
 		loot = new MysteryMeat();
 		lootChance = 0.125f;
-
-		FLEEING = new Fleeing();
 	}
 
 	@Override
@@ -103,14 +101,14 @@ public class Spinner extends Mob {
 		immunities.add(Web.class);
 	}
 
-	private class Fleeing extends Mob.Fleeing {
-		@Override
-		protected void nowhereToRun() {
-			if (buff(Terror.class) == null) {
-				state = HUNTING;
-			} else {
-				super.nowhereToRun();
+	{
+		FLEEING = new Fleeing() {
+			@Override
+			protected void nowhereToRun() {
+				if (buff(Terror.class) == null)
+					state = HUNTING;
+				else super.nowhereToRun();
 			}
-		}
+		};
 	}
 }

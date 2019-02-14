@@ -61,14 +61,11 @@ import com.zrp200.lustrouspixeldungeon.items.Torch;
 import com.zrp200.lustrouspixeldungeon.items.artifacts.DriedRose;
 import com.zrp200.lustrouspixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.zrp200.lustrouspixeldungeon.items.food.SmallRation;
-import com.zrp200.lustrouspixeldungeon.items.keys.IronKey;
-import com.zrp200.lustrouspixeldungeon.items.keys.Key;
 import com.zrp200.lustrouspixeldungeon.items.potions.PotionOfStrength;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfTransmutation;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.zrp200.lustrouspixeldungeon.items.stones.StoneOfEnchantment;
 import com.zrp200.lustrouspixeldungeon.items.stones.StoneOfIntuition;
-import com.zrp200.lustrouspixeldungeon.journal.Notes;
 import com.zrp200.lustrouspixeldungeon.levels.features.Chasm;
 import com.zrp200.lustrouspixeldungeon.levels.features.Door;
 import com.zrp200.lustrouspixeldungeon.levels.features.HighGrass;
@@ -99,36 +96,24 @@ public abstract class Level implements Bundlable {
 		DARK
 	}
 
-	protected int width;
-	protected int height;
-	protected int length;
+	protected int width, height, length;
 	
 	protected static final float TIME_TO_RESPAWN	= 50;
 
 	public int version;
 	
 	public int[] map;
-	public boolean[] visited;
-	public boolean[] mapped;
-	public boolean[] discoverable;
+	public boolean[] visited, mapped, discoverable;
 
 	public int viewDistance = Dungeon.isChallenged( Challenges.DARKNESS ) ? 2 : 8;
 	
 	public boolean[] heroFOV;
 	
-	public boolean[] passable;
-	public boolean[] losBlocking;
-	public boolean[] flamable;
-	public boolean[] secret;
-	public boolean[] solid;
-	public boolean[] avoid;
-	public boolean[] water;
-	public boolean[] pit;
+	public boolean[] passable,losBlocking, flamable, secret, solid, avoid, water, pit;
 	
 	public Feeling feeling = Feeling.NONE;
 	
-	public int entrance;
-	public int exit;
+	public int entrance, exit;
 
 	//when a boss level has become locked.
 	public boolean locked = false;
@@ -148,23 +133,24 @@ public abstract class Level implements Bundlable {
 	public int color1 = 0x004400;
 	public int color2 = 0x88CC44;
 
-	private static final String VERSION     = "version";
-	private static final String WIDTH       = "width";
-	private static final String HEIGHT      = "height";
-	private static final String MAP			= "map";
-	private static final String VISITED		= "visited";
-	private static final String MAPPED		= "mapped";
-	private static final String ENTRANCE	= "entrance";
-	private static final String EXIT		= "exit";
-	private static final String LOCKED      = "locked";
-	private static final String HEAPS		= "heaps";
-	private static final String PLANTS		= "plants";
-	private static final String TRAPS       = "traps";
-	private static final String CUSTOM_TILES= "customTiles";
-	private static final String CUSTOM_WALLS= "customWalls";
-	private static final String MOBS		= "mobs";
-	private static final String BLOBS		= "blobs";
-	private static final String FEELING		= "feeling";
+	private static final String
+			VERSION     = "version",
+			WIDTH       = "width",
+			HEIGHT      = "height",
+			MAP			= "map",
+			VISITED		= "visited",
+			MAPPED		= "mapped",
+			ENTRANCE	= "entrance",
+			EXIT		= "exit",
+			LOCKED      = "locked",
+			HEAPS		= "heaps",
+			PLANTS		= "plants",
+			TRAPS       = "traps",
+			CUSTOM_TILES= "customTiles",
+			CUSTOM_WALLS= "customWalls",
+			MOBS		= "mobs",
+			BLOBS		= "blobs",
+			FEELING		= "feeling";
 
 	public void create() {
 
@@ -480,6 +466,13 @@ public abstract class Level implements Bundlable {
 			}
 		}
 		return null;
+	}
+
+	public boolean containsItem(Item item) {
+		for(Heap heap : heaps.values()) {
+			if(heap.items.contains(item)) return true;
+		}
+		return false;
 	}
 	
 	public Actor respawner() {

@@ -29,6 +29,7 @@ import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Amok;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Corruption;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Poison;
+import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.sprites.BeeSprite;
 
@@ -82,7 +83,7 @@ public class Bee extends Mob {
 		this.level = level;
 		
 		HT = (2 + level) * 4;
-		defenseSkill = 9 + level;
+		defenseSkill = Hero.ACCURACY+level;
 	}
 
 	public void setPotInfo(int potPos, Char potHolder){
@@ -113,10 +114,10 @@ public class Bee extends Mob {
 	}
 
 	@Override
-	protected Char chooseEnemy() {
+	protected Char chooseEnemy(boolean newEnemy) {
 		//if the pot is no longer present, default to regular AI behaviour
 		if (alignment == Alignment.ALLY || (potHolder == -1 && potPos == -1))
-			return super.chooseEnemy();
+			return super.chooseEnemy(newEnemy);
 
 		//if something is holding the pot, target that
 		else if (Actor.findById(potHolder) != null)

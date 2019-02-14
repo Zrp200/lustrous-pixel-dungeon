@@ -23,13 +23,11 @@ package com.zrp200.lustrouspixeldungeon.items.weapon.melee;
 
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
 
-public class WarHammer extends MeleeWeapon.Uncommon {
-
+public class WarHammer extends MeleeWeapon.Accurate {
 	{
 		image = ItemSpriteSheet.WAR_HAMMER;
 
 		tier = 5;
-		ACC = 1.20f; //20% boost to accuracy
+		// 20% boost to accuracy
 	}
-
 }

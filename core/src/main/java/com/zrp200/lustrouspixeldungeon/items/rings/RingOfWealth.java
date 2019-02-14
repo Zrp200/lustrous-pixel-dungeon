@@ -169,7 +169,7 @@ public class RingOfWealth extends Ring {
                     break;
 			}
 		} else if (roll < 0.99f){
-			switch(2) {
+			switch(Random.Int(2)) {
 				case 0:
 					Gold g = new Gold();
 					g.random();
@@ -222,8 +222,8 @@ public class RingOfWealth extends Ring {
 		}
 		for(int i = 0; i < items.size(); i++) if(Random.Int(5) == 0) { // 20% chance to get an exotic instead O_O
 			Item item = items.get(i);
-			if(item instanceof Scroll) item = ScrollOfTransmutation.changeScroll( (Scroll) item );
-			else if(item instanceof Potion) item = ScrollOfTransmutation.changePotion( (Potion) item );
+			if(ScrollOfTransmutation.canTransmute(item) && !(item instanceof Artifact) /* too dangerous*/)
+				item = item.transmute();
 			items.set(i, item);
 		}
 		if(items.isEmpty()) return generateRareDrop(); // I'm sick of this.

@@ -61,12 +61,7 @@ public class Berserk extends Buff {
 	@Override
 	public void restoreFromBundle(Bundle bundle) {
 		super.restoreFromBundle(bundle);
-		//pre-0.6.5 saves
-		if (bundle.contains("exhaustion")){
-			state = State.RECOVERING;
-		} else {
-			state = bundle.getEnum(STATE, State.class);
-		}
+		state = bundle.getEnum(STATE, State.class);
 		if (bundle.contains(POWER)){
 			power = bundle.getFloat(POWER);
 		} else {
@@ -173,7 +168,7 @@ public class Berserk extends Buff {
 				if(power <= 0f) break;
 			default:
 				if(state == State.NORMAL) b = 0.5f;
-				if (power < 0.5f)       b *= 1-(power/100f);
+				if (power < 0.5f)         b *= 1-(power/100f);
 				else if (power <= 1f) { g *= 1.5f - power; b = 0f; }
 				else                  { r = 1; g = b = 0; } // basically berserking at that point.
 				break;

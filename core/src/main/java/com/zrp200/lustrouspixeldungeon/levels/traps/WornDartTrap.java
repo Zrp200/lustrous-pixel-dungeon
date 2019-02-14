@@ -46,6 +46,8 @@ public class WornDartTrap extends Trap {
 		return reveal();
 	}
 
+	public void onHit(Char target) {}
+
 	@Override
 	public void activate() {
 		Char target = Actor.findChar(pos);
@@ -83,6 +85,7 @@ public class WornDartTrap extends Trap {
 								if (finalTarget == Dungeon.hero && !finalTarget.isAlive()){
 									Dungeon.fail( trap.getClass()  );
 								}
+								onHit(finalTarget);
 								Sample.INSTANCE.play(Assets.SND_HIT, 1, 1, Random.Float(0.8f, 1.25f));
 								finalTarget.sprite.bloodBurstA(finalTarget.sprite.center(), dmg);
 								finalTarget.sprite.flash();
@@ -95,6 +98,7 @@ public class WornDartTrap extends Trap {
 				});
 			} else {
 				finalTarget.damage(Random.NormalIntRange(1, 4) - finalTarget.drRoll(), trap);
+				onHit(finalTarget);
 			}
 		}
 	}

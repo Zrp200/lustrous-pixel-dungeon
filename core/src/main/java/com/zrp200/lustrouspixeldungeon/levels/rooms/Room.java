@@ -157,8 +157,8 @@ public abstract class Room extends Rect implements Graph.Node, Bundlable {
 	public static final int BOTTOM  = 4;
 	
 	//TODO make abstract
-	public int minConnections(int direction){ return -1; }
-	
+	public abstract int minConnections(int direction);
+
 	public int curConnections(int direction){
 		if (direction == ALL) {
 			return connected.size();
@@ -182,7 +182,7 @@ public abstract class Room extends Rect implements Graph.Node, Bundlable {
 	}
 	
 	//TODO make abstract
-	public int maxConnections(int direction){ return -1; }
+	public abstract int maxConnections(int direction);
 	
 	//only considers point-specific limits, not direction limits
 	public boolean canConnect(Point p){
@@ -256,7 +256,7 @@ public abstract class Room extends Rect implements Graph.Node, Bundlable {
 	}
 	
 	// **** Painter Logic ****
-	
+
 	//TODO make abstract
 	public void paint(Level level){}
 	

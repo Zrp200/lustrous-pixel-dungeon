@@ -32,9 +32,13 @@ public class RoundShield extends BlockingWeapon {
 	}
 
 	@Override
-	public int max(int lvl) {
-		return  3*(tier+1) +    //12 base, down from 20
-				lvl*(tier-1);   //+2 per level, down from +4
+	public int maxBase() {
+		return Math.round( 0.6f*super.maxBase() ); // 12 base, down from 20
+	}
+
+	@Override
+	public int maxScale() { // +1/+2 per level, down from +1/+4
+		return super.maxScale()/2;
 	}
 
 	@Override

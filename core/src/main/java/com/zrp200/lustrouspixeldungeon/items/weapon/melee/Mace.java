@@ -23,12 +23,12 @@ package com.zrp200.lustrouspixeldungeon.items.weapon.melee;
 
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
 
-public class Mace extends MeleeWeapon.Uncommon {
+public class Mace extends MeleeWeapon.Accurate {
 
 	{
 		image = ItemSpriteSheet.MACE;
 
 		tier = 3;
-		ACC = 1.28f; //28% boost to accuracy
+		//28% boost to accuracy
 	}
 }

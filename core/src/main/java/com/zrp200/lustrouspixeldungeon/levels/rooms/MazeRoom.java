@@ -29,7 +29,13 @@ import com.zrp200.lustrouspixeldungeon.levels.painters.Painter;
 //TODO figure out where this should go, tunnel room type perhaps?
 public class MazeRoom extends Room {
 
-	public void paint( Level level ) {
+	@Override
+	public int minConnections(int direction) { return -1; }
+
+	@Override
+	public int maxConnections(int direction) { return -1; }
+
+	public void paint(Level level ) {
 		Painter.fill(level, this, 1, Terrain.EMPTY);
 
 		//true = space, false = wall

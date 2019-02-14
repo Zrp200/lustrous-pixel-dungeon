@@ -32,10 +32,10 @@ public class Quarterstaff extends BlockingWeapon {
 	}
 
 	@Override
-	public int max(int lvl) {
-		return  4*(tier+1) +    //12 base, down from 15
-				lvl*(tier+1);   //scaling unchanged
+	public int maxBase() { //12 base, down from 15
+		return Math.round( 0.8f*super.maxBase() );
 	}
+
 	public int maxBlock(int level) {
 		return tier + level;
 	}

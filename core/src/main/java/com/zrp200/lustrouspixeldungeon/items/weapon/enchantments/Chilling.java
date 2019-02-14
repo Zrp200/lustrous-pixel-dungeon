@@ -42,7 +42,7 @@ public class Chilling extends Weapon.Enchantment {
 		int level = Math.max( 0, weapon.level() );
 		
 		if (Random.Int( level + 5 ) >= 4) {
-			Buff.affect( defender, Chill.class, Random.NormalFloat(1,2)); // boost it by one or so
+			Buff.affect( defender, Chill.class, Random.Float(1,2)); // boost it by one or so
 			Buff.prolong(defender, Chill.class, Random.Float(2,3)); // this keeps it actually reasonable.
 			Splash.at( defender.sprite.center(), 0xFFB2D6FF, 5);
 		}

@@ -93,7 +93,7 @@ public class Swarm extends Mob {
 
 	private boolean needsToSplit = false;
 	@Override
-	public int defenseProc( Char enemy, int damage ) {
+	public int defenseProc( Char enemy, int damage ) { // so it only splits on physical attacks
 		needsToSplit = true;
 		return super.defenseProc(enemy, damage);
 	}
@@ -115,38 +115,29 @@ public class Swarm extends Mob {
 		}
 
 		if ( candidates.isEmpty() ) return;
+
 		Swarm clone = new Swarm();
 		clone.generation = generation + 1;
 		clone.HP = HP/2;
 		clone.pos = Random.element(candidates);
 		clone.state = clone.HUNTING;
 		clone.EXP = 0;
+
 		for(FlavourBuff buff : buffs(FlavourBuff.class)) {
 			float c = buff.cooldown();
 			Buff.detach(buff);
-			for(Char ch : Arrays.asList(this,clone)) {
-				Buff.affect(ch,buff.getClass(),c/2);
-			}
+			for(Char ch : Arrays.asList(this,clone)) Buff.affect(ch,buff.getClass(),c/2);
 		}
-		for(Buff buff : buffs(Buff.class)) {
-			Buff.affect(clone,buff.getClass());
-		}
+		for(Buff buff : buffs(Buff.class)) Buff.affect(clone,buff.getClass());
 		HashSet<ActiveBuff> activeBuffs = buffs(ActiveBuff.class);
 		for (ActiveBuff activeBuff : activeBuffs) { // side benefit of defining this as a class
 			Buff.affect(clone, activeBuff.getClass()).set(activeBuff.getLeft() / 2);
 			activeBuff.set(activeBuff.getLeft() / 2);
 		}
-		if (buff(Burning.class) != null) {
-			Buff.affect(clone, Burning.class).reignite(clone);
-		}
+		if ( buff( Burning.class  ) != null) Buff.affect(clone, Burning.class).reignite(clone);
+		if ( buff(Corruption.class) != null) Buff.affect(clone, Corruption.class);
 
-		if (buff(Corruption.class) != null) {
-			Buff.affect(clone, Corruption.class);
-		}
-
-		if (Dungeon.level.map[clone.pos] == Terrain.DOOR) {
-			Door.enter(clone.pos);
-		}
+		if (Dungeon.level.map[clone.pos] == Terrain.DOOR) Door.enter(clone.pos);
 
 		GameScene.add(clone, SPLIT_DELAY);
 		Actor.addDelayed(new Pushing(clone, pos, clone.pos), -1);

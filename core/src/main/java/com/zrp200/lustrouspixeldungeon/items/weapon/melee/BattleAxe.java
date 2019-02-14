@@ -23,13 +23,12 @@ package com.zrp200.lustrouspixeldungeon.items.weapon.melee;
 
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
 
-public class BattleAxe extends MeleeWeapon.Uncommon {
+public class BattleAxe extends MeleeWeapon.Accurate { //24% boost to accuracy
 
 	{
 		image = ItemSpriteSheet.BATTLE_AXE;
 
 		tier = 4;
-		ACC = 1.24f; //24% boost to accuracy
 	}
 
 }

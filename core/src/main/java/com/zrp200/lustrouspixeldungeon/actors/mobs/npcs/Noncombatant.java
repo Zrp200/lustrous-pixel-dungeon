@@ -21,7 +21,7 @@ public abstract class Noncombatant extends NPC {
     public void add( Buff buff ) { }
 
     @Override
-    protected Char chooseEnemy() {
+    protected Char chooseEnemy(boolean newEnemy) {
         return null;
     }
 

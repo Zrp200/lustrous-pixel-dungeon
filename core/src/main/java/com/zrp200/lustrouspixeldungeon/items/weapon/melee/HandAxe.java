@@ -23,13 +23,13 @@ package com.zrp200.lustrouspixeldungeon.items.weapon.melee;
 
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
 
-public class HandAxe extends MeleeWeapon.Uncommon {
+public class HandAxe extends MeleeWeapon.Accurate {
 
 	{
 		image = ItemSpriteSheet.HAND_AXE;
-
 		tier = 2;
-		ACC = 1.32f; //32% boost to accuracy
+
+		// 32% boost to accuracy
 	}
 
 }

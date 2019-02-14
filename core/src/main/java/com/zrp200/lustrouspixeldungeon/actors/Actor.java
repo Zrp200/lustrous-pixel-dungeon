@@ -204,31 +204,32 @@ public abstract class Actor implements Bundlable {
 	public static boolean processing(){
 		return current != null;
 	}
-	
+
 	public static void process() {
 		
 		boolean doNext;
 		boolean interrupted = false;
 
-		do {
-			
+		//noinspection InfiniteLoopStatement
+		while (true) {
+
 			current = null;
 			if (!interrupted) {
 				now = Float.MAX_VALUE;
-				
+
 				for (Actor actor : all) {
-					
+
 					//some actors will always go before others if time is equal.
 					if (actor.time < now ||
 							actor.time == now && (current == null || actor.actPriority > current.actPriority)) {
 						now = actor.time;
 						current = actor;
 					}
-					
+
 				}
 			}
 
-			if  (current != null) {
+			if (current != null) {
 
 				Actor acting = current;
 
@@ -236,8 +237,8 @@ public abstract class Actor implements Bundlable {
 					// If it's character's turn to act, but its sprite
 					// is moving, wait till the movement is over
 					try {
-						synchronized (((Char)acting).sprite) {
-							if (((Char)acting).sprite.isMoving) {
+						synchronized (((Char) acting).sprite) {
+							if (((Char) acting).sprite.isMoving) {
 								((Char) acting).sprite.wait();
 							}
 						}
@@ -245,10 +246,10 @@ public abstract class Actor implements Bundlable {
 						interrupted = true;
 					}
 				}
-				
+
 				interrupted = interrupted || Thread.interrupted();
-				
-				if (interrupted){
+
+				if (interrupted) {
 					doNext = false;
 					current = null;
 				} else {
@@ -262,21 +263,21 @@ public abstract class Actor implements Bundlable {
 				doNext = false;
 			}
 
-			if (!doNext){
+			if (!doNext) {
 				synchronized (Thread.currentThread()) {
-					
+
 					interrupted = interrupted || Thread.interrupted();
-					
-					if (interrupted){
+
+					if (interrupted) {
 						current = null;
 						interrupted = false;
 					}
-					
-					synchronized (GameScene.class){
+
+					synchronized (GameScene.class) {
 						//signals to the gamescene that actor processing is finished for now
 						GameScene.class.notify();
 					}
-					
+
 					try {
 						Thread.currentThread().wait();
 					} catch (InterruptedException e) {
@@ -285,7 +286,7 @@ public abstract class Actor implements Bundlable {
 				}
 			}
 
-		} while (true);
+		}
 	}
 	
 	public static void add( Actor actor ) {

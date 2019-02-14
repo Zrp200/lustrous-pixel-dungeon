@@ -119,7 +119,8 @@ public class Buff extends Actor implements Hero.Doom {
 	}
 
     public String heroMessage(){
-		return null;
+		String message = Messages.get(this,"heromsg");
+		return message.equals("!!!NO TEXT FOUND!!!") ? null : message;
 	}
 
 	public String desc(){

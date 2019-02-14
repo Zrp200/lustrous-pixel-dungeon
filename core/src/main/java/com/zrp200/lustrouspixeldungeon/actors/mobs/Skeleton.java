@@ -42,6 +42,7 @@ public class Skeleton extends Mob {
 		
 		HP = HT = 25;
 		defenseSkill = 9;
+		armor = 5;
 		
 		EXP = 5;
 		maxLvl = 10;
@@ -99,11 +100,6 @@ public class Skeleton extends Mob {
 	@Override
 	public int attackSkill( Char target ) {
 		return 12;
-	}
-	
-	@Override
-	public int drRoll() {
-		return Random.NormalIntRange(0, 5);
 	}
 
 }

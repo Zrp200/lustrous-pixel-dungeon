@@ -24,16 +24,19 @@ package com.zrp200.lustrouspixeldungeon.actors.buffs;
 import com.watabou.noosa.Image;
 import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
+import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.ui.BuffIndicator;
 import com.zrp200.lustrouspixeldungeon.utils.GLog;
 
 public class Ooze extends ActiveBuff {
 
+	public static final float DURATION = 20f;
+
 	{
 		type = buffType.NEGATIVE;
 	}
-	
+
 	@Override
 	public int icon() {
 		return BuffIndicator.OOZE;

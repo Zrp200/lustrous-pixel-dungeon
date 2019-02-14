@@ -61,6 +61,7 @@ public class Succubus extends Mob {
 		
 		HP = HT = 80;
 		defenseSkill = 25;
+		armor = 10;
 		viewDistance = Light.DISTANCE;
 		
 		EXP = 12;
@@ -82,12 +83,13 @@ public class Succubus extends Mob {
 		damage = super.attackProc( enemy, damage );
 		
 		if ( enemy.isCharmedBy(this) ){
-			int shield = (HP - HT) + (5 + damage);
+			int leech = 5+damage;
+			int shield = (HP - HT) + leech;
 			if (shield > 0){
 				HP = HT;
 				Buff.affect(this, Barrier.class).incShield(shield);
 			} else {
-				HP += 5 + damage;
+				HP += leech;
 			}
 			sprite.emitter().burst( Speck.factory( Speck.HEALING ), 2 );
 			Sample.INSTANCE.play( Assets.SND_CHARMS );
@@ -147,7 +149,7 @@ public class Succubus extends Mob {
 		delay = BLINK_DELAY;
 	}
 
-	protected void zap() {
+	protected void zap() { // unused
 		sprite.zap(enemy.pos);
 		for(Char enemy : findEnemies()) {
 			Buff.affect( enemy, Charm.class, Random.IntRange( 3, 4 )).object = id();
@@ -160,12 +162,7 @@ public class Succubus extends Mob {
 	public int attackSkill( Char target ) {
 		return 40;
 	}
-	
-	@Override
-	public int drRoll() {
-		return Random.NormalIntRange(0, 10);
-	}
-	
+
 	{
 		immunities.add( Sleep.class );
 		immunities.add( Charm.class );
@@ -176,20 +173,17 @@ public class Succubus extends Mob {
 		{
 			spriteClass = SuccubusSprite.Winged.class;
 			HP = HT = 75;
-			defenseSkill = 28; // +3
 			baseSpeed = 2;
 			flying = true;
+
+			defenseSkill += 3;
+			armor -= 2;
 		}
 
 		@Override
 		public int attackSkill(Char target) {
 			return 37;
 		} // -3
-
-		@Override
-		public int drRoll() {
-			return Math.max(super.drRoll()-2,0); // 8 armor
-		}
 
 		@Override
 		public int damageRoll() {

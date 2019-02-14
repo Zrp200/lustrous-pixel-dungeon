@@ -56,6 +56,8 @@ import com.zrp200.lustrouspixeldungeon.items.potions.Potion;
 import com.zrp200.lustrouspixeldungeon.items.rings.Ring;
 import com.zrp200.lustrouspixeldungeon.items.rings.RingOfWealth;
 import com.zrp200.lustrouspixeldungeon.items.stones.StoneOfAggression;
+import com.zrp200.lustrouspixeldungeon.items.weapon.SpiritBow;
+import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.zrp200.lustrouspixeldungeon.levels.features.Chasm;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
@@ -191,14 +193,31 @@ public abstract class Mob extends Char {
 	}
 
 	public boolean enemyInFOV() {
-		updateFieldOfView();
-		return enemy != null
-				&& enemy.isAlive()
-				&& fieldOfView[enemy.pos]
-				&& enemy.invisible <= 0;
+		return inFOV(enemy);
 	}
-	
-	protected Char chooseEnemy() {
+	public boolean inFOV(Char enemy) {
+		updateFieldOfView();
+		return enemy != null && enemy.isAlive() && fieldOfView[enemy.pos] && enemy.invisible <= 0;
+	}
+
+	protected boolean needsNewEnemy() {
+		//find a new enemy if..
+		//we have no enemy, or the current one is dead
+		if ( enemy == null || !enemy.isAlive() || state == WANDERING)
+			return true;
+			//We are an ally, and current enemy is another ally.
+		else if (alignment == Alignment.ALLY && enemy.alignment == Alignment.ALLY)
+			return true;
+			//We are amoked and current enemy is the hero
+		else if (buff( Amok.class ) != null && enemy == Dungeon.hero)
+			return true;
+			//We are charmed and current enemy is what charmed us
+		else return isCharmedBy(enemy);
+	}
+	protected final Char chooseEnemy() {
+		return chooseEnemy( needsNewEnemy() );
+	}
+	protected Char chooseEnemy(boolean newEnemy) {
 
 		Terror terror = buff( Terror.class );
 		if (terror != null) {
@@ -211,21 +230,6 @@ public abstract class Mob extends Char {
 			Char source = (Char)Actor.findById( aggro.object );
 			if (source != null) return source;
 		}
-
-		//find a new enemy if..
-		boolean newEnemy = false;
-		//we have no enemy, or the current one is dead
-		if ( enemy == null || !enemy.isAlive() || state == WANDERING)
-			newEnemy = true;
-		//We are an ally, and current enemy is another ally.
-		else if (alignment == Alignment.ALLY && enemy.alignment == Alignment.ALLY)
-			newEnemy = true;
-		//We are amoked and current enemy is the hero
-		else if (buff( Amok.class ) != null && enemy == Dungeon.hero)
-			newEnemy = true;
-		//We are charmed and current enemy is what charmed us
-		else if (buff(Charm.class) != null && buff(Charm.class).object == enemy.id())
-			newEnemy = true;
 
 		if ( newEnemy ) {
 			//neutral characters in particular do not choose enemies.
@@ -547,19 +551,39 @@ public abstract class Mob extends Char {
 
 		if (buff(SoulMark.class) != null) {
 			int restoration = Math.min(damage, HP);
-			if(restoration/2 > 0) {Dungeon.hero.buff(Hunger.class).satisfy(restoration);
-			Integer toHeal=Math.min(HT-HP, Math.round(restoration*0.33f));
-			HP += toHeal;
+			if(restoration/2 > 0) {
+				Dungeon.hero.buff(Hunger.class).satisfy(restoration);
+				Integer toHeal=Math.min(HT-HP, Math.round(restoration*0.33f));
+				HP += toHeal;
 				if(toHeal > 0) Dungeon.hero.sprite.showStatus( CharSprite.POSITIVE,toHeal.toString() );
-				Dungeon.hero.sprite.emitter().burst( Speck.factory(Speck.HEALING), 1 );}
+				Dungeon.hero.sprite.emitter().burst( Speck.factory(Speck.HEALING), 1 );
+			}
 		}
 
 		return damage;
 	}
 
 	public boolean surprisedBy( Char enemy ){
-		return (!enemySeen() || enemy.invisible > 0 || paralysed > 0 || (enemy instanceof Hero && alignment == Alignment.ALLY))
-				&& (!(enemy instanceof Hero) || ((Hero)enemy).canSurpriseAttack());
+		if(enemy instanceof Hero) {
+			Hero hero = (Hero) enemy;
+			if(!hero.canSurpriseAttack()) return false;
+			if(hero.belongings.weapon instanceof SpiritBow.SpiritArrow) {
+				final SpiritBow bow = ( (SpiritBow.SpiritArrow) hero.belongings.weapon ).getBow();
+				if(bow.sniperSpecial && bow.augment == Weapon.Augment.DAMAGE) {
+					Actor.add(new Actor() {
+						{   actPriority = VFX_PRIO;  }
+						@Override protected boolean act() {
+							bow.sniperSpecial = false; // this is where it is turned off.
+							remove(this);
+							return true;
+						}
+					}); // this is where it is turned off.
+					return true;
+				}
+			}
+			if(alignment == Alignment.ALLY) return true;
+		}
+		return !enemySeen() || enemy.invisible > 0 || paralysed > 0;
 	}
 
 	public void aggro( Char ch ) {
@@ -653,7 +677,7 @@ public abstract class Mob extends Char {
 			else if (properties.contains(Property.MINIBOSS)) rolls = 5;
 			ArrayList<Item> bonus = RingOfWealth.tryRareDrop(Dungeon.hero, rolls);
 			if (bonus != null) {
-				for (Item b : bonus) Dungeon.level.drop(b, pos).sprite.drop();
+				for (Item b : bonus) b.drop(pos);
 				new Flare(8, 32).color(0xFFFF00, true).show(sprite, 2f);
 			}
 		}
@@ -797,9 +821,11 @@ public abstract class Mob extends Char {
 
 		@Override
 		public boolean act( boolean justAlerted ) {
-			if (super.act(justAlerted) && !isCharmedBy( enemy ) && canAttack( enemy )) {
-				return doAttack( enemy );
+			Char origEnemy = enemy;
+			if (super.act(justAlerted) && !isCharmedBy( enemy ) && ( canAttack(enemy) || canAttack(enemy = chooseEnemy()) ) ) {
+				return doAttack(enemy);
 			} else {
+				enemy = origEnemy;
 				if (enemySeen) {
 					target = enemy.pos;
 				} else if (enemy == null) {

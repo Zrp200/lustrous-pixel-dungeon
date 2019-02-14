@@ -25,10 +25,12 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
+import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.items.Generator;
 import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
 import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon.Enchantment;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Grim;
+import com.zrp200.lustrouspixeldungeon.items.weapon.melee.BlockingWeapon;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.zrp200.lustrouspixeldungeon.journal.Notes;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
@@ -41,6 +43,8 @@ public class Statue extends Mob {
 
 		EXP = 0;
 		state = PASSIVE;
+
+		armor = Dungeon.depth;
 		
 		properties.add(Property.INORGANIC);
 	}
@@ -57,7 +61,7 @@ public class Statue extends Mob {
 		weapon.enchant( Enchantment.random() ).identify();
 		
 		HP = HT = 15 + Dungeon.depth * 5;
-		defenseSkill = 4 + Dungeon.depth;
+		defenseSkill = Hero.EVASION + Dungeon.depth; // mirrors hero evasion
 	}
 	
 	private static final String WEAPON	= "weapon";
@@ -89,7 +93,7 @@ public class Statue extends Mob {
 	
 	@Override
 	public int attackSkill( Char target ) {
-		return (int)((9 + Dungeon.depth) * weapon.accuracyFactor(this));
+		return (int)((Hero.ACCURACY + Dungeon.depth) * weapon.accuracyFactor(this));
 	}
 	
 	@Override
@@ -104,8 +108,9 @@ public class Statue extends Mob {
 
 	@Override
 	public int drRoll() {
-		return super.drRoll()
-				+ Random.NormalInt(Dungeon.depth + weapon.defenseFactor(this));
+		int drRoll = super.drRoll();
+		if(weapon instanceof BlockingWeapon) drRoll += weapon.defenseFactor(this);
+		return drRoll;
 	}
 	
 	@Override

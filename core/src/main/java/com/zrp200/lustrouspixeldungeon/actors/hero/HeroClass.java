@@ -59,10 +59,103 @@ import com.zrp200.lustrouspixeldungeon.messages.Messages;
 
 public enum HeroClass {
 
-	WARRIOR("warrior", HeroSubClass.BERSERKER, HeroSubClass.GLADIATOR ),
-	MAGE( "mage", HeroSubClass.BATTLEMAGE, HeroSubClass.WARLOCK ),
-	ROGUE( "rogue", HeroSubClass.ASSASSIN, HeroSubClass.FREERUNNER ),
-	HUNTRESS( "huntress", HeroSubClass.SNIPER, HeroSubClass.WARDEN );
+	WARRIOR("warrior", HeroSubClass.BERSERKER, HeroSubClass.GLADIATOR ) {
+		@Override
+		public void initHero(Hero hero) {
+			super.initHero(hero);
+			(hero.belongings.weapon = new WornShortsword()).identify();
+			ThrowingStone stones = new ThrowingStone();
+			stones.identify().quantity(3).collect();
+			Dungeon.quickslot.setSlot(0, stones);
+
+			if (hero.belongings.armor != null){
+				hero.belongings.armor.affixSeal(new BrokenSeal());
+			}
+
+			new PotionBandolier().collect();
+
+			new PotionOfHealing().identify();
+			new ScrollOfRage().identify();
+		}
+
+		@Override
+		public Badges.Badge masteryBadge() {
+			return Badges.Badge.MASTERY_WARRIOR;
+		}
+	},
+	MAGE( "mage", HeroSubClass.BATTLEMAGE, HeroSubClass.WARLOCK ) {
+		@Override
+		public void initHero(Hero hero) {
+			super.initHero(hero);
+			MagesStaff staff;
+
+			staff = new MagesStaff(new WandOfMagicMissile());
+
+			(hero.belongings.weapon = staff).identify();
+			staff.activate(hero);
+
+			Dungeon.quickslot.setSlot(0, staff);
+
+			new ScrollHolder().collect();
+
+			new ScrollOfUpgrade().identify();
+			new PotionOfLiquidFlame().identify();
+		}
+
+		@Override
+		public Badges.Badge masteryBadge() {
+			return Badges.Badge.MASTERY_MAGE;
+		}
+	},
+	ROGUE( "rogue", HeroSubClass.ASSASSIN, HeroSubClass.FREERUNNER ) {
+		@Override
+		public void initHero(Hero hero) {
+			super.initHero(hero);
+			(hero.belongings.weapon = new Dagger()).identify();
+
+			CloakOfShadows cloak = new CloakOfShadows();
+			(hero.belongings.misc1 = cloak).identify();
+			hero.belongings.misc1.activate( hero );
+
+			ThrowingKnife knives = new ThrowingKnife();
+			knives.quantity(3).collect();
+
+			Dungeon.quickslot.setSlot(0, cloak);
+			Dungeon.quickslot.setSlot(1, knives);
+
+			Dungeon.LimitedDrops.VELVET_POUCH.drop();
+
+			new ScrollOfMagicMapping().identify();
+			new PotionOfInvisibility().identify();
+		}
+
+		@Override
+		public Badges.Badge masteryBadge() {
+			return Badges.Badge.MASTERY_ROGUE;
+		}
+	},
+	HUNTRESS( "huntress", HeroSubClass.SNIPER, HeroSubClass.WARDEN ) {
+		@Override
+		public void initHero(Hero hero) {
+			super.initHero(hero);
+
+			(hero.belongings.weapon = new Gloves()).identify();
+			SpiritBow bow = new SpiritBow();
+			bow.identify().collect();
+
+			Dungeon.quickslot.setSlot(0, bow);
+
+			new MagicalHolster().collect();
+
+			new PotionOfMindVision().identify();
+			new ScrollOfLullaby().identify();
+		}
+
+		@Override
+		public Badges.Badge masteryBadge() {
+			return Badges.Badge.MASTERY_HUNTRESS;
+		}
+	};
 
 	private String title;
 	private HeroSubClass[] subClasses;
@@ -73,124 +166,21 @@ public enum HeroClass {
 	}
 
 	public void initHero( Hero hero ) {
-
 		hero.heroClass = this;
 
-		initCommon( hero );
-
-		switch (this) {
-			case WARRIOR:
-				initWarrior( hero );
-				break;
-
-			case MAGE:
-				initMage( hero );
-				break;
-
-			case ROGUE:
-				initRogue( hero );
-				break;
-
-			case HUNTRESS:
-				initHuntress( hero );
-				break;
-		}
-		
-	}
-
-	private static void initCommon( Hero hero ) {
 		Item i = new ClothArmor().identify();
 
 		if (!Challenges.isItemBlocked(i)) hero.belongings.armor = (Armor)i;
 		i = new Food();
 		if (!Challenges.isItemBlocked(i)) i.collect();
 
-		if (Dungeon.isChallenged(Challenges.NO_FOOD)){
+		if (Dungeon.isChallenged(Challenges.NO_FOOD))
 			new SmallRation().collect();
-		}
 
 		new ScrollOfIdentify().identify();
-
 	}
 
-	public Badges.Badge masteryBadge() {
-		switch (this) {
-			case WARRIOR:
-				return Badges.Badge.MASTERY_WARRIOR;
-			case MAGE:
-				return Badges.Badge.MASTERY_MAGE;
-			case ROGUE:
-				return Badges.Badge.MASTERY_ROGUE;
-			case HUNTRESS:
-				return Badges.Badge.MASTERY_HUNTRESS;
-		}
-		return null;
-	}
-
-	private static void initWarrior( Hero hero ) {
-		(hero.belongings.weapon = new WornShortsword()).identify();
-		ThrowingStone stones = new ThrowingStone();
-		stones.identify().quantity(3).collect();
-		Dungeon.quickslot.setSlot(0, stones);
-
-		if (hero.belongings.armor != null){
-			hero.belongings.armor.affixSeal(new BrokenSeal());
-		}
-		
-		new PotionBandolier().collect();
-
-		new PotionOfHealing().identify();
-		new ScrollOfRage().identify();
-	}
-
-	private static void initMage( Hero hero ) {
-		MagesStaff staff;
-		
-		staff = new MagesStaff(new WandOfMagicMissile());
-
-		(hero.belongings.weapon = staff).identify();
-		hero.belongings.weapon.activate(hero);
-
-		Dungeon.quickslot.setSlot(0, staff);
-
-		new ScrollHolder().collect();
-
-		new ScrollOfUpgrade().identify();
-		new PotionOfLiquidFlame().identify();
-	}
-
-	private static void initRogue( Hero hero ) {
-		(hero.belongings.weapon = new Dagger()).identify();
-
-		CloakOfShadows cloak = new CloakOfShadows();
-		(hero.belongings.misc1 = cloak).identify();
-		hero.belongings.misc1.activate( hero );
-
-		ThrowingKnife knives = new ThrowingKnife();
-		knives.quantity(3).collect();
-
-		Dungeon.quickslot.setSlot(0, cloak);
-		Dungeon.quickslot.setSlot(1, knives);
-
-		Dungeon.LimitedDrops.VELVET_POUCH.drop();
-
-		new ScrollOfMagicMapping().identify();
-		new PotionOfInvisibility().identify();
-	}
-
-	private static void initHuntress( Hero hero ) {
-
-		(hero.belongings.weapon = new Gloves()).identify();
-		SpiritBow bow = new SpiritBow();
-		bow.identify().collect();
-
-		Dungeon.quickslot.setSlot(0, bow);
-
-		new MagicalHolster().collect();
-
-		new PotionOfMindVision().identify();
-		new ScrollOfLullaby().identify();
-	}
+	public abstract Badges.Badge masteryBadge();
 	
 	public String title() {
 		return Messages.get(HeroClass.class, title);

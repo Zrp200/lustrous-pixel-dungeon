@@ -64,6 +64,7 @@ import com.zrp200.lustrouspixeldungeon.levels.painters.Painter;
 import com.zrp200.lustrouspixeldungeon.plants.Plant;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class ShopRoom extends SpecialRoom {
@@ -255,26 +256,35 @@ public class ShopRoom extends SpecialRoom {
         //0=pouch, 1=holder, 2=bandolier, 3=holster
         HashMap<Bag, Integer> bagItems = new HashMap<Bag, Integer>() {
             {
-                put(new VelvetPouch(), 0);
-                put(new ScrollHolder(), 0);
-                put(new MagicalHolster(), 0);
-                put(new PotionBandolier(), 0);
+            	for(Class<?extends Bag> bagClass : Arrays.asList(
+            			VelvetPouch.class, PotionBandolier.class,
+						ScrollHolder.class,MagicalHolster.class ) )
+            		add(bagClass);
             }
+
+            void add(Class<?extends Bag> bagClass) {
+				try { put(bagClass.newInstance(),0); } catch (Exception e) {
+					LustrousPixelDungeon.reportException(e);
+				}
+			}
 
 		};
 
         //count up items in the main bag
         for (Item item : pack.backpack.items) {
             for (Bag bag : bagItems.keySet()) {
-                if ( item.getClass() == bag.getClass() ) bagItems.put(bag, -1);
-                if (bagItems.get(bag) == -1) continue;
+                if ( item.getClass() == bag.getClass() ) {
+                	bagItems.put(bag, -2);
+                	bag.acquire();
+				}
+                if (bagItems.get(bag) == -2) continue;
                 if (bag.grab(item)) bagItems.put(bag, bagItems.get(bag) + 1);
             }
         }
         Bag bestBag = null;
-        int bestValue = -1;
+        int bestValue = -3;
         for (Bag bag : bagItems.keySet()) {
-        	if( bag.dropped() ) bagItems.put(bag, Math.min(bagItems.get(bag),0)); // a bit of padding hopefully for if shit goes wrong.
+        	if( bag.dropped() ) bagItems.put(bag, Math.min(bagItems.get(bag),-1)); // a bit of padding hopefully for if shit goes wrong.
             int value = bagItems.get(bag);
             if (value > bestValue) {
                 bestBag = bag;

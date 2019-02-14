@@ -45,6 +45,7 @@ public class Assets {
 
 	public static final String PALKIA	= "palkia.png";
 	public static final String ZRP200 	= "zrp200.png";
+	public static final String SHPD 	= "shpd.png";
 
 	public static final String WARRIOR	= "warrior.png";
 	public static final String MAGE		= "mage.png";

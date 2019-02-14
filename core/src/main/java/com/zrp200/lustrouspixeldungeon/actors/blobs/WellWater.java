@@ -72,18 +72,18 @@ public abstract class WellWater extends Blob {
 			Item newItem = affectItem( oldItem, pos );
 			
 			if (newItem != null) {
-				
-				if (newItem == oldItem) {
 
-				} else if (oldItem.quantity() > 1) {
+				if (newItem != oldItem) {
+					if (oldItem.quantity() > 1) {
 
-					oldItem.quantity( oldItem.quantity() - 1 );
-					heap.drop( newItem );
-					
-				} else {
-					heap.replace( oldItem, newItem );
+						oldItem.quantity( oldItem.quantity() - 1 );
+						heap.drop( newItem );
+
+					} else {
+						heap.replace( oldItem, newItem );
+					}
 				}
-				
+
 				heap.sprite.link();
 				cur[pos] = 0;
 				

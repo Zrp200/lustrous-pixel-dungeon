@@ -33,6 +33,7 @@ public class Crab extends Mob {
 		
 		HP = HT = 15;
 		defenseSkill = 5;
+		armor = 4;
 		baseSpeed = 2f;
 		
 		EXP = 4;
@@ -50,10 +51,5 @@ public class Crab extends Mob {
 	@Override
 	public int attackSkill( Char target ) {
 		return 12;
-	}
-	
-	@Override
-	public int drRoll() {
-		return Random.NormalIntRange(0, 4);
 	}
 }

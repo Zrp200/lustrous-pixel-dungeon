@@ -26,6 +26,7 @@ import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Challenges;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
+import com.zrp200.lustrouspixeldungeon.items.keys.CrystalKey;
 import com.zrp200.lustrouspixeldungeon.levels.rooms.Room;
 
 import java.util.ArrayList;
@@ -64,8 +65,9 @@ public class SpecialRoom extends Room {
 			TreasuryRoom.class, TrapsRoom.class, StorageRoom.class, StatueRoom.class, VaultRoom.class, RunestoneRoom.class
 	) );
 	
-	private static ArrayList<Class<? extends SpecialRoom>> runSpecials = new ArrayList<>();
-	private static ArrayList<Class<? extends SpecialRoom>> floorSpecials = new ArrayList<>();
+	private static ArrayList<Class<? extends SpecialRoom>>
+			runSpecials 	= new ArrayList<>(),
+			floorSpecials 	= new ArrayList<>();
 	
 	private static int pitNeededDepth = -1;
 	

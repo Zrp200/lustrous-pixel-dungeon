@@ -9,7 +9,6 @@ public class BlockingWeapon extends MeleeWeapon {
     public int maxBlock(int level) {
         return tier-1;
     }
-
     private int maxBlock() {
         return maxBlock(level());
     }
@@ -19,6 +18,10 @@ public class BlockingWeapon extends MeleeWeapon {
                 0, maxBlock(level) - ( owner instanceof Hero ? 2*Math.max( 0, STRReq(level) - ( (Hero) owner ).STR() ) : 0 )
         );
     }
+    public final int defenseFactor(Char owner) {
+        return defenseFactor(owner, level());
+    }
+
     public String baseInfo() {
         int encumbrance = STRReq(levelKnown ? level() : 0) - Dungeon.hero.STR();
         String info = super.baseInfo();

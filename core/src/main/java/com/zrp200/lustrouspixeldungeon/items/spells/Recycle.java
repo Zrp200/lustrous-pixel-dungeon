@@ -47,7 +47,7 @@ public class Recycle extends InventorySpell {
 		image = ItemSpriteSheet.RECYCLE;
 		mode = WndBag.Mode.RECYCLABLE;
 
-		basePrice = (50+50)/8f; //prices of ingredients, divided by output quantity
+		value = (50+50)/8f; //prices of ingredients, divided by output quantity;
 	}
 	
 	@Override

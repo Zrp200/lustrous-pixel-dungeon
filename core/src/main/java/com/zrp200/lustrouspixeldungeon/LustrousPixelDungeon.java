@@ -32,23 +32,26 @@ import com.watabou.noosa.RenderedText;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.DeviceCompat;
+import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Chaotic;
+import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Gloves;
 import com.zrp200.lustrouspixeldungeon.scenes.PixelScene;
 import com.zrp200.lustrouspixeldungeon.scenes.WelcomeScene;
 
 import javax.microedition.khronos.opengles.GL10;
+
+import static com.watabou.utils.Bundle.*;
 
 public class LustrousPixelDungeon extends Game {
 
 	public static final int
 			v000 = 400,
 			v001 = 407,
-			v002 = 415;
+			v010 = 416;
 	
 	public LustrousPixelDungeon() {
 		super(WelcomeScene.class);
-		com.watabou.utils.Bundle.addAlias(
-				com.zrp200.lustrouspixeldungeon.items.weapon.curses.Chaotic.class,
-				"com.zrp200.lustrouspixeldungeon.items.weapon.curses.Malevolent.class" );
+		addAlias(Chaotic.class, "com.zrp200.lustrouspixeldungeon.items.weapon.curses.Malevolent.class" );
+        addAlias(Gloves.class, "com.zrp200.lustrouspixeldungeon.items.weapon.melee.Knuckles" );
 	}
 
 	

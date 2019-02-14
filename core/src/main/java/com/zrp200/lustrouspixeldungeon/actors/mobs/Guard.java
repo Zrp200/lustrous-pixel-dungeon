@@ -57,8 +57,6 @@ public class Guard extends Mob {
 		lootChance = 0.25f;
 
 		properties.add(Property.UNDEAD);
-		
-		HUNTING = new Hunting();
 	}
 
 	@Override
@@ -66,7 +64,7 @@ public class Guard extends Mob {
 		return Random.NormalIntRange(4, 12);
 	}
 
-	private boolean chain(int target){
+	private boolean chain(int target) {
 		if (chainsUsed || enemy.properties().contains(Property.IMMOVABLE))
 			return false;
 
@@ -78,22 +76,22 @@ public class Guard extends Mob {
 			return false;
 		else {
 			int newPos = -1;
-			for (int i : chain.subPath(1, chain.dist)){
-				if (!Dungeon.level.solid[i] && Actor.findChar(i) == null){
+			for (int i : chain.subPath(1, chain.dist)) {
+				if (!Dungeon.level.solid[i] && Actor.findChar(i) == null) {
 					newPos = i;
 					break;
 				}
 			}
 
-			if (newPos == -1){
+			if (newPos == -1) {
 				return false;
 			} else {
 				final int newPosFinal = newPos;
 				this.target = newPos;
-				yell( Messages.get(this, "scorpion") );
+				yell(Messages.get(this, "scorpion"));
 				sprite.parent.add(new Chains(sprite.center(), enemy.sprite.center(), new Callback() {
 					public void call() {
-						Actor.addDelayed(new Pushing(enemy, enemy.pos, newPosFinal, new Callback(){
+						Actor.addDelayed(new Pushing(enemy, enemy.pos, newPosFinal, new Callback() {
 							public void call() {
 								enemy.pos = newPosFinal;
 								Dungeon.level.press(newPosFinal, enemy, true);
@@ -115,7 +113,7 @@ public class Guard extends Mob {
 	}
 
 	@Override
-	public int attackSkill( Char target ) {
+	public int attackSkill(Char target) {
 		return 14;
 	}
 
@@ -127,19 +125,19 @@ public class Guard extends Mob {
 	@Override
 	protected Item createLoot() {
 		//first see if we drop armor, overall chance is 1/8
-		if (Random.Int(2) == 0){
+		if (Random.Int(2) == 0) {
 			Armor loot;
-			do{
+			do {
 				loot = Generator.randomArmor();
 				//50% chance of re-rolling tier 4 or 5 items
 			} while (loot.tier >= 4 && Random.Int(2) == 0);
 			loot.level(0);
 			loot.levelKnown = true;
 			return loot;
-		//otherwise, we may drop a health potion. overall chance is 1/8 * (6-potions dropped)/6
-		//with 0 potions dropped that simplifies to 1/8
+			//otherwise, we may drop a health potion. overall chance is 1/8 * (6-potions dropped)/6
+			//with 0 potions dropped that simplifies to 1/8
 		} else {
-			if (Random.Float() < ((6f - Dungeon.LimitedDrops.GUARD_HP.count) / 6f)){
+			if (Random.Float() < ((6f - Dungeon.LimitedDrops.GUARD_HP.count) / 6f)) {
 				Dungeon.LimitedDrops.GUARD_HP.count++;
 				return new PotionOfHealing();
 			}
@@ -161,23 +159,22 @@ public class Guard extends Mob {
 		super.restoreFromBundle(bundle);
 		chainsUsed = bundle.getBoolean(CHAINSUSED);
 	}
-	
-	private class Hunting extends Mob.Hunting{
-		@Override
-		public boolean act( boolean justAlerted ) {
-			if (!chainsUsed
-					&& enemyInFOV()
-					&& !isCharmedBy( enemy )
-					&& !canAttack( enemy )
-					&& Dungeon.level.distance( pos, enemy.pos ) < 5
-					&& Random.Int(3) == 0
-					
-					&& chain(enemy.pos)){
-				return false;
-			} else {
-				return super.act( justAlerted );
+
+	{
+		HUNTING = new Hunting() {
+			@Override
+			public boolean act(boolean justAlerted) {
+				if (!chainsUsed
+						&& enemyInFOV()
+						&& !isCharmedBy(enemy)
+						&& !canAttack(enemy)
+						&& Dungeon.level.distance(pos, enemy.pos) < 5
+						&& Random.Int(3) == 0
+
+						&& chain(enemy.pos)) {
+					return false;
+				} else return super.act(justAlerted);
 			}
-			
-		}
+		};
 	}
 }

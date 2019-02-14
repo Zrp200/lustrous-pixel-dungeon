@@ -62,7 +62,7 @@ public class ItemChange extends ItemSprite {
 	public void update() {
 		super.update();
 
-		x = target.sprite.center().x - SIZE / 2;
+		x = target.sprite.center().x - SIZE / 2f;
 		y = target.sprite.y - SIZE;
 
 		switch (phase) {

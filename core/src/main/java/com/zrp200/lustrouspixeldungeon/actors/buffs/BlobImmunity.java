@@ -39,6 +39,8 @@ import com.zrp200.lustrouspixeldungeon.actors.blobs.Web;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.ui.BuffIndicator;
 
+import java.util.HashSet;
+
 public class BlobImmunity extends FlavourBuff {
 	
 	{
@@ -46,6 +48,8 @@ public class BlobImmunity extends FlavourBuff {
 	}
 	
 	public static final float DURATION	= 20f;
+
+	public static final HashSet<Class> AFFECTED = new BlobImmunity().immunities;
 	
 	@Override
 	public int icon() {

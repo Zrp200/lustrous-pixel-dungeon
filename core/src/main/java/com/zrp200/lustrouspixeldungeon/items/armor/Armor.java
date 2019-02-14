@@ -102,12 +102,11 @@ public class Armor extends EquipableItem {
 	}
 
 	public enum Augment {
-		EVASION (1.5f , -1f),
-		DEFENSE (-1.5f, 1f),
-		NONE	(0f   ,  0f);
+		EVASION (+1.5f, -1f),
+		DEFENSE (-1.5f, +1f),
+		NONE	(+0.0f, +0f);
 		
-		private float evasionFactor;
-		private float defenceFactor;
+		private float evasionFactor, defenceFactor;
 		
 		Augment(float eva, float df){
 			evasionFactor = eva;
@@ -135,11 +134,12 @@ public class Armor extends EquipableItem {
 		this.tier = tier;
 	}
 
-	private static final String UNFAMILIRIARITY	= "unfamiliarity";
-	private static final String GLYPH			= "glyph";
-	private static final String SEAL            = "seal";
-	private static final String AUGMENT			= "augment";
-	private static final String GLYPH_KNOWN 	= "glyph known";
+	private static final String
+			UNFAMILIRIARITY	= "unfamiliarity",
+			GLYPH			= "glyph",
+			SEAL            = "seal",
+			AUGMENT			= "augment",
+			GLYPH_KNOWN 	= "glyph known";
 
 	@Override
 	public void storeInBundle( Bundle bundle ) {
@@ -308,7 +308,7 @@ public class Armor extends EquipableItem {
 		}
 	}
 
-	public final int DRRoll() {
+	public int DRRoll() {
 		return Random.NormalIntRange(DRMin(),DRMax());
 	}
 	

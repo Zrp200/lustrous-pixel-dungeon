@@ -62,56 +62,172 @@ import com.zrp200.lustrouspixeldungeon.ui.Icons;
 import com.zrp200.lustrouspixeldungeon.ui.ItemSlot;
 import com.zrp200.lustrouspixeldungeon.ui.QuickSlotButton;
 
+import static com.zrp200.lustrouspixeldungeon.Dungeon.hero;
+
 public class WndBag extends WndTabbed {
 	
 	//only one wnditem can appear at a time
 	private static WndBag INSTANCE;
 	
 	//FIXME this is getting cumbersome, there should be a better way to manage this
-	public static enum Mode {
-		ALL,
-		UNIDENTIFED,
-		UNCURSABLE,
-		CURSABLE,
-		UPGRADEABLE,
-		QUICKSLOT,
-		FOR_SALE,
-		WEAPON,
-		ARMOR,
-		ENCHANTABLE,
-		WAND,
-		SEED,
-		FOOD,
-		POTION,
-		SCROLL,
-		UNIDED_POTION_OR_SCROLL,
-		CURSE_DETECTABLE,
-		EQUIPMENT,
-		TRANMSUTABLE,
-		ALCHEMY,
-		RECYCLABLE,
-		NOT_EQUIPPED
+	public enum Mode {
+		ALL	{
+			@Override
+			public boolean isValid(Item item) {
+				return true;
+			}
+		},
+		UNIDENTIFED	{
+			@Override
+			public boolean isValid(Item item) {
+				return !item.isIdentified();
+			}
+		},
+
+		UNCURSABLE	{
+			@Override
+			public boolean isValid(Item item) {
+				return ScrollOfRemoveCurse.uncursable(item);
+			}
+		},
+		CURSABLE {
+			@Override
+			public boolean isValid(Item item) {
+				return item instanceof EquipableItem || item instanceof Wand;
+			}
+		},
+		UPGRADEABLE {
+			@Override
+			public boolean isValid(Item item) {
+				return item.isUpgradable();
+			}
+		},
+		ENCHANTABLE {
+			@Override
+			public boolean isValid(Item item) {
+				return item.isEnchantable();
+			}
+		},
+		AUGMENTABLE {
+			@Override
+			public boolean isValid(Item item) {
+				return ENCHANTABLE.isValid(item) && !(item instanceof MissileWeapon);
+			}
+		},
+		QUICKSLOT {
+			@Override
+			public boolean isValid(Item item) {
+				return item.defaultAction != null;
+			}
+		},
+		NOT_EQUIPPED {
+			@Override
+			public boolean isValid(Item item) {
+				return !item.isEquipped(hero);
+			}
+		},
+		FOR_SALE {
+			@Override
+			public boolean isValid(Item item) {
+				return !item.unique && (item.price() > 0) && (NOT_EQUIPPED.isValid(item) || !item.cursed);
+			}
+		},
+
+		WEAPON {
+			@Override
+			public boolean isValid(Item item) {
+				return item instanceof MeleeWeapon;
+			}
+		},
+		ARMOR {
+			@Override
+			public boolean isValid(Item item) {
+				return item instanceof Armor;
+			}
+		},
+		WAND {
+			@Override
+			public boolean isValid(Item item) {
+				return item instanceof Wand;
+			}
+		},
+		SEED {
+			@Override
+			public boolean isValid(Item item) {
+				return item instanceof Seed;
+			}
+		},
+		FOOD {
+			@Override
+			public boolean isValid(Item item) {
+				return item instanceof Food;
+			}
+		},
+		POTION {
+			@Override public boolean isValid(Item item) {
+				return item instanceof Potion;
+			}	},
+		SCROLL {
+			@Override public boolean isValid(Item item) {
+				return item instanceof Scroll;
+			}	},
+
+		UNIDED_POTION_OR_SCROLL {
+			@Override
+			public boolean isValid(Item item) {
+				return UNIDENTIFED.isValid(item) && (SCROLL.isValid(item) || POTION.isValid(item)) ;
+			}	},
+		CURSE_DETECTABLE {
+			@Override
+			public boolean isValid(Item item) {
+				return StoneOfDetectCurse.canDetectCurse(item);
+			}
+		},
+		EQUIPMENT {
+			@Override
+			public boolean isValid(Item item) {
+				return item instanceof EquipableItem;
+			}
+		},
+		TRANMSUTABLE {
+			@Override
+			public boolean isValid(Item item) {
+				return item.transmute(true) != null;
+			}
+		},
+		ALCHEMY {
+			@Override
+			public boolean isValid(Item item) {
+				return Recipe.usableInRecipe(item);
+			}
+		},
+		RECYCLABLE {
+			@Override
+			public boolean isValid(Item item) {
+				return Recycle.isRecyclable(item);
+			}
+		};
+
+		public abstract boolean isValid(Item item);
 	}
 
-	private static final int COLS_P    = 4;
-	private static final int COLS_L    = 6;
 	
-	private static final int SLOT_WIDTH	= 28;
-	private static final int SLOT_HEIGHT	= 28;
-	private static final int SLOT_MARGIN	= 1;
-	
-	private static final int TITLE_HEIGHT	= 14;
-	
+	private static final int
+			COLS_P 		= 4,
+			COLS_L 		= 6,
+
+			SLOT_WIDTH	= 28,
+			SLOT_HEIGHT	= 28,
+			SLOT_MARGIN	= 1,
+
+			TITLE_HEIGHT	= 14;
+
 	private Listener listener;
 	private WndBag.Mode mode;
 	private String title;
 
-	private int nCols;
-	private int nRows;
-
-	protected int count;
-	protected int col;
-	protected int row;
+	private int nCols, nRows;
+	protected int count, col, row;
 	
 	private static Mode lastMode;
 	private static Bag lastBag;
@@ -144,7 +260,7 @@ public class WndBag extends WndTabbed {
 
 		resize( slotsWidth, slotsHeight + TITLE_HEIGHT );
 
-		Belongings stuff = Dungeon.hero.belongings;
+		Belongings stuff = hero.belongings;
 		Bag[] bags = {
 			stuff.backpack,
 			stuff.getItem( VelvetPouch.class ),
@@ -166,19 +282,19 @@ public class WndBag extends WndTabbed {
 	public static WndBag lastBag( Listener listener, Mode mode, String title ) {
 		
 		if (mode == lastMode && lastBag != null &&
-			Dungeon.hero.belongings.backpack.contains( lastBag )) {
+			hero.belongings.backpack.contains( lastBag )) {
 			
 			return new WndBag( lastBag, listener, mode, title );
 			
 		} else {
 			
-			return new WndBag( Dungeon.hero.belongings.backpack, listener, mode, title );
+			return new WndBag( hero.belongings.backpack, listener, mode, title );
 			
 		}
 	}
 
 	public static WndBag getBag( Class<? extends Bag> bagClass, Listener listener, Mode mode, String title ) {
-		Bag bag = Dungeon.hero.belongings.getItem( bagClass );
+		Bag bag = hero.belongings.getItem( bagClass );
 		return bag != null ?
 				new WndBag( bag, listener, mode, title ) :
 				lastBag( listener, mode, title );
@@ -212,7 +328,7 @@ public class WndBag extends WndTabbed {
 	private void placeItems(Bag container) {
 		
 		// Equipped items
-		Belongings stuff = Dungeon.hero.belongings;
+		Belongings stuff = hero.belongings;
 		placeItem( stuff.weapon != null ? stuff.weapon : new Placeholder( ItemSpriteSheet.WEAPON_HOLDER ) );
 		placeItem( stuff.armor != null ? stuff.armor : new Placeholder( ItemSpriteSheet.ARMOR_HOLDER ) );
 		placeItem( stuff.misc1 != null ? stuff.misc1 : new Placeholder( ItemSpriteSheet.RING_HOLDER ) );
@@ -367,8 +483,8 @@ public class WndBag extends WndTabbed {
 			super.item( item );
 			if (item != null) {
 
-				bg.texture( TextureCache.createSolid( item.isEquipped( Dungeon.hero ) ? EQUIPPED : NORMAL ) );
-				if (item.cursed && item.cursedKnown) {
+				bg.texture( TextureCache.createSolid( item.isEquipped( hero ) ? EQUIPPED : NORMAL ) );
+				if (item.visiblyCursed() ) {
 					bg.ra = +0.3f;
 					bg.ga = -0.15f;
 				} else if (!item.isIdentified()) {
@@ -383,30 +499,7 @@ public class WndBag extends WndTabbed {
 				if (item.name() == null) {
 					enable( false );
 				} else {
-					enable(
-						mode == Mode.FOR_SALE && !item.unique && (item.price() > 0) && (!item.isEquipped( Dungeon.hero ) || !item.cursed) ||
-						mode == Mode.UPGRADEABLE && item.isUpgradable() ||
-						mode == Mode.UNIDENTIFED && !item.isIdentified() ||
-						mode == Mode.UNCURSABLE && ScrollOfRemoveCurse.uncursable(item) ||
-						mode == Mode.CURSABLE && ((item instanceof EquipableItem && !(item instanceof MissileWeapon)) || item instanceof Wand) ||
-						mode == Mode.QUICKSLOT && (item.defaultAction != null) ||
-						mode == Mode.WEAPON && (item instanceof MeleeWeapon) ||
-						mode == Mode.ARMOR && (item instanceof Armor) ||
-						mode == Mode.ENCHANTABLE && item.isEnchantable() ||
-						mode == Mode.WAND && (item instanceof Wand) ||
-						mode == Mode.SEED && (item instanceof Seed) ||
-						mode == Mode.FOOD && (item instanceof Food) ||
-						mode == Mode.POTION && (item instanceof Potion) ||
-						mode == Mode.SCROLL && (item instanceof Scroll) ||
-						mode == Mode.UNIDED_POTION_OR_SCROLL && (!item.isIdentified() && (item instanceof Scroll || item instanceof Potion)) ||
-						mode == Mode.CURSE_DETECTABLE && StoneOfDetectCurse.canDetectCurse(item) ||
-						mode == Mode.EQUIPMENT && (item instanceof EquipableItem) ||
-						mode == Mode.ALCHEMY && Recipe.usableInRecipe(item) ||
-						mode == Mode.TRANMSUTABLE && ScrollOfTransmutation.canTransmute(item) ||
-						mode == Mode.NOT_EQUIPPED && !item.isEquipped(Dungeon.hero) ||
-						mode == Mode.RECYCLABLE && Recycle.isRecyclable(item) ||
-						mode == Mode.ALL
-					);
+					enable( mode.isValid(item) );
 				}
 			} else {
 				bg.color( NORMAL );
@@ -425,7 +518,7 @@ public class WndBag extends WndTabbed {
 
         @Override
 		protected void onClick() {
-			if (!lastBag.contains(item) && !item.isEquipped(Dungeon.hero)){
+			if (!lastBag.contains(item) && !item.isEquipped(hero)){
 
 				hide();
 

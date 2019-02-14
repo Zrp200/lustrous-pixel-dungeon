@@ -113,7 +113,7 @@ public abstract class EquipableItem extends Item {
 			onDetach();
 			Dungeon.quickslot.clearItem(this);
 			updateQuickslot();
-			if (collect) Dungeon.level.drop( this, hero.pos );
+			if (collect) drop(hero.pos);
 		}
 
 		return true;
