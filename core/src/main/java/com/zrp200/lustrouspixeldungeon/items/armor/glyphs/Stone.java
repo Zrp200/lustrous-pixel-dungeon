@@ -29,13 +29,14 @@ public class Stone extends Armor.Glyph {
 
 	private static ItemSprite.Glowing GREY = new ItemSprite.Glowing( 0x222222 );
 
-	public int reduceDamage(Armor armor, Char defender, Char attacker, boolean magicAttack, int damage) {
+	public int reduceDamage(Char defender, Char attacker, boolean magic, int damage) {
 		testing = true;
 		float
-			evasion 	= 	defender.defenseSkill(attacker) * ( 60 + armor.level() ) / 100f,
-			accuracy	=	attacker.attackSkill(defender) * (magicAttack ? 2 : 1);
+				evasion = defender.defenseSkill(attacker),
+				accuracy = attacker.attackSkill(defender);
 		testing = false;
-		
+		if(magic) accuracy *= 2;
+
 		float hitChance;
 		if (evasion >= accuracy){
 			hitChance = 1f - (1f - (accuracy/evasion))/2f;
@@ -43,8 +44,11 @@ public class Stone extends Armor.Glyph {
 			hitChance = 1f - (evasion/accuracy)/2f;
 		}
 
+		//75% of dodge chance is applied as damage reduction
+		hitChance = (1f + 3f*hitChance)/4f;
+
 		damage = (int)Math.ceil(damage * hitChance);
-		
+
 		return damage;
 	}
 

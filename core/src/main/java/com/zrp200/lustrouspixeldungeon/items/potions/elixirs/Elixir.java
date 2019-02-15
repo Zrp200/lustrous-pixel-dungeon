@@ -22,12 +22,18 @@
 package com.zrp200.lustrouspixeldungeon.items.potions.elixirs;
 
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
+import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.potions.Potion;
 
 public abstract class Elixir extends Potion {
 	
 	public abstract void apply( Hero hero );
-	
+
+	@Override
+	public Potion transmute(boolean dry) {
+		return null; // unsupported
+	}
+
 	@Override
 	public boolean isKnown() {
 		return true;

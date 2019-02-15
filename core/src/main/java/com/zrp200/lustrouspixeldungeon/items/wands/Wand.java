@@ -27,6 +27,7 @@ import com.watabou.utils.Callback;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Assets;
+import com.zrp200.lustrouspixeldungeon.Challenges;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
@@ -40,6 +41,7 @@ import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.actors.hero.HeroClass;
 import com.zrp200.lustrouspixeldungeon.actors.hero.HeroSubClass;
 import com.zrp200.lustrouspixeldungeon.effects.MagicMissile;
+import com.zrp200.lustrouspixeldungeon.items.Generator;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.bags.Bag;
 import com.zrp200.lustrouspixeldungeon.items.bags.MagicalHolster;
@@ -122,8 +124,14 @@ public abstract class Wand extends Item {
 			return false;
 		}
 	}
-	
-	public void gainCharge( float amt ){
+
+	@Override
+	public Wand transmute(boolean dry) {
+		Wand wand = (Wand) Generator.random( Generator.Category.WAND );
+		return (Challenges.isItemBlocked(wand) || getClass() == wand.getClass()) ? transmute(dry) : (Wand)wand.emulate(this);
+	}
+
+	public void gainCharge(float amt ){
 		partialCharge += amt;
 		while (partialCharge >= 1) {
 			curCharges = Math.min(maxCharges, curCharges+1);
@@ -389,10 +397,10 @@ public abstract class Wand extends Item {
 					Invisibility.dispel();
 					
 					if (curWand.cursed){
-						CursedWand.cursedZap(curWand, curUser, new Ballistica( curUser.pos, target, Ballistica.MAGIC_BOLT));
 						if (!curWand.cursedKnown){
 							GLog.n(Messages.get(Wand.class, "curse_discover", curWand.name()));
 						}
+						CursedWand.cursedZap(curWand, curUser, new Ballistica( curUser.pos, target, Ballistica.MAGIC_BOLT));
 					} else {
 						curWand.fx(shot, new Callback() {
 							public void call() {
@@ -424,7 +432,7 @@ public abstract class Wand extends Item {
 		private static final float SCALING_CHARGE_ADDITION = 40f;
 		private static final float NORMAL_SCALE_FACTOR = 0.875f;
 
-		private static final float CHARGE_BUFF_BONUS = 0.25f;
+		public static final float CHARGE_BUFF_BONUS = 0.25f;
 
 		float scalingFactor = NORMAL_SCALE_FACTOR;
 		

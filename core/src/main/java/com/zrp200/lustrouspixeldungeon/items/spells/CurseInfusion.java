@@ -49,7 +49,7 @@ public class CurseInfusion extends InventorySpell {
 		Sample.INSTANCE.play(Assets.SND_CURSED);
 		
 		item.cursed = true;
-		if (item instanceof MeleeWeapon || item instanceof SpiritBow) {
+		if (item instanceof Weapon && item.isEnchantable() ) {
 			Weapon w = (Weapon) item;
 			Class<? extends Weapon.Enchantment> curr = null;
 			if (w.enchantment != null) {

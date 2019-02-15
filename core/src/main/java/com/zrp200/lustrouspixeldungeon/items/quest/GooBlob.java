@@ -29,20 +29,22 @@ public class GooBlob extends Item {
 	{
 		image = ItemSpriteSheet.BLOB;
 		stackable = true;
+
+		value = 50;
 	}
 	
 	@Override
 	public boolean isUpgradable() {
 		return false;
 	}
-	
+
 	@Override
-	public boolean isIdentified() {
-		return true;
+	public Item transmute(boolean dry) {
+		return new MetalShard();
 	}
 
 	@Override
-	public int price() {
-		return quantity * 50;
+	public boolean isIdentified() {
+		return true;
 	}
 }

@@ -24,10 +24,12 @@ package com.zrp200.lustrouspixeldungeon.items.rings;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Badges;
+import com.zrp200.lustrouspixeldungeon.Challenges;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
+import com.zrp200.lustrouspixeldungeon.items.Generator;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.ItemStatusHandler;
 import com.zrp200.lustrouspixeldungeon.items.KindofMisc;
@@ -83,8 +85,14 @@ public abstract class Ring extends KindofMisc {
 	public static void initGems() {
 		handler = new ItemStatusHandler<>( (Class<? extends Ring>[])rings, gems );
 	}
-	
-	public static void save( Bundle bundle ) {
+
+	@Override
+	public Ring transmute(boolean dry) {
+		Ring n = (Ring) Generator.random( Generator.Category.RING );
+		return (Challenges.isItemBlocked(n) || n.getClass() == getClass()) ? transmute(dry) : (Ring)n.emulate(this);
+	}
+
+	public static void save(Bundle bundle ) {
 		handler.save( bundle );
 	}
 

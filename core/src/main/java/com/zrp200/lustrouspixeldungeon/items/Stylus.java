@@ -26,6 +26,7 @@ import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.effects.particles.PurpleParticle;
 import com.zrp200.lustrouspixeldungeon.items.armor.Armor;
+import com.zrp200.lustrouspixeldungeon.items.stones.StoneOfEnchantment;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
@@ -77,8 +78,13 @@ public class Stylus extends Item {
 	public boolean isIdentified() {
 		return true;
 	}
-	
-	private void inscribe( Armor armor ) {
+
+	@Override
+	public StoneOfEnchantment transmute(boolean dry) {
+		return new StoneOfEnchantment();
+	}
+
+	private void inscribe(Armor armor ) {
 
 		if (!armor.isIdentified() ){
 			GLog.w( Messages.get(this, "identify"));

@@ -42,6 +42,8 @@ public class ScrollOfUpgrade extends InventoryScroll {
 		initials = 11;
 		mode = WndBag.Mode.UPGRADEABLE;
 		unique = true;
+
+		value = 50;
 	}
 	
 	@Override
@@ -120,10 +122,5 @@ public class ScrollOfUpgrade extends InventoryScroll {
 	@Override
 	public void empoweredRead() {
 		//does nothing for now, this should never happen.
-	}
-	
-	@Override
-	public int price() {
-		return isKnown() ? 50 * quantity : super.price();
 	}
 }

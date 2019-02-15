@@ -23,6 +23,7 @@ package com.zrp200.lustrouspixeldungeon.items.stones;
 
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.armor.Armor;
+import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfTransmutation;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
@@ -38,8 +39,9 @@ import com.zrp200.lustrouspixeldungeon.windows.WndBag;
 public class StoneOfAugmentation extends InventoryStone {
 	
 	{
-		mode = WndBag.Mode.ENCHANTABLE;
+		mode = WndBag.Mode.AUGMENTABLE;
 		image = ItemSpriteSheet.STONE_AUGMENTATION;
+		value = 25;
 	}
 	
 	@Override
@@ -51,7 +53,7 @@ public class StoneOfAugmentation extends InventoryStone {
 	
 	public void apply( Weapon weapon, Weapon.Augment augment ) {
 		
-		weapon.augment = augment;
+		weapon.augment(augment);
 		useAnimation();
 		ScrollOfUpgrade.upgrade(curUser);
 		
@@ -62,11 +64,6 @@ public class StoneOfAugmentation extends InventoryStone {
 		armor.augment = augment;
 		useAnimation();
 		ScrollOfUpgrade.upgrade(curUser);
-	}
-	
-	@Override
-	public int price() {
-		return 30 * quantity;
 	}
 	
 	public class WndAugment extends Window {

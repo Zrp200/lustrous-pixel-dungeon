@@ -33,6 +33,7 @@ import com.zrp200.lustrouspixeldungeon.items.Recipe;
 import com.zrp200.lustrouspixeldungeon.items.bombs.Bomb;
 import com.zrp200.lustrouspixeldungeon.items.food.Blandfruit;
 import com.zrp200.lustrouspixeldungeon.items.food.Food;
+import com.zrp200.lustrouspixeldungeon.items.food.Meat;
 import com.zrp200.lustrouspixeldungeon.items.food.MeatPie;
 import com.zrp200.lustrouspixeldungeon.items.food.MysteryMeat;
 import com.zrp200.lustrouspixeldungeon.items.food.Pasty;
@@ -308,7 +309,7 @@ public class QuickRecipe extends Component {
 				result.add(null);
 				result.add(null);
 				result.add(new QuickRecipe( new MeatPie.Recipe(),
-						new ArrayList<Item>(Arrays.asList(new Pasty(), new Food(), new MysteryMeat.PlaceHolder())),
+						new ArrayList<Item>(Arrays.asList(new Pasty(), new Food(), new Meat.PlaceHolder())),
 						new MeatPie()));
 				result.add(null);
 				result.add(null);

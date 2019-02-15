@@ -67,9 +67,4 @@ public class ScrollOfRecharging extends Scroll {
 	public static void charge( Char target ) {
 		target.sprite.centerEmitter().burst( EnergyParticle.FACTORY, 15 );
 	}
-	
-	@Override
-	public int price() {
-		return isKnown() ? 30 * quantity : super.price();
-	}
 }

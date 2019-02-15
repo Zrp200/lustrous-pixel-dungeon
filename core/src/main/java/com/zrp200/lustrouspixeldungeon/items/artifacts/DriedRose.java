@@ -47,6 +47,7 @@ import com.zrp200.lustrouspixeldungeon.items.armor.Armor;
 import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.AntiMagic;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfRetribution;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
+import com.zrp200.lustrouspixeldungeon.items.weapon.melee.BlockingWeapon;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Boomerang;
 import com.zrp200.lustrouspixeldungeon.levels.Level;
@@ -469,7 +470,7 @@ public class DriedRose extends Artifact {
 		}
 		
 		@Override
-		protected Char chooseEnemy() {
+		protected Char chooseEnemy(boolean newEnemy) {
 			Char enemy = super.chooseEnemy();
 			
 			//will never attack something far from the player
@@ -587,8 +588,8 @@ public class DriedRose extends Artifact {
 			if (rose != null && rose.armor != null){
 				block += rose.armor.DRRoll();
 			}
-			if (rose != null && rose.weapon != null){
-				block += Random.NormalIntRange( 0, rose.weapon.defenseFactor( this ));
+			if (rose != null && rose.weapon instanceof BlockingWeapon){
+				block += rose.weapon.defenseFactor( this );
 			}
 			return block;
 		}

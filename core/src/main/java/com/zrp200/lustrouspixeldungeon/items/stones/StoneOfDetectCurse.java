@@ -34,6 +34,8 @@ public class StoneOfDetectCurse extends InventoryStone {
 	{
 		mode = WndBag.Mode.CURSE_DETECTABLE;
 		image = ItemSpriteSheet.STONE_CURSE;
+
+		value = 15;
 	}
 	
 	@Override

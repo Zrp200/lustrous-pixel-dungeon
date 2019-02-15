@@ -138,12 +138,17 @@ abstract public class Weapon extends KindOfWeapon {
 		return super.identify();
 	}
 
-	@Override
+    @Override
+    public Weapon clone() {
+        return (Weapon)super.clone();
+    }
+
+    @Override
 	public boolean isIdentified() {
 		return super.isIdentified() && enchantKnown;
 	}
 
-	private void revealEnchant() {
+	public void revealEnchant() {
 		enchantKnown = true;
 		ItemChange.show(Dungeon.hero,this);
 	}
@@ -165,15 +170,21 @@ abstract public class Weapon extends KindOfWeapon {
 			damage = enchantment.proc( this, attacker, defender, damage );
 		}
 		
-		if (!levelKnown && attacker == Dungeon.hero) {
+		if (attacker == Dungeon.hero) {
+			processHit();
+		}
+
+		return damage;
+	}
+
+	public void processHit() {
+		if (!levelKnown) {
 			if (--hitsToKnow <= 0) {
 				identify();
 				GLog.i( Messages.get(Weapon.class, "identify") );
 				Badges.validateItemLevelAquired( this );
 			}
 		}
-
-		return damage;
 	}
 
 	public String baseInfo() {
@@ -197,7 +208,8 @@ abstract public class Weapon extends KindOfWeapon {
 			info += "\n\n" + statsInfo();
 		return info;
 	}
-	@Override
+
+    @Override
 	public String info() {
 		String info = baseInfo();
 		switch (augment) {
@@ -315,6 +327,14 @@ abstract public class Weapon extends KindOfWeapon {
 		return hasEnchant(Projecting.class, owner) ? RCH+1 : RCH;
 	}
 
+	@Override
+	public int throwPos(Hero user, int dst, boolean assist) {
+		if (hasEnchant(Projecting.class, user)
+				&& !Dungeon.level.solid[dst] && Dungeon.level.distance(user.pos, dst) <= 5)
+			return dst;
+		return super.throwPos(user, dst, assist);
+	}
+
 	public int STRReq(){
 		return STRReq(level());
 	}
@@ -328,15 +348,17 @@ abstract public class Weapon extends KindOfWeapon {
 	
 	@SuppressWarnings("unchecked")
 	public Item upgrade(boolean enchant ) {
-		if ( enchant && ( enchantment == null || enchantment.curse() ) ){
-			enchant( Enchantment.random() );
-		} else if (!enchant && Random.Float() > Math.pow(0.9, level())){
-			enchant(null,false);
-		}
+		if ( enchant && ( enchantment == null || enchantment.curse() ) )
+			enchant(Enchantment.random());
+		else if (!enchant && Random.Float() > Math.pow(0.9, level()))
+			enchant(null, false);
 		
 		cursed = false;
 		
 		return super.upgrade();
+	}
+	public void augment(Augment augment) {
+		this.augment = augment;
 	}
 	
 	@Override
@@ -401,12 +423,12 @@ abstract public class Weapon extends KindOfWeapon {
 		return this;
 	}
 
-	public Weapon enchant( Enchantment ench) {
+	public final Weapon enchant( Enchantment ench ) {
 		return enchant(ench,true);
 	}
 
 	@SuppressWarnings("unchecked")
-	public Weapon enchant(boolean visible) {
+	public final Weapon enchant(boolean visible) {
 
 		Class<? extends Enchantment> oldEnchantment = enchantment != null ? enchantment.getClass() : null;
 		Enchantment ench = Enchantment.random( oldEnchantment );
@@ -414,7 +436,7 @@ abstract public class Weapon extends KindOfWeapon {
 		return enchant( ench, visible );
 	}
 
-	public Weapon enchant() {
+	public final Weapon enchant() {
 		return enchant(true);
 	}
 
@@ -428,7 +450,8 @@ abstract public class Weapon extends KindOfWeapon {
 		if(!(item instanceof Weapon)) return false;
 		Weapon w = (Weapon) item;
 		return super.isSimilar(item)
-				&& (enchantment == null ? w.enchantment == null : w.enchantment != null && enchantment.getClass().equals(w.enchantment.getClass()) );
+				&& (enchantment == null ? w.enchantment == null : w.enchantment != null && enchantment.getClass().equals(w.enchantment.getClass()) )
+				&& augment == w.augment;
 	}
 
 	//these are not used to process specific enchant effects, so magic immune doesn't affect them
@@ -467,8 +490,8 @@ abstract public class Weapon extends KindOfWeapon {
 		@SuppressWarnings("unchecked")
 		protected static final Class<?extends Weapon.Enchantment>[] curses = new Class[] {
 				Annoying.class,	Displacing.class, 	Exhausting.class,
-				Fragile.class, 	Sacrificial.class,	Wayward.class,
-				Elastic.class, 	Friendly.class,   	Chaotic.class
+				Sacrificial.class,	Wayward.class, 	Elastic.class,
+				Friendly.class,   	Chaotic.class, 	Fragile.class
 		};
 
 

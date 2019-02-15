@@ -26,14 +26,22 @@ import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
+import com.zrp200.lustrouspixeldungeon.actors.blobs.Blob;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.BlobImmunity;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.Mob;
 import com.zrp200.lustrouspixeldungeon.effects.CellEmitter;
 import com.zrp200.lustrouspixeldungeon.effects.Speck;
 import com.zrp200.lustrouspixeldungeon.items.Heap;
+import com.zrp200.lustrouspixeldungeon.items.Item;
+import com.zrp200.lustrouspixeldungeon.items.potions.PotionOfPurity;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Boomerang;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.utils.GLog;
+
+import static com.zrp200.lustrouspixeldungeon.Dungeon.boomerangsThisDepth;
+import static com.zrp200.lustrouspixeldungeon.Dungeon.level;
 
 public class TeleportationTrap extends Trap {
 
@@ -44,11 +52,15 @@ public class TeleportationTrap extends Trap {
 
 	@Override
 	public void activate() {
-
 		CellEmitter.get(pos).start(Speck.factory(Speck.LIGHT), 0.2f, 3);
 		Sample.INSTANCE.play( Assets.SND_TELEPORT );
+		teleportBlobs();
+		teleportChars();
+		teleportHeaps();
+	}
 
-		Char ch = Actor.findChar( pos);
+	private void teleportChars() {
+		Char ch = Actor.findChar(pos);
 		if (ch != null) {
 			if (ch instanceof Hero) {
 				ScrollOfTeleportation.teleportHero((Hero) ch);
@@ -56,46 +68,52 @@ public class TeleportationTrap extends Trap {
 				int count = 10;
 				int pos;
 				do {
-					pos = Dungeon.level.randomRespawnCell();
-					if (count-- <= 0) {
-						break;
-					}
+					pos = level.randomRespawnCell();
+					if (count-- <= 0) break;
 				} while (pos == -1);
-				
+
 				if (pos == -1 || Dungeon.bossLevel()) {
-					
+
 					GLog.w(Messages.get(ScrollOfTeleportation.class, "no_tele"));
-					
+
 				} else {
-					
+
 					ch.pos = pos;
 					if (ch instanceof Mob && ((Mob) ch).state == ((Mob) ch).HUNTING) {
 						((Mob) ch).state = ((Mob) ch).WANDERING;
 					}
 					ch.sprite.place(ch.pos);
-					ch.sprite.visible = Dungeon.level.heroFOV[pos];
-					
+					ch.sprite.visible = level.heroFOV[pos];
+
 				}
 			}
 		}
+	}
+	private void teleportHeaps() { // externalized logic because why not
+		for( Boomerang.Returning returning : boomerangsThisDepth() ) if(returning.pos == pos)
+			returning.boomerang.drop(pos); // it's gonna get teleported
 
-		Heap heap = Dungeon.level.heaps.get(this.pos);
-		int respawn = Dungeon.level.randomRespawnCell();
-		while (heap != null && respawn != -1) {
+		Heap heap = level.heaps.get(pos);
+		int respawn = level.randomRespawnCell();
+		while (heap != null && !heap.isEmpty() && respawn != -1) {
 			if (heap.type == Heap.Type.FOR_SALE) break;
 			if (heap.type == Heap.Type.HEAP) {
 				heap.pickUp().drop(respawn);
-				heap = Dungeon.level.heaps.get(this.pos);
-				respawn = Dungeon.level.randomRespawnCell();
+				heap = level.heaps.get(pos);
+				respawn = level.randomRespawnCell();
 			}
 			else {
-				Dungeon.level.heaps.remove(this.pos);
-				heap.pos = respawn;
+				level.heaps.remove(pos);
 				heap.seen = false;
-				Dungeon.level.heaps.put(respawn, heap);
+				level.heaps.put(heap.pos = respawn, heap);
 				heap.sprite.place(respawn);
 				break;
 			}
 		}
+	}
+	private void teleportBlobs() {
+		for( Blob blob : level.blobs.values() )
+			if( BlobImmunity.AFFECTED.contains( blob.getClass() ) )
+				blob.clear(pos);
 	}
 }

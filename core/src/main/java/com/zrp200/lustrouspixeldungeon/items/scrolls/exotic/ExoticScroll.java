@@ -100,7 +100,17 @@ public abstract class ExoticScroll extends Scroll {
 			updateQuickslot();
 		}
 	}
-	
+
+	@Override
+	public Scroll transmute(boolean dry) {
+		try {
+			return ExoticScroll.exoToReg.get( getClass() ).newInstance();
+		} catch ( Exception e ){
+			LustrousPixelDungeon.reportException(e);
+			return null;
+		}
+	}
+
 	@Override
 	public void reset() {
 		super.reset();
@@ -112,7 +122,7 @@ public abstract class ExoticScroll extends Scroll {
 	
 	@Override
 	public void empoweredRead() {
-	
+		doRead();
 	}
 	
 	@Override

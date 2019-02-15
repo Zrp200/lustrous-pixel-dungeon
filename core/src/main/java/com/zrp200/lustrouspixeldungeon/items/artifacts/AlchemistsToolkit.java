@@ -122,9 +122,9 @@ public class AlchemistsToolkit extends Artifact {
 		String result = Messages.get(this, "desc");
 
 		if (isEquipped(Dungeon.hero)) {
-			if (cursed)             result += "\n\n" + Messages.get(this, "desc_cursed");
-			else if (!alchemyReady) result += "\n\n" + Messages.get(this, "desc_warming");
-			else                    result += "\n\n" + Messages.get(this, "desc_hint");
+			if (cursed)                 result += "\n\n" + Messages.get(this, "desc_cursed");
+			else if (!alchemyReady)     result += "\n\n" + Messages.get(this, "desc_warming");
+			else if(level() < levelCap) result += "\n\n" + Messages.get(this, "desc_hint");
 		}
 		
 		return result;

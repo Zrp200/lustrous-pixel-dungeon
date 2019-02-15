@@ -21,15 +21,8 @@
 
 package com.zrp200.lustrouspixeldungeon.items.bombs;
 
-import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.PathFinder;
-import com.zrp200.lustrouspixeldungeon.Assets;
-import com.zrp200.lustrouspixeldungeon.Dungeon;
-import com.zrp200.lustrouspixeldungeon.actors.blobs.Blob;
-import com.zrp200.lustrouspixeldungeon.actors.blobs.Electricity;
-import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
+import com.zrp200.lustrouspixeldungeon.levels.traps.StormTrap;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
-import com.zrp200.lustrouspixeldungeon.utils.BArray;
 
 public class ShockBomb extends Bomb {
 	
@@ -40,14 +33,7 @@ public class ShockBomb extends Bomb {
 	@Override
 	public void explode(int cell) {
 		super.explode(cell);
-		
-		PathFinder.buildDistanceMap( cell, BArray.not( Dungeon.level.solid, null ), 2 );
-		for (int i = 0; i < PathFinder.distance.length; i++) {
-			if (PathFinder.distance[i] < Integer.MAX_VALUE) {
-				GameScene.add(Blob.seed(i, 20, Electricity.class));
-			}
-		}
-		Sample.INSTANCE.play(Assets.SND_LIGHTNING);
+		new StormTrap().set(cell).activate();
 	}
 	
 	@Override

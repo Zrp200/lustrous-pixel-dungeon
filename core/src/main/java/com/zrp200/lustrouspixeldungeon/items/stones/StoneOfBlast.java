@@ -28,6 +28,7 @@ public class StoneOfBlast extends Runestone {
 	
 	{
 		image = ItemSpriteSheet.STONE_BLAST;
+		value = 20;
 	}
 	
 	@Override

@@ -344,7 +344,18 @@ public class Potion extends Item {
 	public boolean isKnown() {
 		return anonymous || (handler != null && handler.isKnown( this ));
 	}
-	
+
+	@SuppressWarnings("ConstantConditions")
+	@Override
+	public Potion transmute(boolean dry) {
+		try {
+			return ExoticPotion.regToExo.get( getClass() ).newInstance();
+		} catch (Exception e) {
+			LustrousPixelDungeon.reportException(e);
+			return null;
+		}
+	}
+
 	public void setKnown() {
 		if (!anonymous) {
 			if (!isKnown()) {

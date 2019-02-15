@@ -36,6 +36,7 @@ import com.zrp200.lustrouspixeldungeon.actors.buffs.Light;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.MindVision;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.actors.hero.HeroClass;
+import com.zrp200.lustrouspixeldungeon.actors.hero.HeroSubClass;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.Mob;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.npcs.Ghost;
@@ -45,12 +46,14 @@ import com.zrp200.lustrouspixeldungeon.items.Ankh;
 import com.zrp200.lustrouspixeldungeon.items.Generator;
 import com.zrp200.lustrouspixeldungeon.items.Heap;
 import com.zrp200.lustrouspixeldungeon.items.Item;
+import com.zrp200.lustrouspixeldungeon.items.TomeOfMastery;
 import com.zrp200.lustrouspixeldungeon.items.artifacts.DriedRose;
 import com.zrp200.lustrouspixeldungeon.items.potions.Potion;
 import com.zrp200.lustrouspixeldungeon.items.rings.Ring;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.Scroll;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.zrp200.lustrouspixeldungeon.items.weapon.SpiritBow;
+import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Cord;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Gloves;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Boomerang;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.darts.TippedDart;
@@ -397,36 +400,7 @@ public class Dungeon {
 		hero.viewDistance = light == null ? level.viewDistance : Math.max( Light.DISTANCE, level.viewDistance );
 		
 		hero.curAction = hero.lastAction = null;
-		
-		//pre-0.7.1 saves. Adjusting for spirit bows in weapon slot or with upgrades.
-		SpiritBow bow;
-		if (hero.belongings.weapon instanceof SpiritBow){
-			bow = (SpiritBow)hero.belongings.weapon;
-			hero.belongings.weapon = null;
-
-			if (!bow.collect()){
-				level.drop(bow, hero.pos);
-			}
-		} else {
-			bow = hero.belongings.getItem(SpiritBow.class);
-		}
-
-		//pre-0.7.1 saves. refunding upgrades previously spend on a boomerang
-		if (bow != null && bow.spentUpgrades() > 0){
-			ScrollOfUpgrade refund = new ScrollOfUpgrade();
-			refund.quantity(bow.spentUpgrades());
-			bow.level(0);
-
-			//to prevent exploits, some SoU are lost in the conversion of a boomerang higher than +1
-			if (refund.quantity() > 1){
-				refund.quantity(1 + (int)Math.floor((refund.quantity()-1)*0.8f));
-			}
-
-			if (!refund.collect()){
-				level.drop(refund, hero.pos);
-			}
-		}
-
+		// Level-switching version logic here
 		observe();
 		try {
 			saveAll();
@@ -665,16 +639,31 @@ public class Dungeon {
 				versionItems.add((Item)item);
 			}
 		}
-		if(version <= LustrousPixelDungeon.v001 && hero.heroClass == HeroClass.HUNTRESS) {
-			//try to add normally, force-add otherwise.
-			versionItems.add(new SpiritBow());
-			versionItems.add(new Gloves());
-		}
-		for(Item item : versionItems) {
-			//try to add normally, force-add otherwise.
-			if (!((Item) item).collect(hero.belongings.backpack)) {
-				hero.belongings.backpack.items.add((Item) item);
+
+		Gloves gloves = new Gloves();
+		Cord cord = hero.belongings.getItem(Cord.class);
+		if(cord != null) gloves.emulate(cord);
+
+		if(hero.heroClass == HeroClass.HUNTRESS) { // "implement" 0.1.0 changes to the best of our ability
+			if(version <= LustrousPixelDungeon.v001) {
+				versionItems.add( new SpiritBow() );
+				versionItems.add( gloves );
 			}
+			if(hero.subClass == HeroSubClass.WARLOCK || hero.subClass == HeroSubClass.FREERUNNER)
+				versionItems.add( new TomeOfMastery() );
+		}
+
+		for(Item item : versionItems) {
+			item.identify();
+			if(item == gloves && hero.belongings.weapon == cord) {
+				hero.belongings.weapon = gloves; // replace
+			}
+			//try to add normally, force-add otherwise.
+			else if (!item.collect(hero.belongings.backpack)) {
+				hero.belongings.backpack.items.add( item );
+			}
+			if(item == gloves && cord != null) 	cord.detach(hero.belongings.backpack);
+			if(item instanceof SpiritBow) 		quickslot.setSlot( 0, item );
 		}
 
 		gold = bundle.getInt( GOLD );

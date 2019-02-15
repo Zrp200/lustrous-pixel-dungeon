@@ -54,7 +54,7 @@ public class Bag extends Item implements Iterable<Item> {
 	
 	public int size = 20;
 
-	private void acquire() {
+	public void acquire() {
 		if(limitedDrop != null) limitedDrop.drop();
 	}
 	public boolean dropped() {

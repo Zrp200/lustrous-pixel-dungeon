@@ -45,6 +45,7 @@ public class StoneOfClairvoyance extends Runestone {
 	
 	{
 		image = ItemSpriteSheet.STONE_CLAIRVOYANCE;
+		value = 40/3f;
 	}
 	
 	@Override

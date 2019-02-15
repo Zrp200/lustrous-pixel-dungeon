@@ -125,12 +125,15 @@ public class Notes {
 	
 	public static class KeyRecord extends Record {
 		
-		protected Key key;
+		protected Key key=null;
 		
 		KeyRecord(Key key){
 			this.key = key;
 		}
-		
+
+		@SuppressWarnings("unused")
+		KeyRecord() { } // to PREVENT CRASHES
+
 		@Override
 		public int depth() {
 			return key.depth;

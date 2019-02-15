@@ -26,6 +26,7 @@ import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
+import com.watabou.utils.PathFinder;
 import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.Badges;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
@@ -50,7 +51,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class Item implements Bundlable {
+public class Item implements Bundlable, Cloneable {
 
 	private static final String TXT_TO_STRING_LVL		= "%s %+d";
 	private static final String TXT_TO_STRING_X		= "%s x%d";
@@ -67,6 +68,10 @@ public class Item implements Bundlable {
 	
 	protected String name = Messages.get(this, "name");
 	public int image = 0;
+
+	public ItemSprite sprite() {
+		return new ItemSprite(this);
+	}
 	
 	public boolean stackable = false;
 	protected int quantity = 1;
@@ -97,8 +102,8 @@ public class Item implements Bundlable {
 		actions.add( AC_THROW );
 		return actions;
 	}
-	
-	public boolean doPickUp( Hero hero ) {
+
+	public boolean doPickUp(Hero hero ) {
 		if (collect( hero.belongings.backpack )) {
 			
 			GameScene.pickUp( this, hero.pos );
@@ -162,15 +167,22 @@ public class Item implements Bundlable {
 	
 	//takes two items and merges them (if possible)
 	public Item merge( Item other ){
-		if (isSimilar( other )){
+		if (isSimilar( other ) && other != this){
 			quantity += other.quantity;
 			other.quantity = 0;
 		}
 		return this;
 	}
 
-	public Heap drop(int pos) {
-		Heap heap = Dungeon.level.drop(this,pos);
+	public Item transmute(boolean dry) {
+		return null;
+	}
+	public final Item transmute() {
+		return transmute(false);
+	}
+
+	public synchronized Heap drop(int pos) {
+		Heap heap = Dungeon.level.drop(quantity > 0 && !curUser.belongings.contains(this) ? this : null,pos);
 		if(!heap.isEmpty()) heap.sprite.drop();
 		return heap;
 	}
@@ -179,7 +191,7 @@ public class Item implements Bundlable {
 		ArrayList<Item> items = container.items;
 		
 		if (items.contains( this )) {
-			return true;
+			return false;
 		}
 		
 		for (Item item:items) {
@@ -220,7 +232,27 @@ public class Item implements Bundlable {
 	public final boolean collect() {
 		return collect( Dungeon.hero.belongings.backpack );
 	}
-	
+
+
+    // basically a copy constructor, but it can write over pretty much anything...
+	public Item emulate(Item item) {
+	    Bundle copy = new Bundle();
+	    item.storeInBundle(copy);
+	    restoreFromBundle(copy);
+        return this;
+    }
+
+    @Override
+    public Item clone() {
+        try {
+            Item clone = (Item)super.clone();
+            return clone.emulate(this);
+        } catch (Exception e) {
+            LustrousPixelDungeon.reportException(e);
+            return null;
+        }
+    }
+
 	//returns a new item if the split was sucessful and there are now 2 items, otherwise null
 	public Item split( int amount ){
 		if (amount <= 0 || amount >= quantity()) {
@@ -229,10 +261,7 @@ public class Item implements Bundlable {
 			try {
 				
 				//pssh, who needs copy constructors?
-				Item split = getClass().newInstance();
-				Bundle copy = new Bundle();
-				this.storeInBundle(copy);
-				split.restoreFromBundle(copy);
+				Item split = clone();
 				split.quantity(amount);
 				quantity -= amount;
 				
@@ -342,7 +371,7 @@ public class Item implements Bundlable {
 		return levelKnown ? level : 0;
 	}
 	
-	protected boolean visiblyCursed() {
+	public boolean visiblyCursed() {
 		return cursed && cursedKnown;
 	}
 	
@@ -429,9 +458,9 @@ public class Item implements Bundlable {
 		return this;
 	}
 
-	protected float basePrice;
+	protected float value;
 	public int price() {
-		return Math.round(basePrice*quantity);
+		return Math.max(Math.round(value*quantity),1);
 	}
 	
 	public Item virtual(){
@@ -501,8 +530,18 @@ public class Item implements Bundlable {
 		}
 	}
 
-	public int throwPos( Hero user, int dst){
-		return new Ballistica( user.pos, dst, Ballistica.PROJECTILE ).collisionPos;
+	//FIXME: this is currently very expensive, should either optimize Ballistica or this, or both
+	public int throwPos( Hero user, int dst, boolean assist){
+		int collisionPos = new Ballistica( user.pos, dst, Ballistica.PROJECTILE ).collisionPos; //first try to directly target
+		if(collisionPos != dst && assist) for (int i = 0; i < PathFinder.distance.length; i++) 	//Otherwise pick nearby tiles to try and 'angle' the shot, auto-aim basically.
+			if (PathFinder.distance[i] < Integer.MAX_VALUE
+					&& throwPos(Dungeon.hero, i, false) == dst)
+				return dst;
+		return collisionPos;
+	}
+
+	public int throwPos(Hero user, int dst) {
+		return throwPos(user,dst,true);
 	}
 	
 	public void cast( final Hero user, final int dst ) {

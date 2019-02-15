@@ -55,4 +55,8 @@ public abstract class Brew extends Potion {
 		return true;
 	}
 
+	@Override
+	public Potion transmute(boolean dry) {
+		return null;
+	}
 }

@@ -25,6 +25,7 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.PathFinder;
 import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
+import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.Blob;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.BlobImmunity;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
@@ -40,13 +41,10 @@ import java.util.ArrayList;
 public class PotionOfPurity extends Potion {
 	
 	private static final int DISTANCE	= 3;
-	
-	private static ArrayList<Class> affectedBlobs;
+
 
 	{
 		initials = 9;
-		
-		affectedBlobs = new ArrayList<>(new BlobImmunity().immunities());
 	}
 
 	@Override
@@ -55,7 +53,7 @@ public class PotionOfPurity extends Potion {
 		PathFinder.buildDistanceMap( cell, BArray.not( Dungeon.level.solid, null ), DISTANCE );
 		
 		ArrayList<Blob> blobs = new ArrayList<>();
-		for (Class c : affectedBlobs){
+		for (Class c : BlobImmunity.AFFECTED ){
 			Blob b = Dungeon.level.blobs.get(c);
 			if (b != null && b.volume > 0){
 				blobs.add(b);

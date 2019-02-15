@@ -37,6 +37,7 @@ public class StoneOfDeepenedSleep extends Runestone {
 	
 	{
 		image = ItemSpriteSheet.STONE_SLEEP;
+		value = 40/3f;
 	}
 	
 	@Override

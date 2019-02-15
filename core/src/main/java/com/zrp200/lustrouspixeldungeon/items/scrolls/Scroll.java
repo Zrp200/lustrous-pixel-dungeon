@@ -103,6 +103,7 @@ public abstract class Scroll extends Item {
 	{
 		stackable = true;
 		defaultAction = AC_READ;
+		value = DEFAULT_PRICE;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -159,7 +160,17 @@ public abstract class Scroll extends Item {
 		}
 	}
 
-    @Override
+	@Override
+	public Scroll transmute(boolean dry) {
+		try {
+			return ExoticScroll.regToExo.get(getClass()).newInstance();
+		} catch ( Exception e ){
+			LustrousPixelDungeon.reportException(e);
+			return null;
+		}
+	}
+
+	@Override
 	public ArrayList<String> actions( Hero hero ) {
 		ArrayList<String> actions = super.actions( hero );
 		actions.add( AC_READ );
@@ -261,10 +272,19 @@ public abstract class Scroll extends Item {
 	public static boolean allKnown() {
 		return handler.known().size() == scrolls.length;
 	}
-	
+
+	private static final float DEFAULT_PRICE = 30f;
 	@Override
 	public int price() {
-		return 30 * quantity;
+		float trueValue = value;
+		int price;
+		try {
+			if(!isIdentified()) value = 30;
+			price = super.price();
+		} finally {
+			value = trueValue;
+		}
+		return price;
 	}
 	
 	public static class ScrollToStone extends Recipe {

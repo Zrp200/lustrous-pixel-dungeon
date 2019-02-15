@@ -27,8 +27,11 @@ import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
+import com.zrp200.lustrouspixeldungeon.items.Generator;
+import com.zrp200.lustrouspixeldungeon.items.Heap;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.KindofMisc;
+import com.zrp200.lustrouspixeldungeon.items.bags.Bag;
 import com.zrp200.lustrouspixeldungeon.items.rings.RingOfEnergy;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.utils.GLog;
@@ -124,6 +127,7 @@ public class Artifact extends KindofMisc {
 		upgrade(Math.round((float)(transferLvl*levelCap)/10));
 	}
 
+
 	@Override
 	public String info() {
 		if (visiblyCursed() && !isEquipped( Dungeon.hero )) {
@@ -166,6 +170,12 @@ public class Artifact extends KindofMisc {
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
+	public Artifact transmute(boolean dry) {
+		Artifact artifact = Generator.randomArtifact(!dry); // this makes it so that testing this method won't hurt anything
+		return artifact == null ? null : (Artifact)artifact.emulate(this);
+	}
+
 	//converts class names to be more concise and readable.
 	protected String convertName(String className){
 		//removes known redundant parts of names.
@@ -193,13 +203,10 @@ public class Artifact extends KindofMisc {
 		int price = 100;
 		if (level() > 0)
 			price += 20*visiblyUpgraded();
-		if (cursed && cursedKnown) {
+		if ( visiblyCursed() ) {
 			price /= 2;
 		}
-		if (price < 1) {
-			price = 1;
-		}
-		return price;
+		return Math.max(price,1);
 	}
 
 

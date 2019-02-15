@@ -36,6 +36,7 @@ public class StoneOfAffection extends Runestone {
 	
 	{
 		image = ItemSpriteSheet.STONE_AFFECTION;
+		value = 12.5f;
 	}
 	
 	@Override

@@ -26,7 +26,7 @@ import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 
 public class RingOfTenacity extends Ring {
-	private static final float BONUS_SCALING = 0.85f;
+	private static final float BONUS_SCALING = 0.8f;
 
 	@Override
 	protected RingBuff buff() {
@@ -67,7 +67,6 @@ public class RingOfTenacity extends Ring {
 		return level;
 	}
 
-	public class Tenacity extends RingBuff {
-	}
+	private class Tenacity extends RingBuff { }
 }
 

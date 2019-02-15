@@ -29,6 +29,7 @@ public class MetalShard extends Item {
 	{
 		image = ItemSpriteSheet.SHARD;
 		stackable = true;
+		value = 100;
 	}
 	
 	@Override
@@ -40,9 +41,9 @@ public class MetalShard extends Item {
 	public boolean isIdentified() {
 		return true;
 	}
-	
+
 	@Override
-	public int price() {
-		return quantity * 100;
+	public Item transmute(boolean dry) {
+		return new GooBlob();
 	}
 }

@@ -21,13 +21,17 @@
 
 package com.zrp200.lustrouspixeldungeon.items.weapon.melee;
 
+import com.watabou.utils.Random;
+import com.zrp200.lustrouspixeldungeon.Challenges;
+import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
+import com.zrp200.lustrouspixeldungeon.items.Generator;
 import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
 
 public class MeleeWeapon extends Weapon {
 
 	{
-		basePrice = 20;
+		value = 20;
 	}
 
 	public int minScale() 	{ return 1;          }
@@ -41,16 +45,27 @@ public class MeleeWeapon extends Weapon {
 		return (8 + tier * 2) - (int)(Math.sqrt(8 * lvl + 1) - 1)/2;
 	}
 
-	public int defenseFactor(Char owner, int level) {
-		return 0;
-	}
-	public int defenseFactor(Char owner) {
-		return defenseFactor(owner, level());
+	@Override
+	public Weapon transmute(boolean dry) {
+		Generator.Category c = Generator.wepTiers[tier - 1];
+		Weapon w;
+		try {
+			w = (MeleeWeapon) c.classes[Random.chances(c.probs)].newInstance();
+		} catch (Exception e) {
+			LustrousPixelDungeon.reportException(e);
+			return null;
+		}
+		return (Challenges.isItemBlocked(w) || w.getClass() == getClass()) ? transmute(dry) : (Weapon) w.emulate(this);
 	}
 
 	public static class Uncommon extends MeleeWeapon { // because this is used so often
 		@Override public int maxBase() {
 			return 4*(tier+1);
+		}
+	}
+	public static class Accurate extends Uncommon {
+		@Override public float accuracyFactor(Char owner) {
+			return super.accuracyFactor(owner) * 0.04f *(35-tier);
 		}
 	}
 

@@ -35,6 +35,7 @@ import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.actors.hero.HeroSubClass;
 import com.zrp200.lustrouspixeldungeon.effects.CellEmitter;
 import com.zrp200.lustrouspixeldungeon.effects.particles.LeafParticle;
+import com.zrp200.lustrouspixeldungeon.items.Generator;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.levels.Level;
 import com.zrp200.lustrouspixeldungeon.levels.Terrain;
@@ -172,7 +173,14 @@ public abstract class Plant implements Bundlable {
 		public boolean isIdentified() {
 			return true;
 		}
-		
+
+		@Override
+		public Seed transmute(boolean dry) {
+			Seed seed;
+			seed = (Plant.Seed) Generator.random( Generator.Category.SEED );
+			return getClass() == seed.getClass() ? transmute(dry) : seed;
+		}
+
 		@Override
 		public int price() {
 			return 10 * quantity;

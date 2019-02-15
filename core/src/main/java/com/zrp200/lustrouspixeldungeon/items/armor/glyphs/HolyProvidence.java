@@ -22,12 +22,8 @@ public class HolyProvidence extends Armor.Glyph {
 
     @SuppressWarnings("unchecked")
     private static HashMap<Class<?extends FlavourBuff>,Integer> procEffects = new HashMap() {
-        {
-            put(AdrenalineSurge.class, 20);
-            put(Recharging.class,      18);
-            put(FrostImbue.class,      15);
-            put(EarthImbue.class,      14);
-            put(Haste.class,           12);
+        { // keys are buff types, values are duration
+            put(FrostImbue.class,      12);
             put(Bless.class,           10);
             put(Adrenaline.class,       8);
         }
@@ -41,11 +37,9 @@ public class HolyProvidence extends Armor.Glyph {
     @SuppressWarnings({"unchecked", "ConstantConditions"})
     @Override
     public int proc(Armor armor, Char attacker, Char defender, int damage) {
-        int level = Math.max(0,armor.level());
         Class<? extends FlavourBuff> buffClass = (Class<?extends FlavourBuff>)Random.oneOf( procEffects.keySet().toArray() );
-        if(Random.Int(30+level) >= 28) {
+        if(Random.Int(armor.level()+38) >= 40) {
             Buff.prolong(defender, buffClass, Random.Int(6, procEffects.get(buffClass)));
-            if(buffClass == Recharging.class) Recharging.showVFX(defender);
         }
         return damage;
     }

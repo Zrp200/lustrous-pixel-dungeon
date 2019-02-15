@@ -595,7 +595,7 @@ public class Generator {
 	}
 
 	//enforces uniqueness of artifacts throughout a run.
-	public static Artifact randomArtifact() {
+	public static Artifact randomArtifact(boolean remove) {
 
 		try {
 			Category cat = Category.ARTIFACT;
@@ -609,11 +609,11 @@ public class Generator {
 			@SuppressWarnings("unchecked")
 			Class<?extends Artifact> art = (Class<? extends Artifact>) cat.classes[i];
 
-			if (removeArtifact(art)) {
+			if (!remove || removeArtifact(art)) {
 				Artifact artifact = art.newInstance();
 				
 				artifact.random();
-				if(Challenges.isItemBlocked(artifact)) return randomArtifact(); // honestly gets two birds with one stone here
+				if(Challenges.isItemBlocked(artifact)) return randomArtifact(remove); // honestly gets two birds with one stone here
 				return artifact;
 			} else {
 				return null;
@@ -623,6 +623,9 @@ public class Generator {
 			LustrousPixelDungeon.reportException(e);
 			return null;
 		}
+	}
+	public static Artifact randomArtifact() {
+		return randomArtifact(true);
 	}
 
 	public static boolean removeArtifact(Class<?extends Artifact> artifact) {

@@ -93,7 +93,18 @@ public class ExoticPotion extends Potion {
 	public boolean isKnown() {
 		return anonymous || (handler != null && handler.isKnown( exoToReg.get(this.getClass()) ));
 	}
-	
+
+	@SuppressWarnings("ConstantConditions")
+	@Override
+	public Potion transmute(boolean dry) {
+		try {
+			return ExoticPotion.exoToReg.get( getClass() ).newInstance();
+		} catch (Exception e) {
+			LustrousPixelDungeon.reportException(e);
+			return null;
+		}
+	}
+
 	@Override
 	public void setKnown() {
 		if (!isKnown()) {

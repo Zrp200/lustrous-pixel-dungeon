@@ -60,6 +60,7 @@ import com.zrp200.lustrouspixeldungeon.items.bags.ScrollHolder;
 import com.zrp200.lustrouspixeldungeon.items.bags.VelvetPouch;
 import com.zrp200.lustrouspixeldungeon.items.potions.Potion;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Boomerang;
 import com.zrp200.lustrouspixeldungeon.journal.Journal;
 import com.zrp200.lustrouspixeldungeon.levels.RegularLevel;
 import com.zrp200.lustrouspixeldungeon.levels.traps.Trap;
@@ -974,6 +975,13 @@ public class GameScene extends PixelScene {
 			names.add(Messages.titleCase( heap.toString() ));
 		}
 
+		for( Boomerang.Returning returning : Dungeon.boomerangsThisDepth() ) {
+			if(returning.pos == cell && Dungeon.level.heroFOV[cell]) {
+				objects.add(returning.boomerang);
+				names.add( returning.boomerang.toString() );
+			}
+		}
+
 		Plant plant = Dungeon.level.plants.get( cell );
 		if (plant != null) {
 			objects.add(plant);
@@ -992,7 +1000,7 @@ public class GameScene extends PixelScene {
 			examineObject(objects.get(0));
 		} else {
 			GameScene.show(new WndOptions(Messages.get(GameScene.class, "choose_examine"),
-					Messages.get(GameScene.class, "multiple_examine"), names.toArray(new String[names.size()])){
+					Messages.get(GameScene.class, "multiple_examine"), names.toArray( new String[ names.size() ] ) ) {
 				@Override
 				protected void onSelect(int index) {
 					examineObject(objects.get(index));
@@ -1005,8 +1013,10 @@ public class GameScene extends PixelScene {
 	private static void examineObject(Object o){
 		if (o == Dungeon.hero){
 			GameScene.show( new WndHero() );
-		} else if ( o instanceof Mob ){
+		} else if ( o instanceof Mob ) {
 			GameScene.show(new WndInfoMob((Mob) o));
+		} else if ( o instanceof Boomerang ) {
+			GameScene.show(new WndInfoItem((Item) o));
 		} else if ( o instanceof Heap ){
 			Heap heap = (Heap)o;
 			if (heap.type == Heap.Type.FOR_SALE && heap.size() == 1 && heap.peek().price() > 0) {

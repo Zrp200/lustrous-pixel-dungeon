@@ -60,7 +60,7 @@ public class CursingTrap extends Trap {
 		Heap heap = Dungeon.level.heaps.get( pos );
 		if (heap != null){
 			for (Item item : heap.items){
-				if (item.isUpgradable() && !(item instanceof MissileWeapon))
+				if (item.isUpgradable())
 					curse(item);
 			}
 		}
@@ -125,7 +125,8 @@ public class CursingTrap extends Trap {
 		if (item instanceof Weapon){
 			Weapon w = (Weapon) item;
 			if (w.enchantment == null){
-				w.enchant(Weapon.Enchantment.randomCurse(),w.enchantKnown && w.isEquipped(Dungeon.hero));
+				w.enchantment = Weapon.Enchantment.randomCurse(); // this bypasses missile weapon mechanics
+				Weapon.updateQuickslot();
 			}
 		}
 		if (item instanceof Armor){

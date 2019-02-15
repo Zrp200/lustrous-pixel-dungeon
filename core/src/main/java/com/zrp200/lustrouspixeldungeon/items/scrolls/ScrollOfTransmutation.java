@@ -21,31 +21,12 @@
 
 package com.zrp200.lustrouspixeldungeon.items.scrolls;
 
-import com.watabou.utils.Random;
-import com.zrp200.lustrouspixeldungeon.Challenges;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
-import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
 import com.zrp200.lustrouspixeldungeon.effects.ItemChange;
 import com.zrp200.lustrouspixeldungeon.items.EquipableItem;
-import com.zrp200.lustrouspixeldungeon.items.Generator;
 import com.zrp200.lustrouspixeldungeon.items.Item;
-import com.zrp200.lustrouspixeldungeon.items.Stylus;
-import com.zrp200.lustrouspixeldungeon.items.artifacts.Artifact;
-import com.zrp200.lustrouspixeldungeon.items.potions.Potion;
-import com.zrp200.lustrouspixeldungeon.items.potions.brews.Brew;
-import com.zrp200.lustrouspixeldungeon.items.potions.elixirs.Elixir;
-import com.zrp200.lustrouspixeldungeon.items.potions.exotic.ExoticPotion;
-import com.zrp200.lustrouspixeldungeon.items.rings.Ring;
-import com.zrp200.lustrouspixeldungeon.items.scrolls.exotic.ExoticScroll;
-import com.zrp200.lustrouspixeldungeon.items.stones.Runestone;
-import com.zrp200.lustrouspixeldungeon.items.stones.StoneOfEnchantment;
-import com.zrp200.lustrouspixeldungeon.items.wands.Wand;
-import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
-import com.zrp200.lustrouspixeldungeon.items.weapon.melee.MagesStaff;
-import com.zrp200.lustrouspixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.zrp200.lustrouspixeldungeon.journal.Catalog;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
-import com.zrp200.lustrouspixeldungeon.plants.Plant;
 import com.zrp200.lustrouspixeldungeon.utils.GLog;
 import com.zrp200.lustrouspixeldungeon.windows.WndBag;
 
@@ -54,233 +35,44 @@ public class ScrollOfTransmutation extends InventoryScroll {
 	{
 		initials = 10;
 		mode = WndBag.Mode.TRANMSUTABLE;
-		
-		bones = true;
-		unique = true;
+
+		value = 50;
 	}
 	
 	public static boolean canTransmute(Item item){
-		return item instanceof MeleeWeapon ||
-				(item instanceof Potion && !(item instanceof Elixir || item instanceof Brew)) ||
-				item instanceof Scroll ||
-				item instanceof Ring ||
-				item instanceof Wand ||
-				item instanceof Plant.Seed ||
-				item instanceof Runestone ||
-				item instanceof Artifact
-                || item instanceof Stylus;
+		return item != null && item.transmute(true) != null;
 	}
 	
 	@Override
 	protected void onItemSelected(Item item) {
-		
-		Item result;
-		
-		if (item instanceof MagesStaff) {
-			result = changeStaff( (MagesStaff)item );
-		} else if (item instanceof MeleeWeapon) {
-			result = changeWeapon( (MeleeWeapon)item );
-		} else if (item instanceof Scroll) {
-			result = changeScroll( (Scroll)item );
-		} else if (item instanceof Potion) {
-			result = changePotion( (Potion)item );
-		} else if (item instanceof Ring) {
-			result = changeRing( (Ring)item );
-		} else if (item instanceof Wand) {
-			result = changeWand( (Wand)item );
-		} else if (item instanceof Plant.Seed) {
-			result = changeSeed((Plant.Seed) item);
-		} else if (item instanceof Runestone) {
-			result = changeStone((Runestone) item);
-		} else if (item instanceof Artifact) {
-			result = changeArtifact((Artifact) item);
-		} else if(item instanceof Stylus) {
-			result = new StoneOfEnchantment();
-		} else {
-			result = null;
-		}
-		
-		if (result == null){
+
+		Item result = canTransmute(item) ? item.transmute() : null;
+
+		if (result == null) {
 			//This shouldn't ever trigger
-			GLog.n( Messages.get(this, "nothing") );
-			curItem.collect( curUser.belongings.backpack );
+			GLog.n(Messages.get(this, "nothing"));
+			curItem.collect(curUser.belongings.backpack);
 		} else {
-			if (item.isEquipped(Dungeon.hero)){
+			if (item.isEquipped(curUser)) {
 				item.cursed = false; //to allow it to be unequipped
-				((EquipableItem)item).doUnequip(Dungeon.hero, false);
-				((EquipableItem)result).doEquip(Dungeon.hero);
+				((EquipableItem) item).doUnequip(curUser, false);
+				((EquipableItem) result).doEquip(curUser);
 			} else {
-				item.detach(Dungeon.hero.belongings.backpack);
-				if (!result.collect()){
-					Dungeon.level.drop(result, curUser.pos).sprite.drop();
+				item.detach(curUser.belongings.backpack);
+				if (!result.collect()) {
+					result.drop(curUser.pos);
 				}
 			}
-			if (result.isIdentified()){
+			if (result.isIdentified()) {
 				Catalog.setSeen(result.getClass());
 			}
 			//GLog.p( Messages.get(this, "morph") );
-			ItemChange.show(Dungeon.hero,result);
+			ItemChange.show(Dungeon.hero, result);
 		}
-		
-	}
-	
-	public static MagesStaff changeStaff( MagesStaff staff ){
-		Class<?extends Wand> wandClass = staff.wandClass();
-		
-		if (wandClass == null){
-			return null;
-		} else {
-			Wand n;
-			do {
-				n = (Wand) Generator.random(Generator.Category.WAND);
-			} while (Challenges.isItemBlocked(n) || n.getClass() == wandClass);
-			n.level(0);
-			staff.imbueWand(n, null);
-		}
-		
-		return staff;
-	}
-	
-	public static Weapon changeWeapon(MeleeWeapon w ) {
-		
-		Weapon n;
-		Generator.Category c = Generator.wepTiers[w.tier-1];
-		
-		do {
-			try {
-				n = (MeleeWeapon)c.classes[Random.chances(c.probs)].newInstance();
-			} catch (Exception e) {
-				LustrousPixelDungeon.reportException(e);
-				return null;
-			}
-		} while (Challenges.isItemBlocked(n) || n.getClass() == w.getClass());
-		
-		int level = w.level();
-		if (level > 0) {
-			n.upgrade( level );
-		} else if (level < 0) {
-			n.degrade( -level );
-		}
-		
-		n.enchantment = w.enchantment;
-		n.levelKnown = w.levelKnown;
-		n.cursedKnown = w.cursedKnown;
-		n.cursed = w.cursed;
-		n.augment = w.augment;
-		
-		return n;
-		
-	}
-	
-	public static Ring changeRing( Ring r ) {
-		Ring n;
-		do {
-			n = (Ring)Generator.random( Generator.Category.RING );
-		} while (Challenges.isItemBlocked(n) || n.getClass() == r.getClass());
-		
-		n.level(0);
-		
-		int level = r.level();
-		if (level > 0) {
-			n.upgrade( level );
-		} else if (level < 0) {
-			n.degrade( -level );
-		}
-		
-		n.levelKnown = r.levelKnown;
-		n.cursedKnown = r.cursedKnown;
-		n.cursed = r.cursed;
-		
-		return n;
-	}
-	
-	public static Artifact changeArtifact( Artifact a ) {
-		Artifact n = Generator.randomArtifact();
-		
-		if (n != null && !Challenges.isItemBlocked(n)){
-			n.cursedKnown = a.cursedKnown;
-			n.cursed = a.cursed;
-			n.levelKnown = a.levelKnown;
-			n.transferUpgrade(a.visiblyUpgraded());
-			return n;
-		}
-		
-		return null;
-	}
-	
-	public static Wand changeWand( Wand w ) {
-		
-		Wand n;
-		do {
-			n = (Wand)Generator.random( Generator.Category.WAND );
-		} while ( Challenges.isItemBlocked(n) || n.getClass() == w.getClass());
-		
-		n.level( 0 );
-		n.upgrade( w.level() );
-		
-		n.levelKnown = w.levelKnown;
-		n.cursedKnown = w.cursedKnown;
-		n.cursed = w.cursed;
-		
-		return n;
-	}
-	
-	public static Plant.Seed changeSeed( Plant.Seed s ) {
-		
-		Plant.Seed n;
-		
-		do {
-			n = (Plant.Seed)Generator.random( Generator.Category.SEED );
-		} while (n.getClass() == s.getClass());
-		
-		return n;
 	}
 
-	private Runestone changeStone( Runestone r ) {
-
-		Runestone n;
-
-		do {
-			n = (Runestone) Generator.random( Generator.Category.STONE );
-		} while (n.getClass() == r.getClass());
-
-		return n;
-	}
-	
-	@SuppressWarnings({"SuspiciousMethodCalls", "ConstantConditions"})
-	public static Scroll changeScroll(Scroll s ) {
-		try {
-			if (s instanceof ExoticScroll) {
-				return ExoticScroll.exoToReg.get(s.getClass()).newInstance();
-			} else {
-				return ExoticScroll.regToExo.get(s.getClass()).newInstance();
-			}
-		} catch ( Exception e ){
-			LustrousPixelDungeon.reportException(e);
-			return null;
-		}
-	}
-	
-	public static Potion changePotion( Potion p ) {
-		try {
-			if (p instanceof ExoticPotion) {
-				return ExoticPotion.exoToReg.get(p.getClass()).newInstance();
-			} else {
-				return ExoticPotion.regToExo.get(p.getClass()).newInstance();
-			}
-		} catch ( Exception e ){
-			LustrousPixelDungeon.reportException(e);
-			return null;
-		}
-	}
-	
 	@Override
 	public void empoweredRead() {
 		//does nothing, this shouldn't happen
-	}
-	
-	@Override
-	public int price() {
-		return isKnown() ? 50 * quantity : super.price();
 	}
 }

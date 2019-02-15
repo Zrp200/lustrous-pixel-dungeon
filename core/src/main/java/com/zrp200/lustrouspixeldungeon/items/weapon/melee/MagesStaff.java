@@ -28,11 +28,13 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.Badges;
+import com.zrp200.lustrouspixeldungeon.Challenges;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.actors.hero.HeroSubClass;
 import com.zrp200.lustrouspixeldungeon.effects.particles.ElmoParticle;
+import com.zrp200.lustrouspixeldungeon.items.Generator;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.bags.Bag;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfRecharging;
@@ -41,6 +43,7 @@ import com.zrp200.lustrouspixeldungeon.items.wands.WandOfCorrosion;
 import com.zrp200.lustrouspixeldungeon.items.wands.WandOfCorruption;
 import com.zrp200.lustrouspixeldungeon.items.wands.WandOfDisintegration;
 import com.zrp200.lustrouspixeldungeon.items.wands.WandOfRegrowth;
+import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
@@ -65,6 +68,7 @@ public class MagesStaff extends MeleeWeapon.Uncommon {
 		image = ItemSpriteSheet.MAGES_STAFF;
 
 		tier = 1;
+		value = 0;
 
 		defaultAction = AC_ZAP;
 		usesTargeting = true;
@@ -124,6 +128,15 @@ public class MagesStaff extends MeleeWeapon.Uncommon {
 	}
 
 	@Override
+	public MagesStaff transmute(boolean dry) {
+		if (wandClass() == null) return null;
+		Wand n = (Wand) Generator.random(Generator.Category.WAND);
+		n.level(0);
+		MagesStaff staff = dry ? (MagesStaff)clone() : this;
+		return Challenges.isItemBlocked(n) || wandClass().isInstance(n) ? transmute(dry) : staff.imbueWand(n,null);
+	}
+
+	@Override
 	public int proc(Char attacker, Char defender, int damage) {
 		if (wand != null &&
 				attacker instanceof Hero && ((Hero)attacker).subClass == HeroSubClass.BATTLEMAGE) {
@@ -162,7 +175,7 @@ public class MagesStaff extends MeleeWeapon.Uncommon {
 		if (wand != null) wand.stopCharging();
 	}
 
-	public Item imbueWand(Wand wand, Char owner){
+	public MagesStaff imbueWand(Wand wand, Char owner){
 
 		wand.cursed = false;
 		this.wand = null;
@@ -297,11 +310,6 @@ public class MagesStaff extends MeleeWeapon.Uncommon {
 			wand.maxCharges = Math.min(wand.maxCharges + 1, 10);
 			name = Messages.get(wand, "staff_name");
 		}
-	}
-
-	@Override
-	public int price() {
-		return 0;
 	}
 
 	private final WndBag.Listener itemSelector = new WndBag.Listener() {

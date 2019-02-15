@@ -40,10 +40,9 @@ public class Vorpal extends Weapon.Enchantment {
 		// lvl 1 - 50%
 		// lvl 2 - 60%
 		int level = Math.max( 0, weapon.level() );
-
-		if (Random.Int( level + 3 ) >= 2) {
-
-			Buff.affect(defender, Bleeding.class).set(damage/5f);
+		float bleed = damage/5f;
+		if (Random.Int( level + 3 ) >= 2 && Math.round(bleed) > 0) {
+			Buff.affect(defender, Bleeding.class).afflict(bleed);
 			Splash.at( defender.sprite.center(), -PointF.PI / 2, PointF.PI / 6,
 					defender.sprite.blood(), 10 );
 

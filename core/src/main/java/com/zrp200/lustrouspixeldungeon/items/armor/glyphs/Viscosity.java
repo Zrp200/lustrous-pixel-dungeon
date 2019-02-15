@@ -45,21 +45,12 @@ public class Viscosity extends Glyph {
 
 		//FIXME this glyph should really just proc after DR is accounted for.
 		//should build in functionality for that, but this works for now
-		int realDamage, level;
-		if(armor != null) {
-			realDamage = damage - Random.NormalIntRange(armor.DRMin(), armor.DRMax());
-			if (realDamage <= 0) {
-				return 0;
-			}
-			level = Math.max(0, armor.level());
-		} else {
-			realDamage = damage;
-			level = Random.Int(19); // true evil
-		}
+		int 	realDamage = Math.max(damage - armor.DRRoll(), 0),
+				level = armor.level();
 		
 		float percent = (level+1)/(float)(level+6);
 		int amount = (int)Math.ceil(realDamage * percent);
-
+		if(amount == 0) return damage;
 		DeferedDamage deferred = Buff.affect( defender, DeferedDamage.class );
 		deferred.prolong( amount );
 		

@@ -66,8 +66,7 @@ public abstract class RegularLevel extends Level {
 	
 	private Builder builder;
 	
-	Room roomEntrance;
-	Room roomExit;
+	Room roomEntrance, roomExit;
 	
 	public int secretDoors;
 	
@@ -160,7 +159,7 @@ public abstract class RegularLevel extends Level {
 	protected int nTraps() {
 		return Random.NormalIntRange( 1, 3+(Dungeon.depth/3) );
 	}
-	
+
 	protected Class<?>[] trapClasses(){
 		return new Class<?>[]{WornDartTrap.class};
 	}
@@ -168,7 +167,7 @@ public abstract class RegularLevel extends Level {
 	protected float[] trapChances() {
 		return new float[]{1};
 	}
-	
+
 	@Override
 	public int nMobs() {
 		switch(Dungeon.depth) {
@@ -298,10 +297,10 @@ public abstract class RegularLevel extends Level {
 	protected void createItems() {
 		
 		// drops 3/4/5 items 60%/30%/10% of the time
-		int nItems = 3 + Random.chances(new float[]{6, 3, 1});
+		int nItems = 3 + Random.chances(6, 3, 1);
 		
 		for (int i=0; i < nItems; i++) {
-			Heap.Type type = null;
+			Heap.Type type;
 			switch (Random.Int( 20 )) {
 			case 0:
 				type = Heap.Type.SKELETON;
@@ -432,21 +431,8 @@ public abstract class RegularLevel extends Level {
 			Room room = randomRoom( StandardRoom.class );
 			if (room != null && room != roomEntrance) {
 				int pos = pointToCell(room.random());
-				if (passable[pos]
-						&& pos != exit
-						&& heaps.get(pos) == null) {
-					
-					Trap t = traps.get(pos);
-					
-					//items cannot spawn on traps which destroy items
-					if (t == null ||
-							! (t instanceof BurningTrap || t instanceof BlazingTrap
-							|| t instanceof ChillingTrap || t instanceof FrostTrap
-							|| t instanceof ExplosiveTrap || t instanceof DisintegrationTrap)) {
-						
-						return pos;
-					}
-				}
+				if (passable[pos] && pos != exit && heaps.get(pos) == null && traps.get(pos) == null)
+					return pos;
 			}
 		}
 	}

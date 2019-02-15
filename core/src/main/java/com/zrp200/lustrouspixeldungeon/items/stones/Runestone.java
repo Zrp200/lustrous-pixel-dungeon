@@ -22,6 +22,7 @@
 package com.zrp200.lustrouspixeldungeon.items.stones;
 
 import com.zrp200.lustrouspixeldungeon.Dungeon;
+import com.zrp200.lustrouspixeldungeon.items.Generator;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
 
@@ -30,6 +31,8 @@ public abstract class Runestone extends Item {
 	{
 		stackable = true;
 		defaultAction = AC_THROW;
+
+		value = 10;
 	}
 	
 	@Override
@@ -52,10 +55,12 @@ public abstract class Runestone extends Item {
 	public boolean isIdentified() {
 		return true;
 	}
-	
+
+	@SuppressWarnings("ConstantConditions")
 	@Override
-	public int price() {
-		return 10 * quantity;
+	public Runestone transmute(boolean dry) {
+		Runestone stone = (Runestone) Generator.random( Generator.Category.STONE );
+		return getClass() == stone.getClass() ? transmute(dry) : stone;
 	}
 	
 	public static class PlaceHolder extends Runestone {

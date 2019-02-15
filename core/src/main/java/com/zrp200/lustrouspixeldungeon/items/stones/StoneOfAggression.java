@@ -37,6 +37,8 @@ public class StoneOfAggression extends Runestone {
 	
 	{
 		image = ItemSpriteSheet.STONE_AGGRESSION;
+
+		value = 40/3f;
 	}
 	
 	@Override

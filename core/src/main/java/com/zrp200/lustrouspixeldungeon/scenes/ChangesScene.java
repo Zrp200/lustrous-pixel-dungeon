@@ -34,7 +34,6 @@ import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.Badges;
 import com.zrp200.lustrouspixeldungeon.Chrome;
 import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
-import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Bleeding;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Charm;
@@ -48,6 +47,7 @@ import com.zrp200.lustrouspixeldungeon.effects.BadgeBanner;
 import com.zrp200.lustrouspixeldungeon.items.Ankh;
 import com.zrp200.lustrouspixeldungeon.items.Generator;
 import com.zrp200.lustrouspixeldungeon.items.Item;
+import com.zrp200.lustrouspixeldungeon.items.TomeOfMastery;
 import com.zrp200.lustrouspixeldungeon.items.armor.LeatherArmor;
 import com.zrp200.lustrouspixeldungeon.items.armor.MailArmor;
 import com.zrp200.lustrouspixeldungeon.items.armor.PlateArmor;
@@ -58,22 +58,22 @@ import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.HolyProvidence;
 import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.Stone;
 import com.zrp200.lustrouspixeldungeon.items.bags.MagicalHolster;
 import com.zrp200.lustrouspixeldungeon.items.bombs.TeleportationBomb;
-import com.zrp200.lustrouspixeldungeon.items.keys.IronKey;
-import com.zrp200.lustrouspixeldungeon.items.keys.SkeletonKey;
+import com.zrp200.lustrouspixeldungeon.items.food.Meat;
 import com.zrp200.lustrouspixeldungeon.items.rings.RingOfEnergy;
 import com.zrp200.lustrouspixeldungeon.items.rings.RingOfForce;
 import com.zrp200.lustrouspixeldungeon.items.rings.RingOfFuror;
 import com.zrp200.lustrouspixeldungeon.items.rings.RingOfWealth;
 import com.zrp200.lustrouspixeldungeon.items.wands.WandOfCorruption;
 import com.zrp200.lustrouspixeldungeon.items.wands.WandOfRegrowth;
+import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Chaotic;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Elastic;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Chilling;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Eldritch;
+import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Gauntlet;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Gloves;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Longsword;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Quarterstaff;
-import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Sai;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Shortsword;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Sword;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Bolas;
@@ -86,6 +86,7 @@ import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.plants.Earthroot;
 import com.zrp200.lustrouspixeldungeon.plants.Starflower;
 import com.zrp200.lustrouspixeldungeon.sprites.CharSprite;
+import com.zrp200.lustrouspixeldungeon.sprites.ElementalSprite;
 import com.zrp200.lustrouspixeldungeon.sprites.GnollTricksterSprite;
 import com.zrp200.lustrouspixeldungeon.sprites.HeroSprite;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSprite;
@@ -93,6 +94,7 @@ import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
 import com.zrp200.lustrouspixeldungeon.sprites.KingSprite;
 import com.zrp200.lustrouspixeldungeon.sprites.ShamanSprite;
 import com.zrp200.lustrouspixeldungeon.sprites.ShieldedSprite;
+import com.zrp200.lustrouspixeldungeon.sprites.ShopkeeperSprite;
 import com.zrp200.lustrouspixeldungeon.sprites.StatueSprite;
 import com.zrp200.lustrouspixeldungeon.sprites.SuccubusSprite;
 import com.zrp200.lustrouspixeldungeon.sprites.TenguSprite;
@@ -110,21 +112,26 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import static com.zrp200.lustrouspixeldungeon.ui.Icons.*;
+import static com.zrp200.lustrouspixeldungeon.ui.Icons.CHALLENGE_ON;
+import static com.zrp200.lustrouspixeldungeon.ui.Icons.DEPTH;
+import static com.zrp200.lustrouspixeldungeon.ui.Icons.LANGS;
+import static com.zrp200.lustrouspixeldungeon.ui.Icons.PREFS;
+import static com.zrp200.lustrouspixeldungeon.ui.Icons.get;
 
 //TODO: update this class with relevant info as new versions come out.
 public class ChangesScene extends PixelScene {
 
 	public enum Milestone {
+		LUST010 ("Lustrous v0.1.0",		 2,14,2019),
 		LUST001 ("Lustrous v0.0.1",		12,20,2018),
 		LUST000b("Lustrous v0.0.0b",	12, 6,2018),
 		LUST000a("Lustrous v0.0.0a",  	12, 4,2018),
 		LUST000 ("Lustrous v0.0.0",		12, 1,2018),
 
+		SHPD071d("Shattered v0.7.1d",	 1,18,2019),
 		SHPD071b("Shattered v0.7.1b", 	12,30,2018),
 		SHPD071 ("Shattered v0.7.1",	12,18,2018),
 		SHPD070 ("Shattered v0.7.0",	10,18,2018);
-
 
 		private String name;
 		private Date releaseDate;
@@ -169,68 +176,237 @@ public class ChangesScene extends PixelScene {
 
 	private static final ArrayList<ChangeInfo> infos = new ArrayList<ChangeInfo>();
 
-	private void add002Changes() throws InstantiationException, IllegalAccessException {
-		new ChangeInfo("v0.0.2-BETA",true);
-		new ChangeInfo("BETA-4",false).addButtons(
-				new ChangeButton(new ItemSprite(new Longsword().enchant(new Eldritch())), "Eldritch").appendList(
-						"now applies more terror (now 15 base + 2.5*level) and can stack it like bleeding.",
-						"vertigo base duration boosted by 2."
-				),
-				new ChangeButton( new Starflower.Seed(), "Gives recharging to wardens again; only now realized why it did so in the first place."),
+	private void add010Changes() throws IllegalAccessException {
+		MissileWeapon enchantedMissile;
+		do {
+			try {
+				enchantedMissile = (MissileWeapon)Random.oneOf(Random.oneOf(Generator.misTiers).classes).newInstance();
+			} catch (InstantiationException invalid) { enchantedMissile = null; } // keep trying until we get something that works
+		} while(enchantedMissile instanceof Boomerang || enchantedMissile instanceof ObsidianKnife || enchantedMissile == null);
+		//noinspection unchecked
+		enchantedMissile.enchantment = MissileWeapon.Enchantment.random();
+		enchantedMissile.enchantKnown = true;
 
-				new ChangeButton( new ItemSprite(ItemSpriteSheet.MISSILE_HOLDER),"Tipped Darts").appendList(
-						"Incendiary darts no longer instantly break when thrown on a flammable tile",
-						"Rot darts are now affected by durability; all durability boosts are ~73% less effective on it, however."
+		new ChangeInfo("v0.1.0",true);
+		new ChangeInfo(ChangeInfo.Template.NEW_CONTENT).addButtons(
+				addDeveloperCommentary(
+						Milestone.LUST010,
+						Messages.get(WelcomeScene.class,"update_msg"),
+						Milestone.SHPD071d,
+						Milestone.LUST001,
+						Milestone.SHPD071
 				),
-				new ChangeButton( new ItemSprite( new IronKey() ),"Lockpicking",
-						"I'm aware of a bug where keys are not spawning, but I can't figure out what's causing it exactly. However, I do realize that this bug can be game-ending, so I've done some... temporary measures to ward against this:").appendList(
-						"If this bug manifests on a depth, " +
-								"the hero will now be able to pick all locks on that depth that correspond with the key type that went missing.")
-						.appendLine("\nThis change should prevent the bug from destroying runs, making this bug far more observable than it would be otherwise. This change is retroactive, so runs that previously had this issue will now be able to go back and open previously inaccessible doors."),
-				ChangeButton.misc(
-						"Cursed Wand effect \"Shock and Recharge\" now uses storm trap effect rather than shocking trap",
-						"Bleeding now stacks upon itself more randomly than in BETA-2"
-				),
-				ChangeButton.bugfix(
-					"Recharging vfx giving too many particles or none at all (caused by BETA-3).",
-					"MM shamans stopping game execution (I think).",
-					"Shopkeeper not dropping bags (not retroactive unfort).",
-					"Missile weapon bugs not truely getting fixed by BETA-3.",
-					"Swarm intelligence messing with terror.",
-					"Armor enchants showing their vfx when forcefully identified (eg by well or scroll)."
-				)
-		);
-		new ChangeInfo("BETA-3",false).addButtons(
-				new ChangeButton( new Boomerang(), "In addition to now working properly, " +
-						"the boomerang has been greatly modified:").appendList(
-								"Durability nerfs reverted.", "Now returns to the user on a delay, " +
-								"moving 3 tiles per turn.", "Scaling now +2/+2.", "Now has completed description."),
-				new ChangeButton( new ItemSprite(new PlateArmor().inscribe(new HolyProvidence())), "Holy Providence")
-						.appendList("Proc rate boosted to 1/15 base",
-								"Can now grant haste (12), earth imbue (14), frost imbue (16), recharging (18), and adrenaline surge (20) in addition to previous effects"),
-				new ChangeButton( get(SHPX), "Implemented Shattered 0.7.1d","Will release shattered changelog later."),
-				ChangeButton.bugfix(
-						"Invincible Swarms","All attacks by hero ignoring evasion of enemy","Anti-magic not working properly with sad ghost"
-				)
-
-		);
-		new ChangeInfo("BETA-2",false).addButtons(
-				// new content
-				new ChangeButton( new Boomerang() )
-						.append("Added another missile weapon, this time for tier-3 missiles:")
-						.appendLine( "Stats" )
+				new ChangeButton(new InfernalTrap().getImage(),
+						"Traps",
+						"Added two new traps: the Infernal and Blizzard traps!\n").appendList(
+								"Mirror infernal and blizzard brews, respectively",
+								"Scaling is identical to toxic gas trap's","They appear starting in caves."),
+				new ChangeButton(new Image(Assets.SHPD),"Implemented Shattered v0.7.1")
 						.appendList(
-								"Deals 3-10 damage with +1/+2 scaling",
-								"8 base uses",
-								"Durability scaling via upgrades reduced by ~46% (3 --> 1.625)",
-								"Durability boost from enchantments is 1.3125x"),
+								"Huntress implemented; in-game runs will gain a spirit bow and have access to 0.7.1 subclasses",
+								"Stone glyph implemented.",
+								"Upgradable missile weapons implemented",
+								"New blocking weapon descriptions not implemented",
+								"Teleportation trap change not implemented"),
+				new ChangeButton(new Boomerang(), "The boomerang returns as a tier-3 missile weapon!\n")
+							.appendList(
+									"4-10 damage @ +2/+2 scaling.",
+									"8 durability at base.\n",
+									"Attempts to return to the position it was thrown from over the course of a few turns.\n",
+									"Moves 1.5 tiles per turn when returning, but will speed up if " +
+											"necessary to return to its original position within three turns.\n",
+									"Can hit enemies while returning, does not benefit from subclass perks or missile weapon-specific accuracy modifiers while doing so.\n",
+									"Can be caught early by intercepting its flight path.\n",
+									"Original Idea Credit: _00-Evan_"),
+					new ChangeButton(new ObsidianKnife()).appendList(
+									"Tier-4 missile weapon",
+									"6-18 damage @ +2/+4 scaling",
+									"When surprise attacking, deals at least 50% of max-min to max (this is identical to Assassin's Blade mechanics).",
+									"5 durability at base.\n",
+									"Sprite Credit: _ConsideredHamster_")
+							.appendLine("\nBoth this and the boomerang drop more rarely than their counterparts (1/8 of their respective tiers' drops), and are also worth slightly more."),
 				new ChangeButton(
-						new ItemSprite(
-								((MissileWeapon)Random.oneOf(Random.oneOf(Generator.misTiers).classes).newInstance()).enchant()
-						), "Enchantable Missile Weapons!")
+						enchantedMissile.sprite(), "Enchantable Missile Weapons!")
 						.appendLine("Missile Weapons can now be enchanted! ")
 						.append("Enchanting a missile weapon will enchant ONE missile of that stack, ")
 						.append("boosting durability by 50% as well as adding an enchantment."),
+				new ChangeButton(
+						new ItemSprite(ItemSpriteSheet.MISSILE_HOLDER),"Darts").appendList(
+						"can now be untipped via alchemy with no additional costs\n",
+						"can now be upgraded, boosting their tipped durability in addition to their regular damage.\n",
+						"can be enchanted just like other weapons, but this will not increase their durability.\n",
+						"once again dropped by remains\n")
+		);
+		new ChangeInfo(ChangeInfo.Template.BUFFS).addButtons(
+				new ChangeButton(
+						new ItemSprite( new PlateArmor().inscribe( new HolyProvidence() ) ),
+						"Glyphs and Enchantments")
+							.append("_Holy Providence_")
+							.appendList(
+									"Proc Rate is now (2+level)/(40+level).",
+									"Successful procs will bestow one of Bless (6-10 turns), Adrenaline (6-8 turns), " +
+											"or Frost Imbue (6-12 turns) upon the wearer with equal chances for each.",
+									"Durations are uniformly distributed")
+							.appendLine("\n_Eldritch_").appendList(
+									"now applies more terror (now 15 base + 2.5*level) and can stack it like bleeding.",
+									"vertigo base duration boosted by 2.")
+							.appendLine("_Chaotic_")
+							.appendList(
+									"Displacing and Displacement now occupy the same curse 'slot'.",
+									"Viscosity now incorporates armor properly"),
+				new ChangeButton(
+						new ItemSprite( new TomeOfMastery() ),
+						"Subclasses")
+							.append("_Sniper_")
+							.appendList(
+									"Now always ignores armor when using missile weapons, even at point-blank range.",
+									"Sniper Shot always surprise attacks (visual change).")
+							.appendLine("\n_Gladiator_")
+							.appendList("Each hit of fury now rolls twice.",
+									"The higher of the two will be applied to the target.")
+							.appendLine("\n_Assassin_")
+							.appendList("Blinking now considers the reach of the user's weapon."),
+				new ChangeButton(new ShopkeeperSprite(),"Runestone Prices").appendList(
+				        "Augmentation now sells for 25g (down from 30g)",
+                        "Blast now sells for 20g (up from 10g)",
+                        "Affection and aggression now sell for 12.5g (rounded to 13g usually, up from 10g).",
+                        "Deepened sleep and stones of clairvoyance now sell for 13.33g (rounded to 13g usually, up from 10g)",
+                        "Detect curse and shock now sell for 15g (up from 10g)."
+                ),
+				new ChangeButton(new Meat.PlaceHolder()).appendList(
+						"Frozen carpaccio and chargrilled meat now restore 200 points of satiety, up from 150.\n",
+						"Stewed meat is now worth 6g, up from 5g.",
+						"Stewed meat can now be frozen and burned."
+				),
+				new ChangeButton(new ElementalSprite(), "Mobs").appendList(
+						"Bosses are now immune to amok.",
+						"Elementals now resist bleeding.",
+						"Tengu now resists burning.",
+						"Fetid rat now considered acidic",
+						"Rot heart now always produces gas when damaged."
+				),
+				new ChangeButton(
+						new ToxicImbue().getLargeIcon(), "Buffs")
+							.append("_Toxic Imbue_")
+							.appendList(
+									"Less toxic gas is produced the closer the buff is to expiring.",
+									"Characters imbued with toxicity now resist Corrosion and Caustic Ooze.")
+							.appendLine()
+							.appendLine("_Bleeding, Caustic Ooze_").appendList(
+									"Now can stack, albeit inconsistently.",
+									"They can add up to 2/3 of their intended duration onto durations."),
+				new ChangeButton(
+						new ItemSprite(ItemSpriteSheet.SCROLL_YNGVI),
+						"Scroll of Transmutation").appendList(
+								"Thrown weapons can now be transmuted into another of the same tier, albeit one at a time.",
+								"Darts cannot be transmuted in this update",
+								"Goo blobs and cursed metal shards can be transmuted into each other"),
+				ChangeButton.misc(
+						"Tenacity general effectiveness boosted by 6.25% (0.85 --> 0.8)",
+						"Teleport traps (and bombs) now clear blobs in their teleport radii",
+						"Electricity now recharges wands in inventory passively (identical to recharging)",
+						"Cursed Wand effect \"Shock and Recharge\" now uses storm trap effect rather than shocking trap.",
+						"Warden now gets regular effect from earthroot in addition to unique one.",
+						"Earthroot now roots enemies for 5 turns when trampled.",
+						"Rot darts now are affected by durability boosts, albeit ~73% less effective than normal"
+				)
+		);
+		new ChangeInfo(ChangeInfo.Template.CHANGES).addButtons(
+				new ChangeButton(
+						HeroSprite.avatar(HeroClass.HUNTRESS,0),
+						"Huntress",
+						"_-_ Starts with v0.7.1 studded gloves instead of cord.",
+						"_-_ Starts with v0.7.1 bow instead of darts\n",
+						"_-_ a buffed cord (+1/+1 -> +1/+2) can be obtained via transmuting a tier-1 weapon"
+				),
+				new ChangeButton(get(DEPTH),"Room Generation")
+						.append("_General_").appendList(
+								"Items cannot spawn on traps.",
+								"Tombs are now much less likely to give gold")
+						.appendLine("\n_Secret Larder Rooms_")
+						.appendList(
+								"Contents of the room are much more random, but overall has the same amount of food.",
+								"Frozen Carpaccio and Rations can now be found in the room.")
+						.appendLine("\n_Secret Maze Room_").appendList("Prize is now visibly uncursed")
+						.appendLine("\n_Pixel Mart_")
+						.appendList(
+								"All upgradable items are now identified",
+								"Now sells a greater variety of weapons, both thrown and melee"),
+				new ChangeButton(get(CHALLENGE_ON),"Challenges").appendList(
+						"Blocked items are more likely to be replaced by valid items",
+						"Secret Larder Rooms no longer spawn for On Diet",
+						"Crypt Rooms no longer spawn for Faith is My Armor",
+						"Gardens no longer spawn for Barren Land",
+						"Pixel Mart now sells torches for Into Darkness"
+				),
+				ChangeButton.misc(
+						"Throwing items manually should now 'trickshot' as if thrown from a quickslot",
+						"Guards and Skeletons now drop visually unupgraded equipment",
+						"Enemies that drop potions of healing no longer drop them over chasms",
+						"Fly splitting mechanics adjusted to properly account for lucky",
+						"Reduced frost shaman spawnrate by half"),
+				ChangeButton.bugfix(
+						"Crash bugs with wraiths",
+						"Trickster combo not getting reset when melee attacking.",
+						"Crashes when teleportation bomb is activated early (eg by liquid flame).",
+						"Position of chests teleported by teleportation bomb revealed to player immediately.",
+						"Issues with ring of wealth drops.",
+						"Glyphs of affection and thorns not scaling properly with upgrades.",
+						"MM shamans stopping game execution.",
+						"Shopkeeper not dropping bags (not retroactive unfort).",
+						"Swarm intelligence messing with terror.",
+						"Armor enchants showing their vfx when forcefully identified (eg by well or scroll).",
+						"Incendiary darts instantly losing their tips when thrown on a flammable tile.",
+						"Ankhs not working as I intended; they are now stackable."
+				),
+				new ChangeButton(
+						get(LANGS),
+						"Text Adjustments",
+						"",
+						"_-_ Ring of Tenacity description now includes current damage reduction",
+						"_-_ Some enemy/weapon descriptions",
+						"_-_ Alchemist's Toolkit no longer gives hint at +10"
+				)
+		);
+		new ChangeInfo(ChangeInfo.Template.NERFS).addButtons(
+				new ChangeButton(new StatueSprite(), "Mob Resistances")
+						.append("_Dwarf King_")
+						.appendList(
+								"Burning and Toxic Gas are now 0.75x effective (up from 0.5x)",
+								"Paralysis and Blindness are now 0.25x effective (down from 0.5x)",
+								"Vertigo is now 0.25x effective (up from 0x)",
+								"Now resists slow")
+						.appendLine("\n_Gnoll Brutes_").appendList(
+								"Terror 0.25x effective (up from 0x)",
+								"Terror is 0x effective when enraged",
+								"Amok is 1.25x effective (up from 1x)")
+						.appendLine("\n_Evil Eyes_").appendList(
+							"Wand of Disintegration now 0.75x effective",
+							"Terror is 0.33x effective against a non-charging eye",
+							"Terror interaction with deathgaze unchanged.")
+						.appendLine("\n_Monks, Golems_")
+						.appendList(
+								"Terror and amok immunities changed to resistances.",
+								"Golems have a 75% resistance to amok."),
+				new ChangeButton(
+						new MagicalHolster(), "Now that missile weapons can be upgraded and thus are more viable, " +
+						"the 0.0.0a holster buff is a bit over the top (especially for huntress)\n",
+						"_-_ Holster durability boost reduced (1.33 -> 1.2)\n",
+						"Speaking of, the huntress once again starts with the holster."
+				)
+		);
+	}
+	private void add002Changes() {
+		new ChangeInfo("v0.0.2-BETA",true);
+		new ChangeInfo("BETA-4",false).addButtons(
+//		new ChangeInfo("BETA-3",false).addButtons(
+//				new ChangeButton( get(SHPX), "Implemented Shattered 0.7.1d","Will release shattered changelog later."),
+//				ChangeButton.bugfix(
+//						"Invincible Swarms","All attacks by hero ignoring evasion of enemy","Anti-magic not working properly with sad ghost"
+//				))
+		);
+		new ChangeInfo("BETA-2",false).addButtons(
+				// new content
 				new ChangeButton( new TenguSprite(), "Implemented 0.7.1c")
 					.appendList(
 							"Boss mechanics implemented... across ALL bosses.",
@@ -241,7 +417,6 @@ public class ChangesScene extends PixelScene {
 								+ "more interesting to use."),
 				new ChangeButton( new Bleeding(), "Bleeding can now stack, albeit rather inconsistently." ),
 				ChangeButton.misc(
-						"Guards and Skeletons now drop visually unupgraded equipment",
 						"Flies now split more logically (aka lucky interacts properly now)",
 						"Ring of Tenacity now gives both numbers.",
 						"Graves are now half as likely to give gold."),
@@ -266,13 +441,6 @@ public class ChangesScene extends PixelScene {
 						.appendList(
 							"All upgradable are now identified",
 							"Now sells a greater variety of weapons, both thrown and melee"),
-				new ChangeButton(get(CHALLENGE_ON),"Challenges").appendList(
-						"Blocked items are more likely to be replaced by valid items",
-						"Secret Larder Rooms no longer spawn for On Diet",
-						"Crypt Rooms no longer spawn for Faith is My Armor",
-						"Gardens no longer spawn for Barren Land",
-						"Pixel Mart now sells torches for Into Darkness"
-				),
 				// buffs
 				new ChangeButton(new InfernalTrap().getImage(),"Infernal and Blizzard Traps").appendList(
 						"Blob amounts are now identical to that of the toxic gas trap."
@@ -396,155 +564,131 @@ public class ChangesScene extends PixelScene {
 		);
 	}
 	private void add071Changes() {
-		new ChangeInfo("Implemented Shattered v0.7.1",true,Window.SHPX_COLOR);
-		new ChangeInfo("0.7.1b",false).addButtons(
-				new ChangeButton( new Image(Assets.HUNTRESS, 0, 15, 12, 15), "Hero Balance Changes",
-						"After pouring over some analytics numbers, I have decided to give out some hero buffs primarily focused on base power, and one nerf based on power in lategame:\n\n" +
-								"Huntress:\n" +
-								"_-_ Spirit bow damage scaling up 20%\n(now gets exactly +1/+2 dmg every level up)\n" +
-								"_-_ Warden barkskin increased by 5 points\n\n" +
-								"Rogue's cloak of shadows base charge speed increased by ~11%, scaling reduced to compensate.\n\n" +
-								"Warlock's soul mark base chance increased to 15% from 10%, scaling reduced to compensate.\n\n" +
-								"Warrior's shielding regen scaling reduced by ~15%. This is primarily a lategame nerf."),
-				new ChangeButton( new ItemSprite(ItemSpriteSheet.RING_DIAMOND, null), "Other Balance Changes",
-						"Similarly to heroes, I have gone over the balance of items, and am making several buffs + one nerf.\n\n" +
-								"wand of fireblast buffed:\n" +
-								"_-_ shot distance at 3 charges reduced by 1\n" +
-								"_-_ damage at 1 charge reduced slightly\n" +
-								"_-_ damage at 2/3 charges increased by ~15%\n" +
-								"\n" +
-								"_-_ vorpal enchant bleed reduced by 20%\n" +
-								"_-_ glyph of potential wand charge bonus increased by 20%\n" +
-								"_-_ glyph of stone evasion conversion efficiency increased to 75% from 60%\n" +
-								"\n" +
-								"_-_ ring of elements power increased to 16% from 12.5%\n" +
-								"_-_ ring of energy charge speed increased to 25% from 20%\n" +
-								"_-_ ring of wealth 'luck' bonus increased to 20% from 15%"),
-
+		new ChangeInfo("Implemented v0.7.1", true,Window.SHPX_COLOR);
+		new ChangeInfo("v0.7.1c & v0.7.1d",false).addButtons(
+				new ChangeButton( HeroSprite.avatar(HeroClass.MAGE,6), "Warlock").appendList(
+						"Fixed the previous change to walock's soul mark making the effect MUCH more common than intended. The base chance buff was intended to be 10% to 15%, but ended up being closer to 80%, oops!\n")
+						.appendLine("Despite the unintended change, the warlock was not massively overpowered, which tells me I have more power budget in soul mark than I thought:\n")
+						.appendList("Soul mark hunger restoration increased by 100%","Soul mark health restoration increased by 33%"),
+				new ChangeButton( new KingSprite(), "Dwarf King", "While I would like to make more extensive changes to Dwarf King in the future, I've made a couple smaller tweaks for now to make him harder to cheese:\n")
+						.appendList("Dwarf King is now able to summon skeletons even if he cannot see the hero","Dwarf King is now resistant to fire and toxic gas")
+						.appendLine("\nNote that in 0.7.1d I've fixed a bug where Dwarf King was attacking in several cases where he should have gone to try and summon. This was an unintended change to his behaviour, and now he should behave more like how he was before 0.7.1c."),
 				ChangeButton.bugfix(
-						"various rare spirit bow crashes (caused by 0.7.1)",
-						"rare crashes involving alchemy" +
-								"health potion limits not applying to prison guards"
-				)
-		);
+						"Recycle being able to produce health potions with pharmacophobia enabled",
+						"Magical porter soft-locking the game in rare cases",
+						"Mystical Energy not recharging artifacts correctly in some cases"));
+
+		new ChangeInfo("v0.7.1a & v0.7.1b", false).addButtons(
+				new ChangeButton(HeroSprite.avatar(HeroClass.HUNTRESS,6), "Hero Balance Changes", "After pouring over some analytics numbers, I have decided to give out some hero buffs primarily focused on base power, and one nerf based on power in lategame:\n")
+					.appendLine("Huntress:")
+					.appendList(
+							"Gloves base damage up to 1-6 from 1-5",
+							"Spirit bow damage scaling up 20%\n(now gets exactly +1/+2 dmg every level up)",
+							"Warden barkskin increased by 5 points\n")
+					.appendLines(
+							"Rogue's cloak of shadows base charge speed increased by ~11%, scaling reduced to compensate.\n",
+							"Warlock's soul mark base chance increased to 15% from 10%, scaling reduced to compensate.\n",
+							"Warrior's shielding regen scaling reduced by ~15%. This is primarily a lategame nerf."),
+				new ChangeButton( new ItemSprite(ItemSpriteSheet.RING_DIAMOND, null), "Other Balance Changes",
+				"Similarly to heroes, I have gone over the balance of items, and am making several buffs + one nerf.\n\n" +
+						"wand of fireblast buffed:\n" +
+						"_-_ shot distance at 3 charges reduced by 1\n" +
+						"_-_ damage at 1 charge reduced slightly\n" +
+						"_-_ damage at 2/3 charges increased by ~15%\n" +
+						"\n" +
+						"_-_ vorpal enchant bleed reduced by 20%\n" +
+						"_-_ glyph of potential wand charge bonus increased by 20%\n" +
+						"_-_ glyph of stone evasion conversion efficiency increased to 75% from 60%\n" +
+						"\n" +
+						"_-_ ring of elements power increased to 16% from 12.5%\n" +
+						"_-_ ring of energy charge speed increased to 25% from 20%\n" +
+						"_-_ ring of wealth 'luck' bonus increased to 20% from 15%"),
+				ChangeButton.bugfix(
+						"various crash bugs",
+						"rare crashes involving alchemy",
+						"health potion limits not applying to prison guards",
+						"traps with ground-based effects affecting flying characters"));
 		new ChangeInfo(ChangeInfo.Template.NEW_CONTENT).addButtons(
-				addDeveloperCommentary(
-						get(SHPX),
-						Milestone.SHPD071,
-						"This update overhauls the huntress! She has a new signature item (a bow!), " +
-								"as well as significantly reworked subclass abilities.\n\n" +
-								"Thrown weapons can now be upgraded, and there are a variety of other smaller tweaks and " +
-								"improvements as well.",
+				addDeveloperCommentary( Icons.get(Icons.SHPX), Milestone.SHPD071,
+						"This update overhauls the huntress! She has a new signature item " +
+								"(a bow!), as well as significantly reworked subclass abilities.\n\n" +
+								"Thrown weapons can now be upgraded, and there are a variety of other " +
+								"smaller tweaks and improvements as well.",
 						Milestone.SHPD070),
 				new ChangeButton( HeroSprite.avatar(HeroClass.HUNTRESS,0), "Huntress Reworked!",
-						"The Huntress has received a class overhaul!\n\n" +
-								"Her boomerang has been replaced with a bow. The bow has infinite uses, like the boomerang, but cannot be upgraded directly, instead it will grow stronger as the huntress levels up.\n\n" +
-								"Her knuckledusters have been replaced with studded gloves. This change is purely cosmetic\n",
+				"The Huntress has received a class overhaul!\n\n" +
+						"Her boomerang has been replaced with a bow. The bow has infinite uses, like the boomerang, but cannot be upgraded directly, instead it will grow stronger as the huntress levels up.\n\n" +
+						"Her knuckledusters have been replaced with studded gloves. This change is purely cosmetic.\n\n" +
 						"Those with runs in progress will have their boomerang turn into a bow, and will regain most of the scrolls of upgrade spent on the boomerang.\n\n" +
-								"The huntress can now also move through grass without trampling it (she 'furrows' it instead)."),
+						"The huntress can now also move through grass without trampling it (she 'furrows' it instead)."),
 				new ChangeButton( HeroSprite.avatar(HeroClass.HUNTRESS,6), "Huntress Subclasses Reworked!",
-						"Huntress subclasses have also received overhauls:\n\n" +
-								"The Sniper can now see 50% further, penetrates armor with ranged attacks, and can perform a special attack with her bow.\n\n" +
-								"The Warden can now see through grass and gains a variety of bonuses to plant interaction."),
+				"Huntress subclasses have also received overhauls:\n\n" +
+						"The Sniper can now see 50% further, penetrates armor with ranged attacks, and can perform a special attack with her bow.\n\n" +
+						"The Warden can now see through grass and gains a variety of bonuses to plant interaction."),
 				new ChangeButton( new ItemSprite(ItemSpriteSheet.TRIDENT, null), "Thrown Weapon Improvements",
-						"Thrown weapons now show their tier, ranging from 1-5 like with melee weapons.\n",
-						"All Heroes now benefit from excess strength on thrown weapons.\n",
-						"Thrown weapons now get +50% accuracy when used at range.\n",
-						"Thrown weapons can now be upgraded!",
-						"_-_ Upgrades work on a single thrown weapon",
-						"_-_ Increases damage based on tier",
-						"_-_ Gives 3x durability each upgrade",
-						"_-_ Weapons with 100+ uses now last forever",
-						"_-_ Darts are not upgradeable, but tipped darts can get extra durability\n",
-						"Ring of sharpshooting has been slightly adjusted to tie into this new upgrade system.")
-		);
+				"Thrown weapons now show their tier, ranging from 1-5 like with melee weapons.\n\n" +
+						"All Heroes now benefit from excess strength on thrown weapons.\n\n" +
+						"Thrown weapons now get +50% accuracy when used at range.\n\n" +
+						"Thrown weapons can now be upgraded!\n" +
+						"_-_ Upgrades work on a single thrown weapon\n" +
+						"_-_ Increases damage based on tier\n" +
+						"_-_ Gives 3x durability each upgrade\n" +
+						"_-_ Weapons with 100+ uses now last forever\n" +
+						"_-_ Darts are not upgradeable, but tipped darts can get extra durability\n\n" +
+						"Ring of sharpshooting has been slightly adjusted to tie into this new upgrade system."));
 
 		new ChangeInfo(ChangeInfo.Template.CHANGES).addButtons(
 				new ChangeButton(BadgeBanner.image(Badges.Badge.UNLOCK_MAGE.image), "Hero Class changes",
-						"All heroes except the warrior now need to be unlocked via new badges. "
-								+ "The requirements are quite simple, with the goal of giving new players "
-								+ "some early goals. Players who have already unlocked characters will not "
-								+ "need to re-unlock them.\n",
-						"To help accelerate item identification for alchemy, all heroes now start with "
-								+ "3 identified items: The scroll of identify, a potion, and another scroll."
-				),
-				ChangeButton.misc(
-						"Added a partial turn indicator to the game interface, which occupies the same spot "
-								+ "as the busy icon. This should make it much easier to plan actions that take "
-								+ "more or less than 1 turn.",
-						"Rings now have better descriptions for their stats! All rings now show exactly how "
-								+ "they affect you in a similar way to how other equipment gives direct stats.",
-						"Added item stats to the item catalog.",
+				"All heroes except the warrior now need to be unlocked via new badges. The requirements are quite simple, with the goal of giving new players some early goals. Players who have already unlocked characters will not need to re-unlock them.\n\n" +
+						"To help accelerate item identification for alchemy, all heroes now start with 3 identified items: The scroll of identify, a potion, and another scroll."),
+				new ChangeButton(Icons.get(Icons.PREFS), Messages.get(this, "misc"),
+				"Added a partial turn indicator to the game interface, which occupies the same spot as the busy icon. This should make it much easier to plan actions that take more or less than 1 turn.\n\n" +
+						"Rings now have better descriptions for their stats! All rings now show exactly how they affect you in a similar way to how other equipment gives direct stats.\n\n" +
+						"Precise descriptions have been added for weapons which block damage.\n\n" +
+						"Added item stats to the item catalog.\n\n" +
 						"Dropping an item now takes 1 turn, up from 0.5 turns."),
-				ChangeButton.bugfix(
-						"various minor visual bugs",
-						"odd behaviour when transmuting certain items",
-						"keys rarely spawning without chests",
-						"fireblast rarely damaging things it shouldn't",
-						"dew drops from dew catchers landing on stairs",
-						"ankh revive window rarely closing when it shouldn't",
-						"flock and summoning traps creating harsh multi-sound effects",
-						"thrown weapons being lost when used on sheep",
-						"various specific errors when actions took more/less than 1 turn",
-						"various freeze bugs caused by Tengu",
-						"various crash bugs"
-				)
-		);
-
+				new ChangeButton(new Image(Assets.SPINNER, 144, 0, 16, 16), Messages.get(this, "bugfixes"),
+				"Fixed:\n" +
+						"_-_ various minor visual bugs\n" +
+						"_-_ odd behaviour when transmuting certain items\n" +
+						"_-_ keys rarely spawning without chests\n" +
+						"_-_ fireblast rarely damaging things it shouldn't\n" +
+						"_-_ dew drops from dew catchers landing on stairs\n" +
+						"_-_ ankh revive window rarely closing when it shouldn't\n" +
+						"_-_ flock and summoning traps creating harsh multi-sound effects\n" +
+						"_-_ thrown weapons being lost when used on sheep\n" +
+						"_-_ various specific errors when actions took more/less than 1 turn\n" +
+						"_-_ various freeze bugs caused by Tengu"));
 		new ChangeInfo(ChangeInfo.Template.BUFFS).addButtons(
 				new ChangeButton( new ItemSprite(ItemSpriteSheet.RING_TOPAZ, null), new RingOfEnergy().trueName(),
-						"The ring of energy has been simplified/buffed:\n",
-						"_-_ Now grants a flat +20% charge speed per level, instead of +1 effective missing charge per level"
-				),
+				"The ring of energy has been simplified/buffed:\n\n" +
+						"_-_ Now grants a flat +20% charge speed per level, instead of +1 effective missing charge per level"),
 				new ChangeButton( new Bolas(),
-						"Bolas have received a damage buff:\n",
+				"Bolas have received a damage buff:\n\n" +
 						"_-_ Base damage increased to 6-9 from 4-6"),
 				new ChangeButton( new WandOfRegrowth(),
-						"Thanks to the new furrowed grass system, the wand of regrowth can receive a slight buff:\n\n" +
-								"_-_ When the wand of regrowth begins to run out of energy due to excessive use, it will now spawn furrowed grass, instead of short grass."
-				)
-		);
+				"Thanks to the new furrowed grass system, the wand of regrowth can receive a slight buff:\n\n" +
+						"_-_ When the wand of regrowth begins to run out of energy due to excessive use, it will now spawn furrowed grass, instead of short grass."));
 
 		new ChangeInfo(ChangeInfo.Template.NERFS).addButtons(
 				new ChangeButton( new ItemSprite(ItemSpriteSheet.RING_RUBY, null), new RingOfFuror().trueName(),
-						"Ring of furor has been nerfed/simplified:\n\n" +
-								"_-_ Now provides a flat +10.5% attack speed per level, instead of speed which scales based on how slow the weapon is.\n\n" +
-								"This means the ring is effectively nerfed for slow weapons and regular weapons, and slightly buffed for fast weapons.\n\n" +
-								"A +6 ring grants almost exactly doubled attack speed."
-				),
+				"Ring of furor has been nerfed/simplified:\n\n" +
+						"_-_ Now provides a flat +10.5% attack speed per level, instead of speed which scales based on how slow the weapon is.\n\n" +
+						"This means the ring is effectively nerfed for slow weapons and regular weapons, and slightly buffed for fast weapons.\n\n" +
+						"A +6 ring grants almost exactly doubled attack speed."),
 				new ChangeButton( new ItemSprite(ItemSpriteSheet.RING_GARNET, null), new RingOfForce().trueName(),
-						"The ring of force's equipped weapon bonus was always meant as a small boost so it wasn't useless if the player already had a better weapon. It wasn't intended to be used to both replace melee and then boost thrown weapons.\n" +
-								"_-_ The ring of force no longer gives bonus damage to thrown weapons."),
-				new ChangeButton( new Sai(),
-						"As furor now works much better with fast weapons, I've taken the oppourtunity to very slightly nerf sai and gauntlets\n\n" +
-								"_-_ Sai blocking down to 0-2 from 0-3\n" +
-								"_-_ Gauntlet blocking down to 0-4 from 0-5"),
-				new ChangeButton( new Shuriken(), "Shuriken have been adjusted due to the new upgrade system:\n")
-						.appendList(
-								"Base damage increased to 4-8 from 4-6",
-								"Durability reduced to 5 from 10"
-						)
-		);
-		new ChangeInfo("Not Implemented",false,CharSprite.NEGATIVE).addButtons(
-				new ChangeButton(HeroSprite.avatar(HeroClass.HUNTRESS,6),"Minor subclass mechanics").appendList(
-						"Sniper not piercing armor when using ranged weapons on adjacent enemies."
-				),
-				new ChangeButton( new ItemSprite(new ScaleArmor().inscribe(new Stone())),"Stone",
-						"The stone changes are not applicable to current lustrous"
-				),
-				new ChangeButton(  new Gloves()  ).appendList(  "Gloves base damage up to 1-6 from 1-5 (0.7.1b)"  ),
-				ChangeButton.misc( "New blocking weapon descriptions" ),
-				ChangeButton.bugfix("Warping and Teleportation traps working against flying enemies")
-		);
+				"The ring of force's equipped weapon bonus was always meant as a small boost so it wasn't useless if the player already had a better weapon. It wasn't intended to be used to both replace melee and then boost thrown weapons.\n" +
+						"_-_ The ring of force no longer gives bonus damage to thrown weapons."),
+				new ChangeButton( new Gauntlet(),
+				"As furor now works much better with fast weapons, I've taken the oppourtunity to very slightly nerf sai and gauntlets\n\n" +
+						"_-_ Sai blocking down to 0-2 from 0-3\n" +
+						"_-_ Gauntlet blocking down to 0-4 from 0-5"),
+				new ChangeButton( new Shuriken(),
+				"Shuriken have been adjusted due to the new upgrade system:\n\n" +
+						"_-_ Base damage increased to 4-8 from 4-6\n" +
+						"_-_ Durability reduced to 5 from 10"));
 	}
-	private void enumerateChanges() {
-		try {
-			add002Changes(); // Lustrous v0.0.2
-			add071Changes(); // Shattered v0.7.1
-		} catch(Exception e) {
-			LustrousPixelDungeon.reportException(e);
-		}
-		// v0.0.1
+	private void add001Changes() {
 		new ChangeInfo("v0.0.1",true);
 		new ChangeInfo(ChangeInfo.Template.NEW_CONTENT).addButtons(
 				addDeveloperCommentary(
@@ -703,12 +847,23 @@ public class ChangesScene extends PixelScene {
 						"_-_ Weaken lasts 0-40 turns, rather than 40 turns"
 				)
 		);
+	}
+	private void enumerateChanges() {
+		try {
+			add010Changes(); // Lustrous v0.0.2
+			add071Changes(); // Shattered v0.7.1
+			add001Changes();
+		} catch(Exception e) {
+			LustrousPixelDungeon.reportException(e);
+		}
+		// v0.0.1
+
 		new ChangeInfo("v0.0.0",true);
 		new ChangeInfo("v0.0.0b", false).addButtons(
 				new ChangeButton(new WandOfCorruption(),
 						"It's extremely obvious that giving wands of corruption the ability to " +
 								"inflict vertigo was the wrong decision. Terror + Vertigo is extremely " +
-								"powerful, and the wand corruption was already an amazing wand.\n\n" +
+								"powerful, and the wand of corruption was already an amazing wand.\n\n" +
 								"_-_ Reverted cripple --> vertigo change"),
 				new ChangeButton(new ItemSprite(new Longsword().image(), new Eldritch().glowing()),"Eldritch",
 						"_-_ Now inflicts brief vertigo on targets immune to terror (4+level)\n" +
@@ -1237,10 +1392,8 @@ public class ChangesScene extends PixelScene {
 		ChangeButton( Item item, String... messages ){
 			this( new ItemSprite(item), item.name(), messages);
 		}
-		ChangeButton(Char ch, String... messages) {
-			this( ch.sprite, ch.name, messages);
-		}
-		ChangeButton( Buff buff, String... messages) {
+
+        ChangeButton( Buff buff, String... messages) {
 			this( buff.getLargeIcon(), buff.toString(), messages);
 		}
 
@@ -1251,9 +1404,11 @@ public class ChangesScene extends PixelScene {
 		}
 		@SuppressWarnings("StringConcatenationInLoop")
 		public ChangeButton appendLine(String message) {
-		    if (!message.equals("")) append("\n");
-		    append(message);
-		    return this;
+		    if (message != null && !message.equals("")) appendLine();
+		    return append(message);
+		}
+		public ChangeButton appendLine() {
+			return append("\n");
 		}
 		public ChangeButton appendLines(String... messages) {
 		    for(String message : messages) appendLine(message);

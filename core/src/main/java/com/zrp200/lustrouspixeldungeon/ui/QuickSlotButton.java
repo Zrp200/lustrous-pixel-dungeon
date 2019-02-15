@@ -200,22 +200,7 @@ public class QuickSlotButton extends Button implements WndBag.Listener {
 
 	//FIXME: this is currently very expensive, should either optimize ballistica or this, or both
 	public static int autoAim(Char target, Item item){
-
-		//first try to directly target
-		if (item.throwPos(Dungeon.hero, target.pos) == target.pos) {
-			return target.pos;
-		}
-
-		//Otherwise pick nearby tiles to try and 'angle' the shot, auto-aim basically.
-		PathFinder.buildDistanceMap( target.pos, BArray.not( new boolean[Dungeon.level.length()], null ), 2 );
-		for (int i = 0; i < PathFinder.distance.length; i++) {
-			if (PathFinder.distance[i] < Integer.MAX_VALUE
-					&& item.throwPos(Dungeon.hero, i) == target.pos)
-				return i;
-		}
-
-		//couldn't find a cell, give up.
-		return -1;
+		return item.throwPos(Dungeon.hero, target.pos) == target.pos ? target.pos : -1;
 	}
 	
 	public static void refresh() {
