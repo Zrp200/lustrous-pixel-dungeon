@@ -141,7 +141,7 @@ public class Boomerang extends MissileWeapon {
 
 	public static class Returning extends Buff {
 		{
-			actPriority = (HERO_PRIO + BLOB_PRIO)/2;
+			actPriority = BLOB_PRIO;
 		}
 
 		int depthOfOrigin = depth;
@@ -149,7 +149,7 @@ public class Boomerang extends MissileWeapon {
 		ArrayList<Integer> path;
 
 		private static final float
-				MIN_SPEED = 1.5f,
+				MIN_SPEED = 2,
 				TURNS_TO_RETURN = 3f;
 
 		float distancePerTurn;

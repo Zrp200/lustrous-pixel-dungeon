@@ -328,7 +328,8 @@ public abstract class Ring extends KindofMisc {
 
 	public static int getBonus(Char target, Class<?extends RingBuff> type){
 		int bonus = 0;
-		for (RingBuff buff : target.buffs(type)) bonus += buff.level();
+		if(target != null) for ( RingBuff buff : target.buffs(type) )
+			bonus += buff.level();
 		return bonus;
 	}
 

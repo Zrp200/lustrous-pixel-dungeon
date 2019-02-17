@@ -60,7 +60,7 @@ public class Bestiary {
 						put(	Swarm.class,	1f	);
 
 						// Rare
-						put(Thief.class,              	0.015f);
+						put(Thief.class,              	0.0125f);
 						put(Shaman.MagicMissile.class,	0.010f);
 						put(Skeleton.class,            	0.005f);
 						break;
@@ -96,10 +96,9 @@ public class Bestiary {
 
 					// Caves
 					case 11:
-						//5x bat, 1x brute, 50% chance for shaman
+						//5x bat, 1x brute
 						put(Bat.class, 5f);
 						put(Brute.class, 1f);
-						put(Shaman.random(), 0.5f);
 						break;
 					case 12:
 						//5x bat, 5x brute, 1x spinner, 1x shaman

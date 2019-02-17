@@ -38,6 +38,7 @@ public class Scorpio extends RangeExclusiveMob {
 		spriteClass = ScorpioSprite.class;
 		
 		HP = HT = 95;
+		attackSkill = 36;
 		defenseSkill = 24;
 		viewDistance = Light.DISTANCE;
 		
@@ -53,11 +54,6 @@ public class Scorpio extends RangeExclusiveMob {
 	@Override
 	public int damageRoll() {
 		return Random.NormalIntRange( 26, 36 );
-	}
-	
-	@Override
-	public int attackSkill( Char target ) {
-		return 36;
 	}
 	
 	@Override

@@ -65,7 +65,9 @@ import com.zrp200.lustrouspixeldungeon.sprites.CharSprite;
 import com.zrp200.lustrouspixeldungeon.utils.GLog;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Set;
 
 public abstract class Mob extends Char {
 
@@ -88,6 +90,7 @@ public abstract class Mob extends Char {
 	protected int target = -1;
 	
 	protected int defenseSkill = 0;
+	protected int attackSkill = 0;
 	protected int armor=0;
 	
 	public int EXP = 1;
@@ -522,7 +525,12 @@ public abstract class Mob extends Char {
 			return this.defenseSkill;
 		}
 	}
-	
+
+	@Override
+	public int attackSkill(Char target) {
+		return this.attackSkill;
+	}
+
 	private boolean hitWithRanged = false;
 
 	@Override
@@ -685,7 +693,7 @@ public abstract class Mob extends Char {
 	
 	protected Object loot = null;
 	protected float lootChance = 0;
-	
+
 	@SuppressWarnings("unchecked")
 	protected Item createLoot() {
 		Item item;

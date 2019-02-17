@@ -51,7 +51,7 @@ public class Earthroot extends Plant {
 				Buff.affect(ch, Barkskin.class).set((Dungeon.depth + 5)/2, 5);
 			}
 			Buff.affect(ch, Armor.class).level(ch.HT);
-		} else {
+		} else if(ch != null) {
 			Buff.affect(ch, Roots.class, 5f);
 		}
 		

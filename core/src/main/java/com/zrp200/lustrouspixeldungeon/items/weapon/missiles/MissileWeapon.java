@@ -123,9 +123,12 @@ abstract public class MissileWeapon extends Weapon {
 	}
 
 	private abstract class EnhanceCallback implements Callback {
-		MissileWeapon toEnhance = quantity == 1
-				? MissileWeapon.this
-				: split(1);
+		MissileWeapon toEnhance;
+		{
+			toEnhance = (MissileWeapon) detach(curUser.belongings.backpack);
+			toEnhance.parent = null;
+			toEnhance.durability = MAX_DURABILITY;
+		}
 	}
 
 	private MissileWeapon enhance(EnhanceCallback operation) {
@@ -136,16 +139,13 @@ abstract public class MissileWeapon extends Weapon {
 
 		//try to put the upgraded into inventory, if it didn't already merge
 		if(enhanced == this) {
-			Item similar = Dungeon.hero.belongings.getSimilar(this);
+			MissileWeapon similar = (MissileWeapon) Dungeon.hero.belongings.getSimilar(this);
 			if (similar != null) {
 				detach(Dungeon.hero.belongings.backpack);
-				return (MissileWeapon)similar.merge(this);
+				similar.merge(this);
+				return similar;
 			}
-		} else
-			if (enhanced.quantity() <= 1 && !enhanced.collect()) {
-			enhanced.drop(Dungeon.hero.pos);
-		}
-		enhanced.durability = MAX_DURABILITY;
+		} else if ( enhanced.quantity() <= 1 && !enhanced.collect() ) enhanced.drop(Dungeon.hero.pos);
 		updateQuickslot();
 		return enhanced;
 	}
@@ -181,7 +181,7 @@ abstract public class MissileWeapon extends Weapon {
 	}
 
 	@Override
-	public void augment(final Augment augment) {
+	public void augment(final Augment augment) { // if I ever decide to let missile weapons be augmented.
 		if(bundleRestoring) super.augment(augment);
 		else enhance(new EnhanceCallback() {
 			@Override

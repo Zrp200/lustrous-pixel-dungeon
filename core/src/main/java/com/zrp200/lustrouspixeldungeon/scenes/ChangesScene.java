@@ -81,6 +81,7 @@ import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Boomerang;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.ObsidianKnife;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Shuriken;
+import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.darts.TippedDart;
 import com.zrp200.lustrouspixeldungeon.levels.traps.InfernalTrap;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.plants.Earthroot;
@@ -181,13 +182,54 @@ public class ChangesScene extends PixelScene {
 		do {
 			try {
 				enchantedMissile = (MissileWeapon)Random.oneOf(Random.oneOf(Generator.misTiers).classes).newInstance();
-			} catch (InstantiationException invalid) { enchantedMissile = null; } // keep trying until we get something that works
+			} catch (InstantiationException invalid) { enchantedMissile = TippedDart.randomTipped(); } // keep trying until we get something that works
 		} while(enchantedMissile instanceof Boomerang || enchantedMissile instanceof ObsidianKnife || enchantedMissile == null);
 		//noinspection unchecked
 		enchantedMissile.enchantment = MissileWeapon.Enchantment.random();
 		enchantedMissile.enchantKnown = true;
 
 		new ChangeInfo("v0.1.0",true);
+		new ChangeInfo("v0.1.0a",false).addButtons(
+				new ChangeButton(new ShamanSprite.MM(), "Magic Missile Shamans").appendList(
+						"MM shaman now does 4-10, down from 4-12",
+						"MM shamans now drop wands of magic missile with a 1.65% chance.",
+						"MM shaman spawnrate reduced by about 7% (50% --> ~46%)",
+						"MM shaman now less likely to spawn on floor 4"),
+				new ChangeButton(new ShamanSprite.Lightning(),"Lightning Shamans").appendList(
+						"Zaps now do 4-12 damage (down from 6-12)",
+						"Zaps get a +50% boost against targets in water, up from +25%",
+						"Can now drop wands of lightning with a 1.65% chance",
+						"Lightning shaman spawnrate boosted by about 11% (30% --> 33%)."
+				),
+				new ChangeButton(new ShamanSprite.Firebolt(),"Firebolt Shamans").appendList("Firebolt shaman spawnrate reduced by about 23% (10% -> 7.6%).",
+						"Firebolts now do 4-12 damage, down from 6-12",
+						"Now drops wands of fireblast with a 1.65% chance",
+						"Now also drop potions of liquid flame.",
+						"Fire-based resistances now consistent with burning fist and fire elemental"),
+				new ChangeButton(new ShamanSprite.Frost(),"Frost Shamans")
+						.appendList(
+								"Frost shamans now inflict 1-2 turns of frost every zap, stacking up to 6 turns of chill.",
+								"Frost shamans can now drop potions of frost.",
+								"Frost shamans can now drop wands of frost with a 1.65% chance.",
+								"Frost shaman spawnrate boosted by 53% (10% --> 15.3%)"),
+				ChangeButton.misc(
+						"Boomerangs now move a minimum of two tiles per turn when returning, up from 1.5",
+						"Bleeding grey is now based on target's current hp, rather than hero's total hp",
+						"Scorpios and gnoll tricksters now suffer an accuracy penalty when melee attacking."
+				),
+				ChangeButton.bugfix(
+						"Rogue not starting with a bag",
+						"Attempting to upgrade toolkit causing crashes",
+                        "Ring-related crashes.",
+						"Blessing ankhs causing crashes",
+						"Activating earthroot with an item causing crashes",
+						"Enhanced missile weapons not properly seperating from base stack",
+						"Chargrilled meat having an incorrect name.",
+						"Mystery meat being worth more than it should.",
+						"Darts not being considered unique.",
+						"!!!NO TEXT FOUND!!! being found when inspecting blobs of regrowth."),
+                new ChangeButton(Icons.get(Icons.INFO),"Changelog omissions","Amended v0.1.0 changelog to include another new mechanic I forgot to mention and also fixed some formatting issues.")
+		);
 		new ChangeInfo(ChangeInfo.Template.NEW_CONTENT).addButtons(
 				addDeveloperCommentary(
 						Milestone.LUST010,
@@ -235,8 +277,12 @@ public class ChangesScene extends PixelScene {
 						"can now be untipped via alchemy with no additional costs\n",
 						"can now be upgraded, boosting their tipped durability in addition to their regular damage.\n",
 						"can be enchanted just like other weapons, but this will not increase their durability.\n",
-						"once again dropped by remains\n")
-		);
+						"once again dropped by remains."),
+                new ChangeButton(new ItemSprite(ItemSpriteSheet.RING_TOPAZ),new RingOfEnergy().trueName()).appendList(
+                        "Reduced wand charge multiplier (+25% -> +22.5%)",
+                        "Now also boosts artifact recharge rate."
+                )
+        );
 		new ChangeInfo(ChangeInfo.Template.BUFFS).addButtons(
 				new ChangeButton(
 						new ItemSprite( new PlateArmor().inscribe( new HolyProvidence() ) ),
@@ -250,7 +296,7 @@ public class ChangesScene extends PixelScene {
 							.appendLine("\n_Eldritch_").appendList(
 									"now applies more terror (now 15 base + 2.5*level) and can stack it like bleeding.",
 									"vertigo base duration boosted by 2.")
-							.appendLine("_Chaotic_")
+							.appendLine("\n_Chaotic_")
 							.appendList(
 									"Displacing and Displacement now occupy the same curse 'slot'.",
 									"Viscosity now incorporates armor properly"),
@@ -279,10 +325,8 @@ public class ChangesScene extends PixelScene {
 						"Stewed meat can now be frozen and burned."
 				),
 				new ChangeButton(new ElementalSprite(), "Mobs").appendList(
-						"Bosses are now immune to amok.",
-						"Elementals now resist bleeding.",
-						"Tengu now resists burning.",
-						"Fetid rat now considered acidic",
+						"Bosses are now immune to amok.", "Elementals now resist bleeding.",
+						"Tengu now resists burning.", "Fetid rat now considered acidic",
 						"Rot heart now always produces gas when damaged."
 				),
 				new ChangeButton(
@@ -300,7 +344,8 @@ public class ChangesScene extends PixelScene {
 						"Scroll of Transmutation").appendList(
 								"Thrown weapons can now be transmuted into another of the same tier, albeit one at a time.",
 								"Darts cannot be transmuted in this update",
-								"Goo blobs and cursed metal shards can be transmuted into each other"),
+								"Goo blobs and cursed metal shards can be transmuted into each other",
+								"Scrolls of transmutation are no longer considered unique"),
 				ChangeButton.misc(
 						"Tenacity general effectiveness boosted by 6.25% (0.85 --> 0.8)",
 						"Teleport traps (and bombs) now clear blobs in their teleport radii",
@@ -312,7 +357,7 @@ public class ChangesScene extends PixelScene {
 				)
 		);
 		new ChangeInfo(ChangeInfo.Template.CHANGES).addButtons(
-				new ChangeButton(
+		        new ChangeButton(
 						HeroSprite.avatar(HeroClass.HUNTRESS,0),
 						"Huntress",
 						"_-_ Starts with v0.7.1 studded gloves instead of cord.",
@@ -330,8 +375,8 @@ public class ChangesScene extends PixelScene {
 						.appendLine("\n_Secret Maze Room_").appendList("Prize is now visibly uncursed")
 						.appendLine("\n_Pixel Mart_")
 						.appendList(
-								"All upgradable items are now identified",
-								"Now sells a greater variety of weapons, both thrown and melee"),
+								"All upgradable items are now identified.",
+								"Now sells a greater variety of weapons, both thrown and melee."),
 				new ChangeButton(get(CHALLENGE_ON),"Challenges").appendList(
 						"Blocked items are more likely to be replaced by valid items",
 						"Secret Larder Rooms no longer spawn for On Diet",
@@ -340,6 +385,7 @@ public class ChangesScene extends PixelScene {
 						"Pixel Mart now sells torches for Into Darkness"
 				),
 				ChangeButton.misc(
+						"Throwing darts with an unidentified crossbow equipped will now count towards identifying it.",
 						"Throwing items manually should now 'trickshot' as if thrown from a quickslot",
 						"Guards and Skeletons now drop visually unupgraded equipment",
 						"Enemies that drop potions of healing no longer drop them over chasms",
@@ -369,7 +415,7 @@ public class ChangesScene extends PixelScene {
 				)
 		);
 		new ChangeInfo(ChangeInfo.Template.NERFS).addButtons(
-				new ChangeButton(new StatueSprite(), "Mob Resistances")
+				new ChangeButton(new KingSprite(), "Mob Resistances")
 						.append("_Dwarf King_")
 						.appendList(
 								"Burning and Toxic Gas are now 0.75x effective (up from 0.5x)",

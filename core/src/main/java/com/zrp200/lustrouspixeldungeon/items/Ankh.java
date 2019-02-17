@@ -24,6 +24,7 @@ package com.zrp200.lustrouspixeldungeon.items;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.zrp200.lustrouspixeldungeon.Assets;
+import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.effects.CellEmitter;
 import com.zrp200.lustrouspixeldungeon.effects.Speck;
@@ -35,7 +36,7 @@ import com.zrp200.lustrouspixeldungeon.utils.GLog;
 import java.util.ArrayList;
 
 public class Ankh extends Item {
-	public static final String AC_BLESS = "BLESS";
+	private static final String AC_BLESS = "BLESS";
 
 	{
 		image = ItemSpriteSheet.ANKH;
@@ -78,12 +79,12 @@ public class Ankh extends Item {
 
 			DewVial vial = hero.belongings.getItem(DewVial.class);
 			if (vial != null){
-				Ankh ankh = (Ankh) split(1);
+				Ankh ankh = (Ankh) detach(hero.belongings.backpack);
 				ankh.blessed = true;
 				ankh.collect();
 				vial.empty();
 				GLog.p( Messages.get(this, "bless") );
-				hero.spend( 1f );
+				hero.spend( Actor.TICK );
 				hero.busy();
 
 

@@ -25,6 +25,7 @@ import com.watabou.noosa.Camera;
 import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
+import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.Blizzard;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.Blob;
@@ -38,8 +39,15 @@ import com.zrp200.lustrouspixeldungeon.effects.particles.FlameParticle;
 import com.zrp200.lustrouspixeldungeon.effects.particles.SparkParticle;
 import com.zrp200.lustrouspixeldungeon.items.Generator;
 import com.zrp200.lustrouspixeldungeon.items.Heap;
+import com.zrp200.lustrouspixeldungeon.items.Item;
+import com.zrp200.lustrouspixeldungeon.items.potions.Potion;
+import com.zrp200.lustrouspixeldungeon.items.potions.PotionOfFrost;
+import com.zrp200.lustrouspixeldungeon.items.potions.PotionOfLiquidFlame;
+import com.zrp200.lustrouspixeldungeon.items.wands.Wand;
 import com.zrp200.lustrouspixeldungeon.items.wands.WandOfFireblast;
 import com.zrp200.lustrouspixeldungeon.items.wands.WandOfFrost;
+import com.zrp200.lustrouspixeldungeon.items.wands.WandOfLightning;
+import com.zrp200.lustrouspixeldungeon.items.wands.WandOfMagicMissile;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Blazing;
 import com.zrp200.lustrouspixeldungeon.mechanics.Ballistica;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
@@ -50,13 +58,15 @@ import com.zrp200.lustrouspixeldungeon.utils.GLog;
 
 import java.util.HashMap;
 
+import static com.watabou.utils.Random.NormalIntRange;
+
 public abstract class Shaman extends Mob {
     private final static HashMap<Class<?extends Shaman>, Float> probs = new HashMap<Class<? extends Shaman>,Float>() {
     	{
-			put(  Shaman.MagicMissile.class,    5f   );
-			put(  Shaman.Lightning.class,       3f   );
-			put(  Shaman.Frost.class,           1f   );
-			put(  Shaman.Firebolt.class,        1f   );
+			put(  Shaman.MagicMissile.class,    6f   ); // 6/13, down from 50%
+			put(  Shaman.Lightning.class,       4f   ); // 4/13, up from 30%
+			put(  Shaman.Frost.class,           2f   ); // 2/13, up from 10%
+			put(  Shaman.Firebolt.class,        1f   ); // 1/13, down from 10%
 
 		}
 	};
@@ -66,30 +76,41 @@ public abstract class Shaman extends Mob {
 	}
 	private static final float TIME_TO_ZAP = 1f;
 	{
-
 		HP = HT = 18;
 		defenseSkill = 8;
 
+		damageRoll[0] = 2;
+		damageRoll[1] = 8;
+
 		EXP = 6;
 		maxLvl = 14;
+		armor = 4;
 
-		loot = Generator.Category.SCROLL;
+		loot = Generator.Category.SCROLL; // default
 		lootChance = 0.33f;
 	}
 
+	Class<?extends Wand> wandLoot = null;
+	Class<?extends Potion> potionLoot = null;
+
 	@Override
-	public int damageRoll() {
-		return Random.NormalIntRange(2, 8);
+	protected Item createLoot() {
+		Item loot = super.createLoot();
+		try {
+			int seed = Random.Int(20);
+			if (seed == 0 && wandLoot != null)
+				loot = wandLoot.newInstance();
+			else if (seed < 8 && potionLoot != null)
+				loot = potionLoot.newInstance();
+		} catch (Exception e) {
+			LustrousPixelDungeon.reportException(e);
+		}
+		return loot;
 	}
 
 	@Override
 	public int attackSkill(Char target) {
 		return 11;
-	}
-
-	@Override
-	public int drRoll() {
-		return Random.NormalIntRange(0, 4);
 	}
 
 	@Override
@@ -137,11 +158,12 @@ public abstract class Shaman extends Mob {
 		{
 			spriteClass = ShamanSprite.Lightning.class;
 			properties.add(Property.ELECTRIC);
+			wandLoot = WandOfLightning.class;
 		}
 		protected void applyZap() {
-			int damage = Random.NormalIntRange(6, 12);
+			int damage = NormalIntRange(4, 12);
 			if (Dungeon.level.water[enemy.pos] && !enemy.flying)
-				damage *= 1.25f;
+				damage *= 1.5f;
 			enemy.sprite.centerEmitter().burst( SparkParticle.FACTORY, 3 );
 			enemy.sprite.flash();
 			if(enemy == Dungeon.hero)
@@ -152,12 +174,15 @@ public abstract class Shaman extends Mob {
 	public static class MagicMissile extends Shaman {
 		{
 			spriteClass = ShamanSprite.MM.class;
+			wandLoot = WandOfMagicMissile.class;
 		}
+
 		private boolean zapping;
 		protected void applyZap() {
 			enemy.sprite.burst(0xFFFFFFFF,2);
-			applyZap( Random.NormalIntRange(4,12) );
+			applyZap( NormalIntRange(4,10) );
 		}
+
 		public void onZapComplete(boolean next) {
 			zapping = true; // this boosts its accuracy temporarily
 			try { // we have to override this manually
@@ -177,12 +202,10 @@ public abstract class Shaman extends Mob {
         {
             spriteClass = ShamanSprite.Firebolt.class;
 
-            resistances.add(Fire.class);
-            resistances.add(Burning.class);
-            resistances.add(Inferno.class);
-            resistances.add(Blazing.class);
-            resistances.add(WandOfFireblast.class);
-            resistances.add(Shaman.Firebolt.class);
+            wandLoot 	= WandOfFireblast.class;
+            potionLoot 	= PotionOfLiquidFlame.class;
+
+            properties.add(Property.FIERY);
         }
 
 		@Override
@@ -193,7 +216,7 @@ public abstract class Shaman extends Mob {
 
 		protected void applyZap() {
             enemy.sprite.centerEmitter().burst(FlameParticle.FACTORY, 3);
-            applyZap( Random.NormalIntRange(6,12) );
+            applyZap( NormalIntRange(4,12) );
 			Buff.affect( enemy, Burning.class ).reignite( enemy );
         }
     }
@@ -201,19 +224,26 @@ public abstract class Shaman extends Mob {
 		{
 			spriteClass = ShamanSprite.Frost.class;
 
-			resistances.add(Chill.class);
-			resistances.add(Shaman.Frost.class);
-			resistances.add(WandOfFrost.class);
-			resistances.add(Blizzard.class);
-			resistances.add(com.zrp200.lustrouspixeldungeon.actors.buffs.Frost.class);
-			resistances.add(Freezing.class);
+			wandLoot = WandOfFrost.class;
+			potionLoot = PotionOfFrost.class;
 		}
 		protected void applyZap() {
 			enemy.sprite.burst( 0xFF99CCFF, 3 );
-			applyZap( Random.NormalIntRange(6,10) );
-			Buff.prolong( enemy, Chill.class, Random.Float(1,5) );
+			applyZap( NormalIntRange(4,10) );
+			Chill chill = enemy.buff(Chill.class);
+			float extension = Random.Float(1,2);
+			if(chill != null && chill.cooldown() + extension > 6) extension = 6-chill.cooldown();
+			Buff.affect(enemy,Chill.class,extension);
 			Heap heap = Dungeon.level.heaps.get(enemy.pos);
 			if(heap != null) heap.freeze();
 		}
+	}
+	{
+		resistances.add(Chill.class);
+		resistances.add(Shaman.Frost.class);
+		resistances.add(WandOfFrost.class);
+		resistances.add(Blizzard.class);
+		resistances.add(com.zrp200.lustrouspixeldungeon.actors.buffs.Frost.class);
+		resistances.add(Freezing.class);
 	}
 }

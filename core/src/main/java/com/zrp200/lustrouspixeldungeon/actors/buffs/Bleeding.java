@@ -21,9 +21,7 @@
 
 package com.zrp200.lustrouspixeldungeon.actors.buffs;
 
-import com.watabou.noosa.Image;
 import com.watabou.utils.PointF;
-import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.effects.Splash;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
@@ -36,7 +34,7 @@ public class Bleeding extends ActiveBuff {
 
 	{
 		type = buffType.NEGATIVE;
-		startGrey = Dungeon.hero != null ? Dungeon.hero.HT/10f : 3;
+		startGrey = Dungeon.hero != null ? Dungeon.hero.HP/10f : 3;
 		turnReduction = 0; // handled manually
 	}
 	
@@ -58,7 +56,6 @@ public class Bleeding extends ActiveBuff {
 			int dmg = Math.round(left);
 
 			if (dmg > 0) {
-				
 				target.damage( dmg, this );
 				if (target.sprite.visible) {
 					Splash.at( target.sprite.center(), -PointF.PI / 2, PointF.PI / 6,
@@ -69,7 +66,7 @@ public class Bleeding extends ActiveBuff {
 					Dungeon.fail( getClass() );
 					GLog.n( Messages.get(this, "ondeath") );
 				}
-
+				startGrey = target.HP/10f;
 				super.act();
 			} else {
 				detach();

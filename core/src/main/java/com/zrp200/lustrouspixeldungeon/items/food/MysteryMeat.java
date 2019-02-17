@@ -35,7 +35,7 @@ import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
 import com.zrp200.lustrouspixeldungeon.utils.GLog;
 
-public class MysteryMeat extends Food {
+public class MysteryMeat extends Meat {
 
 	{
 		image = ItemSpriteSheet.MEAT;

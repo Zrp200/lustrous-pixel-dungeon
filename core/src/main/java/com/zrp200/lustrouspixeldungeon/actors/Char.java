@@ -66,6 +66,7 @@ import com.zrp200.lustrouspixeldungeon.actors.buffs.Terror;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Vertigo;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.actors.hero.HeroSubClass;
+import com.zrp200.lustrouspixeldungeon.actors.mobs.Shaman;
 import com.zrp200.lustrouspixeldungeon.items.BrokenSeal;
 import com.zrp200.lustrouspixeldungeon.items.Heap;
 import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.Brimstone;
@@ -99,19 +100,21 @@ public abstract class Char extends Actor {
 	
 	public String name = "mob";
 	
-	public int HT;
-	public int HP;
+	public int HT, HP;
 
 	protected int armor=0;
 	
 	protected float baseSpeed	= 1;
 	protected PathFinder.Path path;
 
-	public int paralysed	    = 0;
-	public boolean rooted		= false;
-	public boolean flying		= false;
-	public int invisible		= 0;
-	
+	public int
+			paralysed	= 0,
+			invisible	= 0;
+
+	public boolean
+			rooted		= false,
+			flying		= false;
+
 	//these are relative to the hero
 	public enum Alignment{
 		ENEMY,
@@ -286,7 +289,7 @@ public abstract class Char extends Actor {
 		if (defender.buff(Bless.class) != null) defRoll *= 1.20f;
 		return (magic ? acuRoll * 2 : acuRoll) >= defRoll;
 	}
-	
+
 	public int attackSkill( Char target ) {
 		return 0;
 	}
@@ -302,9 +305,11 @@ public abstract class Char extends Actor {
 	public int drRoll() {
 		return Random.NormalInt(armor);
 	}
-	
+
+	protected final int[] damageRoll = new int[2];
+
 	public int damageRoll() {
-		return 1;
+		return Random.NormalIntRange(damageRoll[0],damageRoll[1]);
 	}
 	
 	public int attackProc( Char enemy, int damage ) {
@@ -606,7 +611,7 @@ public abstract class Char extends Actor {
 		BLOB_IMMUNE ( new HashSet<Class>(),
 				new HashSet<Class>( Arrays.asList(Blob.class) )),
 		FIERY (
-				new HashSet<Class>( Arrays.asList( WandOfFireblast.class, Blazing.class) ),
+				new HashSet<Class>( Arrays.asList( WandOfFireblast.class, Blazing.class, Shaman.Firebolt.class) ),
 				new HashSet<Class>( Arrays.asList( Burning.class) )
 		),
 		ACIDIC ( new HashSet<Class>( Arrays.asList(ToxicGas.class, Corrosion.class, Poison.class)),
@@ -630,7 +635,6 @@ public abstract class Char extends Actor {
 		public HashSet<Class> resistances(){
 			return new HashSet<>(resistances);
 		}
-		
 		public HashSet<Class> immunities(){
 			return new HashSet<>(immunities);
 		}

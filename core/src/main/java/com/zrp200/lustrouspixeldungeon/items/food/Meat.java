@@ -11,7 +11,6 @@ public abstract class Meat extends Food {
         image = ItemSpriteSheet.FOOD_HOLDER;
         energy = 2*(Hunger.HUNGRY)/3;
         value = 5;
-        name="meat";
     }
 
     @Override
@@ -23,7 +22,7 @@ public abstract class Meat extends Food {
     public static class PlaceHolder extends Meat {
         @Override
         public boolean isSimilar(Item item) {
-            return item instanceof MysteryMeat;
+            return item instanceof Meat;
         }
 
         @Override

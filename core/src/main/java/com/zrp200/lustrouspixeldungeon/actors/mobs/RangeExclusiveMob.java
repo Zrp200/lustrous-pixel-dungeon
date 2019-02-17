@@ -16,6 +16,13 @@ public class RangeExclusiveMob extends Mob {
     }
 
     @Override
+    public int attackSkill(Char target) {
+        int attackSkill = super.attackSkill(target);
+        if(Dungeon.level.adjacent(pos,target.pos)) attackSkill *= 0.75f;
+        return attackSkill;
+    }
+
+    @Override
     protected boolean getCloser( int target ) {
         if (state == HUNTING) {
             return enemySeen() && getFurther( target );

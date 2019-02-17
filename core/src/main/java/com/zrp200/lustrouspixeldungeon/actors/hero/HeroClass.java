@@ -123,7 +123,7 @@ public enum HeroClass {
 			Dungeon.quickslot.setSlot(0, cloak);
 			Dungeon.quickslot.setSlot(1, knives);
 
-			Dungeon.LimitedDrops.VELVET_POUCH.drop();
+			new VelvetPouch().collect();
 
 			new ScrollOfMagicMapping().identify();
 			new PotionOfInvisibility().identify();
