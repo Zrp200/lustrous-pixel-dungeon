@@ -68,6 +68,7 @@ import com.zrp200.lustrouspixeldungeon.items.wands.WandOfRegrowth;
 import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Chaotic;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Elastic;
+import com.zrp200.lustrouspixeldungeon.items.weapon.curses.WeaponCurse;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Chilling;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Eldritch;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Gauntlet;
@@ -189,6 +190,45 @@ public class ChangesScene extends PixelScene {
 		enchantedMissile.enchantKnown = true;
 
 		new ChangeInfo("v0.1.0",true);
+		new ChangeInfo("v0.1.0b",false).addButtons(
+				addDeveloperCommentary(null,"I've been made aware of a major bug " +
+						"that prevents the player from entering a floor by any means, but am unable " +
+						"to reproduce it despite everything. I'd love to fix it... If you get it and " +
+						"can reproduce it consistently, please let me know ASAP so I can fix it once " +
+						"and for all.\n\nOn a lighter note, I've put in the code for renaming weapons, " +
+						"and it'll take effect once I release v0.1.1 within the next week or two."),
+				new ChangeButton(new ItemSprite(new Shortsword().image, WeaponCurse.BLACK),"Chaotic").appendList(
+						"Volatility now procs twice as often when rolled, but will not destroy armor.",
+						"Volatility will not activate at the attacker's position if the attacker is using a missile weapon.",
+						"Stench and corrosion now always proc at the enemy's position.",
+						"Chaotic can now roll Holy Providence... for the enemy. Have fun!",
+						"Metabolism will now always drain hunger regardless of whether it procced for you.",
+						"Effects that would normally scale now generate lower random level to pretend to be, now up to +6 (previous max was +19).",
+						"Fragile can no longer be rolled; will be replaced with, uh, a better curse later."),
+				ChangeButton.misc(
+						"You can now enchant two missile weapons at a time if they are in the same stack.",
+						"Cord is now guaranteed to be the result of transmuting a tier-1 weapon.",
+						"Cord can now be passed through remains.",
+						"Exhausting can now proc for mirror images.",
+						"Forest Fires are much more.... destructive. ;)",
+						"Fire can now travel on regrowth blobs.",
+						"Magic Missile wands now gain a phantom charge with each upgrade.",
+						"Adjusted burning internally, no behavior changes intended but please let me " +
+								"know if you notice a difference."
+				),
+				ChangeButton.bugfix(
+						"Things getting destroyed when they should be immune to getting destroyed",
+						"Infernal Trap being the wrong color (thanks color-blindness)",
+						"Odd behavior for elastic boomerang",
+						"Mirror Images and sad ghost being able to surprise attack when they shouldn't be able to",
+						"Holy Providence having a 0% proc rate until +3, then an abnormally low proc rate",
+						"'Frozen' and 'Chilled' message displaying for elementals",
+						"Charm vfx playing against immune enemies",
+						"Grim proccing against immune enemies",
+						"Attacking an enemy directly after loading the game is always a surprise attack",
+						"Crashes with sad ghost",
+						"Tome of Mastery spawning every load for those who still have the old subclasses",
+						"Some text mistakes"));
 		new ChangeInfo("v0.1.0a",false).addButtons(
 				new ChangeButton(new ShamanSprite.MM(), "Magic Missile Shamans").appendList(
 						"MM shaman now does 4-10, down from 4-12",
@@ -1061,8 +1101,7 @@ public class ChangesScene extends PixelScene {
 								"_-_ Being at low health now speeds up Rage building by up to 1/3."
 				),
 				new ChangeButton(
-						new ItemSprite(new Ankh().image()),
-						new Ankh().trueName(),
+						new Ankh(),
 						"More items are now preserved through resurrection! In addition, they can no longer be sold to a shop, " +
 								"disintegrated, destroyed by explosions, or stolen by crazy thieves.\n\n" +
 								"_-_ Scrolls of Upgrade and Enchantment\n" +

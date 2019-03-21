@@ -461,6 +461,7 @@ public abstract class Wand extends Item {
 
 		private void recharge(){
 			int missingCharges = maxCharges - curCharges;
+			if(Wand.this instanceof WandOfMagicMissile) missingCharges += level();
 			missingCharges = Math.max(0, missingCharges);
 
 			float turnsToCharge = (float) (BASE_CHARGE_DELAY

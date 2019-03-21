@@ -77,11 +77,7 @@ public class WndItem extends Window {
 		titlebar.setRect( 0, 0, width, 0 );
 		add( titlebar );
 
-		if (item.levelKnown && item.level() > 0) {
-			titlebar.color( ItemSlot.UPGRADED );
-		} else if (item.levelKnown && item.level() < 0) {
-			titlebar.color( ItemSlot.DEGRADED );
-		}
+		titlebar.color( item.nameColor() );
 		
 		info.setPos(titlebar.left(), titlebar.bottom() + GAP);
 		add( info );

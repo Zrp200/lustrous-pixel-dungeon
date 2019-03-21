@@ -43,6 +43,7 @@ import com.zrp200.lustrouspixeldungeon.effects.CellEmitter;
 import com.zrp200.lustrouspixeldungeon.effects.Speck;
 import com.zrp200.lustrouspixeldungeon.effects.particles.ShaftParticle;
 import com.zrp200.lustrouspixeldungeon.items.Item;
+import com.zrp200.lustrouspixeldungeon.items.KindOfWeapon;
 import com.zrp200.lustrouspixeldungeon.items.armor.Armor;
 import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.AntiMagic;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfRetribution;
@@ -400,6 +401,8 @@ public class DriedRose extends Artifact {
 			super();
 		}
 
+		public KindOfWeapon weapon() {return rose.weapon;}
+
 		public GhostHero(DriedRose rose){
 			super();
 			this.rose = rose;
@@ -412,7 +415,7 @@ public class DriedRose extends Artifact {
 				rose = Dungeon.hero.belongings.getItem(DriedRose.class);
 			}
 			
-			defenseSkill = (Dungeon.hero.lvl+4)*2;
+			defenseSkill = Hero.EVASION*2;
 			if (rose == null) return;
 			HT = 20 + 4*rose.level();
 		}
@@ -471,7 +474,7 @@ public class DriedRose extends Artifact {
 		
 		@Override
 		protected Char chooseEnemy(boolean newEnemy) {
-			Char enemy = super.chooseEnemy();
+			Char enemy = super.chooseEnemy(newEnemy);
 			
 			//will never attack something far from the player
 			if (enemy != null && Dungeon.level.mobs.contains(enemy)
@@ -485,7 +488,7 @@ public class DriedRose extends Artifact {
 		@Override
 		public int attackSkill(Char target) {
 			//same accuracy as the hero.
-			int acc = Dungeon.hero.lvl + 9;
+			int acc = Dungeon.hero.lvl + Hero.ACCURACY;
 			
 			if (rose != null && rose.weapon != null){
 				acc *= rose.weapon.accuracyFactor(this);

@@ -21,6 +21,8 @@
 
 package com.zrp200.lustrouspixeldungeon.levels;
 
+import com.zrp200.lustrouspixeldungeon.Dungeon;
+
 public class Terrain {
 
 	public static final int CHASM			= 0;
@@ -103,6 +105,11 @@ public class Terrain {
 		flags[BOOKSHELF]	= flags[BARRICADE];
 		flags[ALCHEMY]		= SOLID;
 
+	}
+
+	public static boolean fertile(int cell) {
+		int t = Dungeon.level.map[cell];
+		return t == EMPTY || t == EMPTY_DECO || t == HIGH_GRASS || t == FURROWED_GRASS || t == GRASS || t == EMBERS;
 	}
 
     public static int discover( int terr ) {

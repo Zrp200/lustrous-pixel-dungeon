@@ -49,7 +49,9 @@ public class MeleeWeapon extends Weapon {
 	public Weapon transmute(boolean dry) {
 		Generator.Category c = Generator.wepTiers[tier - 1];
 		Weapon w;
-		try {
+		if(tier == 1 && !(this instanceof Cord))
+			w = new Cord();
+		else try {
 			w = (MeleeWeapon) c.classes[Random.chances(c.probs)].newInstance();
 		} catch (Exception e) {
 			LustrousPixelDungeon.reportException(e);

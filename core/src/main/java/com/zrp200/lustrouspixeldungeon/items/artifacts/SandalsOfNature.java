@@ -134,7 +134,7 @@ public class SandalsOfNature extends Artifact {
 		else if (level() == 0)  image = ItemSpriteSheet.ARTIFACT_SHOES;
 		else if (level() == 1)  image = ItemSpriteSheet.ARTIFACT_BOOTS;
 		else if (level() >= 2)  image = ItemSpriteSheet.ARTIFACT_GREAVES;
-		name = Messages.get(this, "name_" + (level()+1));
+		trueName = Messages.get(this, "name_" + (level()+1));
 		return super.upgrade();
 	}
 
@@ -150,7 +150,7 @@ public class SandalsOfNature extends Artifact {
 	@Override
 	public void restoreFromBundle( Bundle bundle ) {
 		super.restoreFromBundle(bundle);
-		if (level() > 0) name = Messages.get(this, "name_" + level());
+		if (level() > 0) trueName = Messages.get(this, "name_" + level());
 		if (bundle.contains(SEEDS))
 			Collections.addAll(seeds , bundle.getClassArray(SEEDS));
 		if (level() == 1)  image = ItemSpriteSheet.ARTIFACT_SHOES;

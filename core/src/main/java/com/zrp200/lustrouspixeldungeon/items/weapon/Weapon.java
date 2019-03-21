@@ -348,7 +348,7 @@ abstract public class Weapon extends KindOfWeapon {
 	
 	@SuppressWarnings("unchecked")
 	public Item upgrade(boolean enchant ) {
-		if ( enchant && ( enchantment == null || enchantment.curse() ) )
+		if ( enchant && ( enchantment == null || enchantment instanceof WeaponCurse ) )
 			enchant(Enchantment.random());
 		else if (!enchant && Random.Float() > Math.pow(0.9, level()))
 			enchant(null, false);
@@ -363,7 +363,7 @@ abstract public class Weapon extends KindOfWeapon {
 	
 	@Override
 	public String name() {
-		return isVisiblyEnchanted() ? enchantment.name( super.name() ) : super.name();
+		return isVisiblyEnchanted() && !hasCustomName() ? enchantment.name( super.name() ) : super.name();
 	}
 	@Override
 	public int price() {
@@ -450,7 +450,9 @@ abstract public class Weapon extends KindOfWeapon {
 		if(!(item instanceof Weapon)) return false;
 		Weapon w = (Weapon) item;
 		return super.isSimilar(item)
-				&& (enchantment == null ? w.enchantment == null : w.enchantment != null && enchantment.getClass().equals(w.enchantment.getClass()) )
+				&& (enchantment == null
+					? w.enchantment == null
+					: w.enchantment != null && enchantment.getClass().equals(w.enchantment.getClass()) )
 				&& augment == w.augment;
 	}
 
@@ -498,10 +500,10 @@ abstract public class Weapon extends KindOfWeapon {
 		public abstract int proc( Weapon weapon, Char attacker, Char defender, int damage );
 
 		public String name() {
-			if (!curse())
-				return name( Messages.get(this, "enchant"));
-			else
+			if(this instanceof WeaponCurse)
 				return name( Messages.get(Item.class, "curse"));
+			else
+				return name( Messages.get(this, "enchant"));
 		}
 
 		public String name( String weaponName ) {

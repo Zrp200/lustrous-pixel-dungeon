@@ -140,40 +140,40 @@ public class Blandfruit extends Food {
 		potionAttrib.image = ItemSpriteSheet.BLANDFRUIT;
 
 		if (potionAttrib instanceof PotionOfHealing){
-			name = Messages.get(this, "sunfruit");
+			trueName = Messages.get(this, "sunfruit");
 			potionGlow = new ItemSprite.Glowing( 0x2EE62E );
 		} else if (potionAttrib instanceof PotionOfStrength){
-			name = Messages.get(this, "rotfruit");
+			trueName = Messages.get(this, "rotfruit");
 			potionGlow = new ItemSprite.Glowing( 0xCC0022 );
 		} else if (potionAttrib instanceof PotionOfParalyticGas){
-			name = Messages.get(this, "earthfruit");
+			trueName = Messages.get(this, "earthfruit");
 			potionGlow = new ItemSprite.Glowing( 0x67583D );
 		} else if (potionAttrib instanceof PotionOfInvisibility){
-			name = Messages.get(this, "blindfruit");
+			trueName = Messages.get(this, "blindfruit");
 			potionGlow = new ItemSprite.Glowing( 0xD9D9D9 );
 		} else if (potionAttrib instanceof PotionOfLiquidFlame){
-			name = Messages.get(this, "firefruit");
+			trueName = Messages.get(this, "firefruit");
 			potionGlow = new ItemSprite.Glowing( 0xFF7F00 );
 		} else if (potionAttrib instanceof PotionOfFrost){
-			name = Messages.get(this, "icefruit");
+			trueName = Messages.get(this, "icefruit");
 			potionGlow = new ItemSprite.Glowing( 0x66B3FF );
 		} else if (potionAttrib instanceof PotionOfMindVision){
-			name = Messages.get(this, "fadefruit");
+			trueName = Messages.get(this, "fadefruit");
 			potionGlow = new ItemSprite.Glowing( 0x919999 );
 		} else if (potionAttrib instanceof PotionOfToxicGas){
-			name = Messages.get(this, "sorrowfruit");
+			trueName = Messages.get(this, "sorrowfruit");
 			potionGlow = new ItemSprite.Glowing( 0xA15CE5 );
 		} else if (potionAttrib instanceof PotionOfLevitation) {
-			name = Messages.get(this, "stormfruit");
+			trueName = Messages.get(this, "stormfruit");
 			potionGlow = new ItemSprite.Glowing( 0x1B5F79 );
 		} else if (potionAttrib instanceof PotionOfPurity) {
-			name = Messages.get(this, "dreamfruit");
+			trueName = Messages.get(this, "dreamfruit");
 			potionGlow = new ItemSprite.Glowing( 0xC152AA );
 		} else if (potionAttrib instanceof PotionOfExperience) {
-			name = Messages.get(this, "starfruit");
+			trueName = Messages.get(this, "starfruit");
 			potionGlow = new ItemSprite.Glowing( 0x404040 );
 		} else if (potionAttrib instanceof PotionOfHaste) {
-			name = Messages.get(this, "swiftfruit");
+			trueName = Messages.get(this, "swiftfruit");
 			potionGlow = new ItemSprite.Glowing( 0xCCBB00 );
 		}
 

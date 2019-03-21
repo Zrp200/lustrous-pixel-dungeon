@@ -4,7 +4,7 @@ import com.zrp200.lustrouspixeldungeon.actors.blobs.Inferno;
 
 public class InfernalTrap extends BlobTrap {
     {
-        color = RED;
+        color = ORANGE;
         blobClass = Inferno.class;
 
         name = "Infernal Trap";

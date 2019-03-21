@@ -44,12 +44,15 @@ import com.zrp200.lustrouspixeldungeon.scenes.CellSelector;
 import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSprite;
 import com.zrp200.lustrouspixeldungeon.sprites.MissileSprite;
+import com.zrp200.lustrouspixeldungeon.ui.ItemSlot;
 import com.zrp200.lustrouspixeldungeon.ui.QuickSlotButton;
 import com.zrp200.lustrouspixeldungeon.utils.GLog;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+
+import static com.zrp200.lustrouspixeldungeon.ui.Window.TITLE_COLOR;
 
 public class Item implements Bundlable, Cloneable {
 
@@ -62,11 +65,12 @@ public class Item implements Bundlable, Cloneable {
 	
 	private static final String AC_DROP		= "DROP";
 	protected static final String AC_THROW		= "THROW";
-	
+
 	public String defaultAction;
 	public boolean usesTargeting;
 	
-	protected String name = Messages.get(this, "name");
+	private String name;
+	protected String trueName = Messages.get(this, "name");
 	public int image = 0;
 
 	public ItemSprite sprite() {
@@ -88,6 +92,8 @@ public class Item implements Bundlable, Cloneable {
 
 	// whether an item can be included in heroes remains
 	public boolean bones = false;
+
+	public Item() { reset(); }
 	
 	private static Comparator<Item> itemComparator = new Comparator<Item>() {
 		@Override
@@ -124,7 +130,7 @@ public class Item implements Bundlable, Cloneable {
 	//resets an item's properties, to ensure consistency between runs
 	public void reset(){
 		//resets the name incase the language has changed.
-		name = Messages.get(this, "name");
+		trueName = Messages.get(this, "name");
 	}
 
 	public void doThrow( Hero hero ) {
@@ -242,11 +248,14 @@ public class Item implements Bundlable, Cloneable {
         return this;
     }
 
-    @Override
-    public Item clone() {
+    public Item(Item item) {
+		emulate(item);
+	}
+
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
+	public Item clone() {
         try {
-            Item clone = (Item)super.clone();
-            return clone.emulate(this);
+            return getClass().newInstance().emulate(this); // everything of value is already kept here.
         } catch (Exception e) {
             LustrousPixelDungeon.reportException(e);
             return null;
@@ -420,15 +429,31 @@ public class Item implements Bundlable, Cloneable {
 			name = Messages.format( TXT_TO_STRING_X, name, quantity );
 
 		return name;
+	}
 
+	protected boolean hasCustomName() {
+		return !( name == null || name.equals("") );
+	}
+
+	public int nameColor() {
+		if( hasCustomName() )
+			return 0x3399FF;
+		if(levelKnown && level() != 0)
+			return level() > 0 ? ItemSlot.UPGRADED : ItemSlot.DEGRADED;
+		return TITLE_COLOR;
 	}
 	
 	public String name() {
-		return name;
+		return hasCustomName() ? name : trueName;
+	}
+
+	public void rename(String name) {
+		if(!trueName.equals(name))
+			this.name = name;
 	}
 	
 	public final String trueName() {
-		return name;
+		return trueName;
 	}
 	
 	public int image() {
@@ -494,9 +519,11 @@ public class Item implements Bundlable, Cloneable {
 	private static final String CURSED			= "cursed";
 	private static final String CURSED_KNOWN	= "cursedKnown";
 	private static final String QUICKSLOT		= "quickslotpos";
+	private static final String NAME			= "name";
 	
 	@Override
 	public void storeInBundle( Bundle bundle ) {
+		bundle.put( NAME, name);
 		bundle.put( QUANTITY, quantity );
 		bundle.put( LEVEL, level );
 		bundle.put( LEVEL_KNOWN, levelKnown );
@@ -512,6 +539,7 @@ public class Item implements Bundlable, Cloneable {
 		quantity	= bundle.getInt( QUANTITY );
 		levelKnown	= bundle.getBoolean( LEVEL_KNOWN );
 		cursedKnown	= bundle.getBoolean( CURSED_KNOWN );
+		if(bundle.contains(NAME)) name = bundle.getString(NAME);
 		
 		int level = bundle.getInt( LEVEL );
 		if (level > 0) {

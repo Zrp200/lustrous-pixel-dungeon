@@ -59,6 +59,7 @@ import com.zrp200.lustrouspixeldungeon.items.bombs.Bomb;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfRecharging;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.zrp200.lustrouspixeldungeon.levels.Terrain;
+import com.zrp200.lustrouspixeldungeon.levels.traps.ArmageddonTrap;
 import com.zrp200.lustrouspixeldungeon.levels.traps.CursingTrap;
 import com.zrp200.lustrouspixeldungeon.levels.traps.ShockingTrap;
 import com.zrp200.lustrouspixeldungeon.levels.traps.StormTrap;
@@ -343,16 +344,7 @@ public class CursedWand {
 
 			//great forest fire!
 			case 0:
-				for (int i = 0; i < Dungeon.level.length(); i++){
-					GameScene.add( Blob.seed(i, 15, Regrowth.class));
-				}
-				do {
-					GameScene.add(Blob.seed(Dungeon.level.randomDestination(), 10, Fire.class));
-				} while (Random.Int(6) != 0);
-				new Flare(8, 32).color(0xFFFF66, true).show(user.sprite, 2f);
-				Sample.INSTANCE.play(Assets.SND_TELEPORT);
-				GLog.p(Messages.get(CursedWand.class, "grass"));
-				GLog.w(Messages.get(CursedWand.class, "fire"));
+				new ArmageddonTrap().set(Dungeon.hero.pos).activate();
 				break;
 
 			//superpowered mimic

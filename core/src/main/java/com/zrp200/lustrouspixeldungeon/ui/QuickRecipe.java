@@ -245,7 +245,7 @@ public class QuickRecipe extends Component {
 			case 0: default:
 				result.add(new QuickRecipe( new Potion.SeedToPotion(), new ArrayList<>(Arrays.asList(new Plant.Seed.PlaceHolder().quantity(3))), new WndBag.Placeholder(ItemSpriteSheet.POTION_HOLDER){
 					{
-						name = Messages.get(Potion.SeedToPotion.class, "name");
+						trueName = Messages.get(Potion.SeedToPotion.class, "name");
 					}
 					
 					@Override
@@ -317,7 +317,7 @@ public class QuickRecipe extends Component {
 						new ArrayList<>(Arrays.asList(new Blandfruit(), new Plant.Seed.PlaceHolder())),
 						new Blandfruit(){
 							{
-								name = Messages.get(Blandfruit.class, "cooked");
+								trueName = Messages.get(Blandfruit.class, "cooked");
 							}
 							
 							@Override

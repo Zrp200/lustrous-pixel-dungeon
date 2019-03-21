@@ -45,12 +45,14 @@ import com.zrp200.lustrouspixeldungeon.actors.buffs.SoulMark;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Terror;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Weakness;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
+import com.zrp200.lustrouspixeldungeon.actors.mobs.npcs.MirrorImage;
 import com.zrp200.lustrouspixeldungeon.effects.Flare;
 import com.zrp200.lustrouspixeldungeon.effects.Speck;
 import com.zrp200.lustrouspixeldungeon.effects.Surprise;
 import com.zrp200.lustrouspixeldungeon.effects.Wound;
 import com.zrp200.lustrouspixeldungeon.items.Generator;
 import com.zrp200.lustrouspixeldungeon.items.Item;
+import com.zrp200.lustrouspixeldungeon.items.artifacts.DriedRose;
 import com.zrp200.lustrouspixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.zrp200.lustrouspixeldungeon.items.potions.Potion;
 import com.zrp200.lustrouspixeldungeon.items.rings.Ring;
@@ -58,6 +60,7 @@ import com.zrp200.lustrouspixeldungeon.items.rings.RingOfWealth;
 import com.zrp200.lustrouspixeldungeon.items.stones.StoneOfAggression;
 import com.zrp200.lustrouspixeldungeon.items.weapon.SpiritBow;
 import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
+import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Flail;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.zrp200.lustrouspixeldungeon.levels.features.Chasm;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
@@ -155,7 +158,6 @@ public abstract class Mob extends Char {
 		}
 
 		enemySeen = bundle.getBoolean( SEEN );
-
 		target = bundle.getInt( TARGET );
 	}
 	
@@ -395,7 +397,7 @@ public abstract class Mob extends Char {
 							path.add(target);
 						}
 
-					} else if (!path.isEmpty()) {
+					} else {
 						//if the new target is simply 1 earlier in the path shorten the path
 						if (path.getLast() == target) {
 
@@ -514,7 +516,7 @@ public abstract class Mob extends Char {
 	}
 
 	public boolean enemySeen() { // just double checks things
-	    return enemySeen && enemyInFOV();
+		return enemySeen && (enemy == null || enemyInFOV());
 	}
 
 	@Override
@@ -591,6 +593,8 @@ public abstract class Mob extends Char {
 			}
 			if(alignment == Alignment.ALLY) return true;
 		}
+		if(enemy instanceof MirrorImage && !Dungeon.hero.canSurpriseAttack()) return false;
+		if(enemy instanceof DriedRose.GhostHero && !(((DriedRose.GhostHero)enemy).weapon() instanceof Flail)) return false;
 		return !enemySeen() || enemy.invisible > 0 || paralysed > 0;
 	}
 
@@ -758,7 +762,8 @@ public abstract class Mob extends Char {
 		static final String TAG	= "SLEEPING";
 
 		public boolean hasNoticedEnemy() {
-			return super.hasNoticedEnemy() && Random.Float( distance( enemy ) + enemy.stealth() + (enemy.flying ? 2 : 0) ) < 1;
+			return super.hasNoticedEnemy()
+					&& Random.Float( distance( enemy ) + enemy.stealth() + (enemy.flying ? 2 : 0) ) < 1;
 		}
 
 		@Override
@@ -794,7 +799,7 @@ public abstract class Mob extends Char {
 		@Override
 		public boolean act( boolean justAlerted ) {
 			super.act(justAlerted);
-			if ( enemySeen || ( enemyInFOV() && justAlerted ) ) {
+			if ( enemySeen || enemyInFOV() && justAlerted) {
 				notice();
 				enemySeen = alerted = true;
 				state = HUNTING;

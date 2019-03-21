@@ -645,11 +645,11 @@ public class Dungeon {
 		if(cord != null) gloves.emulate(cord);
 
 		if(hero.heroClass == HeroClass.HUNTRESS) { // "implement" 0.1.0 changes to the best of our ability
-			if(version <= LustrousPixelDungeon.v001) {
-				versionItems.add( new SpiritBow() );
-				versionItems.add( gloves );
+			if(version <= LustrousPixelDungeon.Version.v001.versionCode) {
+				if(!hero.belongings.hasItem(SpiritBow.class)) versionItems.add(new SpiritBow());
+				versionItems.add(gloves);
 			}
-			if(hero.subClass == HeroSubClass.WARLOCK || hero.subClass == HeroSubClass.FREERUNNER)
+			if((hero.subClass == HeroSubClass.WARLOCK || hero.subClass == HeroSubClass.FREERUNNER) && !hero.belongings.hasItem(TomeOfMastery.class))
 				versionItems.add( new TomeOfMastery() );
 		}
 

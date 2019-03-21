@@ -38,11 +38,9 @@ public class Friendly extends WeaponCurse {
 			int base = Random.IntRange(3, 5);
 			
 			Buff.affect( attacker, Charm.class, base + 10 ).object = defender.id();
-			attacker.sprite.centerEmitter().start( Speck.factory( Speck.HEART ), 0.2f, 5 );
 			
 			//5 turns will be reduced by the attack, so effectively lasts for base turns
 			Buff.affect( defender, Charm.class, base + 5 ).object = attacker.id();
-			defender.sprite.centerEmitter().start( Speck.factory( Speck.HEART ), 0.2f, 5 );
 			
 		}
 		

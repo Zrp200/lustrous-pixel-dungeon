@@ -38,9 +38,8 @@ public class HolyProvidence extends Armor.Glyph {
     @Override
     public int proc(Armor armor, Char attacker, Char defender, int damage) {
         Class<? extends FlavourBuff> buffClass = (Class<?extends FlavourBuff>)Random.oneOf( procEffects.keySet().toArray() );
-        if(Random.Int(armor.level()+38) >= 40) {
+        if(Random.Int(armor.level()+40) >= 38)
             Buff.prolong(defender, buffClass, Random.Int(6, procEffects.get(buffClass)));
-        }
         return damage;
     }
 }

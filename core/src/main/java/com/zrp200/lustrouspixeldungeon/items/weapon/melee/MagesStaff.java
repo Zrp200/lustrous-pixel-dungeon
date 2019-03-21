@@ -88,7 +88,7 @@ public class MagesStaff extends MeleeWeapon.Uncommon {
 		this.wand = wand;
 		wand.maxCharges = Math.min(wand.maxCharges + 1, 10);
 		wand.curCharges = wand.maxCharges;
-		name = Messages.get(wand, "staff_name");
+		trueName = Messages.get(wand, "staff_name");
 	}
 
 	@Override
@@ -204,7 +204,7 @@ public class MagesStaff extends MeleeWeapon.Uncommon {
 		wand.identify();
 		if (owner != null) wand.charge(owner);
 
-		name = Messages.get(wand, "staff_name");
+		trueName = Messages.get(wand, "staff_name");
 
 		//This is necessary to reset any particles.
 		//FIXME this is gross, should implement a better way to fully reset quickslot visuals
@@ -308,7 +308,7 @@ public class MagesStaff extends MeleeWeapon.Uncommon {
 		wand = (Wand) bundle.get(WAND);
 		if (wand != null) {
 			wand.maxCharges = Math.min(wand.maxCharges + 1, 10);
-			name = Messages.get(wand, "staff_name");
+			trueName = Messages.get(wand, "staff_name");
 		}
 	}
 

@@ -45,14 +45,8 @@ public class WndInfoItem extends Window {
 		if (heap.type == Heap.Type.HEAP || heap.type == Heap.Type.FOR_SALE) {
 			
 			Item item = heap.peek();
-			
-			int color = TITLE_COLOR;
-			if (item.levelKnown && item.level() > 0) {
-				color = ItemSlot.UPGRADED;
-			} else if (item.levelKnown && item.level() < 0) {
-				color = ItemSlot.DEGRADED;
-			}
-			fillFields( item.image(), item.glowing(), color, item.toString(), item.info() );
+
+			fillFields( item.image(), item.glowing(), item.nameColor(), item.toString(), item.info() );
 			
 		} else {
 
@@ -64,15 +58,7 @@ public class WndInfoItem extends Window {
 	public WndInfoItem( Item item ) {
 		
 		super();
-		
-		int color = TITLE_COLOR;
-		if (item.levelKnown && item.level() > 0) {
-			color = ItemSlot.UPGRADED;
-		} else if (item.levelKnown && item.level() < 0) {
-			color = ItemSlot.DEGRADED;
-		}
-		
-		fillFields( item.image(), item.glowing(), color, item.toString(), item.info() );
+		fillFields( item.image(), item.glowing(), item.nameColor(), item.toString(), item.info() );
 	}
 	
 	private void fillFields( int image, ItemSprite.Glowing glowing, int titleColor, String title, String info ) {

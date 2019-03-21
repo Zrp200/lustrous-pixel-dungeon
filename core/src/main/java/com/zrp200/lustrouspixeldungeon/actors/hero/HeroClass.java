@@ -54,7 +54,6 @@ import com.zrp200.lustrouspixeldungeon.items.weapon.melee.MagesStaff;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.WornShortsword;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.ThrowingKnife;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.ThrowingStone;
-import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.darts.TippedDart;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 
 public enum HeroClass {

@@ -46,34 +46,35 @@ import com.zrp200.lustrouspixeldungeon.utils.GLog;
 
 import java.util.ArrayList;
 
-public class Burning extends Buff implements Hero.Doom {
+public class Burning extends ActiveBuff implements Hero.Doom {
 	
 	private static final float DURATION = 8f;
 	
-	private float left;
-	
 	//for tracking burning of hero items
 	private int burnIncrement = 0;
-	
-	private static final String LEFT	= "left";
+
 	private static final String BURN	= "burnIncrement";
 
 	{
 		type = buffType.NEGATIVE;
-		announced = true;
+		startGrey = 2;
 	}
-	
+
+	@Override
+	protected void onAdd() {
+		super.onAdd();
+		reignite();
+	}
+
 	@Override
 	public void storeInBundle( Bundle bundle ) {
 		super.storeInBundle( bundle );
-		bundle.put( LEFT, left );
 		bundle.put( BURN, burnIncrement );
 	}
 	
 	@Override
 	public void restoreFromBundle( Bundle bundle ) {
 		super.restoreFromBundle(bundle);
-		left = bundle.getFloat( LEFT );
 		burnIncrement = bundle.getInt( BURN );
 	}
 
@@ -105,7 +106,7 @@ public class Burning extends Buff implements Hero.Doom {
 						ArrayList<Item> burnable = new ArrayList<>();
 						//does not reach inside of containers
 						for (Item i : hero.belongings.backpack.items){
-							if ((i instanceof Scroll && !(i instanceof ScrollOfUpgrade))
+							if ((i instanceof Scroll && i.isDestroyable())
 									|| i instanceof MysteryMeat){
 								burnable.add(i);
 							}
@@ -133,8 +134,7 @@ public class Burning extends Buff implements Hero.Doom {
 
 				Item item = ((Thief) target).item;
 
-				if (item instanceof Scroll &&
-						!(item instanceof ScrollOfUpgrade)) {
+				if (item instanceof Scroll && item.isDestroyable()) {
 					target.sprite.emitter().burst( ElmoParticle.FACTORY, 6 );
 					((Thief)target).item = null;
 				} else if (item instanceof MysteryMeat) {
@@ -157,12 +157,9 @@ public class Burning extends Buff implements Hero.Doom {
 			GameScene.add( Blob.seed( target.pos, 4, Fire.class ) );
 		}
 		
-		spend( TICK );
-		left -= TICK;
+		super.act();
 		
-		if (left <= 0 ||
-			(Dungeon.level.water[target.pos] && !target.flying)) {
-			
+		if (Dungeon.level.water[target.pos] && !target.flying) {
 			detach();
 		}
 		
@@ -170,7 +167,10 @@ public class Burning extends Buff implements Hero.Doom {
 	}
 	
 	public void reignite( Char ch ) {
-		left = DURATION;
+		set(DURATION);
+	}
+	public final void reignite() {
+		reignite(target);
 	}
 	
 	@Override
@@ -182,21 +182,6 @@ public class Burning extends Buff implements Hero.Doom {
 	public void fx(boolean on) {
 		if (on) target.sprite.add(CharSprite.State.BURNING);
 		else target.sprite.remove(CharSprite.State.BURNING);
-	}
-
-	@Override
-	public String heroMessage() {
-		return Messages.get(this, "heromsg");
-	}
-
-	@Override
-	public String toString() {
-		return Messages.get(this, "name");
-	}
-
-	@Override
-	public String desc() {
-		return Messages.get(this, "desc", dispTurns(left));
 	}
 
 	@Override

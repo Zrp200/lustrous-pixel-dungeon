@@ -21,10 +21,8 @@
 
 package com.zrp200.lustrouspixeldungeon.actors.mobs;
 
-import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
-import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
@@ -60,6 +58,7 @@ public class Succubus extends Mob {
 		spriteClass = SuccubusSprite.class;
 		
 		HP = HT = 80;
+		attackSkill = 40;
 		defenseSkill = 25;
 		armor = 10;
 		viewDistance = Light.DISTANCE;
@@ -92,12 +91,10 @@ public class Succubus extends Mob {
 				HP += leech;
 			}
 			sprite.emitter().burst( Speck.factory( Speck.HEALING ), 2 );
-			Sample.INSTANCE.play( Assets.SND_CHARMS );
 		} else if (Random.Int( 3 ) == 0) {
 			//attack will reduce by 5 turns, so effectively 3-4 turns
 			Buff.affect( enemy, Charm.class, Random.IntRange( 3, 4 ) + 5 ).object = id();
-			enemy.sprite.centerEmitter().start( Speck.factory( Speck.HEART ), 0.2f, 5 );
-			Sample.INSTANCE.play( Assets.SND_CHARMS );
+			Charm.playSFX();
 		}
 		
 		return damage;
@@ -152,15 +149,10 @@ public class Succubus extends Mob {
 	protected void zap() { // unused
 		sprite.zap(enemy.pos);
 		for(Char enemy : findEnemies()) {
-			Buff.affect( enemy, Charm.class, Random.IntRange( 3, 4 )).object = id();
-			enemy.sprite.centerEmitter().start( Speck.factory( Speck.HEART ), 0.2f, 5 );
-			Sample.INSTANCE.play( Assets.SND_CHARMS );
+			Charm c = Buff.affect( enemy, Charm.class, Random.IntRange( 3, 4 ));
+			c.object = id();
+			if(c.target == enemy) Charm.playSFX();
 		}
-	}
-	
-	@Override
-	public int attackSkill( Char target ) {
-		return 40;
 	}
 
 	{
@@ -176,14 +168,10 @@ public class Succubus extends Mob {
 			baseSpeed = 2;
 			flying = true;
 
-			defenseSkill += 3;
-			armor -= 2;
+			attackSkill *= 0.9f; // 36
+			defenseSkill *= 1.2f; // 30
+			armor *= 0.8f; // 8
 		}
-
-		@Override
-		public int attackSkill(Char target) {
-			return 37;
-		} // -3
 
 		@Override
 		public int damageRoll() {

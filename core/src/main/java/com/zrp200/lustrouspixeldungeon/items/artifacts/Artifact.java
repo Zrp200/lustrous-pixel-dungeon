@@ -240,7 +240,7 @@ public class Artifact extends KindofMisc {
 					if (charge >= chargeCap && chargeCap != 0) {
 						partialCharge = 0;
 						charge = chargeCap;
-						String chargeMessage = Messages.get(Artifact.this, "charged",name);
+						String chargeMessage = Messages.get(Artifact.this, "charged",name());
 						if(!chargeMessage.equals("")) GLog.p( chargeMessage );
 					}
 					updateQuickslot();

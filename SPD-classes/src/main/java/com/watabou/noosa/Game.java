@@ -65,8 +65,7 @@ public class Game extends Activity implements GLSurfaceView.Renderer, View.OnTou
 	public static int dispHeight;
 	
 	// Size of the EGL surface view
-	public static int width;
-	public static int height;
+	public static int width, height;
 	
 	// Density: mdpi=1, hdpi=1.5, xhdpi=2...
 	public static float density = 1;

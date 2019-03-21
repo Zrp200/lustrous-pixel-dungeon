@@ -136,11 +136,6 @@ public abstract class Scroll extends Item {
 		handler = new ItemStatusHandler<>( (Class<? extends Scroll>[])scrolls, runes, bundle );
 	}
 	
-	public Scroll() {
-		super();
-		reset();
-	}
-	
 	//anonymous scrolls are always IDed, do not affect ID status,
 	//and their sprite is replaced by a placeholder if they are not known,
 	//useful for items that appear in UIs, or which are only spawned for their effects
@@ -237,7 +232,7 @@ public abstract class Scroll extends Item {
 	
 	@Override
 	public String name() {
-		return isKnown() ? name : Messages.get(this, rune);
+		return isKnown() ? super.name() : Messages.get(this, rune);
 	}
 	
 	@Override

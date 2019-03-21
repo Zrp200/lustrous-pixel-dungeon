@@ -83,15 +83,15 @@ public class Pasty extends Food {
 		super.reset();
 		switch(holiday){
 			case NONE:
-				name = Messages.get(this, "pasty");
+				trueName = Messages.get(this, "pasty");
 				image = ItemSpriteSheet.PASTY;
 				break;
 			case HWEEN:
-				name = Messages.get(this, "pie");
+				trueName = Messages.get(this, "pie");
 				image = ItemSpriteSheet.PUMPKIN_PIE;
 				break;
 			case XMAS:
-				name = Messages.get(this, "cane");
+				trueName = Messages.get(this, "cane");
 				image = ItemSpriteSheet.CANDY_CANE;
 				break;
 		}

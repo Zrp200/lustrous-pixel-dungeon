@@ -61,10 +61,15 @@ public class Belongings implements Iterable<Item> {
 		this.owner = owner;
 		
 		backpack = new Bag() {{
-			name = Messages.get(Bag.class, "name");
+			trueName = Messages.get(Bag.class, "name");
 			size = BACKPACK_SIZE;
 		}};
 		backpack.owner = owner;
+	}
+
+	public void trim() {
+		for(Item item : backpack) if(item.quantity() == 0)
+			backpack.items.remove(item);
 	}
 	
 	private static final String WEAPON		= "weapon";
@@ -149,6 +154,9 @@ public class Belongings implements Iterable<Item> {
 		}
 		
 		return null;
+	}
+	public boolean hasItem(Class<?extends Item> itemClass) {
+		return getItem(itemClass) != null;
 	}
 	
 	public boolean contains( Item contains ){

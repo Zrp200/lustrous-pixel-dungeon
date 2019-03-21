@@ -539,7 +539,7 @@ public class Potion extends Item {
 		public Item sampleOutput(ArrayList<Item> ingredients) {
 			return new WndBag.Placeholder(ItemSpriteSheet.POTION_HOLDER){
 				{
-					name = Messages.get(SeedToPotion.class, "name");
+					trueName = Messages.get(SeedToPotion.class, "name");
 				}
 				
 				@Override

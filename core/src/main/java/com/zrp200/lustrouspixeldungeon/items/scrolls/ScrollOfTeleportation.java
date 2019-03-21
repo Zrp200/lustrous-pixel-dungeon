@@ -181,9 +181,12 @@ public class ScrollOfTeleportation extends Scroll {
 		
 	}
 
-	public static void appear( Char ch, int pos ) {
+	public static void appear( Char ch, int pos) {
+		appear(ch,pos,false);
+	}
+	public static void appear( Char ch, int pos, boolean silent ) {
 
-		ch.sprite.interruptMotion();
+		if(ch.sprite != null) ch.sprite.interruptMotion();
 
 		ch.move( pos );
 		ch.sprite.place( pos );
@@ -192,9 +195,10 @@ public class ScrollOfTeleportation extends Scroll {
 			ch.sprite.alpha( 0 );
 			ch.sprite.parent.add( new AlphaTweener( ch.sprite, 1, 0.4f ) );
 		}
-
-		ch.sprite.emitter().start( Speck.factory(Speck.LIGHT), 0.2f, 3 );
-		Sample.INSTANCE.play( Assets.SND_TELEPORT );
+		if(!silent && (Dungeon.level.heroFOV[pos] || ch instanceof Hero)) {
+			ch.sprite.emitter().start( Speck.factory(Speck.LIGHT), 0.2f, 3 );
+			Sample.INSTANCE.play( Assets.SND_TELEPORT );
+		}
 	}
 	
 	@Override

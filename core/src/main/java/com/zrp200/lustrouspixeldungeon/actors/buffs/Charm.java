@@ -21,7 +21,10 @@
 
 package com.zrp200.lustrouspixeldungeon.actors.buffs;
 
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
+import com.zrp200.lustrouspixeldungeon.Assets;
+import com.zrp200.lustrouspixeldungeon.effects.Speck;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.ui.BuffIndicator;
 
@@ -68,5 +71,14 @@ public class Charm extends FlavourBuff {
 		if (cooldown() <= 0){
 			detach();
 		}
+	}
+
+	@Override
+	protected void onAdd() {
+		target.sprite.centerEmitter().start( Speck.factory( Speck.HEART ), 0.2f, 5 );
+	}
+
+	public static void playSFX() {
+		Sample.INSTANCE.play(Assets.SND_CHARMS);
 	}
 }

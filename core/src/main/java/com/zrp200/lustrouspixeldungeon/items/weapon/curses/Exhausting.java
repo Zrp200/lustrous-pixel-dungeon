@@ -33,7 +33,7 @@ public class Exhausting extends WeaponCurse {
 	@Override
 	public int proc(Weapon weapon, Char attacker, Char defender, int damage) {
 
-		if (attacker == Dungeon.hero && Random.Int(15) == 0) {
+		if (Random.Int(15) == 0) {
 			Buff.affect(attacker, Weakness.class, Random.NormalIntRange(5, 20));
 		}
 

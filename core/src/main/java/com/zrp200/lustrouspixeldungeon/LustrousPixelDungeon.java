@@ -43,10 +43,18 @@ import static com.watabou.utils.Bundle.*;
 
 public class LustrousPixelDungeon extends Game {
 
-	public static final int
-			v000 = 400,
-			v001 = 407,
-			v010 = 416;
+	public enum Version {
+		v010("v0.1.0",416),
+		v001("v0.0.1",407);
+
+		public static final Version latest = values()[0];
+		public String name;
+		public final int versionCode;
+		Version(String name, int code) {
+			this.name = name;
+			this.versionCode = code;
+		}
+	}
 	
 	public LustrousPixelDungeon() {
 		super(WelcomeScene.class);

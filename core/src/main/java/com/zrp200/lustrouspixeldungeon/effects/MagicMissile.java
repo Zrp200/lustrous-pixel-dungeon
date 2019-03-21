@@ -153,7 +153,7 @@ public class MagicMissile extends Emitter {
 	}
 
 	//convenience method for the common case of a bolt going from a character to a tile or enemy
-	public static void boltFromChar(Group group, int type, Visual sprite, int to, Callback callback){
+	public synchronized static void boltFromChar(Group group, int type, Visual sprite, int to, Callback callback){
 		MagicMissile missile = ((MagicMissile)group.recycle( MagicMissile.class ));
 		Char target = Actor.findChar(to);
 		if (target != null){
@@ -162,7 +162,7 @@ public class MagicMissile extends Emitter {
 			missile.reset(type, sprite, to, callback);
 		}
 	}
-	public static void boltFromChar(Group group, int type, Visual sprite, Visual to, Callback callback) {
+	public synchronized static void boltFromChar(Group group, int type, Visual sprite, Visual to, Callback callback) {
 		MagicMissile missile = ((MagicMissile)group.recycle( MagicMissile.class ));
 		missile.reset(type, sprite, to, callback);
 	}

@@ -422,9 +422,8 @@ public class WndBag extends WndTabbed {
 	
 	public static class Placeholder extends Item {
 		{
-			name = null;
+			trueName = null;
 		}
-		
 		public Placeholder( int image ) {
 			this.image = image;
 		}

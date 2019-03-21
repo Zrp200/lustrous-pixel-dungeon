@@ -65,6 +65,12 @@ public class Boomerang extends MissileWeapon {
 	}
 
 	private Boomerang.Returning returning;
+	public Returning returning() {
+		return returning;
+	}
+	public boolean isReturning() {
+		return returning != null && returning.isActive();
+	}
 
 
 	@Override
@@ -146,6 +152,14 @@ public class Boomerang extends MissileWeapon {
 
 		int depthOfOrigin = depth;
 		public int pos;
+		private int lastPos;
+		public int lastPos() { return lastPos; }
+
+		protected void setPosTo(int newPos) {
+			lastPos = pos;
+			pos = newPos;
+		}
+
 		ArrayList<Integer> path;
 
 		private static final float
@@ -161,7 +175,7 @@ public class Boomerang extends MissileWeapon {
 			Ballistica trajectory = new Ballistica(from,target.pos,Ballistica.STOP_TARGET);
 			distancePerTurn = Math.max(MIN_SPEED, trajectory.dist/TURNS_TO_RETURN);
 			path = new ArrayList<>(trajectory.subPath(0,trajectory.path.indexOf(trajectory.collisionPos)));
-			pos = path.remove(0);
+			pos = lastPos = path.remove(0);
 			sprite();
 			return this;
 		}
@@ -223,7 +237,7 @@ public class Boomerang extends MissileWeapon {
 			sprite().reset(dest, new Callback() {
 				@Override
 				public void call() {
-					pos = dest;
+					setPosTo(dest);
 					onCharCollision( findChar(pos) );
 					next();
 				}
@@ -254,11 +268,15 @@ public class Boomerang extends MissileWeapon {
 			}
 		}
 
+		private static String
+			LAST_POS = "LASTPOS";
+
 		@Override
 		public void storeInBundle(Bundle bundle) {
 			super.storeInBundle(bundle);
 
 			bundle.put("pos",pos);
+			bundle.put(LAST_POS,lastPos);
 			bundle.put("distancePerTurn",distancePerTurn);
 
 			int[] path = new int[this.path.size()];
@@ -277,6 +295,7 @@ public class Boomerang extends MissileWeapon {
 			for (int pos : bundle.getIntArray("path")) path.add(pos);
 
 			pos = bundle.getInt("pos");
+			lastPos = bundle.contains(LAST_POS) ? bundle.getInt(LAST_POS) : pos;
 			distancePerTurn = bundle.getInt("distancePerTurn");
 			boomerang = (Boomerang) bundle.get("boomerang");
 			depthOfOrigin = bundle.getInt("depthOfOrigin");

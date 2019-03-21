@@ -19,11 +19,13 @@ public class ActiveBuff extends Buff { // this uses an internal counter so it ca
     }
 
     public void set( float duration ) {
+        duration *= target.resist(getClass());
         left = Math.max(left, duration);
         initial = Math.max(initial, left);
     }
 
     public void extend( float duration ) {
+        duration *= target.resist(getClass());
         left += duration;
         initial = Math.max(initial, left);
     }

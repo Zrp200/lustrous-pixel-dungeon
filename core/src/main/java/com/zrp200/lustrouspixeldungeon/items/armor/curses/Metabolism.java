@@ -24,6 +24,7 @@ package com.zrp200.lustrouspixeldungeon.items.armor.curses;
 import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Hunger;
+import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.effects.Speck;
 import com.zrp200.lustrouspixeldungeon.items.armor.Armor;
 import com.zrp200.lustrouspixeldungeon.items.armor.Armor.Glyph;
@@ -38,6 +39,10 @@ public class Metabolism extends Glyph {
 	
 	@Override
 	public int proc( Armor armor, Char attacker, Char defender, int damage) {
+		Hero hero;
+		if(defender instanceof Hero) hero = (Hero) defender;
+		else if(attacker instanceof Hero) hero = (Hero) attacker;
+		else return damage;
 
 		if (Random.Int( 6 ) == 0) {
 
@@ -46,7 +51,7 @@ public class Metabolism extends Glyph {
 
 			if (healing > 0) {
 				
-				Hunger hunger = defender.buff( Hunger.class );
+				Hunger hunger = hero.buff( Hunger.class );
 				
 				if (hunger != null && !hunger.isStarving()) {
 					

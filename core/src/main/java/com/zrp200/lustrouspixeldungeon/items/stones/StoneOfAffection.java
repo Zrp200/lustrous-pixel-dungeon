@@ -43,18 +43,15 @@ public class StoneOfAffection extends Runestone {
 	protected void activate(int cell) {
 		
 		for (int i : PathFinder.NEIGHBOURS9){
-			
-			CellEmitter.center(cell + i).start( Speck.factory( Speck.HEART ), 0.2f, 5 );
-			
-			
+
 			Char ch = Actor.findChar( cell + i );
-			
-			if (ch != null && ch.alignment == Char.Alignment.ENEMY){
+
+			if ( ch != null && ch.alignment == Char.Alignment.ENEMY && !ch.isImmune(Charm.class) )
 				Buff.prolong(ch, Charm.class, 10f).object = curUser.id();
-			}
+			else
+				CellEmitter.center(cell + i).start( Speck.factory( Speck.HEART ), 0.2f, 5 );
 		}
-		
-		Sample.INSTANCE.play( Assets.SND_CHARMS );
+		Charm.playSFX();
 		
 	}
 	

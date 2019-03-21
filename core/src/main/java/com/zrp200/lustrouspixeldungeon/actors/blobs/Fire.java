@@ -70,8 +70,8 @@ public class Fire extends Blob {
 					}
 
 				} else if (freeze == null || freeze.volume <= 0 || freeze.cur[cell] <= 0) {
-
-					if (flamable[cell]
+					Regrowth regrowth = (Regrowth) Dungeon.level.blobs.get(Regrowth.class);
+					if ((flamable[cell] || regrowth != null && regrowth.cur[cell] > 0)
 							&& (cur[cell-1] > 0
 							|| cur[cell+1] > 0
 							|| cur[cell-Dungeon.level.width()] > 0
@@ -99,7 +99,7 @@ public class Fire extends Blob {
 	public static void burn( int pos ) {
 		Char ch = Actor.findChar( pos );
 		if (ch != null && !ch.isImmune(Fire.class)) {
-			Buff.affect( ch, Burning.class ).reignite( ch );
+			Buff.affect( ch, Burning.class ).reignite();
 		}
 		
 		Heap heap = Dungeon.level.heaps.get( pos );

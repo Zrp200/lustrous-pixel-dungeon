@@ -25,6 +25,9 @@ import com.watabou.noosa.Game;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.GamesInProgress;
 import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
+import com.zrp200.lustrouspixeldungeon.items.EquipableItem;
+import com.zrp200.lustrouspixeldungeon.items.Item;
+import com.zrp200.lustrouspixeldungeon.items.wands.Wand;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
 import com.zrp200.lustrouspixeldungeon.scenes.InterlevelScene;
@@ -44,9 +47,7 @@ public class WndGame extends Window {
 	private int pos;
 	
 	public WndGame() {
-		
-		super();
-		
+
 		addButton( new RedButton( Messages.get(this, "settings") ) {
 			@Override
 			protected void onClick() {
@@ -54,6 +55,27 @@ public class WndGame extends Window {
 				GameScene.show(new WndSettings());
 			}
 		});
+
+		/*if (Dungeon.hero.isAlive()) {
+			addButton(new RedButton("Rename Equipment") {
+				protected void onClick() {
+					WndGame.this.hide();
+					GameScene.selectItem(new WndBag.Listener()  {
+						public void onSelect(final Item item) {
+							if (item instanceof EquipableItem || item instanceof Wand) {
+								GameScene.show(new WndTextInput("Rename Item", item.name(),
+                                        false, "Rename", "Revert") {
+									@Override
+									protected void onSelect(boolean z) {
+									    if(z) item.rename(getText());
+									}
+								});
+							}
+						}
+					}, WndBag.Mode.CURSABLE, "Select Item");
+				}
+			});
+		}*/
 
 		// Challenges window
 		if (Dungeon.challenges > 0) {
@@ -135,7 +157,7 @@ public class WndGame extends Window {
 
 	private void addButtons( RedButton btn1, RedButton btn2 ) {
 		add( btn1 );
-		btn1.setRect( 0, pos > 0 ? pos += GAP : 0, (WIDTH - GAP) / 2, BTN_HEIGHT );
+		btn1.setRect( 0, pos > 0 ? pos += GAP : 0, (WIDTH - GAP) / 2f, BTN_HEIGHT );
 		add( btn2 );
 		btn2.setRect( btn1.right() + GAP, btn1.top(), WIDTH - btn1.right() - GAP, BTN_HEIGHT );
 		pos += BTN_HEIGHT;

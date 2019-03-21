@@ -43,8 +43,6 @@ public class Affection extends Glyph {
 		if (Random.Int( level + 20 ) >= 18) {
 			for(int i = 0; i <= level; i++)
 				Buff.prolong( attacker, Charm.class, Random.IntRange(4, 12) ).object = defender.id();
-			attacker.sprite.centerEmitter().start( Speck.factory( Speck.HEART ), 0.2f, 5 );
-
 		}
 		
 		return damage;

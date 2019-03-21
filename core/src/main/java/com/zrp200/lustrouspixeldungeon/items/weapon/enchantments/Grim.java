@@ -45,7 +45,7 @@ public class Grim extends Weapon.Enchantment {
 		//scales from 0 - 30% based on how low hp the enemy is, plus 1% per level
 		int chance = Math.round(((defender.HT - enemyHealth) / (float)defender.HT)*30 + level);
 		
-		if (Random.Int( 100 ) < chance) {
+		if (Random.Int( 100 ) < chance && !defender.isImmune(Grim.class)) {
 			
 			defender.damage( defender.HP, this );
 			defender.sprite.emitter().burst( ShadowParticle.UP, 5 );
@@ -53,7 +53,6 @@ public class Grim extends Weapon.Enchantment {
 			if (!defender.isAlive() && attacker instanceof Hero) {
 				Badges.validateGrimWeapon();
 			}
-			
 		}
 
 		return damage;

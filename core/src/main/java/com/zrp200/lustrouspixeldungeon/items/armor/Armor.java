@@ -410,7 +410,7 @@ public class Armor extends EquipableItem {
 
 	@Override
 	public String name() {
-		return glyph != null && glyphKnown ? glyph.name( super.name() ) : super.name();
+		return !hasCustomName() && glyph != null && glyphKnown ? glyph.name(super.name()) : super.name();
 	}
 	
 	@Override

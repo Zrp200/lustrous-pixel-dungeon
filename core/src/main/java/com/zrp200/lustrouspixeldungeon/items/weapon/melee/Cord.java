@@ -27,7 +27,6 @@ public class Cord extends Whip {
     {
         image = ItemSpriteSheet.CORD;
         tier = 1;
-        bones = false;
     }
 
     @Override

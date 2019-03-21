@@ -40,7 +40,7 @@ import com.zrp200.lustrouspixeldungeon.windows.WndStartGame;
 
 public class WelcomeScene extends PixelScene {
 
-	private static int LATEST_UPDATE = LustrousPixelDungeon.v010;
+	private static int LATEST_UPDATE = LustrousPixelDungeon.Version.latest.versionCode; // top one is the most recent.
 
 	@Override
 	public void create() {
@@ -132,7 +132,7 @@ public class WelcomeScene extends PixelScene {
 		if (previousVersion == 0) {
 			message = Messages.get(this, "welcome_msg");
 		} else if (previousVersion <= LustrousPixelDungeon.versionCode) {
-			if (previousVersion < LATEST_UPDATE){
+			if (previousVersion < LATEST_UPDATE ){
 				message = Messages.get(this, "update_intro");
 				message += "\n\n" + Messages.get(this, "update_msg");
 			} else {
@@ -156,7 +156,7 @@ public class WelcomeScene extends PixelScene {
 	private void updateVersion(int previousVersion){
 		
 		//update rankings, to update any data which may be outdated
-		if (previousVersion < LATEST_UPDATE){
+		if (previousVersion < LATEST_UPDATE ){
 			try {
 				Rankings.INSTANCE.load();
 				Rankings.INSTANCE.save();

@@ -24,13 +24,18 @@ package com.zrp200.lustrouspixeldungeon.items.weapon.curses;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.items.wands.WandOfBlastWave;
 import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
+import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Boomerang;
 import com.zrp200.lustrouspixeldungeon.mechanics.Ballistica;
 
 public class Elastic extends WeaponCurse {
 	@Override
 	public int proc(Weapon weapon, Char attacker, Char defender, int damage ) {
-		
-		int oppositeDefender = defender.pos + (defender.pos - attacker.pos);
+		int origin = defender.pos;
+		if(weapon instanceof Boomerang) {
+			Boomerang boomerang = (Boomerang) weapon;
+			if(boomerang.isReturning()) origin = boomerang.returning().lastPos();
+		}
+		int oppositeDefender = defender.pos + (defender.pos - origin);
 		Ballistica trajectory = new Ballistica(defender.pos, oppositeDefender, Ballistica.MAGIC_BOLT);
 		WandOfBlastWave.throwChar(defender, trajectory, 2);
 		

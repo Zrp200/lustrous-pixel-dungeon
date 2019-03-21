@@ -74,11 +74,12 @@ public class Buff extends Actor implements Hero.Doom {
 	
 	public boolean attachTo( Char target ) {
 
-		if (target.isImmune( getClass() )) {
-			return false;
-		}
 		this.target = target;
 		target.add( this );
+		if(!target.buffs().contains(this)) {
+			this.target = null;
+			return false;
+		}
 		if (target.sprite != null && announced) {
 			int color = CharSprite.NEUTRAL;
 			if (type == buffType.POSITIVE)
@@ -87,13 +88,8 @@ public class Buff extends Actor implements Hero.Doom {
 				color = CharSprite.NEGATIVE;
 			target.sprite.showStatus(color, toString());
 		}
-		if (target.buffs().contains(this)){
-			if (target.sprite != null) fx( true );
-			return true;
-		} else {
-			this.target = null;
-			return false;
-		}
+		if (target.sprite != null) fx( true );
+		return true;
 	}
 	
 	public void detach() {

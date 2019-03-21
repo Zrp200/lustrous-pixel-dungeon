@@ -122,6 +122,7 @@ abstract public class MissileWeapon extends Weapon {
 		return accuracy * (Dungeon.level.adjacent(owner.pos,user.enemy().pos) ? adjacentPenalty : rangeBoost);
 	}
 
+	@SuppressWarnings("ConstantConditions")
 	private abstract class EnhanceCallback implements Callback {
 		MissileWeapon toEnhance;
 		{
@@ -139,13 +140,13 @@ abstract public class MissileWeapon extends Weapon {
 
 		//try to put the upgraded into inventory, if it didn't already merge
 		if(enhanced == this) {
-			MissileWeapon similar = (MissileWeapon) Dungeon.hero.belongings.getSimilar(this);
+			MissileWeapon similar = (MissileWeapon) curUser.belongings.getSimilar(this);
 			if (similar != null) {
-				detach(Dungeon.hero.belongings.backpack);
 				similar.merge(this);
 				return similar;
 			}
-		} else if ( enhanced.quantity() <= 1 && !enhanced.collect() ) enhanced.drop(Dungeon.hero.pos);
+		}
+		if( !enhanced.collect() ) enhanced.drop(Dungeon.hero.pos);
 		updateQuickslot();
 		return enhanced;
 	}
@@ -164,6 +165,12 @@ abstract public class MissileWeapon extends Weapon {
 		return bundleRestoring ? super.enchant(ench, visible) : enhance(new EnhanceCallback() {
 			@Override
 			public void call() {
+				if(toEnhance.quantity == 1 && toEnhance != MissileWeapon.this) {// this lets us enchant two.
+					if(quantity == 1) {
+						toEnhance = (MissileWeapon) merge(toEnhance);
+					} else toEnhance.merge(detach(curUser.belongings.backpack));
+					toEnhance.durability = MAX_DURABILITY;
+				}
 				toEnhance.enchant(ench,visible);
 			}
 		});
@@ -241,7 +248,7 @@ abstract public class MissileWeapon extends Weapon {
 		return false;
 	}
 
-	public boolean attachedTo(PinCushion p) { return embed.equals(p); }
+	public boolean attachedTo(PinCushion p) { return embed != null && embed.equals(p); }
 	
 	@Override
 	public Item random() {
@@ -319,6 +326,8 @@ abstract public class MissileWeapon extends Weapon {
         	quantity--;
         	durability += MAX_DURABILITY;
 		}
+		updateQuickslot();
+        Dungeon.hero.belongings.trim();
         return this;
 	}
 	
