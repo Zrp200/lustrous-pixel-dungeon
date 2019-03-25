@@ -35,30 +35,26 @@ import com.zrp200.lustrouspixeldungeon.items.food.Blandfruit;
 import com.zrp200.lustrouspixeldungeon.items.food.Food;
 import com.zrp200.lustrouspixeldungeon.items.food.Meat;
 import com.zrp200.lustrouspixeldungeon.items.food.MeatPie;
-import com.zrp200.lustrouspixeldungeon.items.food.MysteryMeat;
 import com.zrp200.lustrouspixeldungeon.items.food.Pasty;
 import com.zrp200.lustrouspixeldungeon.items.food.StewedMeat;
+import com.zrp200.lustrouspixeldungeon.items.potions.AlchemicalCatalyst;
 import com.zrp200.lustrouspixeldungeon.items.potions.Potion;
 import com.zrp200.lustrouspixeldungeon.items.potions.brews.BlizzardBrew;
 import com.zrp200.lustrouspixeldungeon.items.potions.brews.CausticBrew;
-import com.zrp200.lustrouspixeldungeon.items.potions.brews.FrigidBrew;
-import com.zrp200.lustrouspixeldungeon.items.potions.brews.FrostfireBrew;
 import com.zrp200.lustrouspixeldungeon.items.potions.brews.InfernalBrew;
 import com.zrp200.lustrouspixeldungeon.items.potions.brews.ShockingBrew;
-import com.zrp200.lustrouspixeldungeon.items.potions.brews.WickedBrew;
 import com.zrp200.lustrouspixeldungeon.items.potions.elixirs.ElixirOfAquaticRejuvenation;
 import com.zrp200.lustrouspixeldungeon.items.potions.elixirs.ElixirOfDragonsBlood;
 import com.zrp200.lustrouspixeldungeon.items.potions.elixirs.ElixirOfHoneyedHealing;
 import com.zrp200.lustrouspixeldungeon.items.potions.elixirs.ElixirOfIcyTouch;
 import com.zrp200.lustrouspixeldungeon.items.potions.elixirs.ElixirOfMight;
-import com.zrp200.lustrouspixeldungeon.items.potions.elixirs.ElixirOfRestoration;
 import com.zrp200.lustrouspixeldungeon.items.potions.elixirs.ElixirOfToxicEssence;
-import com.zrp200.lustrouspixeldungeon.items.potions.elixirs.ElixirOfVitality;
 import com.zrp200.lustrouspixeldungeon.items.potions.exotic.ExoticPotion;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.Scroll;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.exotic.ExoticScroll;
 import com.zrp200.lustrouspixeldungeon.items.spells.Alchemize;
 import com.zrp200.lustrouspixeldungeon.items.spells.AquaBlast;
+import com.zrp200.lustrouspixeldungeon.items.spells.ArcaneCatalyst;
 import com.zrp200.lustrouspixeldungeon.items.spells.BeaconOfReturning;
 import com.zrp200.lustrouspixeldungeon.items.spells.CurseInfusion;
 import com.zrp200.lustrouspixeldungeon.items.spells.FeatherFall;
@@ -112,7 +108,8 @@ public class QuickRecipe extends Component {
 			ArrayList<Item> similar = Dungeon.hero.belongings.getAllSimilar(in);
 			int quantity = 0;
 			for (Item sim : similar) {
-				if (sim.isIdentified()) quantity += sim.quantity();
+				//if we are looking for a specific item, it must be IDed
+				if (sim.getClass() != in.getClass() || sim.isIdentified()) quantity += sim.quantity();
 			}
 			
 			if (quantity < in.quantity()) {
@@ -259,6 +256,7 @@ public class QuickRecipe extends Component {
 				for (Class<?> cls : Generator.Category.SCROLL.classes){
 					try{
 						Scroll scroll = (Scroll) cls.newInstance();
+						if (!scroll.isKnown()) scroll.anonymize();
 						ArrayList<Item> in = new ArrayList<Item>(Arrays.asList(scroll));
 						result.add(new QuickRecipe( r, in, r.sampleOutput(in)));
 					} catch (Exception e){
@@ -345,27 +343,26 @@ public class QuickRecipe extends Component {
 				}
 				return result;
 			case 7:
-				result.add(new QuickRecipe(new WickedBrew.Recipe()));
-				result.add(new QuickRecipe(new FrigidBrew.Recipe()));
-				result.add(new QuickRecipe(new FrostfireBrew.Recipe()));
+				result.add(new QuickRecipe(new AlchemicalCatalyst.Recipe(), new ArrayList<>(Arrays.asList(new Potion.PlaceHolder(), new Plant.Seed.PlaceHolder())), new AlchemicalCatalyst()));
+				result.add(new QuickRecipe(new AlchemicalCatalyst.Recipe(), new ArrayList<>(Arrays.asList(new Potion.PlaceHolder(), new Runestone.PlaceHolder())), new AlchemicalCatalyst()));
 				result.add(null);
 				result.add(null);
+				result.add(new QuickRecipe(new ArcaneCatalyst.Recipe(), new ArrayList<>(Arrays.asList(new Scroll.PlaceHolder(), new Runestone.PlaceHolder())), new ArcaneCatalyst()));
+				result.add(new QuickRecipe(new ArcaneCatalyst.Recipe(), new ArrayList<>(Arrays.asList(new Scroll.PlaceHolder(), new Plant.Seed.PlaceHolder())), new ArcaneCatalyst()));
+				return result;
+			case 8:
 				result.add(new QuickRecipe(new InfernalBrew.Recipe()));
 				result.add(new QuickRecipe(new BlizzardBrew.Recipe()));
 				result.add(new QuickRecipe(new ShockingBrew.Recipe()));
 				result.add(new QuickRecipe(new CausticBrew.Recipe()));
-				return result;
-			case 8:
-				result.add(new QuickRecipe(new ElixirOfRestoration.Recipe()));
-				result.add(new QuickRecipe(new ElixirOfVitality.Recipe()));
+				result.add(null);
+				result.add(null);
 				result.add(new QuickRecipe(new ElixirOfHoneyedHealing.Recipe()));
 				result.add(new QuickRecipe(new ElixirOfAquaticRejuvenation.Recipe()));
-				result.add(null);
-				result.add(null);
+				result.add(new QuickRecipe(new ElixirOfMight.Recipe()));
 				result.add(new QuickRecipe(new ElixirOfDragonsBlood.Recipe()));
 				result.add(new QuickRecipe(new ElixirOfIcyTouch.Recipe()));
 				result.add(new QuickRecipe(new ElixirOfToxicEssence.Recipe()));
-				result.add(new QuickRecipe(new ElixirOfMight.Recipe()));
 				return result;
 			case 9:
 				result.add(new QuickRecipe(new MagicalPorter.Recipe()));
@@ -378,8 +375,8 @@ public class QuickRecipe extends Component {
 				result.add(new QuickRecipe(new ReclaimTrap.Recipe()));
 				result.add(null);
 				result.add(null);
-				result.add(new QuickRecipe(new MagicalInfusion.Recipe()));
 				result.add(new QuickRecipe(new CurseInfusion.Recipe()));
+				result.add(new QuickRecipe(new MagicalInfusion.Recipe()));
 				result.add(new QuickRecipe(new Alchemize.Recipe()));
 				result.add(new QuickRecipe(new Recycle.Recipe()));
 				return result;

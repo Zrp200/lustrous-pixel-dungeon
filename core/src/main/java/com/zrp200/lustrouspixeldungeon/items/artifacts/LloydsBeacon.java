@@ -40,6 +40,7 @@ import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.zrp200.lustrouspixeldungeon.mechanics.Ballistica;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
+import com.zrp200.lustrouspixeldungeon.plants.Swiftthistle;
 import com.zrp200.lustrouspixeldungeon.scenes.CellSelector;
 import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
 import com.zrp200.lustrouspixeldungeon.scenes.InterlevelScene;
@@ -177,6 +178,8 @@ public class LloydsBeacon extends Artifact {
 			} else {
 
 				Buff buff = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+				if (buff != null) buff.detach();
+				buff = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
 				if (buff != null) buff.detach();
 
 				InterlevelScene.mode = InterlevelScene.Mode.RETURN;

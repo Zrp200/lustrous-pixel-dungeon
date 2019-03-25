@@ -23,7 +23,6 @@ package com.zrp200.lustrouspixeldungeon.actors.mobs;
 
 import com.watabou.utils.Bundle;
 import com.watabou.utils.GameMath;
-import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Badges;
 import com.zrp200.lustrouspixeldungeon.Challenges;
@@ -60,17 +59,17 @@ import com.zrp200.lustrouspixeldungeon.items.rings.RingOfWealth;
 import com.zrp200.lustrouspixeldungeon.items.stones.StoneOfAggression;
 import com.zrp200.lustrouspixeldungeon.items.weapon.SpiritBow;
 import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
+import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Lucky;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Flail;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.zrp200.lustrouspixeldungeon.levels.features.Chasm;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
+import com.zrp200.lustrouspixeldungeon.plants.Swiftthistle;
 import com.zrp200.lustrouspixeldungeon.sprites.CharSprite;
 import com.zrp200.lustrouspixeldungeon.utils.GLog;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Set;
 
 public abstract class Mob extends Char {
 
@@ -95,7 +94,7 @@ public abstract class Mob extends Char {
 	protected int defenseSkill = 0;
 	protected int attackSkill = 0;
 	protected int armor=0;
-	
+
 	public int EXP = 1;
 	public int maxLvl = Hero.MAX_LEVEL;
 	
@@ -224,17 +223,25 @@ public abstract class Mob extends Char {
 	}
 	protected Char chooseEnemy(boolean newEnemy) {
 
-		Terror terror = buff( Terror.class );
-		if (terror != null) {
-			Char source = (Char)Actor.findById( terror.object );
-			if (source != null) return source;
-		}
-		
-		StoneOfAggression.Aggression aggro = buff( StoneOfAggression.Aggression.class );
-		if (aggro != null){
-			Char source = (Char)Actor.findById( aggro.object );
-			if (source != null) return source;
-		}
+        Terror terror = buff( Terror.class );
+        if (terror != null) {
+            Char source = (Char)Actor.findById( terror.object );
+            if (source != null) {
+                return source;
+            }
+        }
+
+        //if we are an enemy, and have no target or current target isn't affected by aggression
+        //then auto-prioritize a target that is affected by aggression, even another enemy
+        if (alignment == Alignment.ENEMY
+                && (enemy == null || enemy.buff(StoneOfAggression.Aggression.class) == null)) {
+            for (Char ch : Actor.chars()) {
+                if (ch != this && fieldOfView[ch.pos] &&
+                        ch.buff(StoneOfAggression.Aggression.class) != null) {
+                    return ch;
+                }
+            }
+        }
 
 		if ( newEnemy ) {
 			//neutral characters in particular do not choose enemies.
@@ -475,7 +482,8 @@ public abstract class Mob extends Char {
 	@Override
 	public void updateSpriteState() {
 		super.updateSpriteState();
-		if (Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class) != null)
+		if (Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class) != null
+				|| Dungeon.hero.buff(Swiftthistle.TimeBubble.class) != null)
 			sprite.add( CharSprite.State.PARALYSED );
 	}
 	
@@ -609,6 +617,10 @@ public abstract class Mob extends Char {
 		}
 	}
 
+	public boolean isTargeting( Char ch){
+		return enemy == ch;
+	}
+
 	@Override
 	public void damage( int dmg, Object src, boolean magic ) {
 
@@ -641,7 +653,7 @@ public abstract class Mob extends Char {
 				if (exp > 0) {
 					Dungeon.hero.sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "exp", exp));
 				}
-				Dungeon.hero.earnExp(exp);
+				Dungeon.hero.earnExp(exp, getClass());
 			}
 		}
 	}
@@ -658,20 +670,20 @@ public abstract class Mob extends Char {
 			EXP += Random.Int(EXP%2+1);	//50% chance to round up, 50% to round down
 			EXP /= 2;
 		}
-		
-		super.die( cause );
 
 		if (alignment == Alignment.ENEMY) rollToDropLoot();
 		
 		if (Dungeon.hero.isAlive() && !Dungeon.level.heroFOV[pos]) {
 			GLog.i( Messages.get(this, "died") );
 		}
+
+		super.die( cause );
 	}
 	
 	public void rollToDropLoot(){
 		if (Dungeon.hero.lvl > maxLvl + 2) return;
 		if (loot instanceof Potion && Dungeon.level.pit[pos]) return;
-		
+
 		float lootChance = this.lootChance;
 		lootChance *= RingOfWealth.dropChanceMultiplier( Dungeon.hero );
 		
@@ -687,11 +699,22 @@ public abstract class Mob extends Char {
 			int rolls = 1;
 			if (properties.contains(Property.BOSS)) rolls = 15;
 			else if (properties.contains(Property.MINIBOSS)) rolls = 5;
-			ArrayList<Item> bonus = RingOfWealth.tryRareDrop(Dungeon.hero, rolls);
-			if (bonus != null) {
-				for (Item b : bonus) b.drop(pos);
-				new Flare(8, 32).color(0xFFFF00, true).show(sprite, 2f);
+			ArrayList<Item> bonus = RingOfWealth.tryForBonusDrop(Dungeon.hero, rolls);
+			if (bonus != null && !bonus.isEmpty()) {
+				for (Item b : bonus) Dungeon.level.drop(b, pos).sprite.drop();
+				if (RingOfWealth.latestDropWasRare){
+					new Flare(8, 48).color(0xAA00FF, true).show(sprite, 3f);
+					RingOfWealth.latestDropWasRare = false;
+				} else {
+					new Flare(8, 24).color(0xFFFFFF, true).show(sprite, 3f);
+				}
 			}
+		}
+
+		//lucky enchant logic
+		if (Dungeon.hero.lvl <= maxLvl && buff(Lucky.LuckProc.class) != null){
+			new Flare(8, 24).color(0x00FF00, true).show(sprite, 3f);
+			Lucky.genLoot().drop(pos);
 		}
 	}
 	

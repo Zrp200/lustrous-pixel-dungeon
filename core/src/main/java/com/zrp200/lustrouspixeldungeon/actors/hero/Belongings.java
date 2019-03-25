@@ -71,7 +71,7 @@ public class Belongings implements Iterable<Item> {
 		for(Item item : backpack) if(item.quantity() == 0)
 			backpack.items.remove(item);
 	}
-	
+
 	private static final String WEAPON		= "weapon";
 	private static final String ARMOR		= "armor";
 	private static final String MISC1       = "misc1";
@@ -89,29 +89,6 @@ public class Belongings implements Iterable<Item> {
 	
 	public void restoreFromBundle( Bundle bundle ) {
 
-		//moving keys to Notes, for pre-0.6.1 saves
-		if (bundle.contains("ironKeys")) {
-			int[] ironKeys = bundle.getIntArray( "ironKeys" );
-			for (int i = 0; i < ironKeys.length; i++){
-				if (ironKeys[i] > 0){
-					Notes.add((Key) new IronKey(i).quantity(ironKeys[i]));
-				}
-			}
-		}
-		
-		if (bundle.contains("specialKeys")) {
-			int[] specialKeys = bundle.getIntArray( "specialKeys" );
-			for (int i = 0; i < specialKeys.length; i++){
-				if (specialKeys[i] > 0){
-					if (i % 5 == 0){
-						Notes.add((Key) new SkeletonKey(i).quantity(specialKeys[i]));
-					} else {
-						Notes.add((Key) new GoldenKey(i).quantity(specialKeys[i]));
-					}
-				}
-			}
-		}
-		
 		backpack.clear();
 		backpack.restoreFromBundle( bundle );
 		
@@ -158,7 +135,7 @@ public class Belongings implements Iterable<Item> {
 	public boolean hasItem(Class<?extends Item> itemClass) {
 		return getItem(itemClass) != null;
 	}
-	
+
 	public boolean contains( Item contains ){
 		
 		for (Item item : this) {

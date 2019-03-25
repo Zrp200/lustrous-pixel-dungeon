@@ -41,7 +41,7 @@ import com.zrp200.lustrouspixeldungeon.items.stones.StoneOfBlast;
 import com.zrp200.lustrouspixeldungeon.items.stones.StoneOfBlink;
 import com.zrp200.lustrouspixeldungeon.items.stones.StoneOfClairvoyance;
 import com.zrp200.lustrouspixeldungeon.items.stones.StoneOfDeepenedSleep;
-import com.zrp200.lustrouspixeldungeon.items.stones.StoneOfDetectCurse;
+import com.zrp200.lustrouspixeldungeon.items.stones.StoneOfDisarming;
 import com.zrp200.lustrouspixeldungeon.items.stones.StoneOfEnchantment;
 import com.zrp200.lustrouspixeldungeon.items.stones.StoneOfFlock;
 import com.zrp200.lustrouspixeldungeon.items.stones.StoneOfIntuition;
@@ -135,7 +135,7 @@ public abstract class Scroll extends Item {
 	public static void restore( Bundle bundle ) {
 		handler = new ItemStatusHandler<>( (Class<? extends Scroll>[])scrolls, runes, bundle );
 	}
-	
+
 	//anonymous scrolls are always IDed, do not affect ID status,
 	//and their sprite is replaced by a placeholder if they are not known,
 	//useful for items that appear in UIs, or which are only spawned for their effects
@@ -198,8 +198,8 @@ public abstract class Scroll extends Item {
 	
 	public abstract void doRead();
 	
-	//currently only used in scrolls owned by the unstable spellbook
-	public abstract void empoweredRead();
+	//currently unused. Used to be used for unstable spellbook prior to 0.7.0
+	public void empoweredRead(){};
 
 	protected void readAnimation() {
 		curUser.spend( TIME_TO_READ );
@@ -282,6 +282,27 @@ public abstract class Scroll extends Item {
 		return price;
 	}
 	
+	public static class PlaceHolder extends Scroll {
+
+		{
+			image = ItemSpriteSheet.SCROLL_HOLDER;
+		}
+
+		@Override
+		public boolean isSimilar(Item item) {
+			return ExoticScroll.regToExo.containsKey(item.getClass())
+					|| ExoticScroll.regToExo.containsValue(item.getClass());
+		}
+
+		@Override
+		public void doRead() {}
+
+		@Override
+		public String info() {
+			return "";
+		}
+	}
+
 	public static class ScrollToStone extends Recipe {
 		
 		private static HashMap<Class<?extends Scroll>, Class<?extends Runestone>> stones = new HashMap<>();
@@ -308,7 +329,7 @@ public abstract class Scroll extends Item {
 			stones.put(ScrollOfRecharging.class,    StoneOfShock.class);
 			amnts.put(ScrollOfRecharging.class,     2);
 			
-			stones.put(ScrollOfRemoveCurse.class,   StoneOfDetectCurse.class);
+			stones.put(ScrollOfRemoveCurse.class,   StoneOfDisarming.class);
 			amnts.put(ScrollOfRemoveCurse.class,    2);
 			
 			stones.put(ScrollOfTeleportation.class, StoneOfBlink.class);
@@ -327,8 +348,8 @@ public abstract class Scroll extends Item {
 		@Override
 		public boolean testIngredients(ArrayList<Item> ingredients) {
             return ingredients.size() == 1
-                    && ingredients.get(0) instanceof Scroll
-                    && stones.containsKey(ingredients.get(0).getClass());
+                    && ingredients.get(0).isIdentified()
+                    && ingredients.get(0) instanceof Scroll && stones.containsKey(ingredients.get(0).getClass());
         }
 		
 		@Override

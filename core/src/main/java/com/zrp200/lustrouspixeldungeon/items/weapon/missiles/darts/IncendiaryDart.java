@@ -47,7 +47,7 @@ public class IncendiaryDart extends TippedDart {
 	
 	@Override
 	public int proc( Char attacker, Char defender, int damage ) {
-		Buff.affect( defender, Burning.class ).reignite( defender );
+		Buff.affect( defender, Burning.class ).reignite();
 		return super.proc( attacker, defender, damage );
 	}
 	

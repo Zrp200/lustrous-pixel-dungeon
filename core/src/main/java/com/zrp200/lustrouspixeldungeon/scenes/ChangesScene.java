@@ -65,12 +65,10 @@ import com.zrp200.lustrouspixeldungeon.items.rings.RingOfFuror;
 import com.zrp200.lustrouspixeldungeon.items.rings.RingOfWealth;
 import com.zrp200.lustrouspixeldungeon.items.wands.WandOfCorruption;
 import com.zrp200.lustrouspixeldungeon.items.wands.WandOfRegrowth;
-import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Chaotic;
-import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Elastic;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.WeaponCurse;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Chilling;
-import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Eldritch;
+import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Elastic;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Gauntlet;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Gloves;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Longsword;
@@ -197,7 +195,7 @@ public class ChangesScene extends PixelScene {
 						"can reproduce it consistently, please let me know ASAP so I can fix it once " +
 						"and for all.\n\nOn a lighter note, I've put in the code for renaming weapons, " +
 						"and it'll take effect once I release v0.1.1 within the next week or two."),
-				new ChangeButton(new ItemSprite(new Shortsword().image, WeaponCurse.BLACK),"Chaotic").appendList(
+				new ChangeButton(new ItemSprite(new Shortsword().image, WeaponCurse.GLOWING),"Chaotic").appendList(
 						"Volatility now procs twice as often when rolled, but will not destroy armor.",
 						"Volatility will not activate at the attacker's position if the attacker is using a missile weapon.",
 						"Stench and corrosion now always proc at the enemy's position.",
@@ -951,7 +949,7 @@ public class ChangesScene extends PixelScene {
 								"inflict vertigo was the wrong decision. Terror + Vertigo is extremely " +
 								"powerful, and the wand of corruption was already an amazing wand.\n\n" +
 								"_-_ Reverted cripple --> vertigo change"),
-				new ChangeButton(new ItemSprite(new Longsword().image(), new Eldritch().glowing()),"Eldritch",
+				new ChangeButton(new ItemSprite(new Longsword().image(), new Elastic().glowing()),"Eldritch",
 						"_-_ Now inflicts brief vertigo on targets immune to terror (4+level)\n" +
 								"_-_ Base Terror duration halved (10 -> 5)\n" +
 								"_-_ Terror duration now scales with level (+2.5/level)"
@@ -1148,7 +1146,7 @@ public class ChangesScene extends PixelScene {
 				new ChangeButton(
 						new ItemSprite(
 								ItemSpriteSheet.SHORTSWORD,
-								new Elastic().glowing()
+								WeaponCurse.GLOWING
 						),
 						"Elastic",
 						"Elastic can easily be a run-ender if the hero doesn't have any " +

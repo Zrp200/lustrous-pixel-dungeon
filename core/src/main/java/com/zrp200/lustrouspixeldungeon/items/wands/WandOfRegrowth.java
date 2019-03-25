@@ -34,17 +34,16 @@ import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.Blob;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.Regrowth;
-import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.effects.MagicMissile;
 import com.zrp200.lustrouspixeldungeon.items.Dewdrop;
 import com.zrp200.lustrouspixeldungeon.items.Generator;
+import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Blooming;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.MagesStaff;
 import com.zrp200.lustrouspixeldungeon.levels.Level;
 import com.zrp200.lustrouspixeldungeon.levels.Terrain;
 import com.zrp200.lustrouspixeldungeon.mechanics.Ballistica;
 import com.zrp200.lustrouspixeldungeon.plants.Plant;
 import com.zrp200.lustrouspixeldungeon.plants.Starflower;
-import com.zrp200.lustrouspixeldungeon.plants.Sungrass;
 import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
 
@@ -194,18 +193,7 @@ public class WandOfRegrowth extends Wand {
 
 	@Override
 	public void onHit(MagesStaff staff, Char attacker, Char defender, int damage) {
-		//like pre-nerf vampiric enchantment, except with herbal healing buff
-
-		int level = Math.max( 0, staff.level() );
-
-		// lvl 0 - 33%
-		// lvl 1 - 43%
-		// lvl 2 - 50%
-		int maxValue = damage * (level + 2) / (level + 6);
-		int effValue = Math.min( Random.IntRange(0, maxValue), attacker.HT - attacker.HP );
-
-		Buff.affect(attacker, Sungrass.Health.class).boost( effValue );
-
+		new Blooming().proc(staff, attacker, defender, damage);
 	}
 
 	protected void fx( Ballistica bolt, Callback callback ) {

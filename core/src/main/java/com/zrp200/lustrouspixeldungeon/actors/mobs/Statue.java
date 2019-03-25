@@ -22,14 +22,15 @@
 package com.zrp200.lustrouspixeldungeon.actors.mobs;
 
 import com.watabou.utils.Bundle;
-import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
+import com.zrp200.lustrouspixeldungeon.effects.Speck;
 import com.zrp200.lustrouspixeldungeon.items.Generator;
 import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
 import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon.Enchantment;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Grim;
+import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Precise;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.BlockingWeapon;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.zrp200.lustrouspixeldungeon.journal.Notes;
@@ -45,7 +46,7 @@ public class Statue extends Mob {
 		state = PASSIVE;
 
 		armor = Dungeon.depth;
-		
+
 		properties.add(Property.INORGANIC);
 	}
 	
@@ -93,6 +94,10 @@ public class Statue extends Mob {
 	
 	@Override
 	public int attackSkill( Char target ) {
+		if (Precise.rollToGuaranteeHit(weapon, this)){
+			target.sprite.emitter().start( Speck.factory(Speck.LIGHT), 0.05f, 5 );
+			return Integer.MAX_VALUE;
+		}
 		return (int)((Hero.ACCURACY + Dungeon.depth) * weapon.accuracyFactor(this));
 	}
 	

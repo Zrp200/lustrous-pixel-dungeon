@@ -33,10 +33,10 @@ import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.Mob;
 import com.zrp200.lustrouspixeldungeon.items.artifacts.TimekeepersHourglass;
-import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfMagicMapping;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.exotic.ScrollOfPassage;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
+import com.zrp200.lustrouspixeldungeon.plants.Swiftthistle;
 import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
 import com.zrp200.lustrouspixeldungeon.scenes.InterlevelScene;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSprite;
@@ -76,9 +76,19 @@ public class BeaconOfReturning extends Spell {
 		}
 	}
 	
+	//we reset return depth when beacons are dropped to prevent
+	//having two stacks of beacons with different return locations
+
 	@Override
-	protected void onDetach() {
+	protected void onThrow(int cell) {
 		returnDepth = -1;
+		super.onThrow(cell);
+	}
+
+	@Override
+	public void doDrop(Hero hero) {
+		returnDepth = -1;
+		super.doDrop(hero);
 	}
 	
 	private void setBeacon(Hero hero ){
@@ -130,7 +140,9 @@ public class BeaconOfReturning extends Spell {
 			
 			Buff buff = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
 			if (buff != null) buff.detach();
-			
+			buff = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+			if (buff != null) buff.detach();
+
 			InterlevelScene.mode = InterlevelScene.Mode.RETURN;
 			InterlevelScene.returnDepth = returnDepth;
 			InterlevelScene.returnPos = returnPos;
@@ -183,7 +195,7 @@ public class BeaconOfReturning extends Spell {
 	public static class Recipe extends com.zrp200.lustrouspixeldungeon.items.Recipe.SimpleRecipe {
 		
 		{
-			inputs =  new Class[]{ScrollOfPassage.class, ScrollOfMagicMapping.class};
+			inputs =  new Class[]{ScrollOfPassage.class, ArcaneCatalyst.class};
 			inQuantity = new int[]{1, 1};
 			
 			cost = 10;

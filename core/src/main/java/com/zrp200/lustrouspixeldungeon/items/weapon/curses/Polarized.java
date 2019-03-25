@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2019 Evan Debenham
+ * Copyright (C) 2014-2018 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,41 +19,35 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.zrp200.lustrouspixeldungeon.items.weapon.enchantments;
+package com.zrp200.lustrouspixeldungeon.items.weapon.curses;
 
-import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
-import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
-import com.zrp200.lustrouspixeldungeon.actors.buffs.Poison;
-import com.zrp200.lustrouspixeldungeon.effects.CellEmitter;
-import com.zrp200.lustrouspixeldungeon.effects.particles.PoisonParticle;
 import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSprite;
-import com.zrp200.lustrouspixeldungeon.sprites.ItemSprite.Glowing;
+import com.watabou.utils.Random;
 
-public class Venomous extends Weapon.Enchantment {
-
-	private static ItemSprite.Glowing PURPLE = new ItemSprite.Glowing( 0x4400AA );
+public class Polarized extends Weapon.Enchantment {
+	
+	private static ItemSprite.Glowing BLACK = new ItemSprite.Glowing( 0x000000 );
 	
 	@Override
 	public int proc( Weapon weapon, Char attacker, Char defender, int damage ) {
-		// lvl 0 - 33%
-		// lvl 1 - 50%
-		// lvl 2 - 60%
-		int level = Math.max( 0, weapon.level() );
 		
-		if (Random.Int( level + 3 ) >= 2) {
-			
-			Buff.affect( defender, Poison.class ).extend( ((level/2f) + 1) );
-			CellEmitter.center(defender.pos).burst( PoisonParticle.SPLASH, 5+level/2 );
-
+		if (Random.Int(2) == 0){
+			return Math.round(1.5f*damage);
+		} else {
+			return 0;
 		}
-
-		return damage;
+		
 	}
 	
 	@Override
-	public Glowing glowing() {
-		return PURPLE;
+	public boolean curse() {
+		return true;
+	}
+	
+	@Override
+	public ItemSprite.Glowing glowing() {
+		return BLACK;
 	}
 }

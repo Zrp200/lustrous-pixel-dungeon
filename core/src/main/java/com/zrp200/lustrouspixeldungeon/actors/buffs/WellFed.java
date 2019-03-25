@@ -35,7 +35,7 @@ public class WellFed extends ActiveBuff {
 	public boolean act() {
 		super.act();
 		int left = Math.round(this.left);
-		if(left != 0 && left % 10 == 0) {
+		if (left != 0 && left % 18 == 0) {
 			target.HP = Math.min(++target.HP,target.HT);
 		}
 		return true;

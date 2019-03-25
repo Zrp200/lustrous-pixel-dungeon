@@ -27,8 +27,8 @@ import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.Blob;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.Electricity;
+import com.zrp200.lustrouspixeldungeon.items.potions.AlchemicalCatalyst;
 import com.zrp200.lustrouspixeldungeon.items.potions.PotionOfParalyticGas;
-import com.zrp200.lustrouspixeldungeon.items.potions.exotic.PotionOfStormClouds;
 import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
 import com.zrp200.lustrouspixeldungeon.utils.BArray;
@@ -37,6 +37,7 @@ public class ShockingBrew extends Brew {
 	
 	{
 		image = ItemSpriteSheet.BREW_SHOCKING;
+		value = 40+40;
 	}
 	
 	@Override
@@ -53,17 +54,11 @@ public class ShockingBrew extends Brew {
 		}
 		Sample.INSTANCE.play(Assets.SND_LIGHTNING);
 	}
-	
-	@Override
-	public int price() {
-		//prices of ingredients
-		return quantity * (40 + 60);
-	}
-	
+
 	public static class Recipe extends com.zrp200.lustrouspixeldungeon.items.Recipe.SimpleRecipe {
 		
 		{
-			inputs =  new Class[]{PotionOfParalyticGas.class, PotionOfStormClouds.class};
+			inputs =  new Class[]{PotionOfParalyticGas.class, AlchemicalCatalyst.class};
 			inQuantity = new int[]{1, 1};
 			
 			cost = 8;

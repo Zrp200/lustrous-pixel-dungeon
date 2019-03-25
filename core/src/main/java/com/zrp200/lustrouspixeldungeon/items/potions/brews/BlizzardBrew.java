@@ -26,8 +26,8 @@ import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.Blizzard;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.Blob;
+import com.zrp200.lustrouspixeldungeon.items.potions.AlchemicalCatalyst;
 import com.zrp200.lustrouspixeldungeon.items.potions.PotionOfFrost;
-import com.zrp200.lustrouspixeldungeon.items.potions.exotic.PotionOfSnapFreeze;
 import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
 
@@ -35,6 +35,7 @@ public class BlizzardBrew extends Brew {
 	
 	{
 		image = ItemSpriteSheet.BREW_BLIZZARD;
+		value = 30+40;
 	}
 	
 	@Override
@@ -46,17 +47,11 @@ public class BlizzardBrew extends Brew {
 		
 		GameScene.add( Blob.seed( cell, 1000, Blizzard.class ) );
 	}
-	
-	@Override
-	public int price() {
-		//prices of ingredients
-		return quantity * (50 + 30);
-	}
-	
+
 	public static class Recipe extends com.zrp200.lustrouspixeldungeon.items.Recipe.SimpleRecipe {
 		
 		{
-			inputs =  new Class[]{PotionOfSnapFreeze.class, PotionOfFrost.class};
+			inputs =  new Class[]{PotionOfFrost.class, AlchemicalCatalyst.class};
 			inQuantity = new int[]{1, 1};
 			
 			cost = 6;

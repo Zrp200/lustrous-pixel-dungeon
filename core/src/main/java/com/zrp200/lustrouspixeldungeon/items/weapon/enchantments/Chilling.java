@@ -21,7 +21,6 @@
 
 package com.zrp200.lustrouspixeldungeon.items.weapon.enchantments;
 
-import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Chill;
@@ -29,6 +28,7 @@ import com.zrp200.lustrouspixeldungeon.effects.Splash;
 import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSprite;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSprite.Glowing;
+import com.watabou.utils.Random;
 
 public class Chilling extends Weapon.Enchantment {
 
@@ -36,15 +36,16 @@ public class Chilling extends Weapon.Enchantment {
 	
 	@Override
 	public int proc( Weapon weapon, Char attacker, Char defender, int damage ) {
-		// lvl 0 - 20%
-		// lvl 1 - 33%
-		// lvl 2 - 43%
+		// lvl 0 - 33%
+		// lvl 1 - 50%
+		// lvl 2 - 60%
 		int level = Math.max( 0, weapon.level() );
 		
-		if (Random.Int( level + 5 ) >= 4) {
-			Buff.affect( defender, Chill.class, Random.Float(1,2)); // boost it by one or so
-			Buff.prolong(defender, Chill.class, Random.Float(2,3)); // this keeps it actually reasonable.
+		if (Random.Int( level + 3 ) >= 2) {
+			
+			Buff.affect( defender, Chill.class, 3f );
 			Splash.at( defender.sprite.center(), 0xFFB2D6FF, 5);
+
 		}
 
 		return damage;

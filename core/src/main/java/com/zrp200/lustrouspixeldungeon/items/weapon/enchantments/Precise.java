@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2019 Evan Debenham
+ * Copyright (C) 2014-2018 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,41 +23,38 @@ package com.zrp200.lustrouspixeldungeon.items.weapon.enchantments;
 
 import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
-import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
-import com.zrp200.lustrouspixeldungeon.actors.buffs.FlavourBuff;
-import com.zrp200.lustrouspixeldungeon.actors.buffs.Paralysis;
-import com.zrp200.lustrouspixeldungeon.effects.Speck;
 import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSprite;
-import com.zrp200.lustrouspixeldungeon.sprites.ItemSprite.Glowing;
 
-public class Stunning extends Weapon.Enchantment {
+public class Precise extends Weapon.Enchantment {
 	
-	private static ItemSprite.Glowing YELLOW = new ItemSprite.Glowing( 0xCCAA44 );
+	private static ItemSprite.Glowing WHITE = new ItemSprite.Glowing( 0xFFFFFF );
 	
 	@Override
-	public int proc( Weapon weapon, Char attacker, Char defender, int damage ) {
-		// lvl 0 - 13%
-		// lvl 1 - 22%
-		// lvl 2 - 30%
-		final int level = Math.max( 0, weapon.level() );
-		
-		if (Random.Int( level + 8 ) >= 7) {
-			new FlavourBuff() {
-				{actPriority = VFX_PRIO;}
-				public boolean act() {
-					Buff.prolong( target, Paralysis.class, Random.Float( 1, 1.5f + level ) );
-					target.sprite.emitter().burst(Speck.factory(Speck.LIGHT), 12 );
-					return super.act();
-				}
-			}.attachTo(defender);
-		}
-
+	public int proc( Weapon weapon, Char attacker, Char defender, int damage) {
 		return damage;
 	}
 	
+	//called from attackSkill in Hero, Statue, and GhostHero
+	public static boolean rollToGuaranteeHit( Weapon weapon, Char owner ){
+		// lvl 0 - 13%
+		// lvl 1 - 22%
+		// lvl 2 - 30%
+		int level = Math.max( 0, weapon.level() );
+		boolean unstable = false;
+		if (weapon.hasEnchant(Precise.class, owner)
+				|| ((unstable = weapon.hasEnchant(Unstable.class, owner)
+				&& Random.oneOf(Unstable.randomEnchants) == Precise.class) &&
+				(Random.Int(level + 8) >= 7))) {
+			if(unstable) Unstable.justRolledPrecise = true;
+			return true;
+		}
+		
+		return false;
+	}
+	
 	@Override
-	public Glowing glowing() {
-		return YELLOW;
+	public ItemSprite.Glowing glowing() {
+		return WHITE;
 	}
 }

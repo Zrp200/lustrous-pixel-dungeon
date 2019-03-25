@@ -74,6 +74,7 @@ import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.Potential;
 import com.zrp200.lustrouspixeldungeon.items.rings.RingOfElements;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfRetribution;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
+import com.zrp200.lustrouspixeldungeon.items.stones.StoneOfAggression;
 import com.zrp200.lustrouspixeldungeon.items.wands.WandOfFireblast;
 import com.zrp200.lustrouspixeldungeon.items.wands.WandOfLightning;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Blazing;
@@ -135,7 +136,7 @@ public abstract class Char extends Actor {
 		}
 		Dungeon.level.updateFieldOfView( this, fieldOfView );
 	}
-	
+
 	@Override
 	protected boolean act() {
 		updateFieldOfView();
@@ -153,7 +154,7 @@ public abstract class Char extends Actor {
 			heap.pickUp().drop(n).sprite.drop(pos);
 		}
 	}
-	
+
 	protected static final String POS       = "pos";
 	protected static final String TAG_HP    = "HP";
 	protected static final String TAG_HT    = "HT";
@@ -601,7 +602,7 @@ public abstract class Char extends Actor {
 		        new HashSet<Class>(
 		                Arrays.asList(
 		                        Grim.class, ScrollOfRetribution.class, ScrollOfPsionicBlast.class, Terror.class)
-                ), new HashSet<Class>( Arrays.asList(Corruption.class, Amok.class) ) ),
+                ), new HashSet<Class>( Arrays.asList(Corruption.class, Amok.class, StoneOfAggression.Aggression.class) ) ),
 		MINIBOSS ( new HashSet<Class>(),
 				new HashSet<Class>( Arrays.asList(Corruption.class) )),
 		UNDEAD,
@@ -614,7 +615,7 @@ public abstract class Char extends Actor {
 				new HashSet<Class>( Arrays.asList( WandOfFireblast.class, Blazing.class, Shaman.Firebolt.class) ),
 				new HashSet<Class>( Arrays.asList( Burning.class) )
 		),
-		ACIDIC ( new HashSet<Class>( Arrays.asList(ToxicGas.class, Corrosion.class, Poison.class)),
+		ACIDIC ( new HashSet<Class>( Arrays.asList(Corrosion.class, Poison.class)),
 				new HashSet<Class>( Arrays.asList(Ooze.class))),
 		ELECTRIC ( new HashSet<Class>( Arrays.asList(WandOfLightning.class, Shocking.class, Potential.class, Electricity.class, ShockingDart.class)),
 				new HashSet<Class>()),

@@ -47,10 +47,8 @@ import com.zrp200.lustrouspixeldungeon.items.food.FrozenCarpaccio;
 import com.zrp200.lustrouspixeldungeon.items.food.MysteryMeat;
 import com.zrp200.lustrouspixeldungeon.items.journal.DocumentPage;
 import com.zrp200.lustrouspixeldungeon.items.potions.Potion;
-import com.zrp200.lustrouspixeldungeon.items.potions.PotionOfStrength;
 import com.zrp200.lustrouspixeldungeon.items.rings.RingOfWealth;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.Scroll;
-import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.zrp200.lustrouspixeldungeon.items.wands.Wand;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSprite;
@@ -140,10 +138,15 @@ public class Heap implements Bundlable {
 
 		if (type != Type.MIMIC) {
 			type = Type.HEAP;
-			ArrayList<Item> bonus = RingOfWealth.tryRareDrop(hero, 1);
-			if (bonus != null){
+			ArrayList<Item> bonus = RingOfWealth.tryForBonusDrop(hero, 1);
+			if (bonus != null && !bonus.isEmpty()) {
 				items.addAll(0, bonus);
-				new Flare(8, 32).color(0xFFFF00, true).show(sprite, 2f);
+				if (RingOfWealth.latestDropWasRare){
+					new Flare(8, 48).color(0xAA00FF, true).show(sprite, 2f);
+					RingOfWealth.latestDropWasRare = false;
+				} else {
+					new Flare(8, 24).color(0xFFFFFF, true).show(sprite, 2f);
+				}
 			}
 			sprite.link();
 			sprite.drop();
@@ -228,7 +231,7 @@ public class Heap implements Bundlable {
 		if (type == Type.MIMIC) {
 			Mimic m = Mimic.spawnAt( pos, items );
 			if (m != null) {
-				Buff.affect( m, Burning.class ).reignite( m );
+				Buff.affect( m, Burning.class ).reignite();
 				m.sprite.emitter().burst( FlameParticle.FACTORY, 5 );
 				destroy();
 			}

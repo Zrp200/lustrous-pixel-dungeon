@@ -23,8 +23,7 @@ package com.zrp200.lustrouspixeldungeon.items.spells;
 
 import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
-import com.zrp200.lustrouspixeldungeon.items.potions.PotionOfLiquidFlame;
-import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfRecharging;
+import com.zrp200.lustrouspixeldungeon.items.potions.AlchemicalCatalyst;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.scenes.AlchemyScene;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
@@ -34,7 +33,9 @@ public class Alchemize extends Spell implements AlchemyScene.AlchemyProvider {
 	
 	{
 		image = ItemSpriteSheet.ALCHEMIZE;
-	}
+		value = (40 + 40) / 4f; //prices of ingredients, divided by output quantity
+
+    }
 	
 	@Override
 	protected void onCast(Hero hero) {
@@ -58,16 +59,10 @@ public class Alchemize extends Spell implements AlchemyScene.AlchemyProvider {
 		//do nothing
 	}
 	
-	@Override
-	public int price() {
-		//prices of ingredients, divided by output quantity
-		return Math.round(quantity * ((30 + 30) / 4f));
-	}
-	
 	public static class Recipe extends com.zrp200.lustrouspixeldungeon.items.Recipe.SimpleRecipe {
 		
 		{
-			inputs =  new Class[]{ScrollOfRecharging.class, PotionOfLiquidFlame.class};
+			inputs =  new Class[]{ArcaneCatalyst.class, AlchemicalCatalyst.class};
 			inQuantity = new int[]{1, 1};
 			
 			cost = 6;

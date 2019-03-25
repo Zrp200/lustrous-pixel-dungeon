@@ -31,7 +31,6 @@ import com.zrp200.lustrouspixeldungeon.actors.buffs.Paralysis;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.effects.Splash;
 import com.zrp200.lustrouspixeldungeon.items.potions.exotic.PotionOfStormClouds;
-import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.zrp200.lustrouspixeldungeon.levels.Level;
 import com.zrp200.lustrouspixeldungeon.levels.Terrain;
 import com.zrp200.lustrouspixeldungeon.mechanics.Ballistica;
@@ -74,13 +73,13 @@ public class AquaBlast extends TargetedSpell {
 	@Override
 	public int price() {
 		//prices of ingredients, divided by output quantity
-		return Math.round(quantity * ((30 + 60) / 12f));
+		return Math.round(quantity * ((60 + 40) / 12f));
 	}
 	
 	public static class Recipe extends com.zrp200.lustrouspixeldungeon.items.Recipe.SimpleRecipe {
 		
 		{
-			inputs =  new Class[]{ScrollOfIdentify.class, PotionOfStormClouds.class};
+			inputs =  new Class[]{PotionOfStormClouds.class, ArcaneCatalyst.class};
 			inQuantity = new int[]{1, 1};
 			
 			cost = 4;

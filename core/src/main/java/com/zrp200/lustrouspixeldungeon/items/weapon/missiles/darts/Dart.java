@@ -24,8 +24,6 @@ package com.zrp200.lustrouspixeldungeon.items.weapon.missiles.darts;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.MagicImmune;
-import com.zrp200.lustrouspixeldungeon.items.Item;
-import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Crossbow;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
@@ -82,11 +80,14 @@ public class Dart extends MissileWeapon {
 	
 	@Override
 	public int proc(Char attacker, Char defender, int damage) {
-		if (bow != null) {
-			bow.processHit();
-			if(bow.enchantment != null && attacker.buff(MagicImmune.class) == null) {
-				damage = bow.enchantment.proc(bow, attacker, defender, damage);
-			}
+		if (bow != null && bow.enchantment != null && attacker.buff(MagicImmune.class) == null){
+		    int level = level();
+		    try {
+			    level(bow.level());
+			    damage = bow.enchantment.proc(this, attacker, defender, damage);
+		    } finally {
+		        level(level);
+            }
 		}
 		return super.proc(attacker, defender, damage);
 	}

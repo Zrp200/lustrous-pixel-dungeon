@@ -32,18 +32,24 @@ import com.watabou.noosa.RenderedText;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.DeviceCompat;
+import com.zrp200.lustrouspixeldungeon.items.stones.StoneOfDisarming;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Chaotic;
+import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Chilling;
+import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Dazzling;
+import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Elastic;
+import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Precise;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Gloves;
 import com.zrp200.lustrouspixeldungeon.scenes.PixelScene;
 import com.zrp200.lustrouspixeldungeon.scenes.WelcomeScene;
 
 import javax.microedition.khronos.opengles.GL10;
 
-import static com.watabou.utils.Bundle.*;
+import static com.watabou.utils.Bundle.addAlias;
 
 public class LustrousPixelDungeon extends Game {
 
 	public enum Version {
+		v011("v0.1.1",418),
 		v010("v0.1.0",416),
 		v001("v0.0.1",407);
 
@@ -60,6 +66,27 @@ public class LustrousPixelDungeon extends Game {
 		super(WelcomeScene.class);
 		addAlias(Chaotic.class, "com.zrp200.lustrouspixeldungeon.items.weapon.curses.Malevolent.class" );
         addAlias(Gloves.class, "com.zrp200.lustrouspixeldungeon.items.weapon.melee.Knuckles" );
+
+		//v0.7.2
+		addAlias(
+				StoneOfDisarming.class,
+				"com.zrp200.lustrouspixeldungeon.items.stones.StoneOfDetectCurse" );
+
+		addAlias(
+				Elastic.class,
+				"com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.curses.Elastic" );
+		addAlias(
+				Elastic.class,
+				"com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Eldritch" );
+		addAlias(
+				Dazzling.class,
+				"com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Stunning" );
+		addAlias(
+				Chilling.class,
+				"com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Venomous" );
+		addAlias(
+				Precise.class,
+				"com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Vorpal" );
 	}
 
 	

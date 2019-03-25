@@ -38,7 +38,8 @@ public class MagicalPorter extends InventorySpell {
 	{
 		image = ItemSpriteSheet.MAGIC_PORTER;
 		mode = WndBag.Mode.NOT_EQUIPPED;
-	}
+		value = (5 + 40) / 8f;	//prices of ingredients, divided by output quantity
+    }
 	
 	@Override
 	protected void onCast(Hero hero) {
@@ -62,16 +63,10 @@ public class MagicalPorter extends InventorySpell {
 		
 	}
 	
-	@Override
-	public int price() {
-		//prices of ingredients, divided by output quantity
-		return Math.round(quantity * ((30 + 5) / 8f));
-	}
-	
 	public static class Recipe extends com.zrp200.lustrouspixeldungeon.items.Recipe.SimpleRecipe {
 		
 		{
-			inputs =  new Class[]{ScrollOfIdentify.class, MerchantsBeacon.class};
+			inputs =  new Class[]{MerchantsBeacon.class, ArcaneCatalyst.class};
 			inQuantity = new int[]{1, 1};
 			
 			cost = 4;

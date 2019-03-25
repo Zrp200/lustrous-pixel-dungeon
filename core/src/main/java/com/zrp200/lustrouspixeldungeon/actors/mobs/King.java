@@ -112,7 +112,7 @@ public class King extends Mob {
 	}
 
 	private boolean canTryToSummon() {
-		if (Undead.count < maxArmySize()) {
+		if (paralysed <= 0 && Undead.count < maxArmySize()) {
 			Char ch = Actor.findChar( ((CityBossLevel)Dungeon.level).pedestal( nextPedestal ) );
 			return ch == this || ch == null && !rooted;
 		} else {
@@ -235,8 +235,6 @@ public class King extends Mob {
 	public float resist(Class effect) {
 		float effectiveness = super.resist(effect);
 
-		if(effect == ToxicGas.class
-                || effect == Burning.class)     effectiveness *= 0.75f; // results in a net 0.75x effectiveness
 		if(effect == Paralysis.class
 				|| effect == Vertigo.class
 				|| effect == Blindness.class)   effectiveness *= 0.25f;
@@ -259,6 +257,8 @@ public class King extends Mob {
 			defenseSkill = 15;
 			armor = 5;
 
+
+			maxLvl = -2;
 			EXP = 0;
 			
 			state = WANDERING;

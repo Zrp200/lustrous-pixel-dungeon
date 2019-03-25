@@ -30,7 +30,6 @@ import com.zrp200.lustrouspixeldungeon.actors.buffs.Poison;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Roots;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Slow;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
-import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
 import com.zrp200.lustrouspixeldungeon.utils.GLog;
@@ -46,7 +45,7 @@ public class MysteryMeat extends Meat {
 		switch (Random.Int( 5 )) {
 			case 0:
 				GLog.w( Messages.get(MysteryMeat.class, "hot") );
-				Buff.affect( hero, Burning.class ).reignite( hero );
+				Buff.affect( hero, Burning.class ).reignite();
 				break;
 			case 1:
 				GLog.w( Messages.get(MysteryMeat.class, "legs") );

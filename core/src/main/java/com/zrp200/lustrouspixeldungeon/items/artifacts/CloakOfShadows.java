@@ -66,7 +66,7 @@ public class CloakOfShadows extends Artifact {
 	@Override
 	public ArrayList<String> actions( Hero hero ) {
 		ArrayList<String> actions = super.actions( hero );
-		if (isEquipped( hero ) && !cursed && charge > 1)
+		if (isEquipped( hero ) && !cursed && charge > 0)
 			actions.add(AC_STEALTH);
 		return actions;
 	}
@@ -158,12 +158,6 @@ public class CloakOfShadows extends Artifact {
 	public void restoreFromBundle( Bundle bundle ) {
 		super.restoreFromBundle(bundle);
 		stealthed = bundle.getBoolean( STEALTHED );
-		// pre-0.6.2 saves
-		if (bundle.contains("cooldown")){
-			exp = 0;
-			level((int)Math.ceil(level()*0.7f));
-			charge = chargeCap = Math.min(3 + level(), 10);
-		}
 	}
 
 	@Override

@@ -23,14 +23,16 @@ package com.zrp200.lustrouspixeldungeon.items.stones;
 
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
-import com.watabou.utils.PathFinder;
 import com.zrp200.lustrouspixeldungeon.Assets;
+import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.FlavourBuff;
+import com.zrp200.lustrouspixeldungeon.actors.mobs.Mob;
 import com.zrp200.lustrouspixeldungeon.effects.CellEmitter;
 import com.zrp200.lustrouspixeldungeon.effects.Speck;
+import com.zrp200.lustrouspixeldungeon.items.Heap;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
 
 public class StoneOfAggression extends Runestone {
@@ -44,27 +46,29 @@ public class StoneOfAggression extends Runestone {
 	@Override
 	protected void activate(int cell) {
 		
-		CellEmitter.center(cell).start( Speck.factory( Speck.SCREAM ), 0.3f, 3 );
-		Sample.INSTANCE.play( Assets.SND_READ );
-		
-		for (int i : PathFinder.NEIGHBOURS9){
-			
-			Char ch = Actor.findChar( cell + i );
-			
-			if (ch != null && ch.alignment == Char.Alignment.ENEMY){
-				Buff.prolong(ch, Aggression.class, Aggression.DURATION).object = curUser.id();
+		Char ch = Actor.findChar( cell );
+
+		if (ch != null) {
+			if (ch.alignment == Char.Alignment.ENEMY) {
+				Buff.prolong(ch, Aggression.class, Aggression.DURATION / 5f);
+			} else {
+				Buff.prolong(ch, Aggression.class, Aggression.DURATION);
+			}
+			CellEmitter.center(cell).start( Speck.factory( Speck.SCREAM ), 0.3f, 3 );
+			Sample.INSTANCE.play( Assets.SND_READ );
+		} else {
+			//Item.onThrow
+			Heap heap = Dungeon.level.drop( this, cell );
+			if (!heap.isEmpty()) {
+				heap.sprite.drop( cell );
 			}
 		}
-	
+
 	}
 	
 	public static class Aggression extends FlavourBuff {
 		
-		public static final float DURATION = 10f;
-		
-		public int object = 0;
-		
-		private static final String OBJECT    = "object";
+		public static final float DURATION = 20f;
 		
 		{
 			type = buffType.NEGATIVE;
@@ -74,13 +78,27 @@ public class StoneOfAggression extends Runestone {
 		@Override
 		public void storeInBundle( Bundle bundle ) {
 			super.storeInBundle(bundle);
-			bundle.put(OBJECT, object);
 		}
 		
 		@Override
 		public void restoreFromBundle( Bundle bundle ) {
 			super.restoreFromBundle( bundle );
-			object = bundle.getInt( OBJECT );
+		}
+
+		@Override
+		public void detach() {
+			//if our target is an enemy, reset the aggro of any enemies targeting it
+			if (target.isAlive()) {
+				if (target.alignment == Char.Alignment.ENEMY) {
+					for (Mob m : Dungeon.level.mobs) {
+						if (m.alignment == Char.Alignment.ENEMY && m.isTargeting(target)) {
+							m.aggro(null);
+						}
+					}
+				}
+			}
+			super.detach();
+
 		}
 	}
 	

@@ -261,10 +261,9 @@ public class Tengu extends Mob {
 			yell(Messages.get(this, "notice_face", Dungeon.hero.givenName()));
 		}
 	}
-	
+
 	{
 		resistances.add( Poison.class );
-		resistances.add( Burning.class );
 	}
 
 	@Override

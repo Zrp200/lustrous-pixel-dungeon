@@ -24,6 +24,7 @@ package com.zrp200.lustrouspixeldungeon.items.bags;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.Scroll;
+import com.zrp200.lustrouspixeldungeon.items.spells.BeaconOfReturning;
 import com.zrp200.lustrouspixeldungeon.items.spells.Spell;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
 
@@ -40,6 +41,16 @@ public class ScrollHolder extends Bag {
 		return item instanceof Scroll || item instanceof Spell;
 	}
 	
+	@Override
+	public void onDetach( ) {
+		super.onDetach();
+		for (Item item : items) {
+			if (item instanceof BeaconOfReturning) {
+				((BeaconOfReturning) item).returnDepth = -1;
+			}
+		}
+	}
+
 	@Override
 	public int price() {
 		return 40;

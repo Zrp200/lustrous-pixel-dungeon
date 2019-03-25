@@ -47,9 +47,7 @@ import com.zrp200.lustrouspixeldungeon.items.food.Food;
 import com.zrp200.lustrouspixeldungeon.items.potions.Potion;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.Scroll;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfRemoveCurse;
-import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfTransmutation;
 import com.zrp200.lustrouspixeldungeon.items.spells.Recycle;
-import com.zrp200.lustrouspixeldungeon.items.stones.StoneOfDetectCurse;
 import com.zrp200.lustrouspixeldungeon.items.wands.Wand;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.MissileWeapon;
@@ -177,12 +175,6 @@ public class WndBag extends WndTabbed {
 			public boolean isValid(Item item) {
 				return UNIDENTIFED.isValid(item) && (SCROLL.isValid(item) || POTION.isValid(item)) ;
 			}	},
-		CURSE_DETECTABLE {
-			@Override
-			public boolean isValid(Item item) {
-				return StoneOfDetectCurse.canDetectCurse(item);
-			}
-		},
 		EQUIPMENT {
 			@Override
 			public boolean isValid(Item item) {

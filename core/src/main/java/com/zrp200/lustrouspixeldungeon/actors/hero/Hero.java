@@ -59,7 +59,6 @@ import com.zrp200.lustrouspixeldungeon.actors.buffs.SnipersMark;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Vertigo;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Weakness;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.Mob;
-import com.zrp200.lustrouspixeldungeon.actors.mobs.Piranha;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.npcs.NPC;
 import com.zrp200.lustrouspixeldungeon.effects.CellEmitter;
 import com.zrp200.lustrouspixeldungeon.effects.CheckedCell;
@@ -89,7 +88,10 @@ import com.zrp200.lustrouspixeldungeon.items.keys.IronKey;
 import com.zrp200.lustrouspixeldungeon.items.keys.Key;
 import com.zrp200.lustrouspixeldungeon.items.keys.SkeletonKey;
 import com.zrp200.lustrouspixeldungeon.items.potions.Potion;
+import com.zrp200.lustrouspixeldungeon.items.potions.PotionOfExperience;
+import com.zrp200.lustrouspixeldungeon.items.potions.PotionOfHealing;
 import com.zrp200.lustrouspixeldungeon.items.potions.PotionOfStrength;
+import com.zrp200.lustrouspixeldungeon.items.potions.elixirs.ElixirOfMight;
 import com.zrp200.lustrouspixeldungeon.items.rings.RingOfAccuracy;
 import com.zrp200.lustrouspixeldungeon.items.rings.RingOfEvasion;
 import com.zrp200.lustrouspixeldungeon.items.rings.RingOfForce;
@@ -102,9 +104,11 @@ import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfMagicMapping;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.zrp200.lustrouspixeldungeon.items.weapon.SpiritBow;
 import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
+import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Blocking;
+import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Precise;
+import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Swift;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Flail;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Boomerang;
-import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.FishingSpear;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.zrp200.lustrouspixeldungeon.journal.Notes;
 import com.zrp200.lustrouspixeldungeon.levels.Level;
@@ -129,7 +133,6 @@ import com.zrp200.lustrouspixeldungeon.windows.WndTradeItem;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 
 import static com.zrp200.lustrouspixeldungeon.Dungeon.depth;
 
@@ -197,7 +200,11 @@ public class Hero extends Char {
 		HT = 20 + 5*(lvl-1) + HTBoost;
 		float multiplier = RingOfMight.HTMultiplier(this);
 		HT = Math.round(multiplier * HT);
-		
+
+		if (buff(ElixirOfMight.HTBoost.class) != null){
+			HT += buff(ElixirOfMight.HTBoost.class).boost();
+		}
+
 		if (boostHP){
 			HP += Math.max(HT - curHT, 0);
 		}
@@ -320,8 +327,13 @@ public class Hero extends Char {
 		accuracy *= RingOfAccuracy.accuracyMultiplier( this );
 		
 		if (wep != null) accuracy *= wep.accuracyFactor(this);
-
-		return (int)accuracy;
+		if (wep instanceof Weapon){
+			if (Precise.rollToGuaranteeHit((Weapon) wep, this)){
+				target.sprite.emitter().start( Speck.factory(Speck.LIGHT), 0.05f, 5 );
+				return Integer.MAX_VALUE;
+			}
+		}
+		return (int) accuracy;
 	}
 	
 	@Override
@@ -345,7 +357,6 @@ public class Hero extends Char {
 	@Override
 	public int drRoll() {
 		int dr = 0;
-		Barkskin bark = buff(Barkskin.class);
 
 		if (armor() != null) {
 			int armDr = Random.NormalIntRange( armor().DRMin(), armor().DRMax());
@@ -358,7 +369,11 @@ public class Hero extends Char {
 			int wepDr = Random.NormalInt( belongings.weapon.defenseFactor( this ) ); // strength already factored in
 			if (wepDr > 0) dr += wepDr;
 		}
-		if (bark != null)   dr += Random.NormalInt( bark.level() );
+		Barkskin bark = buff(Barkskin.class);
+		if (bark != null)	dr += Random.NormalInt( bark.level() );
+
+		Blocking.BlockBuff block = buff(Blocking.BlockBuff.class);
+		if (block != null)	dr += block.blockingRoll();
 
 		return dr;
 	}
@@ -429,6 +444,12 @@ public class Hero extends Char {
 	}
 	
 	public float attackDelay() {
+		if (buff(Swift.SwiftAttack.class) != null
+				&& buff(Swift.SwiftAttack.class).boostsMelee()) {
+			buff(Swift.SwiftAttack.class).detach();
+			return 0;
+		}
+
 		if (belongings.weapon != null) {
 			
 			return belongings.weapon.speedFactor( this );
@@ -449,13 +470,12 @@ public class Hero extends Char {
 			freeze.processTime(time);
 			return;
 		}
-		
+
 		Swiftthistle.TimeBubble bubble = buff(Swiftthistle.TimeBubble.class);
 		if (bubble != null){
 			bubble.processTime(time);
 			return;
 		}
-		
 		super.spend(time);
 	}
 	
@@ -493,7 +513,6 @@ public class Hero extends Char {
 			spendAndNext( TICK );
 			return false;
 		}
-		
 		boolean actResult;
 		if (curAction == null) {
 			if (resting) {
@@ -547,7 +566,6 @@ public class Hero extends Char {
 		if( subClass == HeroSubClass.WARDEN && Dungeon.level.map[pos] == Terrain.FURROWED_GRASS){
 			Buff.affect(this, Barkskin.class).set( lvl + 5, 1 );
 		}
-		
 		return actResult;
 	}
 	
@@ -660,13 +678,12 @@ public class Hero extends Char {
 		if (Dungeon.level.distance(dst, pos) <= 1) {
 
 			ready();
-			
+
 			AlchemistsToolkit.kitEnergy kit = buff(AlchemistsToolkit.kitEnergy.class);
 			if (kit != null && kit.isCursed()){
 				GLog.w( Messages.get(AlchemistsToolkit.class, "cursed"));
 				return false;
 			}
-			
 			Alchemy alch = (Alchemy) Dungeon.level.blobs.get(Alchemy.class);
 			//TODO logic for a well having dried up?
 			if (alch != null) {
@@ -837,7 +854,8 @@ public class Hero extends Char {
 
 			Buff buff = buff(TimekeepersHourglass.timeFreeze.class);
 			if (buff != null) buff.detach();
-			
+			buff = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+			if (buff != null) buff.detach();
 			InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
 			Game.switchScene( InterlevelScene.class );
 
@@ -867,6 +885,8 @@ public class Hero extends Char {
 				curAction = null;
 
 				Buff buff = buff(TimekeepersHourglass.timeFreeze.class);
+				if (buff != null) buff.detach();
+				buff = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
 				if (buff != null) buff.detach();
 
 				InterlevelScene.mode = InterlevelScene.Mode.ASCEND;
@@ -930,7 +950,6 @@ public class Hero extends Char {
 		switch (subClass) {
 		case SNIPER:
 			if (wep instanceof MissileWeapon && !(wep instanceof SpiritBow.SpiritArrow)) {
-				final float delay = attackDelay();
 				Actor.add(new Actor() {
 
 					{
@@ -940,7 +959,7 @@ public class Hero extends Char {
 					@Override
 					protected boolean act() {
 						if (enemy.isAlive()) {
-							Buff.prolong(Hero.this, SnipersMark.class, delay).object = enemy.id();
+							Buff.prolong(Hero.this, SnipersMark.class, Math.max(attackDelay(),2f)).object = enemy.id();
 						}
 						Actor.remove(this);
 						return true;
@@ -1218,9 +1237,8 @@ public class Hero extends Char {
 
 		return true;
 	}
-	
-	public void earnExp( int exp ) {
-		
+
+	public void earnExp( int exp, Class source ) {
 		this.exp += exp;
 		float percent = exp/(float)maxExp();
 
@@ -1229,19 +1247,28 @@ public class Hero extends Char {
 
 		HornOfPlenty.hornRecharge horn = buff(HornOfPlenty.hornRecharge.class);
 		if (horn != null) horn.gainCharge(percent);
-		
+
 		AlchemistsToolkit.kitEnergy kit = buff(AlchemistsToolkit.kitEnergy.class);
 		if (kit != null) kit.gainCharge(percent);
-		
+
 		Berserk berserk = buff(Berserk.class);
 		if (berserk != null) berserk.recover(percent);
-		
+
+		if (source != PotionOfExperience.class) {
+			for (Item i : belongings) {
+				i.onHeroGainExp(percent, this);
+			}
+		}
 		boolean levelUp = false;
 		while (this.exp >= maxExp()) {
 			this.exp -= maxExp();
 			if (lvl < MAX_LEVEL) {
 				lvl++;
 				levelUp = true;
+
+				if (buff(ElixirOfMight.HTBoost.class) != null){
+					buff(ElixirOfMight.HTBoost.class).onLevelUp();
+				}
 
 				updateHT( true );
 
@@ -1261,6 +1288,8 @@ public class Hero extends Char {
 			sprite.showStatus( CharSprite.POSITIVE, Messages.get(Hero.class, "level_up") );
 			Sample.INSTANCE.play( Assets.SND_LEVELUP );
 			
+			Item.updateQuickslot();
+
 			Item.updateQuickslot();
 
 			Badges.validateLevelReached();
@@ -1311,7 +1340,6 @@ public class Hero extends Char {
 	@Override
 	public float stealth() {
 		float stealth = super.stealth();
-		
 		if (armor() != null){
 			stealth = armor().stealthFactor(this, stealth);
 		}
@@ -1339,6 +1367,7 @@ public class Hero extends Char {
 			this.HP = HT/4;
 
 			//ensures that you'll get to act first in almost any case, to prevent reviving and then instantly dieing again.
+			PotionOfHealing.cure(this);
 			Buff.detach(this, Paralysis.class);
 			spend(-cooldown());
 
@@ -1528,11 +1557,6 @@ public class Hero extends Char {
 		boolean smthFound = false;
 
 		int distance = heroClass == HeroClass.ROGUE ? 2 : 1;
-		
-		boolean foresight = buff(Foresight.class) != null;
-		
-		if (foresight) distance++;
-		
 		int cx = pos % Dungeon.level.width();
 		int cy = pos / Dungeon.level.width();
 		int ax = cx - distance;
@@ -1554,7 +1578,6 @@ public class Hero extends Char {
 
 		TalismanOfForesight.Foresight talisman = buff( TalismanOfForesight.Foresight.class );
 		boolean cursed = talisman != null && talisman.isCursed();
-		
 		for (int y = ay; y <= by; y++) {
 			for (int x = ax, p = ax + y * Dungeon.level.width(); x <= bx; x++, p++) {
 				
@@ -1576,9 +1599,8 @@ public class Hero extends Char {
 							chance = 0f;
 							
 						//..and always succeed when affected by foresight buff
-						} else if (foresight){
+						} else if (buff(Foresight.class) != null){
 							chance = 1f;
-							
 						//unintentional trap detection scales from 40% at floor 0 to 30% at floor 25
 						} else if (Dungeon.level.map[p] == Terrain.SECRET_TRAP) {
 							chance = 0.4f - (depth / 250f);
@@ -1599,7 +1621,6 @@ public class Hero extends Char {
 							ScrollOfMagicMapping.discover( p );
 							
 							smthFound = true;
-	
 							if (talisman != null && !talisman.isCursed())
 								talisman.charge();
 						}

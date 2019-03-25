@@ -26,8 +26,8 @@ import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.Blob;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.Inferno;
+import com.zrp200.lustrouspixeldungeon.items.potions.AlchemicalCatalyst;
 import com.zrp200.lustrouspixeldungeon.items.potions.PotionOfLiquidFlame;
-import com.zrp200.lustrouspixeldungeon.items.potions.exotic.PotionOfDragonsBreath;
 import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
 
@@ -35,6 +35,7 @@ public class InfernalBrew extends Brew {
 	
 	{
 		image = ItemSpriteSheet.BREW_INFERNAL;
+		value = 30 + 40;
 	}
 	
 	@Override
@@ -49,17 +50,12 @@ public class InfernalBrew extends Brew {
 		
 		GameScene.add( Blob.seed( cell, 1000, Inferno.class ) );
 	}
-	
-	@Override
-	public int price() {
-		//prices of ingredients
-		return quantity * (50 + 30);
-	}
+
 	
 	public static class Recipe extends com.zrp200.lustrouspixeldungeon.items.Recipe.SimpleRecipe {
 		
 		{
-			inputs =  new Class[]{PotionOfDragonsBreath.class, PotionOfLiquidFlame.class};
+			inputs =  new Class[]{PotionOfLiquidFlame.class, AlchemicalCatalyst.class};
 			inQuantity = new int[]{1, 1};
 			
 			cost = 6;

@@ -25,7 +25,6 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Badges;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
-import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.Blob;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.Fire;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
@@ -37,7 +36,6 @@ import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.Brimstone;
 import com.zrp200.lustrouspixeldungeon.items.food.ChargrilledMeat;
 import com.zrp200.lustrouspixeldungeon.items.food.MysteryMeat;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.Scroll;
-import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
 import com.zrp200.lustrouspixeldungeon.sprites.CharSprite;
@@ -48,8 +46,8 @@ import java.util.ArrayList;
 
 public class Burning extends ActiveBuff implements Hero.Doom {
 	
-	private static final float DURATION = 8f;
-	
+	public static final float DURATION = 8f;
+
 	//for tracking burning of hero items
 	private int burnIncrement = 0;
 
@@ -62,8 +60,8 @@ public class Burning extends ActiveBuff implements Hero.Doom {
 
 	@Override
 	protected void onAdd() {
-		super.onAdd();
 		reignite();
+		super.onAdd();
 	}
 
 	@Override
@@ -81,9 +79,9 @@ public class Burning extends ActiveBuff implements Hero.Doom {
 	@Override
 	public boolean act() {
 		
-		if (target.isAlive()) {
+		if (target.isAlive() && !target.isImmune(getClass())) {
 			
-			int damage = Random.NormalIntRange( 1, 3 + target.HT/40 );
+			int damage = Random.NormalIntRange( 1, 3 + Dungeon.depth/4 );
 			Buff.detach( target, Chill.class);
 
 			//FIXME doesn't work with the sad ghost
@@ -166,11 +164,12 @@ public class Burning extends ActiveBuff implements Hero.Doom {
 		return true;
 	}
 	
-	public void reignite( Char ch ) {
-		set(DURATION);
+	public void reignite() {
+		reignite(DURATION);
 	}
-	public final void reignite() {
-		reignite(target);
+
+	public void reignite( float duration ) {
+		left = duration;
 	}
 	
 	@Override

@@ -39,6 +39,7 @@ import com.zrp200.lustrouspixeldungeon.items.bags.Bag;
 import com.zrp200.lustrouspixeldungeon.items.bags.MagicalHolster;
 import com.zrp200.lustrouspixeldungeon.items.rings.RingOfSharpshooting;
 import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
+import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Swift;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.darts.TippedDart;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.utils.GLog;
@@ -50,6 +51,8 @@ abstract public class MissileWeapon extends Weapon {
 	{
 		stackable = true;
 		levelKnown = true;
+		
+		bones = true;
 
 		value = 6;
 
@@ -58,7 +61,7 @@ abstract public class MissileWeapon extends Weapon {
 		defaultAction = AC_THROW;
 		usesTargeting = true;
 	}
-	
+
 	boolean sticky = true;
 
 	private static final float MAX_DURABILITY = 100;
@@ -72,6 +75,8 @@ abstract public class MissileWeapon extends Weapon {
 	
 	//used to reduce durability from the source weapon stack, rather than the one being thrown.
 	protected MissileWeapon parent;
+	
+	public int tier;
 
 	@Override
 	public int min() {
@@ -210,13 +215,12 @@ abstract public class MissileWeapon extends Weapon {
 		detach();
 		return super.collect(container);
 	}
-
+	
 	@Override
 	public int proc(Char attacker, Char defender, int damage) {
 		rangedHit = true;
 		onRangedHit(defender,defender.pos);
 		if( hasHiddenEnchant() ) enchantKnown = true;
-
 		return super.proc(attacker, defender, damage);
 	}
 
@@ -269,6 +273,12 @@ abstract public class MissileWeapon extends Weapon {
 	
 	@Override
 	public float castDelay(Char user, int dst) {
+		if (Actor.findChar( dst ) != null
+				&& user.buff(Swift.SwiftAttack.class) != null
+				&& user.buff(Swift.SwiftAttack.class).boostsRanged()) {
+			user.buff(Swift.SwiftAttack.class).detach();
+			return 0;
+		}
 		return speedFactor( user );
 	}
 
@@ -280,6 +290,10 @@ abstract public class MissileWeapon extends Weapon {
             }
 		} else {
 			durability -= durabilityPerUse();
+			if (durability > 0 && durability <= durabilityPerUse()){
+				if (level() <= 0)GLog.w(Messages.get(this, "about_to_break"));
+				else             GLog.n(Messages.get(this, "about_to_break"));
+			}
 		}
 		MissileWeapon weapon = parent == null ? this : parent;
 		boolean willBreak = weapon.durability > 0 && weapon.durability <= weapon.durabilityPerUse();
@@ -337,7 +351,6 @@ abstract public class MissileWeapon extends Weapon {
 		bundleRestoring = true;
 		MissileWeapon split = (MissileWeapon)super.split(amount);
 		bundleRestoring = bundleState;
-
 		//unless the thrown weapon will break, split off a max durability item and
 		//have it reduce the durability of the main stack. Cleaner to the player this way
 		if (split != null){
@@ -353,7 +366,6 @@ abstract public class MissileWeapon extends Weapon {
 		parent = null;
 		return super.doPickUp(hero);
 	}
-
 	@Override
 	public boolean isIdentified() {
 		return true;
@@ -373,10 +385,14 @@ abstract public class MissileWeapon extends Weapon {
 		} else {
 			info += " " + Messages.get(this, "unlimited_uses");
 		}
-
 		return info;
 	}
-
+	
+	@Override
+	public int price() {
+		return 6 * tier * quantity * (level() + 1);
+	}
+	
 	private static final String DURABILITY = "durability";
 	
 	@Override
@@ -386,7 +402,6 @@ abstract public class MissileWeapon extends Weapon {
 	}
 	
 	private static boolean bundleRestoring = false;
-
 	@Override
 	public void restoreFromBundle(Bundle bundle) {
 		bundleRestoring = true;
@@ -403,7 +418,6 @@ abstract public class MissileWeapon extends Weapon {
 			}
 		}
 	}
-
 	protected boolean rangedHit = false;
 	@Override
 	protected void onThrow(int cell) {

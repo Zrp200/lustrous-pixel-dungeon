@@ -39,6 +39,7 @@ import com.zrp200.lustrouspixeldungeon.levels.RegularLevel;
 import com.zrp200.lustrouspixeldungeon.levels.rooms.Room;
 import com.zrp200.lustrouspixeldungeon.levels.rooms.special.WeakFloorRoom;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
+import com.zrp200.lustrouspixeldungeon.plants.Swiftthistle;
 import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
 import com.zrp200.lustrouspixeldungeon.scenes.InterlevelScene;
 import com.zrp200.lustrouspixeldungeon.sprites.MobSprite;
@@ -74,7 +75,9 @@ public class Chasm {
 
 		Buff buff = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
 		if (buff != null) buff.detach();
-		
+		buff = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+		if (buff != null) buff.detach();
+
 		if (Dungeon.hero.isAlive()) {
 			Dungeon.hero.interrupt();
 			InterlevelScene.mode = InterlevelScene.Mode.FALL;
@@ -122,7 +125,7 @@ public class Chasm {
 	}
 
 	public static void mobFall( Mob mob ) {
-		mob.die( Chasm.class );
+		if (mob.isAlive()) mob.die( Chasm.class );
 		
 		((MobSprite)mob.sprite).fall();
 	}

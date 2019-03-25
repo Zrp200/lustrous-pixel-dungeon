@@ -27,8 +27,8 @@ import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.FireImbue;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.effects.particles.FlameParticle;
-import com.zrp200.lustrouspixeldungeon.items.potions.PotionOfLiquidFlame;
-import com.zrp200.lustrouspixeldungeon.items.potions.PotionOfPurity;
+import com.zrp200.lustrouspixeldungeon.items.potions.AlchemicalCatalyst;
+import com.zrp200.lustrouspixeldungeon.items.potions.exotic.PotionOfDragonsBreath;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
 
 public class ElixirOfDragonsBlood extends Elixir {
@@ -53,13 +53,13 @@ public class ElixirOfDragonsBlood extends Elixir {
 	@Override
 	public int price() {
 		//prices of ingredients
-		return quantity * (30 + 40);
+		return quantity * (50 + 40);
 	}
 	
 	public static class Recipe extends com.zrp200.lustrouspixeldungeon.items.Recipe.SimpleRecipe {
 		
 		{
-			inputs =  new Class[]{PotionOfLiquidFlame.class, PotionOfPurity.class};
+			inputs =  new Class[]{PotionOfDragonsBreath.class, AlchemicalCatalyst.class};
 			inQuantity = new int[]{1, 1};
 			
 			cost = 6;

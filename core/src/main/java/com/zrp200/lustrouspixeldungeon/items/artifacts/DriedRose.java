@@ -48,6 +48,7 @@ import com.zrp200.lustrouspixeldungeon.items.armor.Armor;
 import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.AntiMagic;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfRetribution;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
+import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Precise;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.BlockingWeapon;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Boomerang;
@@ -487,6 +488,11 @@ public class DriedRose extends Artifact {
 
 		@Override
 		public int attackSkill(Char target) {
+			if (Precise.rollToGuaranteeHit(rose.weapon, this)){
+				target.sprite.emitter().start( Speck.factory(Speck.LIGHT), 0.05f, 5 );
+				return Integer.MAX_VALUE;
+			}
+
 			//same accuracy as the hero.
 			int acc = Dungeon.hero.lvl + Hero.ACCURACY;
 			

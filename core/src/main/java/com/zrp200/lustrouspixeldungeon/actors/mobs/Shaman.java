@@ -22,7 +22,6 @@
 package com.zrp200.lustrouspixeldungeon.actors.mobs;
 
 import com.watabou.noosa.Camera;
-import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
@@ -31,7 +30,6 @@ import com.zrp200.lustrouspixeldungeon.actors.blobs.Blizzard;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.Blob;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.Fire;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.Freezing;
-import com.zrp200.lustrouspixeldungeon.actors.blobs.Inferno;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Burning;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Chill;
@@ -48,7 +46,6 @@ import com.zrp200.lustrouspixeldungeon.items.wands.WandOfFireblast;
 import com.zrp200.lustrouspixeldungeon.items.wands.WandOfFrost;
 import com.zrp200.lustrouspixeldungeon.items.wands.WandOfLightning;
 import com.zrp200.lustrouspixeldungeon.items.wands.WandOfMagicMissile;
-import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Blazing;
 import com.zrp200.lustrouspixeldungeon.mechanics.Ballistica;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
@@ -217,7 +214,7 @@ public abstract class Shaman extends Mob {
 		protected void applyZap() {
             enemy.sprite.centerEmitter().burst(FlameParticle.FACTORY, 3);
             applyZap( NormalIntRange(4,12) );
-			Buff.affect( enemy, Burning.class ).reignite( enemy );
+			Buff.affect( enemy, Burning.class ).reignite();
         }
     }
     public static class Frost extends Shaman {

@@ -33,7 +33,6 @@ import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.Blizzard;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.Blob;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.ConfusionGas;
-import com.zrp200.lustrouspixeldungeon.actors.blobs.Fire;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.Inferno;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.ParalyticGas;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.Regrowth;
@@ -41,33 +40,29 @@ import com.zrp200.lustrouspixeldungeon.actors.blobs.ToxicGas;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Burning;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Frost;
-import com.zrp200.lustrouspixeldungeon.actors.buffs.Recharging;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.Mimic;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.Mob;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.npcs.Sheep;
 import com.zrp200.lustrouspixeldungeon.effects.CellEmitter;
-import com.zrp200.lustrouspixeldungeon.effects.Flare;
 import com.zrp200.lustrouspixeldungeon.effects.MagicMissile;
 import com.zrp200.lustrouspixeldungeon.effects.Speck;
-import com.zrp200.lustrouspixeldungeon.effects.SpellSprite;
 import com.zrp200.lustrouspixeldungeon.effects.particles.ShadowParticle;
 import com.zrp200.lustrouspixeldungeon.items.Generator;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.zrp200.lustrouspixeldungeon.items.bombs.Bomb;
-import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfRecharging;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.zrp200.lustrouspixeldungeon.levels.Terrain;
 import com.zrp200.lustrouspixeldungeon.levels.traps.ArmageddonTrap;
 import com.zrp200.lustrouspixeldungeon.levels.traps.CursingTrap;
-import com.zrp200.lustrouspixeldungeon.levels.traps.ShockingTrap;
 import com.zrp200.lustrouspixeldungeon.levels.traps.StormTrap;
 import com.zrp200.lustrouspixeldungeon.levels.traps.SummoningTrap;
 import com.zrp200.lustrouspixeldungeon.mechanics.Ballistica;
 import com.zrp200.lustrouspixeldungeon.messages.Languages;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.plants.Plant;
+import com.zrp200.lustrouspixeldungeon.plants.Swiftthistle;
 import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
 import com.zrp200.lustrouspixeldungeon.scenes.InterlevelScene;
 import com.zrp200.lustrouspixeldungeon.ui.TargetHealthIndicator;
@@ -115,11 +110,11 @@ public class CursedWand {
 							switch (Random.Int(2)){
 								case 0:
 									if (target != null)
-										Buff.affect(target, Burning.class).reignite(target);
+										Buff.affect(target, Burning.class).reignite();
 									Buff.affect(user, Frost.class, Frost.duration(user) * Random.Float(3f, 5f));
 									break;
 								case 1:
-									Buff.affect(user, Burning.class).reignite(user);
+									Buff.affect(user, Burning.class).reignite();
 									if (target != null)
 										Buff.affect(target, Frost.class, Frost.duration(target) * Random.Float(3f, 5f));
 									break;
@@ -319,6 +314,9 @@ public class CursedWand {
 					int depth = 1+Random.chances(depths);
 
 					Buff buff = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+					if (buff != null) buff.detach();
+
+					buff = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
 					if (buff != null) buff.detach();
 
 					InterlevelScene.mode = InterlevelScene.Mode.RETURN;

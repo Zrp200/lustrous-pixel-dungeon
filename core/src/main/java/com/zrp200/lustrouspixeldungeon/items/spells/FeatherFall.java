@@ -28,7 +28,6 @@ import com.zrp200.lustrouspixeldungeon.actors.buffs.FlavourBuff;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.effects.Speck;
 import com.zrp200.lustrouspixeldungeon.items.potions.PotionOfLevitation;
-import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfLullaby;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
 import com.zrp200.lustrouspixeldungeon.utils.GLog;
@@ -60,13 +59,13 @@ public class FeatherFall extends Spell {
 	@Override
 	public int price() {
 		//prices of ingredients, divided by output quantity
-		return Math.round(quantity * ((40 + 30) / 2f));
+		return Math.round(quantity * ((30 + 40) / 2f));
 	}
 	
 	public static class Recipe extends com.zrp200.lustrouspixeldungeon.items.Recipe.SimpleRecipe {
 		
 		{
-			inputs =  new Class[]{ScrollOfLullaby.class, PotionOfLevitation.class};
+			inputs =  new Class[]{PotionOfLevitation.class, ArcaneCatalyst.class};
 			inQuantity = new int[]{1, 1};
 			
 			cost = 6;

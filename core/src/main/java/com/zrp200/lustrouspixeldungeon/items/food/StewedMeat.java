@@ -21,6 +21,7 @@
 
 package com.zrp200.lustrouspixeldungeon.items.food;
 
+import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.items.Recipe;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
 
@@ -30,7 +31,10 @@ public class StewedMeat extends MysteryMeat {
 		image = ItemSpriteSheet.STEWED;
 		value = 6;
 	}
-	
+
+	@Override
+	public void effect(Hero hero) { }
+
 	public static class oneMeat extends Recipe.SimpleRecipe{
 		{
 			inputs =  new Class[]{MysteryMeat.class};

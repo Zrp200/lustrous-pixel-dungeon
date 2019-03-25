@@ -22,6 +22,7 @@
 package com.zrp200.lustrouspixeldungeon.items.weapon.enchantments;
 
 import com.watabou.utils.Random;
+import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Burning;
@@ -42,11 +43,11 @@ public class Blazing extends Weapon.Enchantment {
 		int level = Math.max( 0, weapon.level() );
 		
 		if (Random.Int( level + 3 ) >= 2) {
-			
-			if (Random.Int( 2 ) == 0) {
-				Buff.affect( defender, Burning.class ).reignite( defender );
+			if (defender.buff(Burning.class) != null || Dungeon.level.flamable[defender.pos]){
+				Buff.affect(defender, Burning.class).reignite();
+			} else {
+				Buff.affect(defender, Burning.class).reignite(Burning.DURATION/2);
 			}
-			defender.damage( Random.Int( 1, level + 2 ), this );
 			
 			defender.sprite.emitter().burst( FlameParticle.FACTORY, level + 1 );
 			

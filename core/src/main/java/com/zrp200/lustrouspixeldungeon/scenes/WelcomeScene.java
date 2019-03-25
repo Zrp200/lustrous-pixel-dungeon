@@ -28,6 +28,7 @@ import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.FileUtils;
 import com.zrp200.lustrouspixeldungeon.Assets;
+import com.zrp200.lustrouspixeldungeon.Badges;
 import com.zrp200.lustrouspixeldungeon.LustSettings;
 import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
 import com.zrp200.lustrouspixeldungeon.Rankings;
@@ -166,6 +167,17 @@ public class WelcomeScene extends PixelScene {
 			}
 		}
 		
+		//give classes to people with saves that have previously unlocked them
+		if (previousVersion <= LustrousPixelDungeon.Version.v001.versionCode){
+			Badges.loadGlobal();
+			Badges.addGlobal(Badges.Badge.UNLOCK_MAGE);
+			Badges.addGlobal(Badges.Badge.UNLOCK_ROGUE);
+			if (Badges.isUnlocked(Badges.Badge.BOSS_SLAIN_3)){
+				Badges.addGlobal(Badges.Badge.UNLOCK_HUNTRESS);
+			}
+			Badges.saveGlobal();
+		}
+
 		LustSettings.version(LustrousPixelDungeon.versionCode);
 	}
 

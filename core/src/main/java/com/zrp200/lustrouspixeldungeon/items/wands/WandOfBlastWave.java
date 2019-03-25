@@ -37,6 +37,7 @@ import com.zrp200.lustrouspixeldungeon.actors.buffs.Paralysis;
 import com.zrp200.lustrouspixeldungeon.effects.Effects;
 import com.zrp200.lustrouspixeldungeon.effects.MagicMissile;
 import com.zrp200.lustrouspixeldungeon.effects.Pushing;
+import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Elastic;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.MagesStaff;
 import com.zrp200.lustrouspixeldungeon.mechanics.Ballistica;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
@@ -128,12 +129,12 @@ public class WandOfBlastWave extends DamageWand {
 		Actor.addDelayed(new Pushing(ch, ch.pos, newPos, new Callback() {
 			public void call() {
 				if (initialpos != ch.pos) {
-					//something cased movement before pushing resolved, cancel to be safe.
+					//something caused movement before pushing resolved, cancel to be safe.
 					ch.sprite.place(ch.pos);
 					return;
 				}
 				ch.pos = newPos;
-				if (ch.pos == trajectory.collisionPos) {
+				if (ch.pos == trajectory.collisionPos && ch.isAlive()) {
 					ch.damage(Random.NormalIntRange((finalDist + 1) / 2, finalDist), this);
 					Paralysis.prolong(ch, Paralysis.class, Random.NormalIntRange((finalDist + 1) / 2, finalDist));
 				}
@@ -147,18 +148,8 @@ public class WandOfBlastWave extends DamageWand {
 	}
 
 	@Override
-	//behaves just like glyph of Repulsion
 	public void onHit(MagesStaff staff, Char attacker, Char defender, int damage) {
-		int level = Math.max(0, staff.level());
-
-		// lvl 0 - 25%
-		// lvl 1 - 40%
-		// lvl 2 - 50%
-		if (Random.Int( level + 4 ) >= 3){
-			int oppositeHero = defender.pos + (defender.pos - attacker.pos);
-			Ballistica trajectory = new Ballistica(defender.pos, oppositeHero, Ballistica.MAGIC_BOLT);
-			throwChar(defender, trajectory, 2);
-		}
+		new Elastic().proc(staff, attacker, defender, damage);
 	}
 
 	@Override

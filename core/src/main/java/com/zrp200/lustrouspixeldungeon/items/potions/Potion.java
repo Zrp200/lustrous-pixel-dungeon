@@ -139,6 +139,8 @@ public class Potion extends Item {
 	
 	private static final HashSet<Class<?extends Potion>> canThrowPots = new HashSet<>();
 	static{
+		canThrowPots.add(AlchemicalCatalyst.class);
+		
 		canThrowPots.add(PotionOfPurity.class);
 		canThrowPots.add(PotionOfLevitation.class);
 		
@@ -419,7 +421,7 @@ public class Potion extends Item {
 	}
 	
 	protected int splashColor(){
-		return ItemSprite.pick( image, 5, 9 );
+		return anonymous ? 0x00AAFF : ItemSprite.pick( image, 5, 9 );
 	}
 	
 	protected void splash( int cell ) {
@@ -445,6 +447,23 @@ public class Potion extends Item {
 		return 30 * quantity;
 	}
 	
+	public static class PlaceHolder extends Potion {
+		
+		{
+			image = ItemSpriteSheet.POTION_HOLDER;
+		}
+		
+		@Override
+		public boolean isSimilar(Item item) {
+			return ExoticPotion.regToExo.containsKey(item.getClass())
+					|| ExoticPotion.regToExo.containsValue(item.getClass());
+		}
+		
+		@Override
+		public String info() {
+			return "";
+		}
+	}
 	
 	public static class SeedToPotion extends Recipe {
 		

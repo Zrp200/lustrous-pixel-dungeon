@@ -22,6 +22,7 @@
 package com.zrp200.lustrouspixeldungeon.actors.hero;
 
 import com.watabou.utils.Bundle;
+import com.watabou.utils.DeviceCompat;
 import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.Badges;
 import com.zrp200.lustrouspixeldungeon.Challenges;
@@ -58,7 +59,7 @@ import com.zrp200.lustrouspixeldungeon.messages.Messages;
 
 public enum HeroClass {
 
-	WARRIOR("warrior", HeroSubClass.BERSERKER, HeroSubClass.GLADIATOR ) {
+	WARRIOR("warrior", Assets.WARRIOR, HeroSubClass.BERSERKER, HeroSubClass.GLADIATOR ) {
 		@Override
 		public void initHero(Hero hero) {
 			super.initHero(hero);
@@ -82,7 +83,7 @@ public enum HeroClass {
 			return Badges.Badge.MASTERY_WARRIOR;
 		}
 	},
-	MAGE( "mage", HeroSubClass.BATTLEMAGE, HeroSubClass.WARLOCK ) {
+	MAGE( "mage", Assets.MAGE, HeroSubClass.BATTLEMAGE, HeroSubClass.WARLOCK ) {
 		@Override
 		public void initHero(Hero hero) {
 			super.initHero(hero);
@@ -106,7 +107,7 @@ public enum HeroClass {
 			return Badges.Badge.MASTERY_MAGE;
 		}
 	},
-	ROGUE( "rogue", HeroSubClass.ASSASSIN, HeroSubClass.FREERUNNER ) {
+	ROGUE( "rogue", Assets.ROGUE, HeroSubClass.ASSASSIN, HeroSubClass.FREERUNNER ) {
 		@Override
 		public void initHero(Hero hero) {
 			super.initHero(hero);
@@ -133,7 +134,7 @@ public enum HeroClass {
 			return Badges.Badge.MASTERY_ROGUE;
 		}
 	},
-	HUNTRESS( "huntress", HeroSubClass.SNIPER, HeroSubClass.WARDEN ) {
+	HUNTRESS( "huntress", Assets.HUNTRESS, HeroSubClass.SNIPER, HeroSubClass.WARDEN ) {
 		@Override
 		public void initHero(Hero hero) {
 			super.initHero(hero);
@@ -156,11 +157,12 @@ public enum HeroClass {
 		}
 	};
 
-	private String title;
+	private String title, spritesheet;
 	private HeroSubClass[] subClasses;
 
-	HeroClass( String title, HeroSubClass...subClasses ) {
+	HeroClass( String title, String spritesheet, HeroSubClass...subClasses ) {
 		this.title = title;
+		this.spritesheet = spritesheet;
 		this.subClasses = subClasses;
 	}
 
@@ -179,28 +181,30 @@ public enum HeroClass {
 		new ScrollOfIdentify().identify();
 	}
 
-	public abstract Badges.Badge masteryBadge();
-	
-	public String title() {
-		return Messages.get(HeroClass.class, title);
+	public String unlockMsg() {
+		return Messages.get(HeroClass.class, title + "_unlock");
 	}
-	
-	public HeroSubClass[] subClasses() {
-		return subClasses;
-	}
-	
-	public String spritesheet() {
+	public boolean isUnlocked() {
+		//always unlock on debug builds
+		if (DeviceCompat.isDebug()) return true;
+
 		switch (this) {
-			case WARRIOR: default:
-				return Assets.WARRIOR;
+			case WARRIOR:
+			default:
+				return true;
 			case MAGE:
-				return Assets.MAGE;
+				return Badges.isUnlocked(Badges.Badge.UNLOCK_MAGE);
 			case ROGUE:
-				return Assets.ROGUE;
+				return Badges.isUnlocked(Badges.Badge.UNLOCK_ROGUE);
 			case HUNTRESS:
-				return Assets.HUNTRESS;
+				return Badges.isUnlocked(Badges.Badge.UNLOCK_HUNTRESS);
 		}
 	}
+
+	public abstract Badges.Badge masteryBadge();
+	public String title() { return Messages.get(HeroClass.class, title); }
+	public HeroSubClass[] subClasses() { return subClasses; }
+	public String spritesheet() { return spritesheet; }
 	
 	public String[] perks() {
 		String[] result = new String[5];

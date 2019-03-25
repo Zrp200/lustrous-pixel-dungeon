@@ -25,8 +25,8 @@ import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.FrostImbue;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.effects.particles.SnowParticle;
-import com.zrp200.lustrouspixeldungeon.items.potions.PotionOfFrost;
-import com.zrp200.lustrouspixeldungeon.items.potions.PotionOfPurity;
+import com.zrp200.lustrouspixeldungeon.items.potions.AlchemicalCatalyst;
+import com.zrp200.lustrouspixeldungeon.items.potions.exotic.PotionOfSnapFreeze;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
 
 public class ElixirOfIcyTouch extends Elixir {
@@ -50,13 +50,13 @@ public class ElixirOfIcyTouch extends Elixir {
 	@Override
 	public int price() {
 		//prices of ingredients
-		return quantity * (30 + 40);
+		return quantity * (50 + 40);
 	}
 	
 	public static class Recipe extends com.zrp200.lustrouspixeldungeon.items.Recipe.SimpleRecipe {
 		
 		{
-			inputs =  new Class[]{PotionOfFrost.class, PotionOfPurity.class};
+			inputs =  new Class[]{PotionOfSnapFreeze.class, AlchemicalCatalyst.class};
 			inQuantity = new int[]{1, 1};
 			
 			cost = 6;

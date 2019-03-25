@@ -31,7 +31,6 @@ import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Burning;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Corruption;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.FlavourBuff;
-import com.zrp200.lustrouspixeldungeon.actors.buffs.Poison;
 import com.zrp200.lustrouspixeldungeon.effects.Pushing;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.potions.PotionOfHealing;
@@ -134,7 +133,7 @@ public class Swarm extends Mob {
 			Buff.affect(clone, activeBuff.getClass()).set(activeBuff.getLeft() / 2);
 			activeBuff.set(activeBuff.getLeft() / 2);
 		}
-		if ( buff( Burning.class  ) != null) Buff.affect(clone, Burning.class).reignite(clone);
+		if ( buff( Burning.class  ) != null) Buff.affect(clone, Burning.class).reignite();
 		if ( buff(Corruption.class) != null) Buff.affect(clone, Corruption.class);
 
 		if (Dungeon.level.map[clone.pos] == Terrain.DOOR) Door.enter(clone.pos);

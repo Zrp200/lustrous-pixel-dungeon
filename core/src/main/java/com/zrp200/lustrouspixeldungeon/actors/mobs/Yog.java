@@ -369,10 +369,6 @@ public class Yog extends Mob {
 		}
 		
 		{
-			resistances.add( ToxicGas.class );
-		}
-		
-		{
 			immunities.add( Amok.class );
 			immunities.add( Sleep.class );
 			immunities.add( Terror.class );
@@ -391,6 +387,7 @@ public class Yog extends Mob {
 			defenseSkill = 20;
 			
 			EXP = 0;
+			maxLvl = -2;
 			
 			state = HUNTING;
 

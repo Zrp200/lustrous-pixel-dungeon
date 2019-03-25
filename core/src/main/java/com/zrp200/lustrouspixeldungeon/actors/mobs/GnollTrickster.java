@@ -75,7 +75,7 @@ public class GnollTrickster extends RangeExclusiveMob {
 			if (effect >= 6 && enemy.buff(Burning.class) == null) {
 				if (Dungeon.level.flamable[enemy.pos])
 					GameScene.add(Blob.seed(enemy.pos, 4, Fire.class));
-				Buff.affect(enemy, Burning.class).reignite(enemy);
+				Buff.affect(enemy, Burning.class).reignite();
 			} else if(effect <= 6 && enemy.buff(Chill.class) == null && enemy.buff(Burning.class) == null) {
 				Buff.affect(enemy, Chill.class, effect/2f);
 			} else

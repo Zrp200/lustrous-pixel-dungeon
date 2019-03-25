@@ -27,7 +27,6 @@ import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.Mob;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfTeleportation;
-import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfTerror;
 import com.zrp200.lustrouspixeldungeon.mechanics.Ballistica;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
@@ -85,7 +84,7 @@ public class PhaseShift extends TargetedSpell {
 	public static class Recipe extends com.zrp200.lustrouspixeldungeon.items.Recipe.SimpleRecipe {
 		
 		{
-			inputs =  new Class[]{ScrollOfTeleportation.class, ScrollOfTerror.class};
+			inputs =  new Class[]{ScrollOfTeleportation.class, ArcaneCatalyst.class};
 			inQuantity = new int[]{1, 1};
 			
 			cost = 6;

@@ -22,12 +22,11 @@
 package com.zrp200.lustrouspixeldungeon.items.spells;
 
 import com.zrp200.lustrouspixeldungeon.Badges;
+import com.zrp200.lustrouspixeldungeon.Statistics;
 import com.zrp200.lustrouspixeldungeon.effects.Speck;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.armor.Armor;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfUpgrade;
-import com.zrp200.lustrouspixeldungeon.items.stones.StoneOfEnchantment;
-import com.zrp200.lustrouspixeldungeon.items.weapon.SpiritBow;
 import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
@@ -37,7 +36,7 @@ import com.zrp200.lustrouspixeldungeon.windows.WndBag;
 public class MagicalInfusion extends InventorySpell {
 	
 	{
-		mode = WndBag.Mode.ENCHANTABLE;
+		mode = WndBag.Mode.UPGRADEABLE;
 		image = ItemSpriteSheet.MAGIC_INFUSE;
 		unique = true;
 	}
@@ -45,14 +44,12 @@ public class MagicalInfusion extends InventorySpell {
 	@Override
 	protected void onItemSelected( Item item ) {
 
-		if (item instanceof SpiritBow){
-			if (((SpiritBow) item).enchantment == null){
-				((Weapon)item).enchant();
-			}
-		} else if (item instanceof Weapon) {
+		if (item instanceof Weapon && ((Weapon) item).enchantment != null && !((Weapon) item).hasCurseEnchant()) {
 			((Weapon) item).upgrade(true);
-		} else {
+		} else if (item instanceof Armor && ((Armor) item).glyph != null && !((Armor) item).hasCurseGlyph()) {
 			((Armor) item).upgrade(true);
+		} else {
+			item.upgrade();
 		}
 		
 		GLog.p( Messages.get(this, "infuse", item.name()) );
@@ -60,22 +57,23 @@ public class MagicalInfusion extends InventorySpell {
 		Badges.validateItemLevelAquired(item);
 
 		curUser.sprite.emitter().start(Speck.factory(Speck.UP), 0.2f, 3);
+		Statistics.upgradesUsed++;
 	}
 	
 	@Override
 	public int price() {
 		//prices of ingredients, divided by output quantity
-		return Math.round(quantity * ((50 + 30) / 1f));
+		return Math.round(quantity * ((50 + 40) / 1f));
 	}
 	
 	@SuppressWarnings("unchecked")
 	public static class Recipe extends com.zrp200.lustrouspixeldungeon.items.Recipe.SimpleRecipe {
 		
 		{
-			inputs =  new Class[]{ScrollOfUpgrade.class, StoneOfEnchantment.class};
+			inputs =  new Class[]{ScrollOfUpgrade.class, ArcaneCatalyst.class};
 			inQuantity = new int[]{1, 1};
 			
-			cost = 3;
+			cost = 4;
 			
 			output = MagicalInfusion.class;
 			outQuantity = 1;

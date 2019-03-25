@@ -74,6 +74,7 @@ import com.zrp200.lustrouspixeldungeon.levels.traps.Trap;
 import com.zrp200.lustrouspixeldungeon.mechanics.ShadowCaster;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.plants.Plant;
+import com.zrp200.lustrouspixeldungeon.plants.Swiftthistle;
 import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSprite;
 import com.zrp200.lustrouspixeldungeon.tiles.CustomTiledVisual;
@@ -195,7 +196,7 @@ public abstract class Level implements Bundlable {
 			if(tranChapter == 5 && tranFloor == 1) tranFloor++;
 			if(Dungeon.depth / 5 == tranChapter && Dungeon.depth % 5 == tranFloor)
 				addItemToSpawn( new ScrollOfTransmutation() );
-			
+
 			if ( Dungeon.depth == ((Dungeon.seed % 3) + 1)){
 				addItemToSpawn( new StoneOfIntuition() );
 			}
@@ -474,7 +475,7 @@ public abstract class Level implements Bundlable {
 		}
 		return false;
 	}
-	
+
 	public Actor respawner() {
 		return new Actor() {
 
@@ -818,22 +819,33 @@ public abstract class Level implements Bundlable {
 			TimekeepersHourglass.timeFreeze timeFreeze =
 					Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
 			didSomething = true;
-			
-			if (timeFreeze == null) {
 
-				if (ch == Dungeon.hero) {
-					Dungeon.hero.interrupt();
-				}
+			Swiftthistle.TimeBubble bubble =
+					Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
 
-				trap.trigger();
+			if (bubble != null){
 
-			} else {
+				Sample.INSTANCE.play(Assets.SND_TRAP);
+
+				discover(cell);
+
+				bubble.setDelayedPress(cell);
+
+			} else if (timeFreeze != null){
 
 				Sample.INSTANCE.play(Assets.SND_TRAP);
 
 				discover(cell);
 
 				timeFreeze.setDelayedPress(cell);
+
+			} else {
+
+				if (ch == Dungeon.hero) {
+					Dungeon.hero.interrupt();
+				}
+
+				trap.trigger();
 
 			}
 		}
@@ -997,7 +1009,7 @@ public abstract class Level implements Bundlable {
 		return p.x + p.y*width();
 	}
 	public int pointToCell( PointF p) { return pointToCell(new Point(Math.round(p.x),Math.round(p.y))); }
-	
+
 	public String tileName( int tile ) {
 		
 		switch (tile) {

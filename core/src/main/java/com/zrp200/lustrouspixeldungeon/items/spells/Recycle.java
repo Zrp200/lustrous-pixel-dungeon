@@ -22,6 +22,7 @@
 package com.zrp200.lustrouspixeldungeon.items.spells;
 
 import com.zrp200.lustrouspixeldungeon.Challenges;
+import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
 import com.zrp200.lustrouspixeldungeon.effects.ItemChange;
 import com.zrp200.lustrouspixeldungeon.items.Generator;
@@ -33,7 +34,6 @@ import com.zrp200.lustrouspixeldungeon.items.potions.exotic.ExoticPotion;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.Scroll;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfTransmutation;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.exotic.ExoticScroll;
-import com.zrp200.lustrouspixeldungeon.items.scrolls.exotic.ScrollOfDivination;
 import com.zrp200.lustrouspixeldungeon.items.stones.Runestone;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.plants.Plant;
@@ -47,7 +47,7 @@ public class Recycle extends InventorySpell {
 		image = ItemSpriteSheet.RECYCLE;
 		mode = WndBag.Mode.RECYCLABLE;
 
-		value = (50+50)/8f; //prices of ingredients, divided by output quantity;
+		value = (50+40)/8f; //prices of ingredients, divided by output quantity;
 	}
 	
 	@Override
@@ -83,7 +83,9 @@ public class Recycle extends InventorySpell {
 		
 		item.detach(curUser.belongings.backpack);
 		GLog.p(Messages.get(this, "recycled", result.name()));
-		result.collect();
+		if (!result.collect()){
+			Dungeon.level.drop(result, curUser.pos).sprite.drop();
+		}
 		ItemChange.show(curUser,result);
 	}
 	
@@ -97,7 +99,7 @@ public class Recycle extends InventorySpell {
 	public static class Recipe extends com.zrp200.lustrouspixeldungeon.items.Recipe.SimpleRecipe {
 		
 		{
-			inputs =  new Class[]{ScrollOfTransmutation.class, ScrollOfDivination.class};
+			inputs =  new Class[]{ScrollOfTransmutation.class, ArcaneCatalyst.class};
 			inQuantity = new int[]{1, 1};
 			
 			cost = 6;

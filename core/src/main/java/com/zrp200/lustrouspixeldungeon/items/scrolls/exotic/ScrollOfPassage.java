@@ -27,6 +27,7 @@ import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
+import com.zrp200.lustrouspixeldungeon.plants.Swiftthistle;
 import com.zrp200.lustrouspixeldungeon.scenes.InterlevelScene;
 import com.zrp200.lustrouspixeldungeon.utils.GLog;
 
@@ -50,7 +51,9 @@ public class ScrollOfPassage extends ExoticScroll {
 		
 		Buff buff = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
 		if (buff != null) buff.detach();
-		
+		buff = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+		if (buff != null) buff.detach();
+
 		InterlevelScene.mode = InterlevelScene.Mode.RETURN;
 		InterlevelScene.returnDepth = Math.max(1, (Dungeon.depth - 1 - (Dungeon.depth-2)%5));
 		InterlevelScene.returnPos = -1;
