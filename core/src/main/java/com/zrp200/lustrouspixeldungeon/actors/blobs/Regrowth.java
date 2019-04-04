@@ -21,7 +21,6 @@
 
 package com.zrp200.lustrouspixeldungeon.actors.blobs;
 
-import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
@@ -30,49 +29,48 @@ import com.zrp200.lustrouspixeldungeon.effects.BlobEmitter;
 import com.zrp200.lustrouspixeldungeon.effects.particles.LeafParticle;
 import com.zrp200.lustrouspixeldungeon.levels.Level;
 import com.zrp200.lustrouspixeldungeon.levels.Terrain;
-import com.zrp200.lustrouspixeldungeon.levels.features.HighGrass;
 import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
+
+import static com.zrp200.lustrouspixeldungeon.Dungeon.level;
 
 public class Regrowth extends Blob {
 	
 	@Override
 	protected void evolve() {
 		super.evolve();
-		
-		if (volume > 0) {
-			int cell;
-			for (int i = area.left; i < area.right; i++) {
-				for (int j = area.top; j < area.bottom; j++) {
-					cell = i + j*Dungeon.level.width();
-					if (off[cell] > 0) {
-						int c = Dungeon.level.map[cell];
-						int c1 = c;
-						if (c == Terrain.EMPTY || c == Terrain.EMBERS || c == Terrain.EMPTY_DECO) {
-							c1 = (cur[cell] > 9)
-									? Terrain.HIGH_GRASS : Terrain.GRASS;
-						} else if ((c == Terrain.GRASS || c == Terrain.FURROWED_GRASS)
-								&& cur[cell] > 9 && Dungeon.level.plants.get(cell) == null ) {
-							c1 = Terrain.HIGH_GRASS;
-						}
+		if(volume <= 0) return;
+		applyToBlobArea(new EvolveCallBack() {
+			@Override
+			protected void call() {
+				if(volume <= 0) return;
+				if (cur[cell] > 0 || off[cell] > 0) {
+					int c = level.map[cell];
+					int c1 = c;
+					boolean burning = volumeAt(cell,Fire.class) > 0;
+					if (c == Terrain.EMPTY || c == Terrain.EMBERS || c == Terrain.EMPTY_DECO) {
+						c1 = (cur[cell] > 9 && !burning)
+								? Terrain.HIGH_GRASS : Terrain.GRASS;
+					} else if ((c == Terrain.GRASS || c == Terrain.FURROWED_GRASS)
+							&& cur[cell] > 9 && level.plants.get(cell) == null && !burning) {
+						c1 = Terrain.HIGH_GRASS;
+					}
 
-						if (c1 != c) {
-							Level.set( cell, c1 );
-							GameScene.updateMap( cell );
-						}
-
-						Char ch = Actor.findChar( cell );
-						if (ch != null
-								&& !ch.isImmune(this.getClass())
-								&& off[cell] > 1) {
-							Buff.prolong( ch, Roots.class, TICK );
-						}
+					if (c1 != c) {
+						Level.set( cell, c1 );
+						GameScene.updateMap( cell );
+						observe = true;
+					}
+					Char ch = Actor.findChar( cell );
+					if (ch != null
+							&& !ch.isImmune(this.getClass())
+							&& (off[cell] > 1)) {
+						Buff.prolong( ch, Roots.class, TICK );
 					}
 				}
 			}
-			Dungeon.observe();
-		}
+		});
 	}
-	
+
 	@Override
 	public void use( BlobEmitter emitter ) {
 		super.use( emitter );

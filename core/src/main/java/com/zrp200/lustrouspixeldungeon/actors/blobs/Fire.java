@@ -21,7 +21,6 @@
 
 package com.zrp200.lustrouspixeldungeon.actors.blobs;
 
-import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
@@ -29,71 +28,70 @@ import com.zrp200.lustrouspixeldungeon.actors.buffs.Burning;
 import com.zrp200.lustrouspixeldungeon.effects.BlobEmitter;
 import com.zrp200.lustrouspixeldungeon.effects.particles.FlameParticle;
 import com.zrp200.lustrouspixeldungeon.items.Heap;
+import com.zrp200.lustrouspixeldungeon.levels.Level;
+import com.zrp200.lustrouspixeldungeon.levels.Terrain;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.plants.Plant;
 import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
+
+import static com.zrp200.lustrouspixeldungeon.Dungeon.level;
 
 public class Fire extends Blob {
 
 	@Override
 	protected void evolve() {
+		applyToBlobArea(new EvolveCallBack() {
+			@Override
+			protected void call() {
+				Regrowth regrowth = (Regrowth) level.blobs.get(Regrowth.class);
+				int fire;
 
-		boolean[] flamable = Dungeon.level.flamable;
-		int cell;
-		int fire;
-		
-		Freezing freeze = (Freezing)Dungeon.level.blobs.get( Freezing.class );
-
-		boolean observe = false;
-
-		for (int i = area.left-1; i <= area.right; i++) {
-			for (int j = area.top-1; j <= area.bottom; j++) {
-				cell = i + j*Dungeon.level.width();
-				if (cur[cell] > 0) {
-					
-					if (freeze != null && freeze.volume > 0 && freeze.cur[cell] > 0){
+				final Freezing freeze = (Freezing) level.blobs.get( Freezing.class );
+				boolean cellFlamable = level.flamable[cell] || volumeAt(cell, Regrowth.class) > 0;
+				if (cur[cell] > 0) { // tile is already on fire; do fire things
+					if(cellFlamable) clear(cell, 1); // these things shouldn't even be on fire.
+					if (volumeAt(cell, Freezing.class) > 0){
 						freeze.clear(cell);
 						off[cell] = cur[cell] = 0;
-						continue;
+						return;
 					}
-
 					burn( cell );
-
 					fire = cur[cell] - 1;
-					if (fire <= 0 && flamable[cell]) {
 
-						Dungeon.level.destroy( cell );
-
+					if (fire <= 0 && level.flamable[cell]) {
+						if (volumeAt(cell,Regrowth.class) <= 0) {
+							level.destroy(cell);
+							observe = true;
+							GameScene.updateMap(cell);
+						} else { // use regrowth as fuel
+							fire = 1;
+							//noinspection ConstantConditions
+							regrowth.clear(cell,1);
+						}
+					}
+					else if(fire <= 2 && (level.map[cell] == Terrain.HIGH_GRASS || level.map[cell] == Terrain.FURROWED_GRASS)) {
+						Level.set(cell,Terrain.GRASS);
 						observe = true;
-						GameScene.updateMap( cell );
+						GameScene.updateMap(cell);
 
 					}
-
-				} else if (freeze == null || freeze.volume <= 0 || freeze.cur[cell] <= 0) {
-					Regrowth regrowth = (Regrowth) Dungeon.level.blobs.get(Regrowth.class);
-					if ((flamable[cell] || regrowth != null && regrowth.cur[cell] > 0)
-							&& (cur[cell-1] > 0
+				} else if (volumeAt(cell,Freezing.class) <= 0) { // see if we ignite the cell
+					if (cellFlamable
+							&& (cell > 0 && cur[cell-1] > 0
 							|| cur[cell+1] > 0
-							|| cur[cell-Dungeon.level.width()] > 0
-							|| cur[cell+Dungeon.level.width()] > 0)) {
+							|| cur[cell- level.width()] > 0
+							|| cur[cell+ level.width()] > 0)) { // ignition
 						fire = 4;
-						burn( cell );
-						area.union(i, j);
+						burn(cell);
+						area.union(x, y);
 					} else {
 						fire = 0;
 					}
-
-				} else {
-					fire = 0;
 				}
-
+				else fire = 0;
 				volume += (off[cell] = fire);
 			}
-		}
-
-		if (observe) {
-			Dungeon.observe();
-		}
+		});
 	}
 	
 	public static void burn( int pos ) {
@@ -102,12 +100,12 @@ public class Fire extends Blob {
 			Buff.affect( ch, Burning.class ).reignite();
 		}
 		
-		Heap heap = Dungeon.level.heaps.get( pos );
+		Heap heap = level.heaps.get( pos );
 		if (heap != null) {
 			heap.burn();
 		}
 
-		Plant plant = Dungeon.level.plants.get( pos );
+		Plant plant = level.plants.get( pos );
 		if (plant != null){
 			plant.wither();
 		}

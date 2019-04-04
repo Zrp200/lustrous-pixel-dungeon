@@ -22,6 +22,7 @@
 package com.zrp200.lustrouspixeldungeon.actors.blobs;
 
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Point;
 import com.watabou.utils.Rect;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
@@ -29,6 +30,8 @@ import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.effects.BlobEmitter;
 import com.zrp200.lustrouspixeldungeon.levels.Level;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
+
+import static com.zrp200.lustrouspixeldungeon.Dungeon.level;
 
 public class Blob extends Actor {
 
@@ -56,13 +59,13 @@ public class Blob extends Actor {
 		if (volume > 0) {
 		
 			int start;
-			for (start=0; start < Dungeon.level.length(); start++) {
+			for (start=0; start < level.length(); start++) {
 				if (cur[start] > 0) {
 					break;
 				}
 			}
 			int end;
-			for (end=Dungeon.level.length()-1; end > start; end--) {
+			for (end= level.length()-1; end > start; end--) {
 				if (cur[end] > 0) {
 					break;
 				}
@@ -129,7 +132,7 @@ public class Blob extends Actor {
 	public void setupArea(){
 		for (int cell=0; cell < cur.length; cell++) {
 			if (cur[cell] != 0){
-				area.union(cell%Dungeon.level.width(), cell/Dungeon.level.width());
+				area.union(cell% level.width(), cell/ level.width());
 			}
 		}
 	}
@@ -139,55 +142,79 @@ public class Blob extends Actor {
 	}
 	
 	protected void evolve() {
-		
-		boolean[] blocking = Dungeon.level.solid;
-		int cell;
-		for (int i=area.top-1; i <= area.bottom; i++) {
-			for (int j = area.left-1; j <= area.right; j++) {
-				cell = j + i*Dungeon.level.width();
-				if (Dungeon.level.insideMap(cell)) {
-					if (!blocking[cell]) {
+		applyToBlobArea(new EvolveCallBack() {
+			@Override
+			public void call() {
+				if (!level.solid[cell]) {
+					int count = 1;
+					int sum = cur[cell];
 
-						int count = 1;
-						int sum = cur[cell];
-
-						if (j > area.left && !blocking[cell-1]) {
-							sum += cur[cell-1];
-							count++;
-						}
-						if (j < area.right && !blocking[cell+1]) {
-							sum += cur[cell+1];
-							count++;
-						}
-						if (i > area.top && !blocking[cell-Dungeon.level.width()]) {
-							sum += cur[cell-Dungeon.level.width()];
-							count++;
-						}
-						if (i < area.bottom && !blocking[cell+Dungeon.level.width()]) {
-							sum += cur[cell+Dungeon.level.width()];
-							count++;
-						}
-
-						int value = sum >= count ? (sum / count) - 1 : 0;
-						off[cell] = value;
-
-						if (value > 0){
-							if (i < area.top)
-								area.top = i;
-							else if (i >= area.bottom)
-								area.bottom = i+1;
-							if (j < area.left)
-								area.left = j;
-							else if (j >= area.right)
-								area.right = j+1;
-						}
-
-						volume += value;
-					} else {
-						off[cell] = 0;
+					if (x > area.left && !level.solid[cell-1]) {
+						sum += cur[cell-1];
+						count++;
 					}
+					if (x < area.right && !level.solid[cell+1]) {
+						sum += cur[cell+1];
+						count++;
+					}
+					if (y > area.top && !level.solid[cell- level.width()]) {
+						sum += cur[cell- level.width()];
+						count++;
+					}
+					if (y < area.bottom && !level.solid[cell+ level.width()]) {
+						sum += cur[cell+ level.width()];
+						count++;
+					}
+
+					int value = sum >= count ? (sum / count) - 1 : 0;
+					off[cell] = value;
+
+					if (value > 0){
+						if (y < area.top)
+							area.top = y;
+						else if (y >= area.bottom)
+							area.bottom = y+1;
+						if (x < area.left)
+							area.left = x;
+						else if (x >= area.right)
+							area.right = x+1;
+					}
+
+					volume += value;
+				} else {
+					off[cell] = 0;
 				}
 			}
+		});
+	}
+
+
+	protected abstract class EvolveCallBack {
+		protected int cell, x, y;
+		protected boolean observe = false;
+		protected abstract void call();
+		public final void affectCell(int x, int y) {
+			this.x = x;
+			this.y = y;
+			cell = level.pointToCell(new Point(x, y));
+			if(level.insideMap(cell)) call();
+		}
+	}
+
+	protected void applyToBlobArea(EvolveCallBack callback) {
+		boolean observe = false; // for uh, technical things
+		for(int x = area.left-1; x <= area.right; x++) {
+			for(int y = area.top-1; y <= area.bottom; y++) {
+				callback.affectCell(x,y);
+				observe = observe || callback.observe;
+			}
+		}
+		if(observe) Dungeon.observe();
+	}
+
+	protected void evolve(int x, int y) {
+		int cell = x + y* level.width();
+		if (level.insideMap(cell)) {
 		}
 	}
 
@@ -200,18 +227,23 @@ public class Blob extends Actor {
 
 		area.union(cell%level.width(), cell/level.width());
 	}
+
+	public void clear( int cell, int amount ) {
+		if (volume == 0 || amount < 0) return;
+		amount = Math.min(amount, cur[cell]);
+		cur[cell] -= amount;
+		volume -= amount;
+	}
 	
 	public void clear( int cell ) {
-		if (volume == 0) return;
-		volume -= cur[cell];
-		cur[cell] = 0;
+		clear(cell,cur[cell]);
 	}
 
 	public void fullyClear(){
 		volume = 0;
 		area.setEmpty();
-		cur = new int[Dungeon.level.length()];
-		off = new int[Dungeon.level.length()];
+		cur = new int[level.length()];
+		off = new int[level.length()];
 	}
 
 	public String tileDesc() {
@@ -220,7 +252,7 @@ public class Blob extends Actor {
 
 	
 	public static<T extends Blob> T seed( int cell, int amount, Class<T> type ) {
-		return seed(cell, amount, type, Dungeon.level);
+		return seed(cell, amount, type, level);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -244,7 +276,7 @@ public class Blob extends Actor {
 	}
 
 	public static int volumeAt( int cell, Class<? extends Blob> type){
-		Blob gas = Dungeon.level.blobs.get( type );
+		Blob gas = level.blobs.get( type );
 		if (gas == null || gas.volume == 0) {
 			return 0;
 		} else {
