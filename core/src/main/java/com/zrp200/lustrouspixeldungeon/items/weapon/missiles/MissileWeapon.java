@@ -75,8 +75,6 @@ abstract public class MissileWeapon extends Weapon {
 	
 	//used to reduce durability from the source weapon stack, rather than the one being thrown.
 	protected MissileWeapon parent;
-	
-	public int tier;
 
 	@Override
 	public int min() {
@@ -152,6 +150,7 @@ abstract public class MissileWeapon extends Weapon {
 			}
 		}
 		if( !enhanced.collect() ) enhanced.drop(Dungeon.hero.pos);
+		curUser.belongings.trim();
 		updateQuickslot();
 		return enhanced;
 	}
@@ -173,6 +172,7 @@ abstract public class MissileWeapon extends Weapon {
 				if(toEnhance.quantity == 1 && toEnhance != MissileWeapon.this) {// this lets us enchant two.
 					if(quantity == 1) {
 						toEnhance = (MissileWeapon) merge(toEnhance);
+						detachAll(curUser.belongings.backpack);
 					} else toEnhance.merge(detach(curUser.belongings.backpack));
 					toEnhance.durability = MAX_DURABILITY;
 				}
@@ -340,8 +340,8 @@ abstract public class MissileWeapon extends Weapon {
         	quantity--;
         	durability += MAX_DURABILITY;
 		}
-		updateQuickslot();
         Dungeon.hero.belongings.trim();
+        updateQuickslot();
         return this;
 	}
 	
