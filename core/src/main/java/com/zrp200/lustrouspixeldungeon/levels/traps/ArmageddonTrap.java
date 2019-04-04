@@ -16,6 +16,7 @@ import com.zrp200.lustrouspixeldungeon.actors.mobs.Statue;
 import com.zrp200.lustrouspixeldungeon.effects.Flare;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.zrp200.lustrouspixeldungeon.items.wands.CursedWand;
+import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Blazing;
 import com.zrp200.lustrouspixeldungeon.levels.Terrain;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
@@ -27,23 +28,29 @@ import java.util.HashSet;
 import static com.zrp200.lustrouspixeldungeon.Dungeon.level;
 
 public class ArmageddonTrap extends Trap {
+    {
+        color = ORANGE;
+        shape = LARGE_DOT;
+        hideable = false;
+    }
+
     @Override
     public void activate() {
-        for(int i = 0; i<7;i++) { // seven mobs
+        for(int i = 0; i<7;i++) { // seven mobs... one for each of the seven hells
             Mob mob = level.createMob();
             if(mob == null) break;
             level.mobs.add(mob);
             mob.pos = level.randomRespawnCell();
             GameScene.add(mob, 2);
         }
-        HashSet<Char> chars = new HashSet<Char>(Dungeon.level.mobs);
+        HashSet<Char> chars = new HashSet<Char>(level.mobs);
         chars.add(Dungeon.hero);
 
+        // place all characters on a flammable tile...
         for(Char ch : chars) {
-            if(ch instanceof Statue || ch.properties().contains(Char.Property.IMMOVABLE)) {
+            if(ch instanceof Statue || ch.properties().contains(Char.Property.IMMOVABLE))
                 continue;
-            }
-            int tries = 0;
+            int tries = 0, heroTries=0;
             int respawn;
             boolean illegal;
             teleport:
@@ -55,31 +62,47 @@ public class ArmageddonTrap extends Trap {
                         illegal = true;
                         continue teleport;
                     }
+                    if(ch instanceof Hero && !Terrain.fertile(respawn+dir)&& heroTries++ < 100) {
+                        illegal = true;
+                        continue teleport;
+                    }
                 }
-            } while(illegal || (!Terrain.fertile(respawn) && (tries++ < 150)));
+            } while(illegal || !Terrain.fertile(respawn) && tries++ < 150);
             ScrollOfTeleportation.appear(ch,respawn,true);
         }
-        for (int i = 0; i < Dungeon.level.length(); i++){
-            GameScene.add( Blob.seed(i, 15, Regrowth.class));
-        }
-        byte fire = 0;
-        int seed;
+
+        // flood the dungeon floor with grass...
+        for (int i = 0; i < level.length(); i++)
+            GameScene.add( Blob.seed(i, 24, Regrowth.class));
+        level.blobs.get(Regrowth.class).act();
+
+        // light 'em up!
+        int fire = 0, seed;
         arson:
         do {
             seed = level.randomDestination();
-            for(int dir : PathFinder.NEIGHBOURS9) {
-                if(Actor.findChar(seed+dir) != null) continue arson;
-            }
-            GameScene.add(Blob.seed(seed, 10, Fire.class));
+            PathFinder.buildDistanceMap( seed, BArray.not( Dungeon.level.solid, null ), 2 );
+            for (int i = 0; i < PathFinder.distance.length; i++)
+                if (PathFinder.distance[i] < Integer.MAX_VALUE
+                        && Actor.findChar(i) instanceof Hero) {
+                    continue arson;
+                }
+            GameScene.add(Blob.seed(seed, 4, Fire.class));
             fire++;
-        } while (fire < 3 || Random.Int(6) != 0);
-        BArray.setFalse(Dungeon.level.visited);
-        BArray.setFalse(Dungeon.level.mapped);
+        } while (fire < 3 || Random.Int(3) != 0);
+
+        // you smell burning...
         GLog.w(Messages.get(CursedWand.class, "fire"));
-        level.blobs.get(Regrowth.class).act();
+        Sample.INSTANCE.play(Assets.SND_BURNING);
+
+        // acts like a warping trap just for visual effect.
+        BArray.setFalse(level.visited);
+        BArray.setFalse(level.mapped);
         GameScene.updateFog();
         Dungeon.observe();
-        new Flare(8, 32).color(0xFFFF66, true).show(Dungeon.hero.sprite, 1f);
-        Sample.INSTANCE.play(Assets.SND_TELEPORT);
+
+        GameScene.flash(new Blazing().glowing().color);
+        new Flare(8, 32).color(0xFFFF66, true).show(Dungeon.hero.sprite, 1f); // external vfx
+        Sample.INSTANCE.play(Assets.SND_TELEPORT); // sound effect
     }
 }

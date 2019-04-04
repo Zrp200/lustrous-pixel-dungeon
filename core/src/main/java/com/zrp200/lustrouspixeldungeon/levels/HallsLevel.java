@@ -32,7 +32,7 @@ import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.items.Torch;
 import com.zrp200.lustrouspixeldungeon.levels.painters.HallsPainter;
 import com.zrp200.lustrouspixeldungeon.levels.painters.Painter;
-import com.zrp200.lustrouspixeldungeon.levels.traps.BlazingTrap;
+import com.zrp200.lustrouspixeldungeon.levels.traps.ArmageddonTrap;
 import com.zrp200.lustrouspixeldungeon.levels.traps.BlizzardTrap;
 import com.zrp200.lustrouspixeldungeon.levels.traps.CorrosionTrap;
 import com.zrp200.lustrouspixeldungeon.levels.traps.CursingTrap;
@@ -41,7 +41,6 @@ import com.zrp200.lustrouspixeldungeon.levels.traps.DisintegrationTrap;
 import com.zrp200.lustrouspixeldungeon.levels.traps.DistortionTrap;
 import com.zrp200.lustrouspixeldungeon.levels.traps.ExplosiveTrap;
 import com.zrp200.lustrouspixeldungeon.levels.traps.FlashingTrap;
-import com.zrp200.lustrouspixeldungeon.levels.traps.FrostTrap;
 import com.zrp200.lustrouspixeldungeon.levels.traps.GrimTrap;
 import com.zrp200.lustrouspixeldungeon.levels.traps.GuardianTrap;
 import com.zrp200.lustrouspixeldungeon.levels.traps.InfernalTrap;
@@ -102,18 +101,22 @@ public class HallsLevel extends RegularLevel {
 	
 	@Override
 	protected Class<?>[] trapClasses() {
-		return new Class[]{ BlizzardTrap.class, StormTrap.class, CorrosionTrap.class, InfernalTrap.class, DisintegrationTrap.class,
+		return new Class[]{
+				BlizzardTrap.class, StormTrap.class, CorrosionTrap.class, InfernalTrap.class, DisintegrationTrap.class,
 				ExplosiveTrap.class, RockfallTrap.class, FlashingTrap.class, GuardianTrap.class, WeakeningTrap.class,
 				SummoningTrap.class, WarpingTrap.class, CursingTrap.class, GrimTrap.class,
-				PitfallTrap.class, DisarmingTrap.class, DistortionTrap.class };
+				PitfallTrap.class, DisarmingTrap.class, DistortionTrap.class,
+				ArmageddonTrap.class};
 	}
 
 	@Override
 	protected float[] trapChances() {
-		return new float[]{ 8, 8, 8, 8, 8,
+		return new float[]{
+				8, 8, 8, 8, 8,
 				4, 4, 4, 4, 4,
 				2, 2, 2, 2,
-				1, 1, 1 };
+				1, 1, 1,
+				0.5f};
 	}
 	
 	@Override
