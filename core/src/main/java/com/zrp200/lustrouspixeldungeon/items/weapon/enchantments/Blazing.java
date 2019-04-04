@@ -31,26 +31,43 @@ import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSprite;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSprite.Glowing;
 
+import static com.zrp200.lustrouspixeldungeon.Dungeon.depth;
+
 public class Blazing extends Weapon.Enchantment {
 
 	private static ItemSprite.Glowing ORANGE = new ItemSprite.Glowing( 0xFF4400 );
 	
 	@Override
 	public int proc( Weapon weapon, Char attacker, Char defender, int damage ) {
-		// lvl 0 - 33%
-		// lvl 1 - 50%
-		// lvl 2 - 60%
-		int level = Math.max( 0, weapon.level() );
-		
-		if (Random.Int( level + 3 ) >= 2) {
-			if (defender.buff(Burning.class) != null || Dungeon.level.flamable[defender.pos]){
-				Buff.affect(defender, Burning.class).reignite();
+		// lvl 0 - 20% (10% ignite)
+		// lvl 1 - 33% (17% ignite)
+		// lvl 2 - 50% (25% ignite)
+
+		if (Random.Int( weapon.level() + 5 ) >= 4) {
+			int intensity = depth/4+1;
+			float duration, igniteChance;
+			float damageMultiplier = 2/3f;
+
+			boolean alreadyBurning = defender.buff(Burning.class) != null;
+			if(alreadyBurning) {
+				igniteChance = 1f;
+				damageMultiplier = 0.5f; // already burning, fine to rein in power slightly
+				duration = Burning.DURATION / 2; // 4 turns
+			} else if(Dungeon.level.flamable[defender.pos]) {
+				igniteChance = 2/3f;
+				duration = Burning.DURATION;
 			} else {
-				Buff.affect(defender, Burning.class).reignite(Burning.DURATION/2);
+				duration = Burning.DURATION * 0.75f;
+				igniteChance = 0.5f;
 			}
-			
-			defender.sprite.emitter().burst( FlameParticle.FACTORY, level + 1 );
-			
+
+			if(Random.Float() < igniteChance) {
+				Buff.affect(defender, Burning.class).set(duration);
+				if(!alreadyBurning) damageMultiplier = 0; // no damage for initial ignition.
+			}
+			defender.sprite.emitter().burst( FlameParticle.FACTORY, intensity);
+			int blazeDamage = (int)Math.ceil(Burning.damageRoll() * damageMultiplier);// round up
+			if(blazeDamage > 0) defender.damage(blazeDamage, this);
 		}
 
 		return damage;

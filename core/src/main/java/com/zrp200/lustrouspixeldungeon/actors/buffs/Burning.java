@@ -76,12 +76,16 @@ public class Burning extends ActiveBuff implements Hero.Doom {
 		burnIncrement = bundle.getInt( BURN );
 	}
 
+	public static int damageRoll() {
+		return Random.NormalIntRange(1, 3+Dungeon.depth/4);
+	}
+
 	@Override
 	public boolean act() {
 		
 		if (target.isAlive() && !target.isImmune(getClass())) {
 			
-			int damage = Random.NormalIntRange( 1, 3 + Dungeon.depth/4 );
+			int damage = damageRoll();
 			Buff.detach( target, Chill.class);
 
 			//FIXME doesn't work with the sad ghost
@@ -165,11 +169,7 @@ public class Burning extends ActiveBuff implements Hero.Doom {
 	}
 	
 	public void reignite() {
-		reignite(DURATION);
-	}
-
-	public void reignite( float duration ) {
-		left = duration;
+		set(DURATION);
 	}
 	
 	@Override
