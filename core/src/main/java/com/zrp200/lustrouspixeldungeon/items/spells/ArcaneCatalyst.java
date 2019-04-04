@@ -25,6 +25,7 @@ import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.items.Item;
+import com.zrp200.lustrouspixeldungeon.items.potions.AlchemicalCatalyst;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.Scroll;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfLullaby;
@@ -49,6 +50,7 @@ public class ArcaneCatalyst extends Spell {
 	
 	{
 		image = ItemSpriteSheet.SCROLL_CATALYST;
+		value = 40;
 	}
 	
 	private static HashMap<Class<? extends Scroll>, Float> scrollChances = new HashMap<>();
@@ -81,10 +83,10 @@ public class ArcaneCatalyst extends Spell {
 			LustrousPixelDungeon.reportException(e);
 		}
 	}
-	
+
 	@Override
-	public int price() {
-		return 40 * quantity;
+	public Item transmute(boolean dry) {
+		return new AlchemicalCatalyst();
 	}
 
 	public static class Recipe extends com.zrp200.lustrouspixeldungeon.items.Recipe {

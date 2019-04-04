@@ -47,14 +47,7 @@ import com.zrp200.lustrouspixeldungeon.levels.rooms.special.SpecialRoom;
 import com.zrp200.lustrouspixeldungeon.levels.rooms.standard.EntranceRoom;
 import com.zrp200.lustrouspixeldungeon.levels.rooms.standard.ExitRoom;
 import com.zrp200.lustrouspixeldungeon.levels.rooms.standard.StandardRoom;
-import com.zrp200.lustrouspixeldungeon.levels.traps.BlazingTrap;
-import com.zrp200.lustrouspixeldungeon.levels.traps.BurningTrap;
-import com.zrp200.lustrouspixeldungeon.levels.traps.ChillingTrap;
-import com.zrp200.lustrouspixeldungeon.levels.traps.DisintegrationTrap;
-import com.zrp200.lustrouspixeldungeon.levels.traps.ExplosiveTrap;
-import com.zrp200.lustrouspixeldungeon.levels.traps.FrostTrap;
-import com.zrp200.lustrouspixeldungeon.levels.traps.Trap;
-import com.zrp200.lustrouspixeldungeon.levels.traps.WornDartTrap;
+import com.zrp200.lustrouspixeldungeon.levels.traps.DartTrap;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -161,7 +154,7 @@ public abstract class RegularLevel extends Level {
 	}
 
 	protected Class<?>[] trapClasses(){
-		return new Class<?>[]{WornDartTrap.class};
+		return new Class<?>[]{DartTrap.class};
 	}
 
 	protected float[] trapChances() {

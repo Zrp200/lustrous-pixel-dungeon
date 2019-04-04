@@ -48,7 +48,7 @@ public class ReclaimTrap extends TargetedSpell {
 	protected void affectTarget(Ballistica bolt, Hero hero) {
 		Trap t = Dungeon.level.traps.get(bolt.collisionPos);
 		if (t != null && t.active){
-			if (!t.visible) t.reveal();
+			if (!t.isVisible()) t.reveal();
 			t.disarm();
 			
 			Sample.INSTANCE.play( Assets.SND_LIGHTNING );

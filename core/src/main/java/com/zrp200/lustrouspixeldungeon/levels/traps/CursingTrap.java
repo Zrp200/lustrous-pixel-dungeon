@@ -36,7 +36,6 @@ import com.zrp200.lustrouspixeldungeon.items.KindofMisc;
 import com.zrp200.lustrouspixeldungeon.items.armor.Armor;
 import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Boomerang;
-import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.utils.GLog;
 
@@ -105,7 +104,7 @@ public class CursingTrap extends Trap {
 		Collections.shuffle(priorityCurse);
 		Collections.shuffle(canCurse);
 
-		int numCurses = Random.Int(2) == 0 ? 1 : 2;
+		int numCurses = Random.Int(1,2);
 
 		for (int i = 0; i < numCurses; i++){
 			if (!priorityCurse.isEmpty()){
@@ -124,7 +123,7 @@ public class CursingTrap extends Trap {
 
 		if (item instanceof Weapon){
 			Weapon w = (Weapon) item;
-			if (w.enchantment == null){
+			if (!w.hasEnchant()){
 				w.enchantment = Weapon.Enchantment.randomCurse(); // this bypasses missile weapon mechanics
 				Weapon.updateQuickslot();
 			}

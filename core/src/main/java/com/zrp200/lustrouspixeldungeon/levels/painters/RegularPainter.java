@@ -360,7 +360,7 @@ public abstract class RegularPainter extends Painter {
 				Trap trap = trapClasses[Random.chances( trapChances )].newInstance().hide();
 				l.setTrap( trap, trapPos );
 				//some traps will not be hidden
-				l.map[trapPos] = trap.visible ? Terrain.TRAP : Terrain.SECRET_TRAP;
+				l.map[trapPos] = trap.isVisible() ? Terrain.TRAP : Terrain.SECRET_TRAP;
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}

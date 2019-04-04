@@ -32,7 +32,7 @@ public class Shielded extends Brute {
 
 	public Shielded() {
 		spriteClass = ShieldedSprite.class;
-		EXP = 9; // from being rare
+		EXP++; // from being rare
 		defenseSkill = 20;
 		armor += 2;
 

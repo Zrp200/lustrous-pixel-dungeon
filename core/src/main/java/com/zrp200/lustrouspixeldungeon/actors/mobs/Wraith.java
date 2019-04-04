@@ -21,10 +21,12 @@
 
 package com.zrp200.lustrouspixeldungeon.actors.mobs;
 
+import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.tweeners.AlphaTweener;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
+import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
@@ -100,7 +102,10 @@ public class Wraith extends Mob {
 			}
 		}
 	}
-	
+
+	public static void playSFX() {
+		Sample.INSTANCE.play( Assets.SND_CURSED );
+	}
 	public static Wraith spawnAt( int pos ) {
 		if (Dungeon.level.passable[pos] && Actor.findChar( pos ) == null) {
 			

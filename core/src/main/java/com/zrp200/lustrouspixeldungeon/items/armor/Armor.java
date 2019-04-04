@@ -49,7 +49,6 @@ import com.zrp200.lustrouspixeldungeon.items.armor.curses.Overgrowth;
 import com.zrp200.lustrouspixeldungeon.items.armor.curses.Stench;
 import com.zrp200.lustrouspixeldungeon.items.armor.curses.Volatility;
 import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.Affection;
-import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.AntiMagic;
 import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.Brimstone;
 import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.Camouflage;
 import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.Entanglement;
@@ -601,7 +600,7 @@ public class Armor extends EquipableItem {
 		};
 		
 		private static final Class<?>[] rare = new Class<?>[]{
-				Affection.class, AntiMagic.class, Thorns.class, HolyProvidence.class
+				Affection.class, Thorns.class, HolyProvidence.class
 		};
 		
 		private static final float[] typeChances = new float[]{

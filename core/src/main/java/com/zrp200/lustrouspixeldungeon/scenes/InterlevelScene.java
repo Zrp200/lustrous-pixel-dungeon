@@ -300,12 +300,11 @@ public class InterlevelScene extends PixelScene {
 				} );
 				thread = null;
 				error = null;
-			} else if (thread != null && (int)waitingTime == 10){
+			} else if (thread != null && (int)waitingTime >= 10){
 				waitingTime = 11f;
-				String s = "";
+				StringBuilder s = new StringBuilder();
 				for (StackTraceElement t : thread.getStackTrace()){
-					s += "\n";
-					s += t.toString();
+					s.append("\n").append(t.toString());
 				}
 				LustrousPixelDungeon.reportException(
 						new RuntimeException("waited more than 10 seconds on levelgen. " +

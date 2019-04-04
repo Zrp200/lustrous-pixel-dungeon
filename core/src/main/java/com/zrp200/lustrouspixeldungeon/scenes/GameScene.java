@@ -989,7 +989,7 @@ public class GameScene extends PixelScene {
 		}
 
 		Trap trap = Dungeon.level.traps.get( cell );
-		if (trap != null && trap.visible) {
+		if (trap != null && trap.isVisible()) {
 			objects.add(trap);
 			names.add(Messages.titleCase( trap.name ));
 		}

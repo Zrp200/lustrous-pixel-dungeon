@@ -27,26 +27,36 @@ import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSprite;
 
+import java.util.ArrayList;
+
 public class Unstable extends Weapon.Enchantment {
 
 	private static ItemSprite.Glowing GREY = new ItemSprite.Glowing( 0x999999 );
 
 	@SuppressWarnings("unchecked")
-	public static final Class<?extends Weapon.Enchantment>[] randomEnchants = new Class[]{
-			Blazing.class,
-			Blocking.class,
-			Blooming.class,
-			Chilling.class,
-			Elastic.class,
-			Grim.class,
+	private static final ArrayList<Class<?extends Weapon.Enchantment>> enchantList =
+			new ArrayList<Class<?extends Weapon.Enchantment>>() {
+		{
+			Class[][] enchantCategories = {common, uncommon, rare};
+			for(Class[] enchantCategory : enchantCategories)
+				for(Class enchantClass : enchantCategory)
+					add(enchantClass);
 
-			Lucky.class,
-			//precise also not included here, is manually checked in attackSkill
-			//projecting not included, no on-hit effect
-			Shocking.class,
-			Swift.class,
-			Vampiric.class
+			remove(Projecting.class); // no on-hit effect.
+			remove(Unstable.class); // obvious reasons
+		}
 	};
+
+	public static Weapon.Enchantment randomEnchantment(boolean preciseTest) {
+		//noinspection ConstantConditions
+		Class<?extends Weapon.Enchantment> enchantClass = (Class<? extends Weapon.Enchantment>) Random.oneOf(enchantList.toArray());
+		try {
+			return preciseTest || enchantClass != Precise.class ? enchantClass.newInstance() : randomEnchantment(preciseTest);
+		} catch (Exception e) {
+			LustrousPixelDungeon.reportException(e);
+			return randomEnchantment(preciseTest);
+		}
+	}
 	
 	public static boolean justRolledPrecise;
 
@@ -56,13 +66,7 @@ public class Unstable extends Weapon.Enchantment {
 			justRolledPrecise = false;
 			return damage;
 		}
-		
-		try {
-			return Random.oneOf(randomEnchants).newInstance().proc( weapon, attacker, defender, damage );
-		} catch (Exception e) {
-			LustrousPixelDungeon.reportException(e);
-			return damage;
-		}
+		return randomEnchantment(false).proc( weapon, attacker, defender, damage );
 	}
 
 	@Override

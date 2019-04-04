@@ -26,7 +26,7 @@ import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Poison;
 
-public class PoisonDartTrap extends WornDartTrap {
+public class PoisonDartTrap extends DartTrap {
 
 	{  color = GREEN; }
 

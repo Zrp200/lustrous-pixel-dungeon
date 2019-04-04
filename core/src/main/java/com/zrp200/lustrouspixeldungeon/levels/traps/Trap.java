@@ -59,8 +59,13 @@ public abstract class Trap implements Bundlable {
 
 	public int pos;
 
-	public boolean visible;
+	private boolean visible;
+	public boolean hideable = true;
 	public boolean active = true;
+
+	public boolean isVisible() {
+		return visible;
+	}
 
 	public Trap set(int pos){
 		this.pos = pos;
@@ -74,6 +79,7 @@ public abstract class Trap implements Bundlable {
 	}
 
 	public Trap hide() {
+		if(!hideable) return reveal();
 		visible = false;
 		GameScene.updateMap(pos);
 		return this;

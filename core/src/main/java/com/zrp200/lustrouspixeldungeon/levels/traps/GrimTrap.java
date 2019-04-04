@@ -30,12 +30,11 @@ import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.effects.CellEmitter;
 import com.zrp200.lustrouspixeldungeon.effects.MagicMissile;
 import com.zrp200.lustrouspixeldungeon.effects.particles.ShadowParticle;
-import com.zrp200.lustrouspixeldungeon.mechanics.Ballistica;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.tiles.DungeonTilemap;
 import com.zrp200.lustrouspixeldungeon.utils.GLog;
 
-public class GrimTrap extends Trap {
+public class GrimTrap extends AimingTrap {
 
 	{
 		color = GREY;
@@ -43,79 +42,56 @@ public class GrimTrap extends Trap {
 	}
 
 	@Override
-	public Trap hide() {
-		//cannot hide this trap
-		return reveal();
-	}
-
-	@Override
-	public void activate() {
-		Char target = Actor.findChar(pos);
-
-		//find the closest char that can be aimed at
-		if (target == null){
-			for (Char ch : Actor.chars()){
-				Ballistica bolt = new Ballistica(pos, ch.pos, Ballistica.PROJECTILE);
-				if (bolt.collisionPos == ch.pos &&
-						(target == null || Dungeon.level.trueDistance(pos, ch.pos) < Dungeon.level.trueDistance(pos, target.pos))){
-					target = ch;
-				}
-			}
-		}
-
-		if (target != null){
-			final Char finalTarget = target;
-			final GrimTrap trap = this;
-			int damage;
+	public void shoot(final Char target) {
+		final GrimTrap trap = this;
+		int damage;
 			
-			//almost kill the player
-			if (finalTarget == Dungeon.hero && ((float)finalTarget.HP/finalTarget.HT) >= 0.9f){
-				damage = finalTarget.HP-1;
+		//almost kill the player
+		if (target == Dungeon.hero && ((float)target.HP/target.HT) >= 0.9f){
+			damage = target.HP-1;
 			//kill 'em
-			} else {
-				damage = finalTarget.HP;
+		} else {
+			damage = target.HP;
+		}
+			
+		final int finalDmg = damage;
+			
+		Actor.add(new Actor() {
+			{
+				//it's a visual effect, gets priority no matter what
+				actPriority = VFX_PRIO;
 			}
-			
-			final int finalDmg = damage;
-			
-			Actor.add(new Actor() {
-				
-				{
-					//it's a visual effect, gets priority no matter what
-					actPriority = VFX_PRIO;
-				}
-				
-				@Override
-				protected boolean act() {
-					final Actor toRemove = this;
-					((MagicMissile)finalTarget.sprite.parent.recycle(MagicMissile.class)).reset(
-							MagicMissile.SHADOW,
-							DungeonTilemap.tileCenterToWorld(pos),
-							finalTarget.sprite.center(),
-							new Callback() {
+			@Override
+			protected boolean act() {
+				final Actor toRemove = this;
+				((MagicMissile)target.sprite.parent.recycle(MagicMissile.class)).reset(
+						MagicMissile.SHADOW,
+						DungeonTilemap.tileCenterToWorld(pos),
+						target.sprite.center(),
+						new Callback() {
 								@Override
-								public void call() {
-									finalTarget.damage(finalDmg, trap);
-									if (finalTarget == Dungeon.hero) {
+								public void call() { 
+									target.damage(finalDmg, trap);
+									if (target == Dungeon.hero) {
 										Sample.INSTANCE.play(Assets.SND_CURSED);
-										if (!finalTarget.isAlive()) {
+										if (!target.isAlive()) { 
 											Dungeon.fail( GrimTrap.class );
-											GLog.n( Messages.get(GrimTrap.class, "ondeath") );
-										}
+											GLog.n( Messages.get(GrimTrap.class, "ondeath") ); 
+										} 
 									} else {
-										Sample.INSTANCE.play(Assets.SND_BURNING);
+										Sample.INSTANCE.play(Assets.SND_BURNING); 
 									}
-									finalTarget.sprite.emitter().burst(ShadowParticle.UP, 10);
+									target.sprite.emitter().burst(ShadowParticle.UP, 10);
 									Actor.remove(toRemove);
-									next();
+									next(); 
 								}
 							});
-					return false;
-				}
-			});
-		} else {
-			CellEmitter.get(pos).burst(ShadowParticle.UP, 10);
-			Sample.INSTANCE.play(Assets.SND_BURNING);
-		}
+				return false; 
+			}
+		});
+	} 
+	public void noTarget() {
+		CellEmitter.get(pos).burst(ShadowParticle.UP, 10);
+		Sample.INSTANCE.play(Assets.SND_BURNING);
 	}
 }

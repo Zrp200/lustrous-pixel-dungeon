@@ -44,7 +44,7 @@ import com.zrp200.lustrouspixeldungeon.levels.traps.ShockingTrap;
 import com.zrp200.lustrouspixeldungeon.levels.traps.SummoningTrap;
 import com.zrp200.lustrouspixeldungeon.levels.traps.TeleportationTrap;
 import com.zrp200.lustrouspixeldungeon.levels.traps.ToxicTrap;
-import com.zrp200.lustrouspixeldungeon.levels.traps.WornDartTrap;
+import com.zrp200.lustrouspixeldungeon.levels.traps.DartTrap;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
 import com.zrp200.lustrouspixeldungeon.tiles.DungeonTilemap;
@@ -89,8 +89,8 @@ public class SewerLevel extends RegularLevel {
 	@Override
 	protected Class<?>[] trapClasses() {
 		return Dungeon.depth == 1 ?
-				new Class<?>[]{ WornDartTrap.class } :
-				new Class<?>[]{ ChillingTrap.class, ShockingTrap.class, ToxicTrap.class, WornDartTrap.class,
+				new Class<?>[]{ DartTrap.class } : // testing is fun
+				new Class<?>[]{ ChillingTrap.class, ShockingTrap.class, ToxicTrap.class, DartTrap.class,
 						AlarmTrap.class, OozeTrap.class,
 						ConfusionTrap.class, FlockTrap.class, SummoningTrap.class, TeleportationTrap.class };
 }

@@ -139,7 +139,7 @@ public class Boomerang extends MissileWeapon {
 			}
 			// TODO implement smooth return
 		}
-		returning = Buff.append(curUser,Returning.class).initialize(this,cell);
+		returning = Buff.append(curUser,Returning.class).set(this,cell);
 
 		parent = null;
 		rangedHit = false;
@@ -170,7 +170,7 @@ public class Boomerang extends MissileWeapon {
 		private Sprite sprite;
 		public Boomerang boomerang;
 
-		Returning initialize(Boomerang boomerang, int from) { // use this to set up stuff
+		Returning set(Boomerang boomerang, int from) { // use this to set up stuff
 			this.boomerang = boomerang;
 			Ballistica trajectory = new Ballistica(from,target.pos,Ballistica.STOP_TARGET);
 			distancePerTurn = Math.max(MIN_SPEED, trajectory.dist/TURNS_TO_RETURN);
