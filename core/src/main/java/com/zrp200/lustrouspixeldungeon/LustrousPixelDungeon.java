@@ -32,6 +32,7 @@ import com.watabou.noosa.RenderedText;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.DeviceCompat;
+import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.HolyProvidence;
 import com.zrp200.lustrouspixeldungeon.items.stones.StoneOfDisarming;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Chaotic;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Chilling;
@@ -49,24 +50,30 @@ import static com.watabou.utils.Bundle.addAlias;
 public class LustrousPixelDungeon extends Game {
 
 	public enum Version {
-		v011("v0.1.1",418),
-		v010("v0.1.0",416),
-		v001("v0.0.1",407);
+		v011("0.1.1",418),
+		v010("0.1.0",416),
+		v001("0.0.1",407);
 
-		public static final Version latest = values()[0];
-		public String name;
+		public static final Version latest = values()[0]; // the current version
+		public final String name;
 		public final int versionCode;
 		Version(String name, int code) {
-			this.name = name;
+			this.name = "v" + name;
 			this.versionCode = code;
 		}
 	}
 	
 	public LustrousPixelDungeon() {
 		super(WelcomeScene.class);
-		addAlias(Chaotic.class, "com.zrp200.lustrouspixeldungeon.items.weapon.curses.Malevolent.class" );
-        addAlias(Gloves.class, "com.zrp200.lustrouspixeldungeon.items.weapon.melee.Knuckles" );
+		addAlias(
+				Chaotic.class, "com.zrp200.lustrouspixeldungeon.items.weapon.curses.Malevolent" );
+        addAlias(
+        		Gloves.class, "com.zrp200.lustrouspixeldungeon.items.weapon.melee.Knuckles" );
 
+        addAlias(
+				HolyProvidence.class,
+				"com.zrp200.lustrouspixeldungeon.items.armor.glyphs.AntiMagic"
+		);
 		//v0.7.2
 		addAlias(
 				StoneOfDisarming.class,

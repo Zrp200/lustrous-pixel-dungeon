@@ -56,7 +56,7 @@ public class WndGame extends Window {
 			}
 		});
 
-		/*if (Dungeon.hero.isAlive()) {
+		if (Dungeon.hero.isAlive()) {
 			addButton(new RedButton("Rename Equipment") {
 				protected void onClick() {
 					WndGame.this.hide();
@@ -75,7 +75,7 @@ public class WndGame extends Window {
 					}, WndBag.Mode.CURSABLE, "Select Item");
 				}
 			});
-		}*/
+		}
 
 		// Challenges window
 		if (Dungeon.challenges > 0) {

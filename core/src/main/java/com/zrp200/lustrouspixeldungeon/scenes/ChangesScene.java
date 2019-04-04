@@ -34,7 +34,7 @@ import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.Badges;
 import com.zrp200.lustrouspixeldungeon.Chrome;
 import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
-import com.zrp200.lustrouspixeldungeon.actors.buffs.Bleeding;
+import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon.Version;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Charm;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Terror;
@@ -65,12 +65,17 @@ import com.zrp200.lustrouspixeldungeon.items.rings.RingOfFuror;
 import com.zrp200.lustrouspixeldungeon.items.rings.RingOfWealth;
 import com.zrp200.lustrouspixeldungeon.items.wands.WandOfCorruption;
 import com.zrp200.lustrouspixeldungeon.items.wands.WandOfRegrowth;
+import com.zrp200.lustrouspixeldungeon.items.wands.WandOfTransfusion;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Chaotic;
+import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Necromantic;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.WeaponCurse;
+import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Blazing;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Chilling;
+import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Dazzling;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Elastic;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Gauntlet;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Gloves;
+import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Greatsword;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Longsword;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Quarterstaff;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Shortsword;
@@ -81,10 +86,9 @@ import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.ObsidianKnife;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Shuriken;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.darts.TippedDart;
+import com.zrp200.lustrouspixeldungeon.levels.traps.ArmageddonTrap;
 import com.zrp200.lustrouspixeldungeon.levels.traps.InfernalTrap;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
-import com.zrp200.lustrouspixeldungeon.plants.Earthroot;
-import com.zrp200.lustrouspixeldungeon.plants.Starflower;
 import com.zrp200.lustrouspixeldungeon.sprites.CharSprite;
 import com.zrp200.lustrouspixeldungeon.sprites.ElementalSprite;
 import com.zrp200.lustrouspixeldungeon.sprites.GnollTricksterSprite;
@@ -97,7 +101,6 @@ import com.zrp200.lustrouspixeldungeon.sprites.ShieldedSprite;
 import com.zrp200.lustrouspixeldungeon.sprites.ShopkeeperSprite;
 import com.zrp200.lustrouspixeldungeon.sprites.StatueSprite;
 import com.zrp200.lustrouspixeldungeon.sprites.SuccubusSprite;
-import com.zrp200.lustrouspixeldungeon.sprites.TenguSprite;
 import com.zrp200.lustrouspixeldungeon.sprites.WarlockSprite;
 import com.zrp200.lustrouspixeldungeon.ui.Archs;
 import com.zrp200.lustrouspixeldungeon.ui.ExitButton;
@@ -122,12 +125,14 @@ import static com.zrp200.lustrouspixeldungeon.ui.Icons.get;
 public class ChangesScene extends PixelScene {
 
 	public enum Milestone {
-		LUST010 ("Lustrous v0.1.0",		 2,14,2019),
-		LUST001 ("Lustrous v0.0.1",		12,20,2018),
+		LUST011 (Version.v011,			 4, 4,2019),
+		LUST010 (Version.v010,		 	 2,14,2019),
+		LUST001 (Version.v001,			12,20,2018),
 		LUST000b("Lustrous v0.0.0b",	12, 6,2018),
 		LUST000a("Lustrous v0.0.0a",  	12, 4,2018),
 		LUST000 ("Lustrous v0.0.0",		12, 1,2018),
 
+		SHPD072 ("Shattered v0.7.2", 	 3,18,2019),
 		SHPD071d("Shattered v0.7.1d",	 1,18,2019),
 		SHPD071b("Shattered v0.7.1b", 	12,30,2018),
 		SHPD071 ("Shattered v0.7.1",	12,18,2018),
@@ -142,6 +147,9 @@ public class ChangesScene extends PixelScene {
 
 			this.name = name;
 			this.releaseDate = calender.getTime();
+		}
+		Milestone(Version version, int releaseMonth, int releaseDay, int releaseYear) {
+			this("Lustrous " + version.name, releaseMonth, releaseDay, releaseYear);
 		}
 	}
 
@@ -176,6 +184,164 @@ public class ChangesScene extends PixelScene {
 
 	private static final ArrayList<ChangeInfo> infos = new ArrayList<ChangeInfo>();
 
+	private void add011Changes() {
+		new ChangeInfo(Version.v011.name, true);
+		new ChangeInfo(ChangeInfo.Template.NEW_CONTENT).addButtons(
+				addDeveloperCommentary(Milestone.LUST011,null, Milestone.SHPD072),
+				new ChangeButton(new ArmageddonTrap().getImage(), "New Demon Halls Trap!",
+						"Armageddon traps now appear quite rarely in floors 22-24, " +
+								"and inflict fiery death upon all who are unfortunate enough to " +
+								"exist on the floor... and some who may not be on the floor.")
+						.appendLine("\nRelated changes:")
+						.appendList("Cursed wand's forest fire effect replaced with armageddon trap activation",
+								"Regrowth blobs are now flammable and also consumed by fire as fuel.",
+								"Fire will not destroy grass on a tile affected by regrowth blobs"),
+				new ChangeButton(new ItemSprite(new Shortsword().enchant(new Necromantic())),"New Curse: Necromantic", "Added a new curse to replace Elastic, this one should be interesting to play with:\n")
+						.appendList("All non-wraith enemies killed by a necromantic weapon will rise again as wraiths.")
+						.appendLine("\nThis means that fighting multiple enemies at a time is a lot more difficult. " +
+								"In addition, door combat is both more necessary and also penalized (especially in the cases of Warrior and Huntress), since if a wraith spawns in a door, you won't be able to use the door against them.")
+						.appendLine("\nWraith spawning, of course, has its uses..."),
+				new ChangeButton(Icons.get(Icons.NOTES),"Equipment Renaming!")
+						.appendLines("Added a weapon/wand renaming feature. " +
+								"It's extremely similar to Shattered's donation perk, with the " +
+								"additions of wand renaming and the option to remove enchant prefixes.",
+								"\nBecause it's so similar, I may remove this functionality if Evan wishes it.")
+		);
+		new ChangeInfo("from Shattered v0.7.2a",false,Window.SHPX_COLOR).addButtons(
+				new ChangeButton(new ItemSprite(ItemSpriteSheet.POTION_CATALYST, null), "Catalysts and Alchemy").appendList(
+						"Alchemical and arcane catalysts and all related alchemy recipe adjustments implemented",
+						"When a recipe asks for any item of a certain type that item no longer has to be identified.",
+						"Alchemy pages now spawn slower towards the beginning of the game, and much faster at the end.")
+						.appendLine("\nElixir of Might:").appendList(
+								"Recipe changed to: strength + catalyst + 5 energy",
+								"Health boost now scales up with level, but fades after the hero gains a few levels"),
+				new ChangeButton(new ItemSprite(ItemSpriteSheet.LONGSWORD, new ItemSprite.Glowing(0x0000FF)), "Enchantments",
+						"Mostly implemented enchant changes, making them more similar to glyphs and less about direct damage\n")
+						.appendList("Chilling buffed (stacks with itself over multiple procs more effectively, common)\n",
+								"Lucky buffed (now works like a pseudo-Ring of Wealth instead of old effect).\n",
+								"Shocking, Grim, and Vampiric nerfed.\n",
+								"Vorpal, Venomous, Eldritch, and Stunning removed.\n",
+								"Blooming, Elastic (formerly a curse), Precise, and Swift added.\n",
+								"New Curse: Polarized -- old lucky effect with 1.5x damage and no tilt.\n")
+						.appendLine("Not Implemented:")
+						.appendList("Blazing nerf - changed instead (see corresponding section)",
+								"Blocking not implemented")
+						.appendLine("\nSome battlemage effects have been adjusted to accommodate these new enchantments. " +
+								"Most of these are very minor, except staff of regrowth, which now procs blooming."),
+				new ChangeButton(new ItemSprite(ItemSpriteSheet.MAGIC_INFUSE, null), "Upgrade-Enchantment Interaction",
+						"_-_ Items now always safe up to +4, then have a growing chance until +8 where enchantment loss is guaranteed.\n\n" +
+								"_-_ Upgrades now have a set 33% chance to cleanse curses, instead of a chance which scales with level.\n\n" +
+								"Magical Infusion spell implemented:\n" +
+								"_-_ Recipe changed to: upgrade + catalyst + 4 energy.\n" +
+								"_-_ No longer applies an enchant/glyph, instead is guaranteed to preserve one while upgrading."),
+				new ChangeButton(new ItemSprite(ItemSpriteSheet.BREW_WICKED, null), "Combination Items",
+						"Implemented removal of combination brews and elixirs; the following items are no longer craftable:\n" +
+								"_-_ Wicked Brew\n" +
+								"_-_ Frigid Brew\n" +
+								"_-_ FrostFire Brew\n" +
+								"_-_ Elixir of Restoration\n" +
+								"_-_ Elixir of Vitality"),
+				new ChangeButton(new ItemSprite(ItemSpriteSheet.SEED_SWIFTTHISTLE, null), "Item Balance Adjustments",
+						"Several seeds and stones have been buffed:\n" +
+								"_-_ Player can now move without cancelling swiftthistle's effect\n" +
+								"_-_ Duration of poison from sorrowmoss increased by ~33%\n" +
+								"_-_ Strength of warden's earthroot effect increased\n" +
+								"_-_ Stone of clairvoyance no longer disarms traps, now goes through walls instead\n" +
+								"_-_ Stone of detect curse is reworked, now stone of disarming. Disarms up to 9 traps where it is thrown.\n" +
+								"_-_ Stone of aggression now forces enemies to attack a target. Duration is longer if thrown at allies.\n\n" +
+								"_-_ Scroll of teleportation now teleports the player to the entrance of secret/special rooms instead of into them\n\n" +
+								"_-_ Blessed ankhs now cure the same debuffs as a potions of healing\n\n" +
+								"Fire and toxic gas now deal damage based on dungeon depth, and not target max health. " +
+								"Several bosses have lost their resistances to these effects as a result of this change."),
+				new ChangeButton(new ItemSprite(new WandOfTransfusion()),"Items","The following items have been updated to match 0.7.2a:")
+					.appendLine("\n_Wand of Transfusion_")
+						.appendList("Shields hero when used on non-undead enemies instead of damaging",
+								"Charm duration scaling removed",
+								"Undead damage nerfed heavily")
+					.appendLine("\nRing of Wealth")
+						.appendList("Drop table now matches 0.7.2a", "1/10 chance for rare drop", "drops happen 50% more often"),
+				ChangeButton.misc(
+						"The Identification system has been adjusted to require EXP gain in addition to item uses, " +
+								"preventing exploits where an item could be used in unintended ways to rapidly ID it. ",
+						"Items should ID at about the same rate if exp is gained while using them.\n\n",
+						"Increased the max level to gain exp from gnoll brutes and cave spinners by 1.\n",
+						"Sniper's mark now lasts for 2 turns, up from 1. This should make it easier to use with slow weapons, or while slowed.\n",
+						"Meat Pie recipe cost reduced from 9 to 6, total healing reduced from 45 to 25"),
+				ChangeButton.bugfix(
+						"Tengu spawning on top of other characters",
+						"Cloak of shadows only being usable from quickslots if it has 1 charge",
+						"Various rare crash bugs",
+						"Various minor visual bugs",
+						"Grim enchant activating when an enemy is already dead",
+						"Burning destroying scrolls when the hero is immune to it",
+						"Chasms killing enemies which are already dead in some cases",
+						"Thieves not correctly interacting with quickslotted items",
+						"Screen orientation not always being set when game starts",
+						"Flying characters pushing the ground after teleporting,",
+						"Bombs rarely damaging Tengu multiple times",
+						"Thrown weapons instantly breaking in rare cases",
+						"Dwarf King summoning skeletons while frozen",
+						"Incorrect behaviour when wands recharge very quickly",
+						"Thieves rarely escaping when they are close",
+						"Beacon of returning losing set location when scroll holder is picked up",
+						"Recycle not giving an item if inventory is full",
+						"Rare cases where the game wouldn't save during alchemy")
+		);
+		new ChangeInfo(ChangeInfo.Template.BUFFS).addButtons(
+				new ChangeButton(new ItemSprite(new Longsword().enchant(new Blazing())),"Blazing")
+						.appendList(
+								"Now uncommon (was common)",
+								"Proc rate reduced to (1+L)/(5+L)",
+								"Old behavior merged with new behavior.",
+								"Still has a 50% chance to ignite, but now has 75% chance to ignite on flammable tiles.",
+								"Damage scales based on depth instead of level",
+								"Initial ignition is not accompanied by damage",
+								"Procs on a burning target do slightly reduced blazing damage, "
+										+ "but set the target's burn duration to 4 if that would extend it."),
+				new ChangeButton(new ItemSprite(new Greatsword().enchant(new Dazzling())), "Dazzling",
+						"Instead of removing dazzling, I've decided instead to double down on its mechanics. " +
+								"Dazzling was sometimes considered to be a better stunning already, " +
+								"so I think these changes should fit well.")
+						.appendList(
+								"Now rare (was uncommon), replacing stunning",
+								"Base Proc rate reduced to (1+L)/(8+L)",
+								"Color is now light yellow to properly account for the addition of Swift",
+								"Inflicts 1-(1.5+0.5L) turns of slow instead of 1-(1+0.5L) turns of cripple",
+								"Base blind duration is now 1-2 (up from 1-1), scaling unchanged"),
+				ChangeButton.misc(
+						"All upgradeable items spawned in floors 22-24 now get a free upgrade.",
+						"Blooming now applies a brief root if grass was created at the target's location.",
+						"Swift works with wands now!",
+						"Precise is now a common enchant (was uncommon in 0.72), replacing blazing in common",
+						"Lucky is now uncommon (was rare in 0.7.2)"));
+		new ChangeInfo(ChangeInfo.Template.CHANGES).addButtons(
+				new ChangeButton(new ItemSprite(new Shortsword().enchant(new Chaotic())),"Curses")
+						.append("I've realized that there are too many weapon curses for how obscure they are.")
+						.appendLine("\nRemoved curses:").appendList("Wayward, Fragile")
+						.appendLine("\nChaotic adjustments:")
+						.appendList("Cannot proc removed curses",
+								"No longer can proc holy providence",
+								"Viscosity returned to pre-0.1.0b potency")
+						.appendLine("\n\nMagical Infusion will now also never overwrite curse enchants."),
+				new ChangeButton(new ItemSprite(new PlateArmor().image,new ItemSprite.Glowing(0x88EEFF)), "Anti-magic Removed")
+						.appendLines("To even out enchant quantity between armors and enchantments, I'm removing anti-magic. " +
+										"It's basically outclassed by ring of elements, " +
+										"has competetion from stone, and suffers from being completely useless in the early-game, " +
+										"and near-useless otherwise; thus, I see no issues with removing it.",
+								"Armors that had glyphs of anti-magic will instead have holy providence."),
+				ChangeButton.misc(
+						"Arcane Catalyst and Alchemical Catalyst can now be transmuted into each other.",
+						"Shocking's initial arc (attacker to defender) removed.",
+						"Charm vfx shouldn't play on immune enemies anymore."),
+				ChangeButton.bugfix(
+						"Infinite loop in secret larder room generation resulting in an inability to progress further in the game.",
+						"Crashes with dried rose",
+						"Enchanting a stack of two missile weapons resulting in two stacks, with one containing 0 items.",
+						"Stewed meat giving mystery meat eat effects."
+				)
+		);
+
+	}
 	private void add010Changes() throws IllegalAccessException {
 		MissileWeapon enchantedMissile;
 		do {
@@ -480,173 +646,7 @@ public class ChangesScene extends PixelScene {
 				)
 		);
 	}
-	private void add002Changes() {
-		new ChangeInfo("v0.0.2-BETA",true);
-		new ChangeInfo("BETA-4",false).addButtons(
-//		new ChangeInfo("BETA-3",false).addButtons(
-//				new ChangeButton( get(SHPX), "Implemented Shattered 0.7.1d","Will release shattered changelog later."),
-//				ChangeButton.bugfix(
-//						"Invincible Swarms","All attacks by hero ignoring evasion of enemy","Anti-magic not working properly with sad ghost"
-//				))
-		);
-		new ChangeInfo("BETA-2",false).addButtons(
-				// new content
-				new ChangeButton( new TenguSprite(), "Implemented 0.7.1c")
-					.appendList(
-							"Boss mechanics implemented... across ALL bosses.",
-							"Mage buffs implemented"),
-				new ChangeButton( new ItemSprite(ItemSpriteSheet.RING_TOPAZ), "Ring of Energy",
-						"Reduced wand charge boost slightly (+25% --> 22.5%) and added an "
-								+ "artifact charge boost (+9% base). This should make the ring a bit "
-								+ "more interesting to use."),
-				new ChangeButton( new Bleeding(), "Bleeding can now stack, albeit rather inconsistently." ),
-				ChangeButton.misc(
-						"Flies now split more logically (aka lucky interacts properly now)",
-						"Ring of Tenacity now gives both numbers.",
-						"Graves are now half as likely to give gold."),
-				ChangeButton.bugfix(
-						"Holy furor not applying its buff properly.",
-						"Pickaxe description containing !!!NO TEXT FOUND!!!",
-						"Incendiary Darts untipping when used on flammable terrain",
-						"Ankhs not working as I intended.",
-						"Dewdrops not stacking (wealth issue)",
-						"Rotberry warden effect overriding a current adrenaline surge",
-						"Visual display issue with about scene. Added an extra message for landscape.")
-		);
-		new ChangeInfo("BETA-1",false).addButtons(
-				// new content
-				new ChangeButton(get(DEPTH),"Room Generation")
-						.append("_Secret Larder Rooms:_")
-						.appendList(
-							"Contents of the room are much more random, but overall has the same amount of food.",
-							"Frozen Carpaccio and Rations can now be found in the room.")
-						.appendLine("\n_Secret Maze Room:_").appendList("Prize is now visibly uncursed")
-						.appendLine("\n_Pixel Mart:_")
-						.appendList(
-							"All upgradable are now identified",
-							"Now sells a greater variety of weapons, both thrown and melee"),
-				// buffs
-				new ChangeButton(new InfernalTrap().getImage(),"Infernal and Blizzard Traps").appendList(
-						"Blob amounts are now identical to that of the toxic gas trap."
-				),
-				// nerfs
-				new ChangeButton( new ObsidianKnife() ).appendList(
-						"now deals 6-18 @ +2/+3 damage instead of 8-16 @ +2/+4 damage\n",
-						"min-to-max surprise % is now 50%, down from 67%\n",
-						"lowered spawn rate by 43% (2/9 -> 1/8 of t4s)"
-				),
-				new ChangeButton(new ItemSprite(new Longsword().enchant(new Chilling())),"Chilling",
-						"Reverted previous changes and added new behavior:\n",
-						"_-_ A proc will extend the current chill duration by 1-2 turns or set the "
-								+ "chill duration to a random number between 2 and 3 depending on which "
-								+ "action would result in a higher stack of chill."
-				),
-				// changes
-				ChangeButton.misc(
-						"One scroll of transmutation is now guaranteed to spawn at some point.\n",
-						"Warden sorrowmoss effect now stacks\n",
-						"Sniper now always pierces armor with thrown weapons regardless of distance.\n",
-						"Changed way missile weapons' descriptions are handled, and changed their content too."
-				),
-				ChangeButton.bugfix(
-						"Position of Chests teleported by teleportation bomb revealed to player immediately",
-						"Ring of Accuracy's description is now fixed.",
-						"Curse removal revealing the existance of a curse enchant if hidden.",
-						"Weapon curses getting revealed briefly on pickup.",
-						"Skeletons' and Thieves' spawnrates being 10x the expected rates on floor 4",
-						"Crash bugs"
-				)
-		);
-		new ChangeInfo(ChangeInfo.Template.NEW_CONTENT).addButtons(
-				addDeveloperCommentary(
-						null,
-						"Well, here it is: my implementation of 0.7.1. I've implemented basically all of it, " +
-								"with exceptions of course.\n\n" +
-								"In this update, I've added two new traps to the game: the Infernal and Blizzard traps. " +
-								"They mirror the Infernal and Blizzard brews, respectively. In addition, I've added a new missile weapon as " +
-								"well as a way to untip darts via alchemy. See the changelog to see the various minor adjustments I've also made.",
-						Milestone.LUST001
-				),
-				new ChangeButton(new InfernalTrap().getImage(),
-						"Traps",
-						"Added two new traps: the Infernal and Blizzard traps!\n",
-						"_-_ Mirror Infernal and Blizzard brews, respectively",
-						"_-_ They appear starting in caves."
-				),
-				new ChangeButton(
-						new ObsidianKnife(), "Added a new t4 missile weapon!",
-						"_-_ 8-16 damage with +2/+4 scaling",
-						"_-_ When surprise attacking, deals 67% to max.",
-						"_-_ 5 durability at base."
-				),
-				new ChangeButton(
-						new ItemSprite(ItemSpriteSheet.MISSILE_HOLDER),"Darts",
-						"Darts can now be untipped via alchemy!",
-						"\nIn addition, they can once again be dropped by hero's remains."
-				)
-		);
-		new ChangeInfo(ChangeInfo.Template.BUFFS).addButtons(
-				new ChangeButton(
-						HeroSprite.avatar(HeroClass.WARRIOR,6),
-						"Gladiator",
-						"Each hit of fury now rolls twice. The higher roll will be applied to the target."
-				),
-				new ChangeButton(
-						new TenguSprite(), "Tengu",
-						"Tengu is now immune to terror. Inflicting it will cause Tengu to teleport."
-				),
-				new ChangeButton(
-						new Earthroot.Seed(),
-						"_-_ Now roots enemies for 5 turns",
-						"_-_ Wardens get both their unique effects as well as the standard Herbal Armor."
-				),
-				new ChangeButton(
-						new Starflower.Seed(),
-						"Wardens get 10 turns adrenaline instead of 30 turns of recharging."
-				)
-		);
-		new ChangeInfo(ChangeInfo.Template.CHANGES).addButtons(
-				new ChangeButton(
-						HeroSprite.avatar(HeroClass.HUNTRESS,0),
-						"Huntress",
-						"_-_ Starts with v0.7.1 studded gloves instead of cord.",
-						"_-_ Starts with v0.7.1 bow instead of darts\n",
-						"_-_ a buffed cord (+1/+1 -> +1/+2) can be obtained via transmuting a tier-1 weapon"
-				),
-				new ChangeButton(
-						new ItemSprite( new PlateArmor().inscribe( new HolyProvidence() ) ),
-						"Holy Providence",
-						"_-_ Proc Rate is now a static (2+level)/(45+level)",
-						"_-_ Successful procs will bestow one of Bless (6-10 turns), Adrenaline (6-8 turns), " +
-								"or Haste (6-12 turns) upon the wearer with equal chances for each.",
-						"_-_ Durations are uniformly distributed"
-				),
-				new ChangeButton(
-						new ToxicImbue(),
-						"_-_ Less toxic gas is produced the closer the buff is to expiring.",
-						"_-_ Characters imbued with toxicity now resist Corrosion and Caustic Ooze."),
-				ChangeButton.bugfix(
-						"Crash bugs with wraiths",
-						"Ring of Wealth failing to drop things when it should",
-						"Affection and thorns not scaling properly with upgrades"
-				),
-				new ChangeButton(
-						get(LANGS),
-						"Text Adjustments",
-						"Changed how some things are worded, including:\n",
-						"_-_ Ring of Tenacity description",
-						"_-_ Some enemy/weapon descriptions"
-				)
-		);
-		new ChangeInfo(ChangeInfo.Template.NERFS).addButtons(
-				new ChangeButton(
-						new MagicalHolster(), "Now that missile weapons can be upgraded and thus are more viable, " +
-						"the 0.0.0a holster buff is a bit over the top (especially for huntress)\n",
-						"_-_ Holster durability boost reduced (1.33 -> 1.2)\n",
-						"Speaking of, the huntress once again starts with the holster."
-				)
-		);
-	}
+
 	private void add071Changes() {
 		new ChangeInfo("Implemented v0.7.1", true,Window.SHPX_COLOR);
 		new ChangeInfo("v0.7.1c & v0.7.1d",false).addButtons(
@@ -933,7 +933,8 @@ public class ChangesScene extends PixelScene {
 		);
 	}
 	private void enumerateChanges() {
-		try {
+		try { // TODO: make this iterate over an enum?
+			add011Changes();
 			add010Changes(); // Lustrous v0.0.2
 			add071Changes(); // Shattered v0.7.1
 			add001Changes();

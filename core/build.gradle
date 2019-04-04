@@ -22,7 +22,6 @@ android {
             versionNameSuffix '-INDEV'
         }
         release {
-            debuggable true
             shrinkResources false
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
