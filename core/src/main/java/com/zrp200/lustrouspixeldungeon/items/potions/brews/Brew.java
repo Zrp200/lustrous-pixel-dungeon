@@ -22,6 +22,7 @@
 package com.zrp200.lustrouspixeldungeon.items.potions.brews;
 
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
+import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.potions.Potion;
 import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
 
@@ -56,7 +57,7 @@ public abstract class Brew extends Potion {
 	}
 
 	@Override
-	public Potion transmute(boolean dry) {
+	public Item transmute(boolean dry) {
 		return null;
 	}
 }

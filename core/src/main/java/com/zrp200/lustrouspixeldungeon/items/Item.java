@@ -188,7 +188,7 @@ public class Item implements Bundlable, Cloneable {
 	}
 
 	public synchronized Heap drop(int pos) {
-		Heap heap = Dungeon.level.drop(quantity > 0 && !curUser.belongings.contains(this) ? this : null,pos);
+		Heap heap = Dungeon.level.drop(quantity > 0 && !Dungeon.hero.belongings.contains(this) ? this : null,pos);
 		if(!heap.isEmpty()) heap.sprite.drop();
 		return heap;
 	}
@@ -506,6 +506,7 @@ public class Item implements Bundlable, Cloneable {
 	}
 	
 	public Item random() {
+		if(isUpgradable() && Dungeon.depth > 22) level(level()+1); // free upgrade for demon halls
 		return this;
 	}
 	

@@ -349,7 +349,7 @@ public class Potion extends Item {
 
 	@SuppressWarnings("ConstantConditions")
 	@Override
-	public Potion transmute(boolean dry) {
+	public Item transmute(boolean dry) {
 		try {
 			return ExoticPotion.regToExo.get( getClass() ).newInstance();
 		} catch (Exception e) {

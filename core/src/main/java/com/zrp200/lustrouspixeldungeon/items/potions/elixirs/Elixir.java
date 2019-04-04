@@ -30,7 +30,7 @@ public abstract class Elixir extends Potion {
 	public abstract void apply( Hero hero );
 
 	@Override
-	public Potion transmute(boolean dry) {
+	public Item transmute(boolean dry) {
 		return null; // unsupported
 	}
 

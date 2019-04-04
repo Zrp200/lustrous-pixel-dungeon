@@ -25,6 +25,7 @@ import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.potions.exotic.ExoticPotion;
+import com.zrp200.lustrouspixeldungeon.items.spells.ArcaneCatalyst;
 import com.zrp200.lustrouspixeldungeon.items.stones.Runestone;
 import com.zrp200.lustrouspixeldungeon.plants.Plant;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
@@ -37,7 +38,7 @@ public class AlchemicalCatalyst extends Potion {
 	
 	{
 		image = ItemSpriteSheet.POTION_CATALYST;
-		
+		value = 40;
 	}
 	
 	private static HashMap<Class<? extends Potion>, Float> potionChances = new HashMap<>();
@@ -77,15 +78,15 @@ public class AlchemicalCatalyst extends Potion {
 			LustrousPixelDungeon.reportException(e);
 		}
 	}
-	
+
+	@Override
+	public Item transmute(boolean dry) {
+		return new ArcaneCatalyst();
+	}
+
 	@Override
 	public boolean isKnown() {
 		return true;
-	}
-	
-	@Override
-	public int price() {
-		return 40 * quantity;
 	}
 	
 	public static class Recipe extends com.zrp200.lustrouspixeldungeon.items.Recipe {
