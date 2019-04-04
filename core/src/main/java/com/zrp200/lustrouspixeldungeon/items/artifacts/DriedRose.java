@@ -45,7 +45,6 @@ import com.zrp200.lustrouspixeldungeon.effects.particles.ShaftParticle;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.KindOfWeapon;
 import com.zrp200.lustrouspixeldungeon.items.armor.Armor;
-import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.AntiMagic;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfRetribution;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Precise;
@@ -519,14 +518,7 @@ public class DriedRose extends Artifact {
 		
 		@Override
 		public int damageRoll() {
-			int dmg = 0;
-			if (rose != null && rose.weapon != null){
-				dmg += rose.weapon.damageRoll(this);
-			} else {
-				dmg += Random.NormalIntRange(0, 5);
-			}
-			
-			return dmg;
+			return rose != null && rose.weapon != null ? rose.weapon.damageRoll(this) : Random.NormalInt(5);
 		}
 		
 		@Override
@@ -545,17 +537,6 @@ public class DriedRose extends Artifact {
 			} else {
 				return super.defenseProc(enemy, damage);
 			}
-		}
-		
-		@Override
-		public void damage(int dmg, Object src, boolean magic ) {
-			//TODO improve this when I have proper damage source logic
-			if (rose != null && rose.armor != null && rose.armor.hasGlyph(AntiMagic.class, this)
-					&& AntiMagic.RESISTS.contains( src.getClass() ) && magic){
-				dmg -= rose.armor.DRRoll() * AntiMagic.REDUCTION;
-			}
-			
-			super.damage(dmg, src, magic);
 		}
 		
 		@Override

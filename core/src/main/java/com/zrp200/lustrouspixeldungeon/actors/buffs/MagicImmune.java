@@ -22,7 +22,12 @@
 package com.zrp200.lustrouspixeldungeon.actors.buffs;
 
 import com.watabou.noosa.Image;
-import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.AntiMagic;
+import com.zrp200.lustrouspixeldungeon.actors.mobs.Eye;
+import com.zrp200.lustrouspixeldungeon.actors.mobs.Shaman;
+import com.zrp200.lustrouspixeldungeon.actors.mobs.Warlock;
+import com.zrp200.lustrouspixeldungeon.actors.mobs.Yog;
+import com.zrp200.lustrouspixeldungeon.levels.traps.DisintegrationTrap;
+import com.zrp200.lustrouspixeldungeon.levels.traps.GrimTrap;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.ui.BuffIndicator;
 
@@ -34,7 +39,16 @@ public class MagicImmune extends FlavourBuff {
 	}
 	
 	{
-		immunities.addAll(AntiMagic.RESISTS);
+		immunities.add( Charm.class );
+		immunities.add( Weakness.class );
+
+		immunities.add( DisintegrationTrap.class );
+		immunities.add( GrimTrap.class );
+
+		immunities.add( Shaman.class );
+		immunities.add( Warlock.class );
+		immunities.add( Eye.class );
+		immunities.add( Yog.BurningFist.class );
 	}
 	
 	//FIXME what about active buffs/debuffs?, what about rings? what about artifacts?

@@ -72,7 +72,6 @@ import com.zrp200.lustrouspixeldungeon.items.Heap.Type;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.KindOfWeapon;
 import com.zrp200.lustrouspixeldungeon.items.armor.Armor;
-import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.AntiMagic;
 import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.Stone;
 import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.Viscosity;
 import com.zrp200.lustrouspixeldungeon.items.artifacts.AlchemistsToolkit;
@@ -1018,13 +1017,8 @@ public class Hero extends Char {
 		dmg = (int)Math.ceil(dmg * RingOfTenacity.damageMultiplier( this ));
 
 		//TODO improve this when I have proper damage source logic
-		if (armor() != null)
-			if(armor().hasGlyph(AntiMagic.class, this)
-				&& AntiMagic.RESISTS.contains(src.getClass()) && magic) // it's supposed to block magic you know
-				    dmg -= armor().DRRoll()*AntiMagic.REDUCTION;
-			else if( armor().hasGlyph(Stone.class, this) && (src instanceof Char) )
+		if (armor() != null && armor().hasGlyph(Stone.class, this) && (src instanceof Char) )
 				dmg = ((Stone) (armor().glyph)).reduceDamage(this, (Char)src, magic, dmg);
-
 
 		super.damage( dmg, src, magic );
 	}
