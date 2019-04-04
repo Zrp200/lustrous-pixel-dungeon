@@ -44,8 +44,8 @@ public class Precise extends Weapon.Enchantment {
 		boolean unstable = false;
 		if (weapon.hasEnchant(Precise.class, owner)
 				|| ((unstable = weapon.hasEnchant(Unstable.class, owner)
-				&& Random.oneOf(Unstable.randomEnchants) == Precise.class) &&
-				(Random.Int(level + 8) >= 7))) {
+				&& Unstable.randomEnchantment(true) instanceof Precise)
+				&& (Random.Int(level + 8) >= 7))) {
 			if(unstable) Unstable.justRolledPrecise = true;
 			return true;
 		}

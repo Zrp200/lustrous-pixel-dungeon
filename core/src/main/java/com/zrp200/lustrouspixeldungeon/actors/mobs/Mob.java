@@ -59,6 +59,7 @@ import com.zrp200.lustrouspixeldungeon.items.rings.RingOfWealth;
 import com.zrp200.lustrouspixeldungeon.items.stones.StoneOfAggression;
 import com.zrp200.lustrouspixeldungeon.items.weapon.SpiritBow;
 import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
+import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Necromantic;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Lucky;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Flail;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.MissileWeapon;
@@ -672,28 +673,31 @@ public abstract class Mob extends Char {
 		}
 
 		if (alignment == Alignment.ENEMY) rollToDropLoot();
-		
 		if (Dungeon.hero.isAlive() && !Dungeon.level.heroFOV[pos]) {
 			GLog.i( Messages.get(this, "died") );
 		}
-
+		boolean wraithSpawn = buff(Necromantic.Proc.class) != null;
 		super.die( cause );
+		if(wraithSpawn && !(this instanceof Wraith)) {
+			Wraith.spawnAt(pos);
+			Wraith.playSFX();
+		}
 	}
 	
-	public void rollToDropLoot(){
+	public void rollToDropLoot() {
 		if (Dungeon.hero.lvl > maxLvl + 2) return;
 		if (loot instanceof Potion && Dungeon.level.pit[pos]) return;
 
 		float lootChance = this.lootChance;
-		lootChance *= RingOfWealth.dropChanceMultiplier( Dungeon.hero );
-		
+		lootChance *= RingOfWealth.dropChanceMultiplier(Dungeon.hero);
+
 		if (Random.Float() < lootChance) {
 			Item loot = createLoot();
 			if (loot != null) {
 				loot.drop(pos);
 			}
 		}
-		
+
 		//ring of wealth logic
 		if (Ring.getBonus(Dungeon.hero, RingOfWealth.Wealth.class) > 0) {
 			int rolls = 1;
@@ -702,7 +706,7 @@ public abstract class Mob extends Char {
 			ArrayList<Item> bonus = RingOfWealth.tryForBonusDrop(Dungeon.hero, rolls);
 			if (bonus != null && !bonus.isEmpty()) {
 				for (Item b : bonus) Dungeon.level.drop(b, pos).sprite.drop();
-				if (RingOfWealth.latestDropWasRare){
+				if (RingOfWealth.latestDropWasRare) {
 					new Flare(8, 48).color(0xAA00FF, true).show(sprite, 3f);
 					RingOfWealth.latestDropWasRare = false;
 				} else {
@@ -712,7 +716,7 @@ public abstract class Mob extends Char {
 		}
 
 		//lucky enchant logic
-		if (Dungeon.hero.lvl <= maxLvl && buff(Lucky.LuckProc.class) != null){
+		if (Dungeon.hero.lvl <= maxLvl && buff(Lucky.LuckProc.class) != null) {
 			new Flare(8, 24).color(0x00FF00, true).show(sprite, 3f);
 			Lucky.genLoot().drop(pos);
 		}

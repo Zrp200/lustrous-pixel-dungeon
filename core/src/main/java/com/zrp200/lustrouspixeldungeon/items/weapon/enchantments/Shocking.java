@@ -49,6 +49,7 @@ public class Shocking extends Weapon.Enchantment {
 			
 			affected.clear();
 			arcs.clear();
+
 			arc(attacker, defender, 2);
 			affected.remove(defender); //defender isn't hurt by lightning
 			for (Char ch : affected) {

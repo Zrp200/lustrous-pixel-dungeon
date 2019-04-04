@@ -39,14 +39,15 @@ public class MagicalInfusion extends InventorySpell {
 		mode = WndBag.Mode.UPGRADEABLE;
 		image = ItemSpriteSheet.MAGIC_INFUSE;
 		unique = true;
+		value = (50+40)/2f; //prices of ingredients, divided by output quantity
 	}
 	
 	@Override
 	protected void onItemSelected( Item item ) {
 
-		if (item instanceof Weapon && ((Weapon) item).enchantment != null && !((Weapon) item).hasCurseEnchant()) {
+		if (item instanceof Weapon && ((Weapon) item).enchantment != null) {
 			((Weapon) item).upgrade(true);
-		} else if (item instanceof Armor && ((Armor) item).glyph != null && !((Armor) item).hasCurseGlyph()) {
+		} else if (item instanceof Armor && ((Armor) item).glyph != null) {
 			((Armor) item).upgrade(true);
 		} else {
 			item.upgrade();
@@ -58,12 +59,6 @@ public class MagicalInfusion extends InventorySpell {
 
 		curUser.sprite.emitter().start(Speck.factory(Speck.UP), 0.2f, 3);
 		Statistics.upgradesUsed++;
-	}
-	
-	@Override
-	public int price() {
-		//prices of ingredients, divided by output quantity
-		return Math.round(quantity * ((50 + 40) / 1f));
 	}
 	
 	@SuppressWarnings("unchecked")

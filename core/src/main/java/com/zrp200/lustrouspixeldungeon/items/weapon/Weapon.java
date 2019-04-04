@@ -39,16 +39,15 @@ import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Annoying;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Chaotic;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Displacing;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Exhausting;
-import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Fragile;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Friendly;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Polarized;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Sacrificial;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Wayward;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.WeaponCurse;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Blazing;
-import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Blocking;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Blooming;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Chilling;
+import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Dazzling;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Elastic;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Grim;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Lucky;
@@ -158,7 +157,7 @@ abstract public class Weapon extends KindOfWeapon {
 	}
 
 	protected final boolean hasHiddenEnchant() {
-		return enchantment != null && !enchantKnown;
+		return hasEnchant() && !enchantKnown;
 	}
 
 	private static final int USES_TO_ID = 20;
@@ -167,8 +166,7 @@ abstract public class Weapon extends KindOfWeapon {
 
 	@Override
 	public int proc( Char attacker, Char defender, int damage ) {
-		
-		if (enchantment != null && attacker.buff(MagicImmune.class) == null) {
+		if (hasEnchant(attacker)) {
 			damage = enchantment.proc( this, attacker, defender, damage );
 		}
 
@@ -254,7 +252,6 @@ abstract public class Weapon extends KindOfWeapon {
 	}
 
 	private static final String
-			UNFAMILIRIARITY	= "unfamiliarity",
 			ENCHANTMENT		= "enchantment",
 			AUGMENT			= "augment",
 			ENCHANTMENT_KNOWN = "enchant known",
@@ -356,12 +353,12 @@ abstract public class Weapon extends KindOfWeapon {
 
 	@SuppressWarnings("unchecked")
 	public Item upgrade(boolean enchant ) {
-		if ( enchant && ( enchantment == null || enchantment instanceof WeaponCurse ) )
+		if ( enchant && !hasEnchant() )
 			enchant(Enchantment.random());
-		else if(enchantment instanceof WeaponCurse && Random.Int(3) == 0)
+		else if(hasCurseEnchant() && Random.Int(3) == 0)
 		    enchant(null);
-		else if (level() >= 4 && Random.Float(10) < Math.pow(2, level()-4))
-			enchant(null, false);
+		else if (hasGoodEnchant() && level() >= 4 && Random.Float(10) < Math.pow(2, level()-4))
+			enchant(null);
 		
 		cursed = false;
 		
@@ -391,10 +388,7 @@ abstract public class Weapon extends KindOfWeapon {
 
 		if(visiblyUpgraded() > 0) price *= visiblyUpgraded();
 
-		if (price < 1) {
-			price = 1;
-		}
-		return price;
+		return Math.max(price, 1);
 	}
 
 
@@ -440,7 +434,7 @@ abstract public class Weapon extends KindOfWeapon {
 	@SuppressWarnings("unchecked")
 	public final Weapon enchant(boolean visible) {
 
-		Class<? extends Enchantment> oldEnchantment = enchantment != null ? enchantment.getClass() : null;
+		Class<? extends Enchantment> oldEnchantment = hasEnchant() ? enchantment.getClass() : null;
 		Enchantment ench = Enchantment.random( oldEnchantment );
 		return enchant( ench, visible );
 	}
@@ -449,9 +443,17 @@ abstract public class Weapon extends KindOfWeapon {
 		return enchant(true);
 	}
 
-
-	public boolean hasEnchant(Class<?extends Enchantment> type, Char owner) {
-		return enchantment != null && enchantment.getClass() == type && owner.buff(MagicImmune.class) == null;
+	public boolean hasEnchant() { // shortcut
+		return enchantment != null;
+	}
+	public boolean hasEnchant(Char owner) { // checks if enchant is active for a character
+		return hasEnchant() && owner.buff(MagicImmune.class) == null;
+	}
+	public boolean hasEnchant(Class<?extends Enchantment> type) { // checks for a specific type of enchant
+		return hasEnchant() && enchantment.getClass() == type || type == null && !hasEnchant();
+	}
+	public boolean hasEnchant(Class<?extends Enchantment> type, Char owner) { // combines everything
+		return hasEnchant(type) && hasEnchant(owner);
 	}
 
 	@Override
@@ -459,17 +461,15 @@ abstract public class Weapon extends KindOfWeapon {
 		if(!(item instanceof Weapon)) return false;
 		Weapon w = (Weapon) item;
 		return super.isSimilar(item)
-				&& (enchantment == null
-					? w.enchantment == null
-					: w.enchantment != null && enchantment.getClass().equals(w.enchantment.getClass()) )
+				&& hasEnchant(w.hasEnchant() ? w.enchantment.getClass() : null)
 				&& augment == w.augment;
 	}
 	//these are not used to process specific enchant effects, so magic immune doesn't affect them
 	public boolean hasGoodEnchant(){
-		return enchantment != null && !enchantment.curse();
+		return hasEnchant() && !hasCurseEnchant();
 	}
 	public boolean hasCurseEnchant(){ return enchantment instanceof WeaponCurse; }
-	protected boolean isVisiblyEnchanted() { return enchantment != null && enchantKnown; }
+	protected boolean isVisiblyEnchanted() { return hasEnchant() && enchantKnown; }
 
 	@Override
 	public ItemSprite.Glowing glowing() {
@@ -477,15 +477,14 @@ abstract public class Weapon extends KindOfWeapon {
 	}
 
 	public static abstract class Enchantment implements Bundlable {
-		
-		private static final Class<?>[] common = new Class<?>[]{
-				Blazing.class, Chilling.class, Shocking.class, Blooming.class};
-		private static final Class<?>[] uncommon = new Class<?>[]{
-				Swift.class, Elastic.class, Projecting.class,
-				Unstable.class, Precise.class, Blocking.class};
 
-		private static final Class<?>[] rare = new Class<?>[]{
-				Grim.class, Vampiric.class, Lucky.class};
+		protected static final Class<?>[] common = new Class<?>[]{
+				Precise.class, Chilling.class, Shocking.class, Blooming.class};
+		protected static final Class<?>[] uncommon = new Class<?>[]{
+				Blazing.class, Elastic.class, Projecting.class,
+				Unstable.class, Lucky.class, Swift.class};
+		protected static final Class<?>[] rare = new Class<?>[]{
+				Grim.class, Vampiric.class, Dazzling.class};
 
 		private static final float[] typeChances = new float[]{
 				50, //12.5% each
@@ -495,23 +494,20 @@ abstract public class Weapon extends KindOfWeapon {
 
 		@SuppressWarnings("unchecked")
 		protected static final Class<?extends Weapon.Enchantment>[] curses = new Class[] {
-				Annoying.class,	Displacing.class, 	Exhausting.class,
-				Sacrificial.class,	Wayward.class, 	Polarized.class,
-				Friendly.class,   	Chaotic.class, 	Fragile.class
+				Annoying.class,		Displacing.class, 	Exhausting.class,
+				Sacrificial.class,	Polarized.class, 	Friendly.class,
+				Chaotic.class
 		};
 
 
 		public abstract int proc( Weapon weapon, Char attacker, Char defender, int damage );
 
 		public String name() {
-			if(this instanceof WeaponCurse)
-				return name( Messages.get(Item.class, "curse"));
-			else
-				return name( Messages.get(this, "enchant"));
+			return name( Messages.get(this, "enchant"));
 		}
 
 		public String name( String weaponName ) {
-			return Messages.get(this, "name", weaponName);
+			return Messages.get(this, "name") + " " + weaponName;
 		}
 
 		public String desc() {

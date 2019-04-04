@@ -21,33 +21,13 @@
 
 package com.zrp200.lustrouspixeldungeon.items.weapon.curses;
 
+import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
-import com.zrp200.lustrouspixeldungeon.sprites.ItemSprite;
-import com.watabou.utils.Random;
 
-public class Polarized extends Weapon.Enchantment {
-	
-	private static ItemSprite.Glowing BLACK = new ItemSprite.Glowing( 0x000000 );
-	
+public class Polarized extends WeaponCurse {
 	@Override
 	public int proc( Weapon weapon, Char attacker, Char defender, int damage ) {
-		
-		if (Random.Int(2) == 0){
-			return Math.round(1.5f*damage);
-		} else {
-			return 0;
-		}
-		
-	}
-	
-	@Override
-	public boolean curse() {
-		return true;
-	}
-	
-	@Override
-	public ItemSprite.Glowing glowing() {
-		return BLACK;
+		return Random.oneOf(Math.round(1.5f*damage),0);
 	}
 }

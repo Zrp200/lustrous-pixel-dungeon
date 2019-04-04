@@ -13,7 +13,6 @@ import com.zrp200.lustrouspixeldungeon.items.armor.curses.Multiplicity;
 import com.zrp200.lustrouspixeldungeon.items.armor.curses.Overgrowth;
 import com.zrp200.lustrouspixeldungeon.items.armor.curses.Stench;
 import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.Entanglement;
-import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.HolyProvidence;
 import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.Repulsion;
 import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.Viscosity;
 import com.zrp200.lustrouspixeldungeon.items.bombs.Bomb;
@@ -27,7 +26,7 @@ public class Chaotic extends WeaponCurse {
         return new WeaponCurse() {
             @Override
             public int proc(Weapon weapon, Char attacker, Char defender, int damage) {
-                WeaponCurse curse = Random.Int(2) == 0 ? glyphToCurse(glyph) : glyphToOffensiveCurse(glyph);
+                WeaponCurse curse = Random.oneOf( glyphToCurse(glyph), glyphToOffensiveCurse(glyph) );
                 return curse.proc(weapon,attacker,defender,damage);
             }
         };
@@ -60,7 +59,7 @@ public class Chaotic extends WeaponCurse {
         return new WeaponCurse() {
             @Override
             public int proc(Weapon weapon, Char attacker, final Char defender, int damage) {
-                final int effectiveLevel = Random.Int(7);
+                final int effectiveLevel = Random.Int(20);
                 return glyph.proc(new Armor(Dungeon.depth/5) {
                     @Override public int DRRoll() { return 0; } // weapons proc after damage reduction, not before
                     @Override public int level() { return effectiveLevel; }
@@ -81,8 +80,7 @@ public class Chaotic extends WeaponCurse {
     private ArrayList<WeaponCurse> curseList = new ArrayList() {
         {
             for (Class<? extends Weapon.Enchantment> curseClass : curses) try {
-                if (curseClass != Chaotic.class && curseClass != Displacing.class
-                        && curseClass != Fragile.class)
+                if (curseClass != Chaotic.class && curseClass != Displacing.class) // displacing handled elsewhere
                     add(curseClass.newInstance());
             } catch (Exception e) { LustrousPixelDungeon.reportException(e); }
 
@@ -90,20 +88,15 @@ public class Chaotic extends WeaponCurse {
                 @SuppressWarnings("ConstantConditions")
                 @Override
                 public int proc(Weapon weapon, Char attacker, Char defender, int damage) {
-                    WeaponCurse curse = Random.Int(2) == 0 ? new Displacing() : glyphToCurse(Displacement.class);
+                    WeaponCurse curse = Random.oneOf( new Displacing(), glyphToCurse(Displacement.class) );
                     return curse.proc(weapon,attacker,defender,damage);
                 }
             });
 
-            Class<?extends Armor.Glyph>[] armorCurses = new Class[] { // these will proc like normal
-                    Multiplicity.class
-            };
-
-            for(Class<?extends Armor.Glyph> glyphClass : armorCurses)
-                add(glyphToCurse(glyphClass));
+            add(glyphToCurse(Multiplicity.class)); // current behavior is fine.
 
             Class<?extends Armor.Glyph>[] offensiveCurses = new Class[] {
-                    Stench.class, Corrosion.class, Entanglement.class, HolyProvidence.class, Repulsion.class
+                    Stench.class, Corrosion.class, Entanglement.class, Repulsion.class
             };
 
             add(new WeaponCurse() {
@@ -119,9 +112,8 @@ public class Chaotic extends WeaponCurse {
                 add(glyphToOffensiveCurse(glyphClass));
             }
 
-            Class<? extends Armor.Glyph>[] chaoticArmorCurses = new Class[]{ // these will proc like enchantments.
-                AntiEntropy.class, Overgrowth.class, Viscosity.class,
-                Metabolism.class
+            Class<? extends Armor.Glyph>[] chaoticArmorCurses = new Class[]{ // these can proc in favor of either side.
+                AntiEntropy.class, Overgrowth.class, Viscosity.class, Metabolism.class
             };
 
             for (Class<?extends Armor.Glyph> curseClass : chaoticArmorCurses)

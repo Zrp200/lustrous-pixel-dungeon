@@ -21,8 +21,13 @@
 
 package com.zrp200.lustrouspixeldungeon.items.weapon.enchantments;
 
+import com.watabou.utils.PathFinder;
+import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
+import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.Roots;
 import com.zrp200.lustrouspixeldungeon.effects.CellEmitter;
 import com.zrp200.lustrouspixeldungeon.effects.particles.LeafParticle;
 import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
@@ -30,8 +35,6 @@ import com.zrp200.lustrouspixeldungeon.levels.Level;
 import com.zrp200.lustrouspixeldungeon.levels.Terrain;
 import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSprite;
-import com.watabou.utils.PathFinder;
-import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
@@ -57,10 +60,14 @@ public class Blooming extends Weapon.Enchantment {
 				Random.shuffle( positions );
 				for (int i : positions){
 					if (plantGrass(defender.pos + i)){
+						if((defender = Actor.findChar(defender.pos+i)) != null )
+							Buff.prolong(defender, Roots.class, 2);
 						break;
 					}
 				}
-			}
+			} else {
+			    Buff.prolong(defender, Roots.class,2);
+            }
 		
 		}
 		

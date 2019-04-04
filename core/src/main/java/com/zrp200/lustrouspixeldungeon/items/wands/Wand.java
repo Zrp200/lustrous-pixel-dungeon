@@ -47,6 +47,7 @@ import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.bags.Bag;
 import com.zrp200.lustrouspixeldungeon.items.bags.MagicalHolster;
 import com.zrp200.lustrouspixeldungeon.items.rings.RingOfEnergy;
+import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Swift;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.MagesStaff;
 import com.zrp200.lustrouspixeldungeon.mechanics.Ballistica;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
@@ -300,7 +301,13 @@ public abstract class Wand extends Item {
 		if (curUser.heroClass == HeroClass.MAGE) levelKnown = true;
 		updateQuickslot();
 
-		curUser.spendAndNext( TIME_TO_ZAP );
+		float timeToZap = TIME_TO_ZAP;
+		Swift.SwiftAttack swiftAttack = curUser.buff(Swift.SwiftAttack.class);
+		if(swiftAttack != null) {
+			swiftAttack.detach();
+			timeToZap = 0;
+		}
+		curUser.spendAndNext( timeToZap );
 	}
 	
 	@Override

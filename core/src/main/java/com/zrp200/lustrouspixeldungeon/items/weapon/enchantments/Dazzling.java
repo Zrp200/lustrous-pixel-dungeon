@@ -25,26 +25,26 @@ import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Blindness;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
-import com.zrp200.lustrouspixeldungeon.actors.buffs.Cripple;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.Slow;
 import com.zrp200.lustrouspixeldungeon.effects.Speck;
 import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSprite;
 
 public class Dazzling extends Weapon.Enchantment {
 
-	private static ItemSprite.Glowing YELLOW = new ItemSprite.Glowing( 0xFFFF00 );
+	public static final ItemSprite.Glowing COLOR = new ItemSprite.Glowing( 0xFFFF66 ); // light yellow
 
 	@Override
 	public int proc(Weapon weapon, Char attacker, Char defender, int damage) {
-		// lvl 0 - 20%
-		// lvl 1 - 33%
-		// lvl 2 - 43%
+		// lvl 0 - 12.5%
+		// lvl 1 - 22.2%
+		// lvl 2 - 30%
 		int level = Math.max( 0, weapon.level() );
 
-		if (Random.Int( level + 5 ) >= 4) {
+		if (Random.Int( level + 8 ) >= 7) {
 
-			Buff.prolong( defender, Blindness.class, Random.Float( 1f, 1f + level ) );
-			Buff.prolong( defender, Cripple.class, Random.Float( 1f, 1f + level/2f ) );
+			Buff.prolong( defender, Blindness.class, Random.Float( 1f, 2f + level ) );
+			Buff.prolong( defender, Slow.class, Random.Float( 1f, 1.5f + level/2f ) );
 			defender.sprite.emitter().burst(Speck.factory(Speck.LIGHT), 6 );
 
 		}
@@ -54,7 +54,7 @@ public class Dazzling extends Weapon.Enchantment {
 
 	@Override
 	public ItemSprite.Glowing glowing() {
-		return YELLOW;
+		return COLOR;
 	}
 
 }
