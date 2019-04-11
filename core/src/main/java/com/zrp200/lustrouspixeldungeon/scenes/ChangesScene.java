@@ -73,9 +73,11 @@ import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Blazing;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Chilling;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Dazzling;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Elastic;
+import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Vampiric;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Gauntlet;
+import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Glaive;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Gloves;
-import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Greatsword;
+import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Greataxe;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Longsword;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Quarterstaff;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Shortsword;
@@ -186,6 +188,50 @@ public class ChangesScene extends PixelScene {
 
 	private void add011Changes() {
 		new ChangeInfo(Version.v011.name, true);
+		new ChangeInfo("v0.1.1a",false).addButtons(
+		        new ChangeButton(new ItemSprite(new Glaive().enchant(new Dazzling())), "Dazzling",
+						"Adding slow turned out to be more powerful than I thought, so I'm reducing " +
+										"the potency of the enchant somewhat. I like slow, though, so " +
+										"I'm not getting rid of it.")
+						.appendList(
+								"Blindness scaling halved (now +0/+.5 instead of +0/+1)",
+								"Blindness base duration remains at 1-2 turns, however.",
+								"Slow base duration reduced to 1 - 1.33, down from 1 - 1.5",
+								"Slow scaling now +0/+.33, down from +0/+.5"),
+						new ChangeButton(new ItemSprite(new Greataxe().enchant(new Vampiric())),"Vampiric")
+								.appendList(
+										"Life steal is now normally distributed between 0 and double the previous " +
+												"rate (which varies according to your health)",
+										"This means that the range is now effective 0-20% instead of 0-10%",
+										"The rolls are retried for as many times as the weapon has levels, taking " +
+												"the highest roll each time, and then applying that roll " +
+												"to the damage to determine how much healing is granted.")
+								.appendLine("\nThese changes should make vampiric feel more powerful, especially early, " +
+										"while not really actually boosting its typical life-steal from v0.7.2 levels, at least initially."),
+				ChangeButton.misc("Blooming root reduced from 2 turns to 1.",
+						"Grim's min chance increases by .2% per level.",
+						"Chaotic can no longer roll Overgrowth.",
+						"Chaotic's max level roll for glyphs is now 12, down (again) from 20.",
+						"Chaotic now procs displacement and multiplicity twice as often, and repulsing half as often",
+						"Displacement can now proc for prismatic images, and displacing can now proc " +
+								"against the hero when used by an amok mirror image",
+						"Blazing trap duration doubled",
+						"Grass will now consistently burn for 4 turns.",
+						"Swapped positions of buttons in rename window",
+						"Went back and properly credited people for inspiring various parts of 0.1.1 " +
+								"and also changed some icons around for consistency."),
+				ChangeButton.bugfix(
+						"Major crash bugs with floor 26",
+						"Crash bugs with terror",
+						"Crash bugs with throwing potions",
+						"Transmuting an artifact into spellbook causing a crash",
+						"Necromantic being unobtainable",
+						"Dazzling enchantment being called !!!NO TEXT FOUND!!!",
+						"Incorrect terror behavior",
+						"Enchanting missile weapons resulting in you losing them",
+						"Minor fire bugs",
+						"Visual visual issues with fire elementals and buffs"));
+		new ChangeInfo("",false); // empty slot.
 		new ChangeInfo(ChangeInfo.Template.NEW_CONTENT).addButtons(
 				addDeveloperCommentary(Milestone.LUST011,null, Milestone.SHPD072),
 				new ChangeButton(new ArmageddonTrap().getImage(), "New Demon Halls Trap!",
@@ -200,13 +246,13 @@ public class ChangesScene extends PixelScene {
 						.appendList("All non-wraith enemies killed by a necromantic weapon will rise again as wraiths.")
 						.appendLine("\nThis means that fighting multiple enemies at a time is a lot more difficult. " +
 								"In addition, door combat is both more necessary and also penalized (especially in the cases of Warrior and Huntress), since if a wraith spawns in a door, you won't be able to use the door against them.")
-						.appendLine("\nWraith spawning, of course, has its uses..."),
-				new ChangeButton(Icons.get(Icons.NOTES),"Equipment Renaming!")
+						.appendLine("\nWraith spawning, of course, has its uses...")
+						.appendLine("\nIdea credit to _TrustyWay#1377_"),
+				new ChangeButton(Icons.get(Icons.BACKPACK),"Equipment Renaming!")
 						.appendLines("Added a weapon/wand renaming feature. " +
 								"It's extremely similar to Shattered's donation perk, with the " +
 								"additions of wand renaming and the option to remove enchant prefixes.",
-								"\nBecause it's so similar, I may remove this functionality if Evan wishes it.")
-		);
+								"\nBecause it's so similar, I may remove this functionality if Evan wishes it."));
 		new ChangeInfo("from Shattered v0.7.2a",false,Window.SHPX_COLOR).addButtons(
 				new ChangeButton(new ItemSprite(ItemSpriteSheet.POTION_CATALYST, null), "Catalysts and Alchemy").appendList(
 						"Alchemical and arcane catalysts and all related alchemy recipe adjustments implemented",
@@ -254,7 +300,7 @@ public class ChangesScene extends PixelScene {
 								"Fire and toxic gas now deal damage based on dungeon depth, and not target max health. " +
 								"Several bosses have lost their resistances to these effects as a result of this change."),
 				new ChangeButton(new ItemSprite(new WandOfTransfusion()),"Items","The following items have been updated to match 0.7.2a:")
-					.appendLine("\n_Wand of Transfusion_")
+					.appendLine("\nWand of Transfusion")
 						.appendList("Shields hero when used on non-undead enemies instead of damaging",
 								"Charm duration scaling removed",
 								"Undead damage nerfed heavily")
@@ -285,8 +331,7 @@ public class ChangesScene extends PixelScene {
 						"Thieves rarely escaping when they are close",
 						"Beacon of returning losing set location when scroll holder is picked up",
 						"Recycle not giving an item if inventory is full",
-						"Rare cases where the game wouldn't save during alchemy")
-		);
+						"Rare cases where the game wouldn't save during alchemy"));
 		new ChangeInfo(ChangeInfo.Template.BUFFS).addButtons(
 				new ChangeButton(new ItemSprite(new Longsword().enchant(new Blazing())),"Blazing")
 						.appendList(
@@ -298,7 +343,7 @@ public class ChangesScene extends PixelScene {
 								"Initial ignition is not accompanied by damage",
 								"Procs on a burning target do slightly reduced blazing damage, "
 										+ "but set the target's burn duration to 4 if that would extend it."),
-				new ChangeButton(new ItemSprite(new Greatsword().enchant(new Dazzling())), "Dazzling",
+				new ChangeButton(new ItemSprite(new Glaive().enchant(new Dazzling())), "Dazzling",
 						"Instead of removing dazzling, I've decided instead to double down on its mechanics. " +
 								"Dazzling was sometimes considered to be a better stunning already, " +
 								"so I think these changes should fit well.")
@@ -432,7 +477,7 @@ public class ChangesScene extends PixelScene {
 						"Mystery meat being worth more than it should.",
 						"Darts not being considered unique.",
 						"!!!NO TEXT FOUND!!! being found when inspecting blobs of regrowth."),
-                new ChangeButton(Icons.get(Icons.INFO),"Changelog omissions","Amended v0.1.0 changelog to include another new mechanic I forgot to mention and also fixed some formatting issues.")
+                new ChangeButton(Icons.get(Icons.NOTES),"Changelog omissions","Amended v0.1.0 changelog to include another new mechanic I forgot to mention and also fixed some formatting issues.")
 		);
 		new ChangeInfo(ChangeInfo.Template.NEW_CONTENT).addButtons(
 				addDeveloperCommentary(
@@ -1498,6 +1543,12 @@ public class ChangesScene extends PixelScene {
 		    for(String message : messages) appendLine(message);
 		    return this;
         }
+        public ChangeButton appendLines(int lines) {
+			for(int line=0; line<lines; line++) {
+				appendLine();
+			}
+			return this;
+		}
 		public ChangeButton append(String message) {
 		    this.message += message;
 		    return this;
