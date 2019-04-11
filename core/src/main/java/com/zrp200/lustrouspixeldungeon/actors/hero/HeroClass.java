@@ -25,23 +25,28 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.DeviceCompat;
 import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.Badges;
+import com.zrp200.lustrouspixeldungeon.Badges.Badge;
 import com.zrp200.lustrouspixeldungeon.Challenges;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
+import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
 import com.zrp200.lustrouspixeldungeon.items.BrokenSeal;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.armor.Armor;
 import com.zrp200.lustrouspixeldungeon.items.armor.ClothArmor;
 import com.zrp200.lustrouspixeldungeon.items.artifacts.CloakOfShadows;
+import com.zrp200.lustrouspixeldungeon.items.bags.Bag;
 import com.zrp200.lustrouspixeldungeon.items.bags.MagicalHolster;
 import com.zrp200.lustrouspixeldungeon.items.bags.PotionBandolier;
 import com.zrp200.lustrouspixeldungeon.items.bags.ScrollHolder;
 import com.zrp200.lustrouspixeldungeon.items.bags.VelvetPouch;
 import com.zrp200.lustrouspixeldungeon.items.food.Food;
 import com.zrp200.lustrouspixeldungeon.items.food.SmallRation;
+import com.zrp200.lustrouspixeldungeon.items.potions.Potion;
 import com.zrp200.lustrouspixeldungeon.items.potions.PotionOfHealing;
 import com.zrp200.lustrouspixeldungeon.items.potions.PotionOfInvisibility;
 import com.zrp200.lustrouspixeldungeon.items.potions.PotionOfLiquidFlame;
 import com.zrp200.lustrouspixeldungeon.items.potions.PotionOfMindVision;
+import com.zrp200.lustrouspixeldungeon.items.scrolls.Scroll;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfLullaby;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfMagicMapping;
@@ -52,6 +57,7 @@ import com.zrp200.lustrouspixeldungeon.items.weapon.SpiritBow;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Dagger;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Gloves;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.MagesStaff;
+import com.zrp200.lustrouspixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.WornShortsword;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.ThrowingKnife;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.ThrowingStone;
@@ -59,11 +65,13 @@ import com.zrp200.lustrouspixeldungeon.messages.Messages;
 
 public enum HeroClass {
 
-	WARRIOR("warrior", Assets.WARRIOR, HeroSubClass.BERSERKER, HeroSubClass.GLADIATOR ) {
+	WARRIOR("warrior", Assets.WARRIOR, new WornShortsword(), PotionBandolier.class,
+			PotionOfHealing.class, ScrollOfRage.class,
+			Badge.MASTERY_WARRIOR, HeroSubClass.BERSERKER, HeroSubClass.GLADIATOR ) {
 		@Override
 		public void initHero(Hero hero) {
 			super.initHero(hero);
-			(hero.belongings.weapon = new WornShortsword()).identify();
+
 			ThrowingStone stones = new ThrowingStone();
 			stones.identify().quantity(3).collect();
 			Dungeon.quickslot.setSlot(0, stones);
@@ -71,47 +79,27 @@ public enum HeroClass {
 			if (hero.belongings.armor != null){
 				hero.belongings.armor.affixSeal(new BrokenSeal());
 			}
-
-			new PotionBandolier().collect();
-
-			new PotionOfHealing().identify();
-			new ScrollOfRage().identify();
-		}
-
-		@Override
-		public Badges.Badge masteryBadge() {
-			return Badges.Badge.MASTERY_WARRIOR;
 		}
 	},
-	MAGE( "mage", Assets.MAGE, HeroSubClass.BATTLEMAGE, HeroSubClass.WARLOCK ) {
+	MAGE( "mage", Assets.MAGE,
+			new MagesStaff(new WandOfMagicMissile()), ScrollHolder.class,
+			PotionOfLiquidFlame.class, ScrollOfUpgrade.class,
+			Badge.MASTERY_MAGE, HeroSubClass.BATTLEMAGE, HeroSubClass.WARLOCK ) {
 		@Override
 		public void initHero(Hero hero) {
 			super.initHero(hero);
-			MagesStaff staff;
-
-			staff = new MagesStaff(new WandOfMagicMissile());
-
-			(hero.belongings.weapon = staff).identify();
+			MagesStaff staff = (MagesStaff) hero.belongings.weapon;
 			staff.activate(hero);
-
 			Dungeon.quickslot.setSlot(0, staff);
-
-			new ScrollHolder().collect();
-
-			new ScrollOfUpgrade().identify();
-			new PotionOfLiquidFlame().identify();
-		}
-
-		@Override
-		public Badges.Badge masteryBadge() {
-			return Badges.Badge.MASTERY_MAGE;
 		}
 	},
-	ROGUE( "rogue", Assets.ROGUE, HeroSubClass.ASSASSIN, HeroSubClass.FREERUNNER ) {
+	ROGUE( "rogue", Assets.ROGUE,
+			new Dagger(), VelvetPouch.class,
+			PotionOfInvisibility.class, ScrollOfMagicMapping.class,
+			Badge.MASTERY_ROGUE, HeroSubClass.ASSASSIN, HeroSubClass.FREERUNNER ) {
 		@Override
 		public void initHero(Hero hero) {
 			super.initHero(hero);
-			(hero.belongings.weapon = new Dagger()).identify();
 
 			CloakOfShadows cloak = new CloakOfShadows();
 			(hero.belongings.misc1 = cloak).identify();
@@ -122,52 +110,48 @@ public enum HeroClass {
 
 			Dungeon.quickslot.setSlot(0, cloak);
 			Dungeon.quickslot.setSlot(1, knives);
-
-			new VelvetPouch().collect();
-
-			new ScrollOfMagicMapping().identify();
-			new PotionOfInvisibility().identify();
-		}
-
-		@Override
-		public Badges.Badge masteryBadge() {
-			return Badges.Badge.MASTERY_ROGUE;
 		}
 	},
-	HUNTRESS( "huntress", Assets.HUNTRESS, HeroSubClass.SNIPER, HeroSubClass.WARDEN ) {
+	HUNTRESS( "huntress", Assets.HUNTRESS,
+			new Gloves(), MagicalHolster.class,
+			PotionOfMindVision.class, ScrollOfLullaby.class,
+			Badge.MASTERY_HUNTRESS, HeroSubClass.SNIPER, HeroSubClass.WARDEN ) {
 		@Override
 		public void initHero(Hero hero) {
 			super.initHero(hero);
-
-			(hero.belongings.weapon = new Gloves()).identify();
 			SpiritBow bow = new SpiritBow();
 			bow.identify().collect();
-
 			Dungeon.quickslot.setSlot(0, bow);
-
-			new MagicalHolster().collect();
-
-			new PotionOfMindVision().identify();
-			new ScrollOfLullaby().identify();
-		}
-
-		@Override
-		public Badges.Badge masteryBadge() {
-			return Badges.Badge.MASTERY_HUNTRESS;
 		}
 	};
 
 	private String title, spritesheet;
 	private HeroSubClass[] subClasses;
+	private MeleeWeapon startingMelee;
+	private Class<?extends Bag> bagClass;
+	private Class<?extends Potion> idPotion;
+	private Class<?extends Scroll> idScroll;
+	private Badge masteryBadge;
 
-	HeroClass( String title, String spritesheet, HeroSubClass...subClasses ) {
+	// TODO: is this really the best way to do this? I like this more than the old way, but still.
+	HeroClass(String title, String spritesheet, MeleeWeapon startingMelee, Class<?extends Bag> bagClass,
+			  Class<?extends Potion> idPotion, Class<?extends Scroll> idScroll, Badge masteryBadge,
+			  HeroSubClass...subClasses ) {
 		this.title = title;
 		this.spritesheet = spritesheet;
+		this.startingMelee = startingMelee;
+		this.bagClass = bagClass;
 		this.subClasses = subClasses;
+		this.idPotion = idPotion;
+		this.idScroll = idScroll;
+		this.masteryBadge = masteryBadge;
 	}
 
 	public void initHero( Hero hero ) {
 		hero.heroClass = this;
+
+		startingMelee.identify();
+		hero.belongings.weapon = startingMelee;
 
 		Item i = new ClothArmor().identify();
 
@@ -179,6 +163,14 @@ public enum HeroClass {
 			new SmallRation().collect();
 
 		new ScrollOfIdentify().identify();
+		try {
+			idPotion.newInstance().identify();
+			idScroll.newInstance().identify();
+
+			bagClass.newInstance().collect();
+		} catch (Exception e) {
+			LustrousPixelDungeon.reportException(e);
+		}
 	}
 
 	public String unlockMsg() {
@@ -193,15 +185,17 @@ public enum HeroClass {
 			default:
 				return true;
 			case MAGE:
-				return Badges.isUnlocked(Badges.Badge.UNLOCK_MAGE);
+				return Badges.isUnlocked(Badge.UNLOCK_MAGE);
 			case ROGUE:
-				return Badges.isUnlocked(Badges.Badge.UNLOCK_ROGUE);
+				return Badges.isUnlocked(Badge.UNLOCK_ROGUE);
 			case HUNTRESS:
-				return Badges.isUnlocked(Badges.Badge.UNLOCK_HUNTRESS);
+				return Badges.isUnlocked(Badge.UNLOCK_HUNTRESS);
 		}
 	}
 
-	public abstract Badges.Badge masteryBadge();
+	public Badge masteryBadge() {
+		return masteryBadge;
+	}
 	public String title() { return Messages.get(HeroClass.class, title); }
 	public HeroSubClass[] subClasses() { return subClasses; }
 	public String spritesheet() { return spritesheet; }
