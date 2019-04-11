@@ -139,7 +139,17 @@ public class WndTextInput extends Window {
 
 				//We haven't added the textInput yet, but we can anticipate its height at this point.
 				pos += inputHeight + MARGIN;
-
+				RedButton negativeBtn = new RedButton( negTxt ) {
+					@Override
+					protected void onClick() {
+						onSelect( false );
+						hide();
+					}
+				};
+				if (negTxt != null){
+					negativeBtn.setRect( MARGIN, pos, (width - MARGIN * 3) / 2, BUTTON_HEIGHT );
+					add( negativeBtn );
+				}
 				RedButton positiveBtn = new RedButton( posTxt ) {
 					@Override
 					protected void onClick() {
@@ -147,23 +157,8 @@ public class WndTextInput extends Window {
 						hide();
 					}
 				};
-				if (negTxt != null)
-					positiveBtn.setRect( MARGIN, pos, (width - MARGIN * 3) / 2, BUTTON_HEIGHT );
-				else
-					positiveBtn.setRect( MARGIN, pos, width - MARGIN * 2, BUTTON_HEIGHT );
+				positiveBtn.setRect( negativeBtn.right() + MARGIN, pos, (width - MARGIN * 3) / 2, BUTTON_HEIGHT );
 				add( positiveBtn );
-
-				if (negTxt != null){
-					RedButton negativeBtn = new RedButton( negTxt ) {
-						@Override
-						protected void onClick() {
-							onSelect( false );
-							hide();
-						}
-					};
-					negativeBtn.setRect( positiveBtn.right() + MARGIN, pos, (width - MARGIN * 3) / 2, BUTTON_HEIGHT );
-					add( negativeBtn );
-				}
 
 				pos += BUTTON_HEIGHT + MARGIN;
 
