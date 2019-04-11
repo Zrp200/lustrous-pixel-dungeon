@@ -56,8 +56,6 @@ abstract public class MissileWeapon extends Weapon {
 
 		value = 6;
 
-		bones = true;
-
 		defaultAction = AC_THROW;
 		usesTargeting = true;
 	}
@@ -136,11 +134,10 @@ abstract public class MissileWeapon extends Weapon {
 	}
 
 	private MissileWeapon enhance(EnhanceCallback operation) {
-		MissileWeapon enhanced = operation.toEnhance;
 		bundleRestoring = true;
 		operation.call();
 		bundleRestoring = false;
-
+		MissileWeapon enhanced = operation.toEnhance;
 		//try to put the upgraded into inventory, if it didn't already merge
 		if(enhanced == this) {
 			MissileWeapon similar = (MissileWeapon) curUser.belongings.getSimilar(this);
@@ -150,7 +147,6 @@ abstract public class MissileWeapon extends Weapon {
 			}
 		}
 		if( !enhanced.collect() ) enhanced.drop(Dungeon.hero.pos);
-		curUser.belongings.trim();
 		updateQuickslot();
 		return enhanced;
 	}

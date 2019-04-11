@@ -40,6 +40,7 @@ import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Chaotic;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Displacing;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Exhausting;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Friendly;
+import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Necromantic;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Polarized;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Sacrificial;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Wayward;
@@ -282,6 +283,8 @@ abstract public class Weapon extends KindOfWeapon {
 		enchantKnown = bundle.getBoolean(ENCHANTMENT_KNOWN);
 		usesLeftToID = bundle.getInt( USES_LEFT_TO_ID );
 		availableUsesToID = bundle.getInt( AVAILABLE_USES );
+		augment = bundle.getEnum(AUGMENT, Augment.class);
+		if(augment == null) augment = Augment.NONE;
 		
 		//pre-0.7.2 saves
 		if (bundle.contains( "unfamiliarity" )){
@@ -496,7 +499,7 @@ abstract public class Weapon extends KindOfWeapon {
 		protected static final Class<?extends Weapon.Enchantment>[] curses = new Class[] {
 				Annoying.class,		Displacing.class, 	Exhausting.class,
 				Sacrificial.class,	Polarized.class, 	Friendly.class,
-				Chaotic.class
+				Chaotic.class, 		Necromantic.class
 		};
 
 

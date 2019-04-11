@@ -212,12 +212,6 @@ public class Blob extends Actor {
 		if(observe) Dungeon.observe();
 	}
 
-	protected void evolve(int x, int y) {
-		int cell = x + y* level.width();
-		if (level.insideMap(cell)) {
-		}
-	}
-
 	public void seed( Level level, int cell, int amount ) {
 		if (cur == null) cur = new int[level.length()];
 		if (off == null) off = new int[cur.length];
@@ -236,7 +230,7 @@ public class Blob extends Actor {
 	}
 	
 	public void clear( int cell ) {
-		clear(cell,cur[cell]);
+		clear(cell, Integer.MAX_VALUE);
 	}
 
 	public void fullyClear(){

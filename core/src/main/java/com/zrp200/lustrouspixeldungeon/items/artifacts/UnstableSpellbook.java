@@ -216,14 +216,16 @@ public class UnstableSpellbook extends Artifact {
 	@Override
 	public void storeInBundle( Bundle bundle ) {
 		super.storeInBundle(bundle);
-		bundle.put( SCROLLS, scrolls.toArray(new Class[scrolls.size()]) );
+		bundle.put( SCROLLS, scrolls.toArray(new Class[0]) );
 	}
 
 	@Override
 	public void restoreFromBundle( Bundle bundle ) {
 		super.restoreFromBundle(bundle);
-		scrolls.clear();
-		Collections.addAll(scrolls, bundle.getClassArray(SCROLLS));
+		if(bundle.contains(SCROLLS)) {
+			scrolls.clear();
+			Collections.addAll(scrolls, bundle.getClassArray(SCROLLS));
+		}
 	}
 
 	public class bookRecharge extends ArtifactBuff{

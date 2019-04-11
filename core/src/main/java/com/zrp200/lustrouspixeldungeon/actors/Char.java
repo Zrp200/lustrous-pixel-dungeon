@@ -32,6 +32,8 @@ import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.Blob;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.Electricity;
+import com.zrp200.lustrouspixeldungeon.actors.blobs.Fire;
+import com.zrp200.lustrouspixeldungeon.actors.blobs.Inferno;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.ToxicGas;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Adrenaline;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Amok;
@@ -555,6 +557,7 @@ public abstract class Char extends Actor {
 	//returns percent effectiveness after resistances
 	//TODO currently resistances reduce effectiveness by a static 50%, and do not stack.
 	public float resist( Class effect ){
+		if(isImmune(effect)) return 0;
 		HashSet<Class> resists = new HashSet<>(resistances);
 		for (Property p : properties()){
 			resists.addAll(p.resistances());
@@ -613,7 +616,7 @@ public abstract class Char extends Actor {
 				new HashSet<Class>( Arrays.asList(Blob.class) )),
 		FIERY (
 				new HashSet<Class>( Arrays.asList( WandOfFireblast.class, Blazing.class, Shaman.Firebolt.class) ),
-				new HashSet<Class>( Arrays.asList( Burning.class) )
+				new HashSet<Class>( Arrays.asList( Burning.class, Fire.class, Inferno.class) )
 		),
 		ACIDIC ( new HashSet<Class>( Arrays.asList(Corrosion.class, Poison.class)),
 				new HashSet<Class>( Arrays.asList(Ooze.class))),
