@@ -50,37 +50,32 @@ public class Blooming extends Weapon.Enchantment {
 		// lvl 2 - 60%
 		int level = Math.max( 0, weapon.level() );
 		
-		if (Random.Int( level + 3 ) >= 2) {
-			
-			if (!plantGrass(defender.pos)){
-				ArrayList<Integer> positions = new ArrayList<>();
-				for (int i : PathFinder.NEIGHBOURS8){
-					positions.add(i);
+		if (Random.Int( level + 3 ) >= 2 && !plantGrass(defender.pos)) {
+			ArrayList<Integer> positions = new ArrayList<>();
+			for (int i : PathFinder.NEIGHBOURS8) {
+				positions.add(i);
+			}
+			Random.shuffle(positions);
+			for (int i : positions) {
+				if (plantGrass(defender.pos + i)) {
+					if ((defender = Actor.findChar(defender.pos + i)) != null)
+						Buff.prolong(defender, Roots.class, 2);
+					break;
 				}
-				Random.shuffle( positions );
-				for (int i : positions){
-					if (plantGrass(defender.pos + i)){
-						if((defender = Actor.findChar(defender.pos+i)) != null )
-							Buff.prolong(defender, Roots.class, 2);
-						break;
-					}
-				}
-			} else {
-			    Buff.prolong(defender, Roots.class,2);
-            }
-		
+			}
 		}
-		
 		return damage;
 	}
 	
 	private boolean plantGrass(int cell){
 		int c = Dungeon.level.map[cell];
 		if ( c == Terrain.EMPTY || c == Terrain.EMPTY_DECO
-				|| c == Terrain.EMBERS || c == Terrain.GRASS){
+				|| c == Terrain.EMBERS || c == Terrain.GRASS || c == Terrain.FURROWED_GRASS){
 			Level.set(cell, Terrain.HIGH_GRASS);
 			GameScene.updateMap(cell);
 			CellEmitter.get( cell ).burst( LeafParticle.LEVEL_SPECIFIC, 4 );
+			Char occupant = Actor.findChar(cell);
+			if(occupant != null) Buff.prolong(occupant, Roots.class, 1f);
 			return true;
 		}
 		return false;

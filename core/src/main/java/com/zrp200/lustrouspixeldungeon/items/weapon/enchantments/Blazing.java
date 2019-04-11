@@ -62,11 +62,11 @@ public class Blazing extends Weapon.Enchantment {
 			}
 
 			if(Random.Float() < igniteChance) {
-				Buff.affect(defender, Burning.class).set(duration);
+				Buff.prolong(defender, Burning.class, duration);
 				if(!alreadyBurning) damageMultiplier = 0; // no damage for initial ignition.
 			}
 			defender.sprite.emitter().burst( FlameParticle.FACTORY, intensity);
-			int blazeDamage = (int)Math.ceil(Burning.damageRoll() * damageMultiplier);// round up
+			int blazeDamage = (int)Math.ceil(Burning.damageRoll() * damageMultiplier); // round up
 			if(blazeDamage > 0) defender.damage(blazeDamage, this);
 		}
 

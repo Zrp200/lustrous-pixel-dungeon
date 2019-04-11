@@ -42,11 +42,9 @@ public class Dazzling extends Weapon.Enchantment {
 		int level = Math.max( 0, weapon.level() );
 
 		if (Random.Int( level + 8 ) >= 7) {
-
-			Buff.prolong( defender, Blindness.class, Random.Float( 1f, 2f + level ) );
-			Buff.prolong( defender, Slow.class, Random.Float( 1f, 1.5f + level/2f ) );
+			Buff.prolong( defender, Blindness.class, 	Random.Float( 1f, 1/2f*(4+level) ) ); // 1-2 turns, with +0/+.5 scaling
+			Buff.prolong( defender, Slow.class, 		Random.Float( 1f, 1/3f*(4+level) ) ); // 1-1.33 turns, with +0/+.33 scaling
 			defender.sprite.emitter().burst(Speck.factory(Speck.LIGHT), 6 );
-
 		}
 
 		return damage;

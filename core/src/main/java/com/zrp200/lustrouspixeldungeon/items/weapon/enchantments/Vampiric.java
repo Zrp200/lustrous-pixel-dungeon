@@ -21,6 +21,7 @@
 
 package com.zrp200.lustrouspixeldungeon.items.weapon.enchantments;
 
+import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.effects.Speck;
 import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
@@ -35,18 +36,20 @@ public class Vampiric extends Weapon.Enchantment {
 	@Override
 	public int proc( Weapon weapon, Char attacker, Char defender, int damage ) {
 		
-		//heals for 0-10% of damage dealt, based on missing HP
-		float missingPercent = (attacker.HT - attacker.HP) / (float)attacker.HT;
-		float healPercent = missingPercent * 0.1f;
-		int healAmt = Math.round(healPercent * damage);
-		healAmt = Math.min( healAmt, attacker.HT - attacker.HP );
+		//heals for 0-20% of damage dealt, based on missing HP, ultimately normally distributed
+		float 	missingPercent = (attacker.HT - attacker.HP) / (float)attacker.HT,
+				maxHeal = missingPercent * .1f * 2,
+				healPercent = 0;
+		int tries = weapon.level();
+		do {
+			healPercent = Math.max(healPercent, Random.NormalFloat(maxHeal));
+		} while(tries-- > 0);
+		int healAmt = Math.min( Math.round(healPercent*damage), attacker.HT - attacker.HP );
 		
 		if (healAmt > 0 && attacker.isAlive()) {
-		
 			attacker.HP += healAmt;
 			attacker.sprite.emitter().start( Speck.factory( Speck.HEALING ), 0.4f, 1 );
 			attacker.sprite.showStatus( CharSprite.POSITIVE, Integer.toString( healAmt ) );
-			
 		}
 
 		return damage;
