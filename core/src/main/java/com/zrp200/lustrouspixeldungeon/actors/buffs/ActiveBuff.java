@@ -18,27 +18,27 @@ public class ActiveBuff extends Buff { // this uses an internal counter so it ca
         return left;
     }
 
-    public void set( float duration ) {
-        duration *= target.resist(getClass());
+    void set( float duration ) {
         left = Math.max(left, duration);
         initial = Math.max(initial, left);
     }
 
-    public void extend( float duration ) {
-        duration *= target.resist(getClass());
+    void extend( float duration ) {
         left += duration;
         initial = Math.max(initial, left);
     }
 
     public void afflict(float duration) { // sort of a mix between #set and #extend, used by negative buffs
-        extend( Random.Float(duration*.667f) );
-        set( duration );
+        if(target == null) return;
+        float MAX_EXTEND = 2/3f;
+        Buff.affect(target, getClass(), Random.Float(duration*MAX_EXTEND));
+        Buff.prolong(target, getClass(), duration);
     }
 
     @Override
     public boolean act() {
         spend(TICK);
-        if ( (left -= turnReduction) <= 0 ){
+        if ( !target.isAlive() || (left -= turnReduction) <= 0 ){
             detach();
         } else if (left < startGrey){
             BuffIndicator.refreshHero();

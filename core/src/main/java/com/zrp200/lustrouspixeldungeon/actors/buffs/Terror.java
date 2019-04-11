@@ -21,11 +21,11 @@
 
 package com.zrp200.lustrouspixeldungeon.actors.buffs;
 
-import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.Mob;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
+import com.zrp200.lustrouspixeldungeon.sprites.CharSprite;
 import com.zrp200.lustrouspixeldungeon.ui.BuffIndicator;
 
 public class Terror extends ActiveBuff {
@@ -48,9 +48,16 @@ public class Terror extends ActiveBuff {
 	}
 
 	@Override
-	public void detach() {
-		target.state = target.HUNTING;
-		super.detach();
+	protected void onRemove() {
+		onRemove(target);
+	}
+
+	public static void onRemove(Mob target) { // for um, fleeing stuff.
+		if(target.isAlive()) {
+			if (target.sprite != null)
+				target.sprite.showStatus(CharSprite.NEGATIVE, Messages.get(Mob.class, "rage"));
+			target.state = target.HUNTING;
+		}
 	}
 
 	@Override

@@ -169,7 +169,7 @@ public class Burning extends ActiveBuff implements Hero.Doom {
 	}
 	
 	public void reignite() {
-		set(DURATION);
+		prolong(target,getClass(),DURATION);
 	}
 	
 	@Override

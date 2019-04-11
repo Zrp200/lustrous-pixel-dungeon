@@ -130,8 +130,8 @@ public class Swarm extends Mob {
 		for(Buff buff : buffs(Buff.class)) Buff.affect(clone,buff.getClass());
 		HashSet<ActiveBuff> activeBuffs = buffs(ActiveBuff.class);
 		for (ActiveBuff activeBuff : activeBuffs) { // side benefit of defining this as a class
-			Buff.affect(clone, activeBuff.getClass()).set(activeBuff.getLeft() / 2);
-			activeBuff.set(activeBuff.getLeft() / 2);
+			Buff.prolong(clone, activeBuff.getClass(),activeBuff.getLeft() / 2);
+			Buff.prolong(this, activeBuff.getClass(),activeBuff.getLeft() / 2);
 		}
 		if ( buff( Burning.class  ) != null) Buff.affect(clone, Burning.class).reignite();
 		if ( buff(Corruption.class) != null) Buff.affect(clone, Corruption.class);

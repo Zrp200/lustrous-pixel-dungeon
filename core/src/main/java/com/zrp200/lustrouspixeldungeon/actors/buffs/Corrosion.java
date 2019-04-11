@@ -49,8 +49,7 @@ public class Corrosion extends ActiveBuff {
 		damage = bundle.getFloat( DAMAGE );
 	}
 
-	public void set(float duration, int damage) {
-		set(duration);
+	public void setDamage(int damage) {
 		if (this.damage < damage) this.damage = damage;
 	}
 	
@@ -76,18 +75,14 @@ public class Corrosion extends ActiveBuff {
 
 	@Override
 	public boolean act() {
-		if (target.isAlive()) {
-			target.damage((int)damage, this);
-			if (damage < (Dungeon.depth/2)+2) {
+		if(target.isAlive()) {
+			target.damage((int) damage, this);
+			if (damage < (Dungeon.depth / 2) + 2) {
 				damage++;
 			} else {
 				damage += 0.5f;
 			}
-			super.act();
-		} else {
-			detach();
 		}
-
-		return true;
+		return super.act();
 	}
 }

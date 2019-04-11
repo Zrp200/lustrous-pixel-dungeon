@@ -35,7 +35,6 @@ import com.zrp200.lustrouspixeldungeon.items.Gold;
 import com.zrp200.lustrouspixeldungeon.items.Honeypot;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
-import com.zrp200.lustrouspixeldungeon.sprites.CharSprite;
 import com.zrp200.lustrouspixeldungeon.sprites.ThiefSprite;
 import com.zrp200.lustrouspixeldungeon.utils.GLog;
 
@@ -188,41 +187,36 @@ public class Thief extends Mob {
 	private class Fleeing extends Mob.Fleeing {
 		@Override
 		protected void nowhereToRun() {
-			if (buff( Terror.class ) == null && buff( Corruption.class ) == null) {
-				if ( enemySeen() ) {
-					sprite.showStatus(CharSprite.NEGATIVE, Messages.get(Mob.class, "rage"));
-					state = HUNTING;
-				} else if (item != null
-						&& !Dungeon.level.heroFOV[pos]
-						&& Dungeon.level.distance(Dungeon.hero.pos, pos) < 6) {
-
-					int count = 32;
-					int newPos;
-					do {
-						newPos = Dungeon.level.randomRespawnCell();
-						if (count-- <= 0) {
-							break;
-						}
-					} while (newPos == -1 || Dungeon.level.heroFOV[newPos] || Dungeon.level.distance(newPos, pos) < (count/3));
-
-					if (newPos != -1) {
-
-						if (Dungeon.level.heroFOV[pos]) CellEmitter.get(pos).burst(Speck.factory(Speck.WOOL), 6);
-						pos = newPos;
-						sprite.place( pos );
-						sprite.visible = Dungeon.level.heroFOV[pos];
-						if (Dungeon.level.heroFOV[pos]) CellEmitter.get(pos).burst(Speck.factory(Speck.WOOL), 6);
-
-					}
-
-					if (item != null) GLog.n( Messages.get(Thief.class, "escapes", item.name()));
-					item = null;
-					state = WANDERING;
-				} else {
-					state = WANDERING;
-				}
-			} else {
+			if (buff(Terror.class) != null || buff(Corruption.class) != null) {
 				super.nowhereToRun();
+				return;
+			}
+			if ( enemySeen() ) {
+				Terror.onRemove(Thief.this);
+			} else if (item != null
+					&& !Dungeon.level.heroFOV[pos]
+					&& Dungeon.level.distance(Dungeon.hero.pos, pos) < 6) {
+				int count = 32;
+				int newPos;
+				do {
+					newPos = Dungeon.level.randomRespawnCell();
+					if (count-- <= 0) {
+						break;
+					}
+				} while (newPos == -1 || Dungeon.level.heroFOV[newPos] || Dungeon.level.distance(newPos, pos) < (count/3));
+				if (newPos != -1) {
+					if (Dungeon.level.heroFOV[pos]) CellEmitter.get(pos).burst(Speck.factory(Speck.WOOL), 6);
+					pos = newPos;
+					sprite.place( pos );
+					sprite.visible = Dungeon.level.heroFOV[pos];
+					if (Dungeon.level.heroFOV[pos]) CellEmitter.get(pos).burst(Speck.factory(Speck.WOOL), 6);
+				}
+
+				if (item != null) GLog.n( Messages.get(Thief.class, "escapes", item.name()));
+				item = null;
+				state = WANDERING;
+			} else {
+				state = WANDERING;
 			}
 		}
 	}

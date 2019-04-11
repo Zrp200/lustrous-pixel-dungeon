@@ -42,7 +42,6 @@ import com.zrp200.lustrouspixeldungeon.actors.buffs.Corruption;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Cripple;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Doom;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Drowsy;
-import com.zrp200.lustrouspixeldungeon.actors.buffs.FlavourBuff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Frost;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.MagicalSleep;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Ooze;
@@ -196,12 +195,11 @@ public class WandOfCorruption extends Wand {
 			 	debuffs.put(toAssign, 0f);
 			 }
 		}
-		
-		//all buffs with a > 0 chance are flavor buffs
-		Class<?extends FlavourBuff> debuffCls = (Class<? extends FlavourBuff>) Random.chances(debuffs);
-		
-		if (debuffCls != null){
-			Buff.append(enemy, debuffCls, 6 + level()*3);
+
+		Class<?extends Buff> debuffCls = Random.chances(debuffs);
+
+		if(debuffCls != null) {
+			Buff.append(enemy, debuffCls, 6 + level() * 3);
 		} else {
 			//if no debuff can be applied (all are present), then go up one tier
 			if (category == MINOR_DEBUFFS)          debuffEnemy( enemy, MAJOR_DEBUFFS);

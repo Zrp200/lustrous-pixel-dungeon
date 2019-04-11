@@ -73,11 +73,10 @@ public class Buff extends Actor implements Hero.Doom {
 	}
 	
 	public boolean attachTo( Char target ) {
-
 		this.target = target;
+		if(target.isImmune(getClass())) return false;
 		target.add( this );
 		if(!target.buffs().contains(this)) {
-			this.target = null;
 			return false;
 		}
 		if (target.sprite != null && announced) {
@@ -93,6 +92,7 @@ public class Buff extends Actor implements Hero.Doom {
 	}
 	
 	public void detach() {
+		if(target == null) return;
 		if (target.sprite != null) fx( false );
 		target.remove( this );
 	}
@@ -140,9 +140,13 @@ public class Buff extends Actor implements Hero.Doom {
 		}
 	}
 
-	public static<T extends FlavourBuff> T append( Char target, Class<T> buffClass, float duration ) {
+	public static<T extends Buff> T append( Char target, Class<T> buffClass, float duration ) {
 		T buff = append( target, buffClass );
-		buff.spend( duration * target.resist(buffClass) );
+		duration *= target.resist(buffClass);
+		if(buff instanceof FlavourBuff)
+			buff.spend(duration);
+		else if(buff instanceof ActiveBuff)
+			((ActiveBuff)buff).set(duration);
 		return buff;
 	}
 
@@ -156,16 +160,27 @@ public class Buff extends Actor implements Hero.Doom {
 		}
 	}
 	
-	public static<T extends FlavourBuff> T affect( Char target, Class<T> buffClass, float duration ) {
+	public static<T extends Buff> T affect( Char target, Class<T> buffClass, float duration ) {
 		T buff = affect( target, buffClass );
-		buff.spend( duration * target.resist(buffClass) );
+		duration *= target.resist(buffClass);
+		if(buff instanceof ActiveBuff) {
+			((ActiveBuff) buff).extend(duration);
+ 		} else if(buff instanceof FlavourBuff) {
+			buff.spend(duration);
+		}
+		buff.spend( duration );
 		return buff;
 	}
 
 	//postpones an already active buff, or creates & attaches a new buff and delays that.
-	public static<T extends FlavourBuff> T prolong( Char target, Class<T> buffClass, float duration ) {
+	public static<T extends Buff> T prolong( Char target, Class<T> buffClass, float duration ) {
 		T buff = affect( target, buffClass );
-		buff.postpone( duration * target.resist(buffClass) );
+		duration *= target.resist(buffClass);
+		if(buff instanceof FlavourBuff)  {
+			buff.postpone( duration );
+		} else if(buff instanceof ActiveBuff) {
+			((ActiveBuff) buff).set(duration);
+		}
 		return buff;
 	}
 	
@@ -191,7 +206,6 @@ public class Buff extends Actor implements Hero.Doom {
 
 	public Image getLargeIcon() {
 		int x = icon() % 16, y = icon() / 16;
-		x*=16;y*=16;
-		return new Image(Assets.BUFFS_LARGE,x,y,16,16);
+		return new Image(Assets.BUFFS_LARGE,x*16,y*16,16,16);
 	}
 }

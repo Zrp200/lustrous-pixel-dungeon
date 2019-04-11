@@ -79,7 +79,7 @@ public class GnollTrickster extends RangeExclusiveMob {
 			} else if(effect <= 6 && enemy.buff(Chill.class) == null && enemy.buff(Burning.class) == null) {
 				Buff.affect(enemy, Chill.class, effect/2f);
 			} else
-				Buff.affect( enemy, Poison.class).set((effect-2) );
+				Buff.prolong( enemy, Poison.class, effect-2 );
 
 		}
 		return damage;

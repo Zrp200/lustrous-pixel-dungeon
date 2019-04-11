@@ -32,7 +32,6 @@ public class PoisonDartTrap extends DartTrap {
 
 	@Override
 	public void onHit(Char target) {
-		Buff.affect( target, Poison.class )
-				.set( 4 + Dungeon.depth );
+		Buff.prolong( target, Poison.class, 4 + Dungeon.depth );
 	}
 }

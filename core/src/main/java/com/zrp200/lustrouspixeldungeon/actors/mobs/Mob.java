@@ -350,15 +350,6 @@ public abstract class Mob extends Char {
 			postpone( Sleep.SWS );
 		}
 	}
-
-	@Override
-	public void remove( Buff buff ) {
-		super.remove( buff );
-		if (buff instanceof Terror && isAlive()) {
-			sprite.showStatus( CharSprite.NEGATIVE, Messages.get(this, "rage") );
-			state = HUNTING;
-		}
-	}
 	
 	protected boolean canAttack( Char enemy ) {
 		return Dungeon.level.adjacent( pos, enemy.pos );
@@ -925,7 +916,8 @@ public abstract class Mob extends Char {
 		}
 
 		protected void nowhereToRun() {
-		    if(buff(Terror.class) != null) buff(Terror.class).recover(); //you'd think that would have an impact.
+		    if(buff(Terror.class) != null) buff(Terror.class).recover(); //you'd think that would have an impact
+			else Terror.onRemove(Mob.this);
 		}
 	}
 
