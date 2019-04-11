@@ -168,7 +168,6 @@ public class Buff extends Actor implements Hero.Doom {
  		} else if(buff instanceof FlavourBuff) {
 			buff.spend(duration);
 		}
-		buff.spend( duration );
 		return buff;
 	}
 
