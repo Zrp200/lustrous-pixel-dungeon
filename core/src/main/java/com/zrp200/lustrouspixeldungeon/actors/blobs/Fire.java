@@ -47,10 +47,10 @@ public class Fire extends Blob {
 				int fire;
 
 				final Freezing freeze = (Freezing) level.blobs.get( Freezing.class );
-				boolean cellFlamable = level.flamable[cell] || volumeAt(cell, Regrowth.class) > 0;
+				boolean cellFlammable = level.flamable[cell] || volumeAt(cell, Regrowth.class) > 0;
 				if (cur[cell] > 0) { // tile is already on fire; do fire things
-					if(cellFlamable) clear(cell, 1); // these things shouldn't even be on fire.
 					if (volumeAt(cell, Freezing.class) > 0){
+						//noinspection ConstantConditions
 						freeze.clear(cell);
 						off[cell] = cur[cell] = 0;
 						return;
@@ -76,7 +76,7 @@ public class Fire extends Blob {
 
 					}
 				} else if (volumeAt(cell,Freezing.class) <= 0) { // see if we ignite the cell
-					if (cellFlamable
+					if (cellFlammable
 							&& (cell > 0 && cur[cell-1] > 0
 							|| cur[cell+1] > 0
 							|| cur[cell- level.width()] > 0
@@ -110,7 +110,13 @@ public class Fire extends Blob {
 			plant.wither();
 		}
 	}
-	
+
+	@Override
+	public void seed(Level level, int cell, int amount) {
+		if(level.flamable[cell]) amount = 4; // ignite
+		super.seed(level, cell, amount);
+	}
+
 	@Override
 	public void use( BlobEmitter emitter ) {
 		super.use( emitter );

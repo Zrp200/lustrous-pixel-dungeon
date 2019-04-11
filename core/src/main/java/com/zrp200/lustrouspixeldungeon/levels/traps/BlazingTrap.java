@@ -46,9 +46,9 @@ public class BlazingTrap extends Trap {
 		for (int i = 0; i < PathFinder.distance.length; i++) {
 			if (PathFinder.distance[i] < Integer.MAX_VALUE) {
 				if (Dungeon.level.pit[i] || Dungeon.level.water[i])
-					GameScene.add(Blob.seed(i, 1, Fire.class));
+					GameScene.add(Blob.seed(i, 2, Fire.class));
 				else
-					GameScene.add(Blob.seed(i, 5, Fire.class));
+					GameScene.add(Blob.seed(i, 10, Fire.class));
 				CellEmitter.get(i).burst(FlameParticle.FACTORY, 5);
 			}
 		}

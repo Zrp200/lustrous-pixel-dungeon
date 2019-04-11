@@ -21,17 +21,8 @@
 
 package com.zrp200.lustrouspixeldungeon.items.bombs;
 
-import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.PathFinder;
-import com.zrp200.lustrouspixeldungeon.Assets;
-import com.zrp200.lustrouspixeldungeon.Dungeon;
-import com.zrp200.lustrouspixeldungeon.actors.blobs.Blob;
-import com.zrp200.lustrouspixeldungeon.actors.blobs.Fire;
-import com.zrp200.lustrouspixeldungeon.effects.CellEmitter;
-import com.zrp200.lustrouspixeldungeon.effects.particles.FlameParticle;
-import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
+import com.zrp200.lustrouspixeldungeon.levels.traps.BlazingTrap;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
-import com.zrp200.lustrouspixeldungeon.utils.BArray;
 
 public class Firebomb extends Bomb {
 	
@@ -42,18 +33,7 @@ public class Firebomb extends Bomb {
 	@Override
 	public void explode(int cell) {
 		super.explode(cell);
-		
-		PathFinder.buildDistanceMap( cell, BArray.not( Dungeon.level.solid, null ), 2 );
-		for (int i = 0; i < PathFinder.distance.length; i++) {
-			if (PathFinder.distance[i] < Integer.MAX_VALUE) {
-				if (Dungeon.level.pit[i])
-					GameScene.add(Blob.seed(i, 2, Fire.class));
-				else
-					GameScene.add(Blob.seed(i, 10, Fire.class));
-				CellEmitter.get(i).burst(FlameParticle.FACTORY, 5);
-			}
-		}
-		Sample.INSTANCE.play(Assets.SND_BURNING);
+		new BlazingTrap().set(cell).activate();
 	}
 	
 	@Override
