@@ -488,7 +488,7 @@ public class DriedRose extends Artifact {
 		@Override
 		public int attackSkill(Char target) {
 			if (Precise.rollToGuaranteeHit(rose.weapon, this)){
-				target.sprite.emitter().start( Speck.factory(Speck.LIGHT), 0.05f, 5 );
+				Precise.playVFX(target);
 				return Integer.MAX_VALUE;
 			}
 

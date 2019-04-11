@@ -328,7 +328,7 @@ public class Hero extends Char {
 		if (wep != null) accuracy *= wep.accuracyFactor(this);
 		if (wep instanceof Weapon){
 			if (Precise.rollToGuaranteeHit((Weapon) wep, this)){
-				target.sprite.emitter().start( Speck.factory(Speck.LIGHT), 0.05f, 5 );
+				Precise.playVFX(target);
 				return Integer.MAX_VALUE;
 			}
 		}

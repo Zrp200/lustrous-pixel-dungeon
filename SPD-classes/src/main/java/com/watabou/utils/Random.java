@@ -57,6 +57,10 @@ public class Random {
 	public static float NormalFloat( float min, float max ) {
 		return min + ((Float(max - min) + Float(max - min))/2f);
 	}
+	//returns a triangularly distributed float in the range [0, max]
+	public static float NormalFloat( float max ) {
+		return NormalFloat(0, max);
+	}
 
 	//returns a uniformly distributed int in the range [0, max)
 	public static int Int( int max ) {

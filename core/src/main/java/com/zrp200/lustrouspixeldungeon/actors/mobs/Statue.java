@@ -25,7 +25,6 @@ import com.watabou.utils.Bundle;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
-import com.zrp200.lustrouspixeldungeon.effects.Speck;
 import com.zrp200.lustrouspixeldungeon.items.Generator;
 import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
 import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon.Enchantment;
@@ -95,7 +94,7 @@ public class Statue extends Mob {
 	@Override
 	public int attackSkill( Char target ) {
 		if (Precise.rollToGuaranteeHit(weapon, this)){
-			target.sprite.emitter().start( Speck.factory(Speck.LIGHT), 0.05f, 5 );
+			Precise.playVFX(target);
 			return Integer.MAX_VALUE;
 		}
 		return (int)((Hero.ACCURACY + Dungeon.depth) * weapon.accuracyFactor(this));

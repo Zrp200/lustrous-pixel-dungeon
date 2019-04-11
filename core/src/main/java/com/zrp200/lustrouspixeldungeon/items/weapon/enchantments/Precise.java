@@ -23,6 +23,7 @@ package com.zrp200.lustrouspixeldungeon.items.weapon.enchantments;
 
 import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
+import com.zrp200.lustrouspixeldungeon.effects.Speck;
 import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSprite;
 
@@ -51,6 +52,10 @@ public class Precise extends Weapon.Enchantment {
 		}
 		
 		return false;
+	}
+
+	public static void playVFX(Char target) {
+		target.sprite.emitter().start( Speck.factory(Speck.LIGHT), 0.05f, 5 );
 	}
 	
 	@Override
