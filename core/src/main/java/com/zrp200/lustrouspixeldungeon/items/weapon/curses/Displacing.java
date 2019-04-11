@@ -24,48 +24,52 @@ package com.zrp200.lustrouspixeldungeon.items.weapon.curses;
 import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
+import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.Mob;
 import com.zrp200.lustrouspixeldungeon.effects.CellEmitter;
 import com.zrp200.lustrouspixeldungeon.effects.Speck;
+import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
-import com.zrp200.lustrouspixeldungeon.sprites.ItemSprite;
 
 public class Displacing extends WeaponCurse {
 
-	private static ItemSprite.Glowing BLACK = new ItemSprite.Glowing( 0x000000 );
-
-	@Override
-	public int proc(Weapon weapon, Char attacker, Char defender, int damage ) {
-
-		if (Random.Int(12) == 0 && !defender.properties().contains(Char.Property.IMMOVABLE)){
-			int count = 10;
-			int newPos;
-			do {
-				newPos = Dungeon.level.randomRespawnCell();
-				if (count-- <= 0) {
-					break;
-				}
-			} while (newPos == -1);
-
-			if (newPos != -1 && !Dungeon.bossLevel()) {
-
-				if (Dungeon.level.heroFOV[defender.pos]) {
-					CellEmitter.get( defender.pos ).start( Speck.factory( Speck.LIGHT ), 0.2f, 3 );
-				}
-
-				defender.pos = newPos;
-				if (defender instanceof Mob && ((Mob) defender).state == ((Mob) defender).HUNTING){
-					((Mob) defender).state = ((Mob) defender).WANDERING;
-				}
-				defender.sprite.place( defender.pos );
-				defender.sprite.visible = Dungeon.level.heroFOV[defender.pos];
-
-				return 0;
-
-			}
+	public static boolean teleportChar(Char defender) { // logic externalized for Chaotic and Displacement
+		if(defender instanceof Hero) {
+			ScrollOfTeleportation.teleportHero((Hero) defender);
+			return true;
+		}
+		if (defender.properties().contains(Char.Property.IMMOVABLE)) {
+			return false;
 		}
 
-		return damage;
+		int count = 10;
+		int newPos;
+		do {
+			newPos = Dungeon.level.randomRespawnCell();
+			if (count-- <= 0) {
+				break;
+			}
+		} while (newPos == -1);
+
+		if (newPos == -1 || Dungeon.bossLevel()) {
+			return false;
+		}
+
+		if (Dungeon.level.heroFOV[defender.pos]) {
+			CellEmitter.get( defender.pos ).start( Speck.factory( Speck.LIGHT ), 0.2f, 3 );
+		}
+
+		defender.pos = newPos;
+		if (defender instanceof Mob && ((Mob) defender).state == ((Mob) defender).HUNTING){
+			((Mob) defender).state = ((Mob) defender).WANDERING;
+		}
+		defender.sprite.place( defender.pos );
+		defender.sprite.visible = Dungeon.level.heroFOV[defender.pos];
+		return true;
 	}
 
+	@Override
+	public int proc(Weapon weapon, Char attacker, Char defender, int damage) {
+		return Random.Int(12) == 0 && teleportChar(defender) ? 0 : damage;
+	}
 }

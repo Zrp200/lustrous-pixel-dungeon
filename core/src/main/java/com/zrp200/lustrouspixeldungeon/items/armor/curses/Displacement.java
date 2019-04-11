@@ -22,10 +22,9 @@
 package com.zrp200.lustrouspixeldungeon.items.armor.curses;
 
 import com.watabou.utils.Random;
-import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.items.armor.Armor;
-import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Displacing;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSprite;
 
 public class Displacement extends Armor.Glyph {
@@ -34,13 +33,7 @@ public class Displacement extends Armor.Glyph {
 
 	@Override
 	public int proc(Armor armor, Char attacker, Char defender, int damage ) {
-
-		if (defender == Dungeon.hero && Random.Int(20) == 0){
-			ScrollOfTeleportation.teleportHero(Dungeon.hero);
-			return 0;
-		}
-
-		return damage;
+		return Random.Int(20) == 0 && Displacing.teleportChar(defender) ? 0 : damage;
 	}
 
 	@Override
