@@ -188,6 +188,9 @@ public class ChangesScene extends PixelScene {
 
 	private void add011Changes() {
 		new ChangeInfo(Version.v011.name, true);
+		new ChangeInfo("v0.1.1b",false).addButtons(
+				ChangeButton.bugfix("sad ghost always moving at 1x speed")
+		);
 		new ChangeInfo("v0.1.1a",false).addButtons(
 		        new ChangeButton(new ItemSprite(new Glaive().enchant(new Dazzling())), "Dazzling",
 						"Adding slow turned out to be more powerful than I thought, so I'm reducing " +
@@ -231,7 +234,6 @@ public class ChangesScene extends PixelScene {
 						"Enchanting missile weapons resulting in you losing them",
 						"Minor fire bugs",
 						"Visual visual issues with fire elementals and buffs"));
-		new ChangeInfo("",false); // empty slot.
 		new ChangeInfo(ChangeInfo.Template.NEW_CONTENT).addButtons(
 				addDeveloperCommentary(Milestone.LUST011,null, Milestone.SHPD072),
 				new ChangeButton(new ArmageddonTrap().getImage(), "New Demon Halls Trap!",

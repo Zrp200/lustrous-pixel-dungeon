@@ -21,6 +21,7 @@
 
 package com.zrp200.lustrouspixeldungeon.actors.mobs.npcs;
 
+import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
@@ -48,7 +49,10 @@ import com.zrp200.lustrouspixeldungeon.journal.Notes;
 import com.zrp200.lustrouspixeldungeon.levels.SewerLevel;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
+import com.zrp200.lustrouspixeldungeon.sprites.FetidRatSprite;
 import com.zrp200.lustrouspixeldungeon.sprites.GhostSprite;
+import com.zrp200.lustrouspixeldungeon.sprites.GnollTricksterSprite;
+import com.zrp200.lustrouspixeldungeon.sprites.GreatCrabSprite;
 import com.zrp200.lustrouspixeldungeon.utils.GLog;
 import com.zrp200.lustrouspixeldungeon.windows.WndQuest;
 import com.zrp200.lustrouspixeldungeon.windows.WndSadGhost;
@@ -74,7 +78,13 @@ public class Ghost extends Noncombatant {
 			target = Dungeon.hero.pos;
 		return super.act();
 	}
-	
+
+	@Override
+	public float speed() {
+		return Quest.processed() ? 2f : 1/2f;
+	}
+
+
 	@Override
 	public boolean interact() {
 		sprite.turnTo( pos, Dungeon.hero.pos );
@@ -82,64 +92,36 @@ public class Ghost extends Noncombatant {
 		Sample.INSTANCE.play( Assets.SND_GHOST );
 		
 		if (Quest.given) {
-			if (Quest.weapon != null) {
-				if (Quest.processed) {
-					GameScene.show(new WndSadGhost(this, Quest.type));
-				} else {
-					switch (Quest.type) {
-						case 1:
-						default:
-							GameScene.show(new WndQuest(this, Messages.get(this, "rat_2")));
-							break;
-						case 2:
-							GameScene.show(new WndQuest(this, Messages.get(this, "gnoll_2")));
-							break;
-						case 3:
-							GameScene.show(new WndQuest(this, Messages.get(this, "crab_2")));
-							break;
-					}
+			if (Quest.weapon == null)
+				return false;
 
-					int newPos = -1;
-					for (int i = 0; i < 10; i++) {
-						newPos = Dungeon.level.randomRespawnCell();
-						if (newPos != -1) {
-							break;
-						}
-					}
+			if (Quest.processed) {
+				GameScene.show(new WndSadGhost(this, Quest.current));
+			} else {
+				GameScene.show(new WndQuest(this, Messages.get(this, Quest.current.name +"_2")));
+
+				int newPos = -1;
+				for (int i = 0; i < 10; i++) {
+					newPos = Dungeon.level.randomRespawnCell();
 					if (newPos != -1) {
-
-						CellEmitter.get(pos).start(Speck.factory(Speck.LIGHT), 0.2f, 3);
-						pos = newPos;
-						sprite.place(pos);
-						sprite.visible = Dungeon.level.heroFOV[pos];
+						break;
 					}
 				}
+
+				if (newPos == -1) {
+					return false;
+				}
+
+				CellEmitter.get(pos).start(Speck.factory(Speck.LIGHT), 0.2f, 3);
+				pos = newPos;
+				sprite.place(pos);
+				sprite.visible = Dungeon.level.heroFOV[pos];
 			}
-		} else {
-			Mob questBoss;
-			String txt_quest;
-
-			switch (Quest.type){
-				case 1: default:
-					questBoss = new FetidRat();
-					txt_quest = Messages.get(this, "rat_1", Dungeon.hero.givenName()); break;
-				case 2:
-					questBoss = new GnollTrickster();
-					txt_quest = Messages.get(this, "gnoll_1", Dungeon.hero.givenName()); break;
-				case 3:
-					questBoss = new GreatCrab();
-					txt_quest = Messages.get(this, "crab_1", Dungeon.hero.givenName()); break;
-			}
-
-			questBoss.pos = Dungeon.level.randomRespawnCell();
-
-			if (questBoss.pos != -1) {
-				GameScene.add(questBoss);
-				GameScene.show( new WndQuest( this, txt_quest ) );
-				Quest.given = true;
-				Notes.add( Notes.Landmark.GHOST );
-			}
-
+		} else if (Quest.createBoss().pos != -1) {
+			GameScene.show( new WndQuest( this,
+					Messages.get(this, Quest.current +"_1", Dungeon.hero.givenName()) ) );
+			Quest.given = true;
+			Notes.add( Notes.Landmark.GHOST );
 		}
 
 		return false;
@@ -150,11 +132,37 @@ public class Ghost extends Noncombatant {
 		immunities.add( Roots.class );
 	}
 
-	public static class Quest {
+	public enum Quest {
+		RAT("rat", FetidRat.class, new FetidRatSprite()),
+		GNOLL("gnoll", GnollTrickster.class, new GnollTricksterSprite()),
+		CRAB("crab", GreatCrab.class, new GreatCrabSprite());
+
+		public final String name;
+		public final Class<?extends Mob> bossClass;
+		public final Image icon;
+
+		Quest(String name, Class<?extends Mob> bossClass, Image icon) {
+			this.name = name;
+			this.bossClass = bossClass;
+			this.icon = icon;
+		}
 		
 		private static boolean spawned;
 
-		private static int type;
+		private static Quest current;
+
+		public static Mob createBoss() {
+			Mob questBoss;
+			try {
+				questBoss = current.bossClass.newInstance();
+				return questBoss;
+			} catch (Exception e) {
+				LustrousPixelDungeon.reportException(e);
+				questBoss = new FetidRat();
+			}
+			questBoss.pos = Dungeon.level.randomRespawnCell();
+			return questBoss;
+		}
 
 		private static boolean given;
 		private static boolean processed;
@@ -174,7 +182,7 @@ public class Ghost extends Noncombatant {
 		private static final String NODE		= "sadGhost";
 		
 		private static final String SPAWNED		= "spawned";
-		private static final String TYPE        = "type";
+		private static final String TYPE        = "current";
 		private static final String GIVEN		= "given";
 		private static final String PROCESSED	= "processed";
 		private static final String DEPTH		= "depth";
@@ -189,7 +197,7 @@ public class Ghost extends Noncombatant {
 			
 			if (spawned) {
 				
-				node.put( TYPE, type );
+				node.put( TYPE, current);
 				
 				node.put( GIVEN, given );
 				node.put( DEPTH, depth );
@@ -208,7 +216,7 @@ public class Ghost extends Noncombatant {
 
 			if (!node.isNull() && (spawned = node.getBoolean( SPAWNED ))) {
 
-				type = node.getInt(TYPE);
+				current = node.getEnum(TYPE, Quest.class);
 				given	= node.getBoolean( GIVEN );
 				processed = node.getBoolean( PROCESSED );
 
@@ -231,9 +239,19 @@ public class Ghost extends Noncombatant {
 				level.mobs.add( ghost );
 				
 				spawned = true;
-				//dungeon depth determines type of quest.
-				//depth2=fetid rat, 3=gnoll trickster, 4=great crab
-				type = Dungeon.depth-1;
+				//dungeon depth determines current of quest.
+				//depth 2=fetid rat, 3=gnoll trickster, 4=great crab
+				switch(Dungeon.depth) {
+					case 2: default:
+						current = RAT;
+						break;
+					case 3:
+						current = GNOLL;
+						break;
+					case 4:
+						current = CRAB;
+						break;
+				}
 				
 				given = false;
 				processed = false;
