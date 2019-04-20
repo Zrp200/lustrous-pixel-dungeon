@@ -62,7 +62,7 @@ abstract public class MissileWeapon extends Weapon {
 
 	boolean sticky = true;
 
-	private static final float MAX_DURABILITY = 100;
+	protected static final float MAX_DURABILITY = 100;
 	protected float durability = MAX_DURABILITY;
 	protected float durabilityCap = MAX_DURABILITY;
 	protected float baseUses = 10;

@@ -798,71 +798,50 @@ public class Dungeon {
 	//we store this to avoid having to re-allocate the array with each pathfind
 	private static boolean[] passable;
 
-	private static void setupPassable(){
+	private static boolean[] getPassable(Char ch, boolean[] pass, boolean[] visible){
 		if (passable == null || passable.length != Dungeon.level.length())
 			passable = new boolean[Dungeon.level.length()];
 		else
 			BArray.setFalse(passable);
+
+		if (ch.flying || ch.buff( Amok.class ) != null) {
+			BArray.or( pass, level.avoid, passable );
+		} else {
+			System.arraycopy( pass, 0, passable, 0, Dungeon.level.length() );
+		}
+
+		for (Char c : Actor.chars()) {
+			if (visible[c.pos]) {
+				passable[c.pos] = false;
+			}
+		}
+
+		if(ch instanceof Mob && ch.buff(Amok.class) == null) {
+			for(Boomerang.Returning returning : boomerangsThisDepth()) {
+				int pos = returning.pos;
+				if(visible[pos])
+					passable[pos] = false;
+			}
+		}
+
+		return passable;
 	}
 
 	public static PathFinder.Path findPath(Char ch, int from, int to, boolean pass[], boolean[] visible ) {
-
-		setupPassable();
-		if (ch.flying || ch.buff( Amok.class ) != null) {
-			BArray.or( pass, Dungeon.level.avoid, passable );
-		} else {
-			System.arraycopy( pass, 0, passable, 0, Dungeon.level.length() );
-		}
-
-		for (Char c : Actor.chars()) {
-			if (visible[c.pos]) {
-				passable[c.pos] = false;
-			}
-		}
-
-		return PathFinder.find( from, to, passable );
-
+		return PathFinder.find( from, to, getPassable(ch, pass, visible) );
 	}
 	
 	public static int findStep(Char ch, int from, int to, boolean pass[], boolean[] visible ) {
-
+		getPassable(ch, pass, visible);
 		if (Dungeon.level.adjacent( from, to )) {
 			return Actor.findChar( to ) == null && (pass[to] || Dungeon.level.avoid[to]) ? to : -1;
 		}
-
-		setupPassable();
-		if (ch.flying || ch.buff( Amok.class ) != null) {
-			BArray.or( pass, Dungeon.level.avoid, passable );
-		} else {
-			System.arraycopy( pass, 0, passable, 0, Dungeon.level.length() );
-		}
-		
-		for (Char c : Actor.chars()) {
-			if (visible[c.pos]) {
-				passable[c.pos] = false;
-			}
-		}
-		
 		return PathFinder.getStep( from, to, passable );
-
 	}
 	
 	public static int flee( Char ch, int cur, int from, boolean pass[], boolean[] visible ) {
-
-		setupPassable();
-		if (ch.flying) {
-			BArray.or( pass, Dungeon.level.avoid, passable );
-		} else {
-			System.arraycopy( pass, 0, passable, 0, Dungeon.level.length() );
-		}
-		
-		for (Char c : Actor.chars()) {
-			if (visible[c.pos]) {
-				passable[c.pos] = false;
-			}
-		}
+		getPassable(ch, pass, visible);
 		passable[cur] = true;
-		
 		return PathFinder.getStepBack( cur, from, passable );
 		
 	}

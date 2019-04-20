@@ -72,6 +72,8 @@ import com.zrp200.lustrouspixeldungeon.utils.GLog;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import static com.zrp200.lustrouspixeldungeon.Dungeon.level;
+
 public abstract class Mob extends Char {
 
 	{
@@ -253,8 +255,8 @@ public abstract class Mob extends Char {
 				Char closest = null;
 				for (Char curr : findEnemies()){
 					if (closest == null
-							|| Dungeon.level.distance(pos, curr.pos) < Dungeon.level.distance(pos, closest.pos)
-							|| Dungeon.level.distance(pos, curr.pos) == Dungeon.level.distance(pos, closest.pos)
+							|| level.distance(pos, curr.pos) < level.distance(pos, closest.pos)
+							|| level.distance(pos, curr.pos) == level.distance(pos, closest.pos)
 							&& curr == Dungeon.hero) {
 						closest = curr;
 					}
@@ -272,13 +274,13 @@ public abstract class Mob extends Char {
 		//if the mob is amoked...
 		if ( buff(Amok.class) != null) {
 			//try to find an enemy mob to attack first.
-			for (Mob mob : Dungeon.level.mobs)
+			for (Mob mob : level.mobs)
 				if (mob.alignment == Alignment.ENEMY && mob != this && fieldOfView[mob.pos])
 					enemies.add(mob);
 
 			if (enemies.isEmpty()) {
 				//try to find ally mobs to attack second.
-				for (Mob mob : Dungeon.level.mobs)
+				for (Mob mob : level.mobs)
 					if (mob.alignment == Alignment.ALLY && mob != this && fieldOfView[mob.pos])
 						enemies.add(mob);
 
@@ -293,7 +295,7 @@ public abstract class Mob extends Char {
 			//if the mob is an ally...
 		} else if ( alignment == Alignment.ALLY ) {
 			//look for hostile mobs that are not passive to attack
-			for (Mob mob : Dungeon.level.mobs)
+			for (Mob mob : level.mobs)
 				if (mob.alignment == Alignment.ENEMY
 						&& fieldOfView[mob.pos]
 						&& mob.state != mob.PASSIVE && (buff(Corruption.class) != null || !(mob instanceof Piranha)) )
@@ -302,7 +304,7 @@ public abstract class Mob extends Char {
 			//if the mob is an enemy...
 		} else if (alignment == Alignment.ENEMY) {
 			//look for ally mobs to attack
-			for (Mob mob : Dungeon.level.mobs)
+			for (Mob mob : level.mobs)
 				if (mob.alignment == Alignment.ALLY && fieldOfView[mob.pos])
 					enemies.add(mob);
 
@@ -325,7 +327,7 @@ public abstract class Mob extends Char {
 
 	protected boolean moveSprite( int from, int to ) {
 
-		if (sprite.isVisible() && (Dungeon.level.heroFOV[from] || Dungeon.level.heroFOV[to])) {
+		if (sprite.isVisible() && (level.heroFOV[from] || level.heroFOV[to])) {
 			sprite.move( from, to );
 			return true;
 		} else {
@@ -352,7 +354,7 @@ public abstract class Mob extends Char {
 	}
 	
 	protected boolean canAttack( Char enemy ) {
-		return Dungeon.level.adjacent( pos, enemy.pos );
+		return level.adjacent( pos, enemy.pos );
 	}
 
 	protected boolean getCloser( int target ) {
@@ -362,11 +364,11 @@ public abstract class Mob extends Char {
 
 		int step = -1;
 
-		if (Dungeon.level.adjacent( pos, target )) {
+		if (level.adjacent( pos, target )) {
 
 			path = null;
 
-			if (Actor.findChar( target ) == null && Dungeon.level.passable[target]) {
+			if (Actor.findChar( target ) == null && level.passable[target]) {
 				step = target;
 			}
 
@@ -376,19 +378,19 @@ public abstract class Mob extends Char {
 			//scrap the current path if it's empty, no longer connects to the current location
 			//or if it's extremely inefficient and checking again may result in a much better path
 			if (path == null || path.isEmpty()
-					|| !Dungeon.level.adjacent(pos, path.getFirst())
-					|| path.size() > 2*Dungeon.level.distance(pos, target))
+					|| !level.adjacent(pos, path.getFirst())
+					|| path.size() > 2* level.distance(pos, target))
 				newPath = true;
 			else if (path.getLast() != target) {
 				//if the new target is adjacent to the end of the path, adjust for that
 				//rather than scrapping the whole path.
-				if (Dungeon.level.adjacent(target, path.getLast())) {
+				if (level.adjacent(target, path.getLast())) {
 					int last = path.removeLast();
 
 					if (path.isEmpty()) {
 
 						//shorten for a closer one
-						if (Dungeon.level.adjacent(target, pos)) {
+						if (level.adjacent(target, pos)) {
 							path.add(target);
 							//extend the path for a further target
 						} else {
@@ -401,7 +403,7 @@ public abstract class Mob extends Char {
 						if (path.getLast() == target) {
 
 							//if the new target is closer/same, need to modify end of path
-						} else if (Dungeon.level.adjacent(target, path.getLast())) {
+						} else if (level.adjacent(target, path.getLast())) {
 							path.add(target);
 
 							//if the new target is further away, need to extend the path
@@ -421,7 +423,7 @@ public abstract class Mob extends Char {
 
 			if (newPath) {
 				path = Dungeon.findPath(this, pos, target,
-						Dungeon.level.passable,
+						level.passable,
 						fieldOfView);
 			}
 
@@ -430,7 +432,7 @@ public abstract class Mob extends Char {
 			// permanent terrain, such that if their path is inefficient it's always because
 			// of a temporary blockage, and therefore waiting for it to clear is the best option.
 			if (path == null ||
-					(state == HUNTING && path.size() > Math.max(9, 2*Dungeon.level.distance(pos, target)))) {
+					(state == HUNTING && path.size() > Math.max(9, 2* level.distance(pos, target)))) {
 				return false;
 			}
 
@@ -444,11 +446,16 @@ public abstract class Mob extends Char {
 		}
 	}
 
+	private boolean canMoveTo(int pos) {
+		return !(level.passable[pos] || level.avoid[pos])
+				|| (fieldOfView[pos] && Actor.findChar(pos) != null);
+	}
+
 	private boolean lookAhead(int distance) { //looks ahead for path validity
 		if(path == null) return false;
 		for (int i = 0; i < distance; i++) {
 			int cell = path.get(i);
-			if (!Dungeon.level.passable[cell] || (fieldOfView[cell] && Actor.findChar(cell) != null)) {
+			if (!level.passable[cell] || (fieldOfView[cell] && Actor.findChar(cell) != null)) {
 				return false;
 			}
 		}
@@ -461,13 +468,13 @@ public abstract class Mob extends Char {
 	boolean canGetFurther(int target) {
 		return !( rooted
 				|| target == pos
-				|| Dungeon.flee(this, pos, target, Dungeon.level.passable, fieldOfView) == -1
+				|| Dungeon.flee(this, pos, target, level.passable, fieldOfView) == -1
 		);
 	}
 
 	protected boolean getFurther( int target ) {
 		if(!canGetFurther(target)) return false;
-		move( Dungeon.flee(this, pos, target, Dungeon.level.passable, fieldOfView) );
+		move( Dungeon.flee(this, pos, target, level.passable, fieldOfView) );
 		return true;
 	}
 
@@ -487,7 +494,7 @@ public abstract class Mob extends Char {
 	
 	protected boolean doAttack( Char enemy ) {
 		
-		boolean visible = Dungeon.level.heroFOV[pos];
+		boolean visible = level.heroFOV[pos];
 		
 		if (visible) {
 			sprite.attack( enemy.pos );
@@ -554,7 +561,7 @@ public abstract class Mob extends Char {
 
 		//if attacked by something else than current target, and that thing is closer, switch targets
 		if (this.enemy == null
-				|| (enemy != this.enemy && (Dungeon.level.distance(pos, enemy.pos) < Dungeon.level.distance(pos, this.enemy.pos)))) {
+				|| (enemy != this.enemy && (level.distance(pos, enemy.pos) < level.distance(pos, this.enemy.pos)))) {
 			aggro(enemy);
 			target = enemy.pos;
 		}
@@ -632,7 +639,7 @@ public abstract class Mob extends Char {
 		
 		super.destroy();
 		
-		Dungeon.level.mobs.remove( this );
+		level.mobs.remove( this );
 		
 		if (Dungeon.hero.isAlive()) {
 			
@@ -664,7 +671,7 @@ public abstract class Mob extends Char {
 		}
 
 		if (alignment == Alignment.ENEMY) rollToDropLoot();
-		if (Dungeon.hero.isAlive() && !Dungeon.level.heroFOV[pos]) {
+		if (Dungeon.hero.isAlive() && !level.heroFOV[pos]) {
 			GLog.i( Messages.get(this, "died") );
 		}
 		boolean wraithSpawn = buff(Necromantic.Proc.class) != null;
@@ -677,7 +684,7 @@ public abstract class Mob extends Char {
 	
 	public void rollToDropLoot() {
 		if (Dungeon.hero.lvl > maxLvl + 2) return;
-		if (loot instanceof Potion && Dungeon.level.pit[pos]) return;
+		if (loot instanceof Potion && level.pit[pos]) return;
 
 		float lootChance = this.lootChance;
 		lootChance *= RingOfWealth.dropChanceMultiplier(Dungeon.hero);
@@ -696,7 +703,7 @@ public abstract class Mob extends Char {
 			else if (properties.contains(Property.MINIBOSS)) rolls = 5;
 			ArrayList<Item> bonus = RingOfWealth.tryForBonusDrop(Dungeon.hero, rolls);
 			if (bonus != null && !bonus.isEmpty()) {
-				for (Item b : bonus) Dungeon.level.drop(b, pos).sprite.drop();
+				for (Item b : bonus) level.drop(b, pos).sprite.drop();
 				if (RingOfWealth.latestDropWasRare) {
 					new Flare(8, 48).color(0xAA00FF, true).show(sprite, 3f);
 					RingOfWealth.latestDropWasRare = false;
@@ -792,8 +799,8 @@ public abstract class Mob extends Char {
 				target = enemy.pos;
 
 				if (Dungeon.isChallenged( Challenges.SWARM_INTELLIGENCE )) {
-					for (Mob mob : Dungeon.level.mobs) {
-						if (Dungeon.level.distance(pos, mob.pos) <= 8 && mob.state != mob.HUNTING) {
+					for (Mob mob : level.mobs) {
+						if (level.distance(pos, mob.pos) <= 8 && mob.state != mob.HUNTING) {
 							mob.beckon( target );
 						}
 					}
@@ -824,8 +831,8 @@ public abstract class Mob extends Char {
 				target = enemy.pos;
 
 				if (Dungeon.isChallenged( Challenges.SWARM_INTELLIGENCE )) {
-					for (Mob mob : Dungeon.level.mobs) {
-						if (Dungeon.level.distance(pos, mob.pos) <= 8 && mob.state != mob.HUNTING) {
+					for (Mob mob : level.mobs) {
+						if (level.distance(pos, mob.pos) <= 8 && mob.state != mob.HUNTING) {
 							mob.beckon( target );
 						}
 					}
@@ -837,7 +844,7 @@ public abstract class Mob extends Char {
 					spend( 1 / speed() );
 					return moveSprite( oldPos, pos );
 				} else {
-					target = Dungeon.level.randomDestination();
+					target = level.randomDestination();
 					spend( TICK );
 				}
 
@@ -861,7 +868,7 @@ public abstract class Mob extends Char {
 					target = enemy.pos;
 				} else if (enemy == null) {
 					state = WANDERING;
-					target = Dungeon.level.randomDestination();
+					target = level.randomDestination();
 					return true;
 				}
 				
@@ -876,7 +883,7 @@ public abstract class Mob extends Char {
 					if (!enemySeen) {
 						sprite.showLost();
 						state = WANDERING;
-						target = Dungeon.level.randomDestination();
+						target = level.randomDestination();
 					}
 					return true;
 				}
@@ -895,7 +902,7 @@ public abstract class Mob extends Char {
 		public boolean act( boolean justAlerted ) {
 			super.act(justAlerted);
 			//loses target when 0-dist rolls a 6 or greater.
-			if (enemy == null || !enemySeen && 1 + Random.Int(Dungeon.level.distance(pos, target)) >= 6){
+			if (enemy == null || !enemySeen && 1 + Random.Int(level.distance(pos, target)) >= 6){
 				target = -1;
 			
 			//if enemy isn't in FOV, keep running from their previous position.

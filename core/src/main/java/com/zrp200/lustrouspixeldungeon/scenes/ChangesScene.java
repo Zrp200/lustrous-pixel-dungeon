@@ -189,6 +189,7 @@ public class ChangesScene extends PixelScene {
 	private void add011Changes() {
 		new ChangeInfo(Version.v011.name, true);
 		new ChangeInfo("v0.1.1b",false).addButtons(
+				ChangeButton.misc("Mobs now avoid returning boomerangs if not amok"),
 				ChangeButton.bugfix("sad ghost always moving at 1x speed")
 		);
 		new ChangeInfo("v0.1.1a",false).addButtons(
