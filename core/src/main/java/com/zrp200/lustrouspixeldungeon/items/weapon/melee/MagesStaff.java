@@ -43,7 +43,6 @@ import com.zrp200.lustrouspixeldungeon.items.wands.WandOfCorrosion;
 import com.zrp200.lustrouspixeldungeon.items.wands.WandOfCorruption;
 import com.zrp200.lustrouspixeldungeon.items.wands.WandOfDisintegration;
 import com.zrp200.lustrouspixeldungeon.items.wands.WandOfRegrowth;
-import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
@@ -83,12 +82,6 @@ public class MagesStaff extends MeleeWeapon.Uncommon {
 
 	public MagesStaff(Wand wand){
 		this();
-		wand.identify();
-		wand.cursed = false;
-		this.wand = wand;
-		wand.maxCharges = Math.min(wand.maxCharges + 1, 10);
-		wand.curCharges = wand.maxCharges;
-		trueName = Messages.get(wand, "staff_name");
 	}
 
 	@Override
@@ -133,7 +126,7 @@ public class MagesStaff extends MeleeWeapon.Uncommon {
 		Wand n = (Wand) Generator.random(Generator.Category.WAND);
 		n.level(0);
 		MagesStaff staff = dry ? (MagesStaff)clone() : this;
-		return Challenges.isItemBlocked(n) || wandClass().isInstance(n) ? transmute(dry) : staff.imbueWand(n,null);
+		return Challenges.isItemBlocked(n) || wandClass().isInstance(n) ? transmute(dry) : staff.imbueWand(n);
 	}
 
 	@Override
@@ -141,7 +134,7 @@ public class MagesStaff extends MeleeWeapon.Uncommon {
 		if (wand != null &&
 				attacker instanceof Hero && ((Hero)attacker).subClass == HeroSubClass.BATTLEMAGE) {
 			if (wand.curCharges < wand.maxCharges) wand.partialCharge += 0.33f;
-			ScrollOfRecharging.charge((Hero)attacker);
+			ScrollOfRecharging.charge(attacker);
 			wand.onHit(this, attacker, defender, damage);
 		}
 		return super.proc(attacker, defender, damage);
@@ -175,7 +168,7 @@ public class MagesStaff extends MeleeWeapon.Uncommon {
 		if (wand != null) wand.stopCharging();
 	}
 
-	public MagesStaff imbueWand(Wand wand, Char owner){
+	public MagesStaff imbueWand(Wand wand) {
 
 		wand.cursed = false;
 		this.wand = null;
@@ -202,7 +195,6 @@ public class MagesStaff extends MeleeWeapon.Uncommon {
 		wand.maxCharges = Math.min(wand.maxCharges + 1, 10);
 		wand.curCharges = wand.maxCharges;
 		wand.identify();
-		if (owner != null) wand.charge(owner);
 
 		trueName = Messages.get(wand, "staff_name");
 
@@ -361,7 +353,8 @@ public class MagesStaff extends MeleeWeapon.Uncommon {
 			wand.detach(curUser.belongings.backpack);
 
 			GLog.p( Messages.get(MagesStaff.class, "imbue", wand.name()));
-			imbueWand( wand, curUser );
+			imbueWand( wand );
+			wand.charge(curUser);
 
 			updateQuickslot();
 		}

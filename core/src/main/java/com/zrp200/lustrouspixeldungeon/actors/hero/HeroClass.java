@@ -31,6 +31,7 @@ import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
 import com.zrp200.lustrouspixeldungeon.items.BrokenSeal;
 import com.zrp200.lustrouspixeldungeon.items.Item;
+import com.zrp200.lustrouspixeldungeon.items.KindOfWeapon;
 import com.zrp200.lustrouspixeldungeon.items.armor.Armor;
 import com.zrp200.lustrouspixeldungeon.items.armor.ClothArmor;
 import com.zrp200.lustrouspixeldungeon.items.artifacts.CloakOfShadows;
@@ -65,13 +66,11 @@ import com.zrp200.lustrouspixeldungeon.messages.Messages;
 
 public enum HeroClass {
 
-	WARRIOR("warrior", Assets.WARRIOR, new WornShortsword(), PotionBandolier.class,
-			PotionOfHealing.class, ScrollOfRage.class,
+	WARRIOR("warrior", Assets.WARRIOR,
+			WornShortsword.class, PotionBandolier.class, PotionOfHealing.class, ScrollOfRage.class,
 			Badge.MASTERY_WARRIOR, HeroSubClass.BERSERKER, HeroSubClass.GLADIATOR ) {
 		@Override
-		public void initHero(Hero hero) {
-			super.initHero(hero);
-
+		protected void initClass(Hero hero) {
 			ThrowingStone stones = new ThrowingStone();
 			stones.identify().quantity(3).collect();
 			Dungeon.quickslot.setSlot(0, stones);
@@ -82,25 +81,21 @@ public enum HeroClass {
 		}
 	},
 	MAGE( "mage", Assets.MAGE,
-			new MagesStaff(new WandOfMagicMissile()), ScrollHolder.class,
-			PotionOfLiquidFlame.class, ScrollOfUpgrade.class,
+			MagesStaff.class, ScrollHolder.class, PotionOfLiquidFlame.class, ScrollOfUpgrade.class,
 			Badge.MASTERY_MAGE, HeroSubClass.BATTLEMAGE, HeroSubClass.WARLOCK ) {
 		@Override
-		public void initHero(Hero hero) {
-			super.initHero(hero);
+		protected void initClass(Hero hero) {
 			MagesStaff staff = (MagesStaff) hero.belongings.weapon;
+			staff.imbueWand( new WandOfMagicMissile() );
 			staff.activate(hero);
 			Dungeon.quickslot.setSlot(0, staff);
 		}
 	},
 	ROGUE( "rogue", Assets.ROGUE,
-			new Dagger(), VelvetPouch.class,
-			PotionOfInvisibility.class, ScrollOfMagicMapping.class,
+			Dagger.class, VelvetPouch.class, PotionOfInvisibility.class, ScrollOfMagicMapping.class,
 			Badge.MASTERY_ROGUE, HeroSubClass.ASSASSIN, HeroSubClass.FREERUNNER ) {
 		@Override
-		public void initHero(Hero hero) {
-			super.initHero(hero);
-
+		protected void initClass(Hero hero) {
 			CloakOfShadows cloak = new CloakOfShadows();
 			(hero.belongings.misc1 = cloak).identify();
 			hero.belongings.misc1.activate( hero );
@@ -113,12 +108,10 @@ public enum HeroClass {
 		}
 	},
 	HUNTRESS( "huntress", Assets.HUNTRESS,
-			new Gloves(), MagicalHolster.class,
-			PotionOfMindVision.class, ScrollOfLullaby.class,
+			Gloves.class, MagicalHolster.class, PotionOfMindVision.class, ScrollOfLullaby.class,
 			Badge.MASTERY_HUNTRESS, HeroSubClass.SNIPER, HeroSubClass.WARDEN ) {
 		@Override
-		public void initHero(Hero hero) {
-			super.initHero(hero);
+		protected void initClass(Hero hero) {
 			SpiritBow bow = new SpiritBow();
 			bow.identify().collect();
 			Dungeon.quickslot.setSlot(0, bow);
@@ -127,19 +120,19 @@ public enum HeroClass {
 
 	private String title, spritesheet;
 	private HeroSubClass[] subClasses;
-	private MeleeWeapon startingMelee;
+	private Class<?extends MeleeWeapon> meleeClass;
 	private Class<?extends Bag> bagClass;
 	private Class<?extends Potion> idPotion;
 	private Class<?extends Scroll> idScroll;
 	private Badge masteryBadge;
 
 	// TODO: is this really the best way to do this? I like this more than the old way, but still.
-	HeroClass(String title, String spritesheet, MeleeWeapon startingMelee, Class<?extends Bag> bagClass,
+	HeroClass(String title, String spritesheet, Class<?extends MeleeWeapon> meleeClass, Class<?extends Bag> bagClass,
 			  Class<?extends Potion> idPotion, Class<?extends Scroll> idScroll, Badge masteryBadge,
 			  HeroSubClass...subClasses ) {
 		this.title = title;
 		this.spritesheet = spritesheet;
-		this.startingMelee = startingMelee;
+		this.meleeClass = meleeClass;
 		this.bagClass = bagClass;
 		this.subClasses = subClasses;
 		this.idPotion = idPotion;
@@ -149,9 +142,6 @@ public enum HeroClass {
 
 	public void initHero( Hero hero ) {
 		hero.heroClass = this;
-
-		startingMelee.identify();
-		hero.belongings.weapon = startingMelee;
 
 		Item i = new ClothArmor().identify();
 
@@ -163,7 +153,10 @@ public enum HeroClass {
 			new SmallRation().collect();
 
 		new ScrollOfIdentify().identify();
+
 		try {
+			hero.belongings.weapon = (KindOfWeapon) meleeClass.newInstance().identify();
+
 			idPotion.newInstance().identify();
 			idScroll.newInstance().identify();
 
@@ -171,7 +164,11 @@ public enum HeroClass {
 		} catch (Exception e) {
 			LustrousPixelDungeon.reportException(e);
 		}
+
+		initClass(hero);
 	}
+
+	protected abstract void initClass(Hero hero);
 
 	public String unlockMsg() {
 		return Messages.get(HeroClass.class, title + "_unlock");

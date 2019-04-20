@@ -190,7 +190,7 @@ public class ChangesScene extends PixelScene {
 		new ChangeInfo(Version.v011.name, true);
 		new ChangeInfo("v0.1.1b",false).addButtons(
 				ChangeButton.misc("Mobs now avoid returning boomerangs if not amok"),
-				ChangeButton.bugfix("sad ghost always moving at 1x speed")
+				ChangeButton.bugfix("sad ghost always moving at 1x speed", "Various issues with mage's staff when starting a game")
 		);
 		new ChangeInfo("v0.1.1a",false).addButtons(
 		        new ChangeButton(new ItemSprite(new Glaive().enchant(new Dazzling())), "Dazzling",

@@ -106,7 +106,7 @@ public class WaterOfTransmutation extends WellWater {
 				n = (Wand)Generator.random(Category.WAND);
 			} while (Challenges.isItemBlocked(n) || n.getClass() == wandClass);
 			n.level(0);
-			staff.imbueWand(n, null);
+			staff.imbueWand(n);
 		}
 
 		return staff;
