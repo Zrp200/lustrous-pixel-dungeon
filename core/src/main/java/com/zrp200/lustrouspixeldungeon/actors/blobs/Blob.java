@@ -192,8 +192,10 @@ public class Blob extends Actor {
 	protected abstract class EvolveCallBack {
 		protected int cell, x, y;
 		protected boolean observe = false;
+
 		protected abstract void call();
-		public final void affectCell(int x, int y) {
+
+		private void affectCell(int x, int y) {
 			this.x = x;
 			this.y = y;
 			cell = level.pointToCell(new Point(x, y));
@@ -201,15 +203,18 @@ public class Blob extends Actor {
 		}
 	}
 
-	protected void applyToBlobArea(EvolveCallBack callback) {
+	protected void applyToBlobArea(int offset, EvolveCallBack callback) {
 		boolean observe = false; // for uh, technical things
-		for(int x = area.left-1; x <= area.right; x++) {
-			for(int y = area.top-1; y <= area.bottom; y++) {
+		for(int x = area.left-1+offset; x <= area.right-offset; x++) {
+			for(int y = area.top-1+offset; y <= area.bottom-offset; y++) {
 				callback.affectCell(x,y);
 				observe = observe || callback.observe;
 			}
 		}
 		if(observe) Dungeon.observe();
+	}
+	protected final void applyToBlobArea(EvolveCallBack callBack) {
+		applyToBlobArea(0, callBack);
 	}
 
 	public void seed( Level level, int cell, int amount ) {
@@ -229,7 +234,7 @@ public class Blob extends Actor {
 		volume -= amount;
 	}
 	
-	public void clear( int cell ) {
+	public final void clear( int cell ) {
 		clear(cell, Integer.MAX_VALUE);
 	}
 
@@ -269,12 +274,12 @@ public class Blob extends Actor {
 		}
 	}
 
+	public int volumeAt(int cell) {
+		return volume != 0 ? cur[cell] : 0;
+	}
+
 	public static int volumeAt( int cell, Class<? extends Blob> type){
 		Blob gas = level.blobs.get( type );
-		if (gas == null || gas.volume == 0) {
-			return 0;
-		} else {
-			return gas.cur[cell];
-		}
+		return gas != null ? gas.volumeAt(cell) : 0;
 	}
 }

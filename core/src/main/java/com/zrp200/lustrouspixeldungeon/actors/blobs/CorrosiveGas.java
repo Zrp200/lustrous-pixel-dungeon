@@ -22,8 +22,6 @@
 package com.zrp200.lustrouspixeldungeon.actors.blobs;
 
 import com.watabou.utils.Bundle;
-import com.zrp200.lustrouspixeldungeon.Dungeon;
-import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Corrosion;
@@ -31,7 +29,7 @@ import com.zrp200.lustrouspixeldungeon.effects.BlobEmitter;
 import com.zrp200.lustrouspixeldungeon.effects.Speck;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 
-public class CorrosiveGas extends Blob {
+public class CorrosiveGas extends Gas {
 
 	//FIXME should have strength per-cell
 	private int strength = 0;
@@ -39,29 +37,22 @@ public class CorrosiveGas extends Blob {
 	@Override
 	protected void evolve() {
 		super.evolve();
-
-		if (volume == 0){
+		if(volume == 0) {
 			strength = 0;
-		} else {
-			Char ch;
-			int cell;
-
-			for (int i = area.left; i < area.right; i++){
-				for (int j = area.top; j < area.bottom; j++){
-					cell = i + j*Dungeon.level.width();
-					if (cur[cell] > 0 && (ch = Actor.findChar( cell )) != null) {
-						if (!ch.isImmune(this.getClass()))
-							Buff.prolong(ch, Corrosion.class, 2f).setDamage(strength);
-					}
-				}
-			}
 		}
 	}
 
-	public CorrosiveGas setStrength(int str){
-		if (str > strength) {
-			strength = str;
+	@Override
+	protected void affectChar(Char ch) {
+		if(volume == 0 || strength == 0) {
+			strength = 0;
+			return;
 		}
+		Buff.prolong(ch, Corrosion.class, 2f).setDamage(strength);
+	}
+
+	public CorrosiveGas setStrength(int str){
+		strength = Math.max(strength, str);
 		return this;
 	}
 

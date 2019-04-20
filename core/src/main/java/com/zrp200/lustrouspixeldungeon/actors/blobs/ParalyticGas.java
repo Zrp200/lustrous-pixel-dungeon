@@ -21,49 +21,28 @@
 
 package com.zrp200.lustrouspixeldungeon.actors.blobs;
 
-import com.zrp200.lustrouspixeldungeon.Dungeon;
-import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Paralysis;
 import com.zrp200.lustrouspixeldungeon.effects.BlobEmitter;
 import com.zrp200.lustrouspixeldungeon.effects.Speck;
-import com.zrp200.lustrouspixeldungeon.messages.Messages;
 
-public class ParalyticGas extends Blob {
+public class ParalyticGas extends Gas {
 	
 	{
 		//acts after mobs, to give them a chance to resist paralysis
 		actPriority = MOB_PRIO - 1;
 	}
-	
-	@Override
-	protected void evolve() {
-		super.evolve();
-		
-		Char ch;
-		int cell;
 
-		for (int i = area.left; i < area.right; i++) {
-			for (int j = area.top; j < area.bottom; j++) {
-				cell = i + j * Dungeon.level.width();
-				if (cur[cell] > 0 && (ch = Actor.findChar(cell)) != null) {
-					if (!ch.isImmune(this.getClass()))
-						Buff.prolong(ch, Paralysis.class, Paralysis.DURATION);
-				}
-			}
-		}
+	@Override
+	protected void affectChar(Char ch) {
+		Buff.prolong(ch, Paralysis.class, Paralysis.DURATION);
 	}
-	
+
 	@Override
 	public void use( BlobEmitter emitter ) {
 		super.use( emitter );
 		
 		emitter.pour( Speck.factory( Speck.PARALYSIS ), 0.4f );
-	}
-	
-	@Override
-	public String tileDesc() {
-		return Messages.get(this, "desc");
 	}
 }

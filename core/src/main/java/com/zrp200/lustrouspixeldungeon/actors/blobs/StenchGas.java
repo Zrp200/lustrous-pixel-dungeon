@@ -21,8 +21,6 @@
 
 package com.zrp200.lustrouspixeldungeon.actors.blobs;
 
-import com.zrp200.lustrouspixeldungeon.Dungeon;
-import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Paralysis;
@@ -30,24 +28,11 @@ import com.zrp200.lustrouspixeldungeon.effects.BlobEmitter;
 import com.zrp200.lustrouspixeldungeon.effects.Speck;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 
-public class StenchGas extends Blob {
+public class StenchGas extends Gas {
 
 	@Override
-	protected void evolve() {
-		super.evolve();
-
-		Char ch;
-		int cell;
-
-		for (int i = area.left; i < area.right; i++){
-			for (int j = area.top; j < area.bottom; j++){
-				cell = i + j*Dungeon.level.width();
-				if (cur[cell] > 0 && (ch = Actor.findChar( cell )) != null) {
-					if (!ch.isImmune(this.getClass()))
-						Buff.prolong( ch, Paralysis.class, Paralysis.DURATION/5 );
-				}
-			}
-		}
+	protected void affectChar(Char ch) {
+		Buff.prolong( ch, Paralysis.class, Paralysis.DURATION/5 );
 	}
 
 	@Override

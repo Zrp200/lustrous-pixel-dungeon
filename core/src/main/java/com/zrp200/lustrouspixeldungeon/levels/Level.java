@@ -643,11 +643,8 @@ public abstract class Level implements Bundlable {
 		level.avoid[cell]			= (flags & Terrain.AVOID) != 0;
 		level.pit[cell]			    = (flags & Terrain.PIT) != 0;
 		level.water[cell]			= terrain == Terrain.WATER;
-		
-		SmokeScreen s = (SmokeScreen)level.blobs.get(SmokeScreen.class);
-		if (s != null && s.volume > 0){
-			level.losBlocking[cell] = level.losBlocking[cell] || s.cur[cell] > 0;
-		}
+
+		level.losBlocking[cell] = level.losBlocking[cell] || Blob.volumeAt(cell,SmokeScreen.class) > 0;
 	}
 	
 	public Heap drop( Item item, int cell ) {
@@ -995,10 +992,10 @@ public abstract class Level implements Bundlable {
 
 	//returns true if the input is a valid tile within the level
 	public boolean insideMap( int tile ){
-				//top and bottom row and beyond
-		return !((tile < width || tile >= length - width) ||
-				//left and right column
-				(tile % width == 0 || tile % width == width-1));
+	        //top and bottom row and beyond
+        return tile >= width && tile < length - width
+            //left and right column
+            && tile % width != 0 && tile % width != width - 1;
 	}
 
 	public Point cellToPoint( int cell ){

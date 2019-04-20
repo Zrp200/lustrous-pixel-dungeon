@@ -34,12 +34,9 @@ public class StormCloud extends Blob {
 	@Override
 	protected void evolve() {
 		super.evolve();
-		
-		int cell;
-		
-		for (int i = area.left; i < area.right; i++){
-			for (int j = area.top; j < area.bottom; j++){
-				cell = i + j*Dungeon.level.width();
+		applyToBlobArea(1, new EvolveCallBack() {
+			@Override
+			protected void call() {
 				if (off[cell] > 0) {
 					int terr = Dungeon.level.map[cell];
 					if (terr == Terrain.EMPTY || terr == Terrain.GRASS ||
@@ -55,7 +52,7 @@ public class StormCloud extends Blob {
 					}
 				}
 			}
-		}
+		});
 	}
 	
 	@Override

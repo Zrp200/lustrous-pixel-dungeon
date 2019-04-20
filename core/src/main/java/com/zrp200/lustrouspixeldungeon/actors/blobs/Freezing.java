@@ -38,31 +38,24 @@ public class Freezing extends Blob {
 	
 	@Override
 	protected void evolve() {
+		final Fire fire = (Fire)Dungeon.level.blobs.get( Fire.class );
 		
-		int cell;
-		
-		Fire fire = (Fire)Dungeon.level.blobs.get( Fire.class );
-		
-		for (int i = area.left-1; i <= area.right; i++) {
-			for (int j = area.top-1; j <= area.bottom; j++) {
-				cell = i + j*Dungeon.level.width();
-				if (cur[cell] > 0) {
-					
-					if (fire != null && fire.volume > 0 && fire.cur[cell] > 0){
-						fire.clear(cell);
-						off[cell] = cur[cell] = 0;
-						continue;
-					}
-					
+		applyToBlobArea(new EvolveCallBack() {
+			@SuppressWarnings("ConstantConditions")
+			@Override
+			protected void call() {
+				if (cur[cell] <= 0) {
+					off[cell] = 0;
+				} else if (volumeAt(cell,Fire.class) > 0){
+					fire.clear(cell);
+					off[cell] = cur[cell] = 0;
+				} else {
 					Freezing.freeze(cell);
-					
 					off[cell] = cur[cell] - 1;
 					volume += off[cell];
-				} else {
-					off[cell] = 0;
 				}
 			}
-		}
+		});
 	}
 	
 	public static void freeze( int cell ){

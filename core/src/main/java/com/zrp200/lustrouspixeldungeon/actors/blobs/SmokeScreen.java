@@ -21,27 +21,24 @@
 
 package com.zrp200.lustrouspixeldungeon.actors.blobs;
 
-import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.effects.BlobEmitter;
 import com.zrp200.lustrouspixeldungeon.effects.Speck;
 import com.zrp200.lustrouspixeldungeon.levels.Level;
 import com.zrp200.lustrouspixeldungeon.levels.Terrain;
+
+import static com.zrp200.lustrouspixeldungeon.Dungeon.level;
 
 public class SmokeScreen extends Blob {
 	
 	@Override
 	protected void evolve() {
 		super.evolve();
-		
-		int cell;
-		
-		Level l = Dungeon.level;
-		for (int i = area.left; i < area.right; i++){
-			for (int j = area.top; j < area.bottom; j++){
-				cell = i + j*l.width();
-				l.losBlocking[cell] = off[cell] > 0 || (Terrain.flags[l.map[cell]] & Terrain.LOS_BLOCKING) != 0;
+		applyToBlobArea(1, new EvolveCallBack() {
+			@Override
+			protected void call() {
+				level.losBlocking[cell] = off[cell] > 0 || (Terrain.flags[level.map[cell]] & Terrain.LOS_BLOCKING) != 0;
 			}
-		}
+		});
 	}
 	
 	@Override
@@ -51,16 +48,16 @@ public class SmokeScreen extends Blob {
 	}
 	
 	@Override
-	public void clear(int cell) {
-		super.clear(cell);
-		Level l = Dungeon.level;
+	public void clear(int cell, int amount) {
+		super.clear(cell, amount);
+		Level l = level;
 		l.losBlocking[cell] = cur[cell] > 0 || (Terrain.flags[l.map[cell]] & Terrain.LOS_BLOCKING) != 0;
 	}
 	
 	@Override
 	public void fullyClear() {
 		super.fullyClear();
-		Dungeon.level.buildFlagMaps();
+		level.buildFlagMaps();
 	}
 	
 }

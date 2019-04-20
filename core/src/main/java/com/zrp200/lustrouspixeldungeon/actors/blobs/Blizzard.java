@@ -31,34 +31,29 @@ public class Blizzard extends Blob {
 	@Override
 	protected void evolve() {
 		super.evolve();
+
+		final Fire fire 		= 	(Fire)		Dungeon.level.blobs.get( Fire.class );
+		final Freezing freeze 	=	(Freezing)	Dungeon.level.blobs.get( Freezing.class );
+		final Inferno inf 		= 	(Inferno)	Dungeon.level.blobs.get( Inferno.class );
 		
-		int cell;
-		
-		Fire fire = (Fire)Dungeon.level.blobs.get( Fire.class );
-		Freezing freeze = (Freezing)Dungeon.level.blobs.get( Freezing.class );
-		
-		Inferno inf = (Inferno)Dungeon.level.blobs.get( Inferno.class );
-		
-		for (int i = area.left; i < area.right; i++) {
-			for (int j = area.top; j < area.bottom; j++) {
-				cell = i + j * Dungeon.level.width();
-				if (cur[cell] > 0) {
-					
-					if (fire != null)   fire.clear(cell);
-					if (freeze != null) freeze.clear(cell);
-					
-					if (inf != null && inf.volume > 0 && inf.cur[cell] > 0){
-						inf.clear(cell);
-						off[cell] = cur[cell] = 0;
-						continue;
-					}
-					
+		applyToBlobArea(1, new EvolveCallBack() {
+			@Override
+			protected void call() {
+				if (cur[cell] <= 0) {
+					return;
+				}
+				if (fire != null)   fire.clear(cell);
+				if (freeze != null) freeze.clear(cell);
+
+				if (inf != null && inf.volume > 0 && inf.cur[cell] > 0){
+					inf.clear(cell);
+					off[cell] = cur[cell] = 0;
+				} else {
 					Freezing.freeze(cell);
 					Freezing.freeze(cell);
-					
 				}
 			}
-		}
+		});
 	}
 	
 	@Override

@@ -21,10 +21,8 @@
 
 package com.zrp200.lustrouspixeldungeon.actors.blobs;
 
-import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Badges;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
-import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.effects.BlobEmitter;
@@ -32,30 +30,13 @@ import com.zrp200.lustrouspixeldungeon.effects.Speck;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.utils.GLog;
 
-public class ToxicGas extends Blob implements Hero.Doom {
+public class ToxicGas extends Gas implements Hero.Doom {
 
 	@Override
-	protected void evolve() {
-		super.evolve();
-
-		int damage = 1 + Dungeon.depth/5;
-
-		Char ch;
-		int cell;
-
-		for (int i = area.left; i < area.right; i++){
-			for (int j = area.top; j < area.bottom; j++){
-				cell = i + j*Dungeon.level.width();
-				if (cur[cell] > 0 && (ch = Actor.findChar( cell )) != null) {
-					if (!ch.isImmune(this.getClass())) {
-
-						ch.damage(damage, this);
-					}
-				}
-			}
-		}
+	protected void affectChar(Char ch) {
+		ch.damage(1+Dungeon.depth/5,this);
 	}
-	
+
 	@Override
 	public void use( BlobEmitter emitter ) {
 		super.use( emitter );

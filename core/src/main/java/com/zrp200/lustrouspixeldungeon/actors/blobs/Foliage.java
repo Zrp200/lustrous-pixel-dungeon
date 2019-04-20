@@ -32,36 +32,33 @@ import com.zrp200.lustrouspixeldungeon.levels.Terrain;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
 
+import static com.zrp200.lustrouspixeldungeon.Dungeon.level;
+
 public class Foliage extends Blob {
-	
+
+	private boolean visible = false;
 	@Override
 	protected void evolve() {
-
-		int[] map = Dungeon.level.map;
-		
-		boolean visible = false;
-
-		int cell;
-		for (int i = area.left; i < area.right; i++) {
-			for (int j = area.top; j < area.bottom; j++) {
-				cell = i + j*Dungeon.level.width();
+		visible = false;
+		applyToBlobArea(1, new EvolveCallBack() {
+			@Override
+			protected void call() {
 				if (cur[cell] > 0) {
 
 					off[cell] = cur[cell];
 					volume += off[cell];
 
-					if (map[cell] == Terrain.EMBERS) {
-						map[cell] = Terrain.GRASS;
+					if (level.map[cell] == Terrain.EMBERS) {
+						level.map[cell] = Terrain.GRASS;
 						GameScene.updateMap(cell);
 					}
-
-					visible = visible || Dungeon.level.heroFOV[cell];
+					visible = visible || level.heroFOV[cell];
 
 				} else {
 					off[cell] = 0;
 				}
 			}
-		}
+		});
 		
 		Hero hero = Dungeon.hero;
 		if (hero.isAlive() && hero.visibleEnemies() == 0 && cur[hero.pos] > 0) {
