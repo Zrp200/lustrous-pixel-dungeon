@@ -110,7 +110,7 @@ public class Chaotic extends WeaponCurse {
             add(new WeaponCurse() {
                 @Override
                 public int proc(Weapon weapon, Char attacker, Char defender, int damage) {
-                    return Random.Int(3) >= 1 // a crude way of halving repulsion proc rate
+                    return Random.Int(3) >= 1 // a crude way of reducing repulsion proc rate by 1/3
                         ? glyphToOffensiveCurse(Repulsion.class).proc(weapon, attacker, defender, damage)
                         : damage;
                 }

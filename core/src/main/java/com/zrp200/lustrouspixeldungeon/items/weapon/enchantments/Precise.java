@@ -37,7 +37,7 @@ public class Precise extends Weapon.Enchantment {
 	}
 	
 	//called from attackSkill in Hero, Statue, and GhostHero
-	public static boolean rollToGuaranteeHit( Weapon weapon, Char owner ){
+	public static boolean rollToGuaranteeHit( Weapon weapon, Char owner ) {
 		// lvl 0 - 13%
 		// lvl 1 - 22%
 		// lvl 2 - 30%
