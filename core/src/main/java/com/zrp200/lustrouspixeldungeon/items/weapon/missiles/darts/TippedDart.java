@@ -61,11 +61,8 @@ public abstract class TippedDart extends Dart {
 
 
 	private Dart untip() {
-		Dart d = new Dart();
-		d.quantity(quantity);
-		d.level( level() );
-		d.enchantment = enchantment;
-		return d;
+		reset();
+		return (Dart) new Dart().emulate(this);
 	}
 
 	@Override

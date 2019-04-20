@@ -189,8 +189,17 @@ public class ChangesScene extends PixelScene {
 	private void add011Changes() {
 		new ChangeInfo(Version.v011.name, true);
 		new ChangeInfo("v0.1.1b",false).addButtons(
-				ChangeButton.misc("Mobs now avoid returning boomerangs if not amok"),
-				ChangeButton.bugfix("sad ghost always moving at 1x speed", "Various issues with mage's staff when starting a game")
+				ChangeButton.misc(
+				        "Mobs now avoid returning boomerangs if not amok",
+                        "Blazing burning duration now matches shattered exactly; 4, down from 6.",
+                        "Adjusted swift description to better indicate wand option"
+                ),
+				ChangeButton.bugfix(
+				        "sad ghost always moving at 1x speed",
+                        "Various issues with mage's staff when starting a game",
+                        "Blooming rooting non-enemy targets for 2 turns instead of one turn",
+                        "Tipped darts temporarily hiding enchantment when becoming untipped.",
+                        "Formatting error with shields and typical blocking")
 		);
 		new ChangeInfo("v0.1.1a",false).addButtons(
 		        new ChangeButton(new ItemSprite(new Glaive().enchant(new Dazzling())), "Dazzling",

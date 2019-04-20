@@ -56,12 +56,8 @@ public class Blooming extends Weapon.Enchantment {
 				positions.add(i);
 			}
 			Random.shuffle(positions);
-			for (int i : positions) {
-				if (plantGrass(defender.pos + i)) {
-					if ((defender = Actor.findChar(defender.pos + i)) != null)
-						Buff.prolong(defender, Roots.class, 2);
-					break;
-				}
+			for (int i : positions) if (plantGrass(defender.pos + i)) {
+				break;
 			}
 		}
 		return damage;
@@ -75,7 +71,7 @@ public class Blooming extends Weapon.Enchantment {
 			GameScene.updateMap(cell);
 			CellEmitter.get( cell ).burst( LeafParticle.LEVEL_SPECIFIC, 4 );
 			Char occupant = Actor.findChar(cell);
-			if(occupant != null) Buff.prolong(occupant, Roots.class, 1f);
+			if(occupant != null) Buff.prolong(occupant, Roots.class, Actor.TICK);
 			return true;
 		}
 		return false;
