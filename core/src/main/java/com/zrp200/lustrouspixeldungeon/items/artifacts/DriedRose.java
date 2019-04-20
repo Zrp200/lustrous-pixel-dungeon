@@ -65,6 +65,7 @@ import com.zrp200.lustrouspixeldungeon.utils.GLog;
 import com.zrp200.lustrouspixeldungeon.windows.IconTitle;
 import com.zrp200.lustrouspixeldungeon.windows.WndBag;
 import com.zrp200.lustrouspixeldungeon.windows.WndBlacksmith;
+import com.zrp200.lustrouspixeldungeon.windows.WndItem;
 import com.zrp200.lustrouspixeldungeon.windows.WndQuest;
 
 import java.util.ArrayList;
@@ -120,7 +121,8 @@ public class DriedRose extends Artifact {
 
 		if (action.equals(AC_SUMMON)) {
 
-			if (ghost != null)              GLog.i( Messages.get(this, "spawned") );
+			if (!Ghost.Quest.completed())   GameScene.show(new WndItem(null, this, true));
+			else if (ghost != null)         GLog.i( Messages.get(this, "spawned") );
 			else if (!isEquipped( hero ))   GLog.i( Messages.get(Artifact.class, "need_to_equip") );
 			else if (charge != chargeCap)   GLog.i( Messages.get(this, "no_charge") );
 			else if (cursed)                GLog.i( Messages.get(this, "cursed") );
@@ -538,7 +540,7 @@ public class DriedRose extends Artifact {
 				return super.defenseProc(enemy, damage);
 			}
 		}
-		
+
 		@Override
 		public float speed() {
 			float speed = super.speed();

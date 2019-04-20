@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2018 Evan Debenham
+ * Copyright (C) 2014-2019 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,7 +41,7 @@ public class Blocking extends Weapon.Enchantment {
 		
 		int level = Math.max( 0, weapon.level() );
 		
-		Buff.prolong(attacker, BlockBuff.class, 1 + level/2).setBlocking(level + 1);
+		Buff.prolong(attacker, BlockBuff.class, 2 + level/2).setBlocking(level + 1);
 		
 		return damage;
 	}

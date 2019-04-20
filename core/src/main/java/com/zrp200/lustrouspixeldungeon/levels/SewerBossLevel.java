@@ -26,6 +26,7 @@ import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Bones;
 import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.Goo;
+import com.zrp200.lustrouspixeldungeon.actors.mobs.Mob;
 import com.zrp200.lustrouspixeldungeon.items.Heap;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.levels.builders.Builder;
@@ -109,6 +110,11 @@ public class SewerBossLevel extends SewerLevel {
 		mobs.add( boss );
 	}
 	
+	@Override
+	public Mob createMob() {
+		return null;
+	}
+
 	public Actor respawner() {
 		return null;
 	}

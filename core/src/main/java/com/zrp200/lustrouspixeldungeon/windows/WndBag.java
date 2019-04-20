@@ -178,7 +178,7 @@ public class WndBag extends WndTabbed {
 		EQUIPMENT {
 			@Override
 			public boolean isValid(Item item) {
-				return item instanceof EquipableItem;
+				return item instanceof EquipableItem || item instanceof Wand;
 			}
 		},
 		TRANMSUTABLE {

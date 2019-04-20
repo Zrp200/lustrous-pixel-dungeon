@@ -36,9 +36,9 @@ public class Vampiric extends Weapon.Enchantment {
 	@Override
 	public int proc( Weapon weapon, Char attacker, Char defender, int damage ) {
 		
-		//heals for 0-20% of damage dealt, based on missing HP, ultimately normally distributed
+		//heals for up to 30% of damage dealt, based on missing HP, ultimately normally distributed
 		float 	missingPercent = (attacker.HT - attacker.HP) / (float)attacker.HT,
-				maxHeal = missingPercent * .1f * 2,
+				maxHeal = (.025f + missingPercent * .125f) * 2, // min max heal is .025%, consistent with shattered.
 				healPercent = 0;
 		int tries = weapon.level();
 		do {

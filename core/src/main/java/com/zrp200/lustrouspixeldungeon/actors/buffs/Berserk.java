@@ -43,7 +43,7 @@ public class Berserk extends Buff {
 
 	private float levelRecovery;
 
-	
+
 	private float power = 0;
 
 	private static final String STATE = "state";
@@ -73,9 +73,16 @@ public class Berserk extends Buff {
 	@Override
 	public boolean act() {
 		if (berserking()){
-			WarriorShield buff = target.buff(WarriorShield.class);
+			ShieldBuff buff = target.buff(WarriorShield.class);
 			if (target.HP <= 0) {
-				buff.absorbDamage((int)Math.ceil(target.shielding() * 0.05f)); //20 turns max, rather than 10.
+			    int damage = (int) Math.ceil(target.shielding() * .05f); // 20 turns max, up from 10
+				if (buff != null && buff.shielding() > 0) {
+                    buff.absorbDamage(damage);
+				} else {
+					//if there is no shield buff, or it is empty, then try to remove from other shielding buffs
+					buff = target.buff(ShieldBuff.class);
+					if (buff != null) buff.absorbDamage(damage);
+				}
 				if (target.shielding() <= 0) {
 					target.die(this);
 				}
@@ -83,12 +90,12 @@ public class Berserk extends Buff {
 				state = State.RECOVERING;
 				levelRecovery = LEVEL_RECOVER_START;
 				BuffIndicator.refreshHero();
-				buff.absorbDamage(buff.shielding());
+				if (buff != null) buff.absorbDamage(buff.shielding());
 				power = 0f;
 			}
 		} else {
 			power -= Math.max(0.1f, power) * 0.1f * Math.pow( ( target.HP / (float) target.HT ), 2); // -10% rage per turn at full hp
-			
+
 			if (power <= 0) switch(state) {
 				case RECOVERING:
 					power = 0f;
@@ -207,6 +214,6 @@ public class Berserk extends Buff {
 				break;
 		}
 		return desc;
-		
+
 	}
 }
