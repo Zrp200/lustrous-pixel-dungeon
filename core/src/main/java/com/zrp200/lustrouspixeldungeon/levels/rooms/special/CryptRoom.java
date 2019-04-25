@@ -33,6 +33,7 @@ import com.zrp200.lustrouspixeldungeon.items.keys.IronKey;
 import com.zrp200.lustrouspixeldungeon.levels.Level;
 import com.zrp200.lustrouspixeldungeon.levels.Terrain;
 import com.zrp200.lustrouspixeldungeon.levels.painters.Painter;
+import com.zrp200.lustrouspixeldungeon.levels.traps.CursingTrap;
 
 public class CryptRoom extends SpecialRoom {
 
@@ -68,28 +69,21 @@ public class CryptRoom extends SpecialRoom {
 			cy = top + 2;
 		}
 		
-		level.drop( prize( level ), cx + cy * level.width() ).type = Heap.Type.TOMB;
+		level.drop( prize(), cx + cy * level.width() ).type = Heap.Type.TOMB;
 	}
 	
-	private static Item prize( Level level ) {
+	private static Item prize() {
 		
 		//1 floor set higher than normal
 		Armor prize = Generator.randomArmor( (Dungeon.depth / 5) + 1);
-		
+
 		if (Challenges.isItemBlocked(prize)){
 			return new Gold().random();
 		}
 
 		//if it isn't already cursed, give it a free upgrade
-		if (!prize.cursed){
-			prize.upgrade();
-			//curse the armor, unless it has a glyph
-			if (!prize.hasGoodGlyph()){
-				prize.inscribe(Armor.Glyph.randomCurse());
-			}
-		}
-		prize.cursed = prize.cursedKnown = true;
-		prize.glyphKnown = false;
+		if (!prize.cursed) prize.upgrade();
+		CursingTrap.curse(prize); // does all the logic for me.
 		
 		return prize;
 	}

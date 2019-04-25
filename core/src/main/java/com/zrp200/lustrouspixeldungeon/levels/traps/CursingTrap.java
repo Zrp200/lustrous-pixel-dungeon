@@ -118,21 +118,26 @@ public class CursingTrap extends Trap {
 		GLog.n( Messages.get(CursingTrap.class, "curse") );
 	}
 
-	private static void curse(Item item){
+	public static Item curse(Item item){
 		item.cursed = item.cursedKnown = true;
 
 		if (item instanceof Weapon){
 			Weapon w = (Weapon) item;
 			if (!w.hasEnchant()){
 				w.enchantment = Weapon.Enchantment.randomCurse(); // this bypasses missile weapon mechanics
-				Weapon.updateQuickslot();
+				if(w.isEquipped(Dungeon.hero) && w.enchantKnown) w.revealEnchant();
+				else w.enchantKnown = false;
 			}
 		}
 		if (item instanceof Armor){
 			Armor a = (Armor) item;
 			if (a.glyph == null){
-				a.inscribe(Armor.Glyph.randomCurse(),a.glyphKnown && a.isEquipped(Dungeon.hero));
+				a.glyph = Armor.Glyph.randomCurse();
+				if(a.isEquipped(Dungeon.hero) && a.glyphKnown) a.revealGlyph();
+				else a.glyphKnown = false;
 			}
 		}
+		Item.updateQuickslot();
+		return item;
 	}
 }
