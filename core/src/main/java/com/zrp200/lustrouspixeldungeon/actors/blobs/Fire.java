@@ -23,7 +23,6 @@ package com.zrp200.lustrouspixeldungeon.actors.blobs;
 
 import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
-import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Burning;
 import com.zrp200.lustrouspixeldungeon.effects.BlobEmitter;
 import com.zrp200.lustrouspixeldungeon.effects.particles.FlameParticle;
@@ -33,6 +32,9 @@ import com.zrp200.lustrouspixeldungeon.levels.Terrain;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.plants.Plant;
 import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
+
+import java.util.HashMap;
+import java.util.Set;
 
 import static com.zrp200.lustrouspixeldungeon.Dungeon.level;
 
@@ -111,9 +113,35 @@ public class Fire extends Blob {
 		}
 	}
 
+	private static final HashMap<Integer, Integer> igniteAmounts = new HashMap<Integer, Integer>() {
+		{ // this is a fun way to use a hash map.
+			put(Terrain.GRASS,2);
+			put(Terrain.FURROWED_GRASS, 5);
+			put(Terrain.HIGH_GRASS, 5);
+			put(Terrain.OPEN_DOOR, 4);
+			put(Terrain.DOOR, 4);
+			put(Terrain.BARRICADE, 5);
+			put(Terrain.BOOKSHELF, 5);
+		}
+
+		@Override
+		public Integer get(Object key) {
+			try {
+				return super.get(level.map[(Integer)key]);
+			} catch (NullPointerException e) {
+				if(level.flamable[(Integer) key]) {
+					return 4;
+				}
+				return null;
+			}
+		}
+	};
+	public static final Set<Integer> flammableTerrain = igniteAmounts.keySet();
+
+	@SuppressWarnings("ConstantConditions")
 	@Override
 	public void seed(Level level, int cell, int amount) {
-		if(level.flamable[cell]) amount = 4; // ignite
+		if(igniteAmounts.get(cell) > 0) amount = igniteAmounts.get(cell);
 		super.seed(level, cell, amount);
 	}
 
