@@ -420,7 +420,7 @@ public class Hero extends Char {
 	public boolean canSurpriseAttack(){
 		if (!(belongings.weapon instanceof Weapon))    return true;
 		if (STR() < ((Weapon)belongings.weapon).STRReq()) return false;
-        return !(belongings.weapon instanceof Flail);
+        return weapon().canSurpriseAttack();
     }
 
 	public boolean canAttack(Char enemy){

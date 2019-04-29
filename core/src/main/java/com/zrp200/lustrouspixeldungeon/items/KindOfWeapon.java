@@ -81,6 +81,10 @@ abstract public class KindOfWeapon extends EquipableItem {
 		}
 	}
 
+	public boolean canSurpriseAttack() {
+		return true;
+	}
+
 	public int min(){
 		return min(level());
 	}

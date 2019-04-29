@@ -30,7 +30,11 @@ public class Flail extends MeleeWeapon {
 
 		tier = 4;
 		ACC = 0.9f; //0.9x accuracy
-		//also cannot surprise attack, see Hero.canSurpriseAttack
+	}
+
+	@Override
+	public boolean canSurpriseAttack() {
+		return false;
 	}
 
 	@Override

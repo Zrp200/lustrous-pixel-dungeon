@@ -91,7 +91,6 @@ public class Boomerang extends MissileWeapon {
 	private void terminateFlight() {
 		if(returning != null) {
 			returning.detach();
-			returning = null;
 		}
 	}
 
@@ -117,6 +116,11 @@ public class Boomerang extends MissileWeapon {
 			tier++;
 		}
 		return value;
+	}
+
+	@Override
+	public boolean canSurpriseAttack() {
+		return !isReturning();
 	}
 
 	protected void onThrowComplete(final int cell) {
@@ -147,7 +151,7 @@ public class Boomerang extends MissileWeapon {
 
 	public static class Returning extends Buff {
 		{
-			actPriority = BLOB_PRIO;
+			actPriority = BLOB_PRIO; // between hero and mob
 		}
 
 		int depthOfOrigin = depth;
@@ -169,20 +173,35 @@ public class Boomerang extends MissileWeapon {
 		float distancePerTurn;
 		private Sprite sprite;
 		public Boomerang boomerang;
+		boolean moving;
 
 		Returning set(Boomerang boomerang, int from) { // use this to set up stuff
 			this.boomerang = boomerang;
 			Ballistica trajectory = new Ballistica(from,target.pos,Ballistica.STOP_TARGET);
 			distancePerTurn = Math.max(MIN_SPEED, trajectory.dist/TURNS_TO_RETURN);
 			path = new ArrayList<>(trajectory.subPath(0,trajectory.path.indexOf(trajectory.collisionPos)));
+			path.add(path.get(path.size()-1)); // should create a short "hover" I think.
 			pos = lastPos = path.remove(0);
+			moving = true;
 			sprite();
 			return this;
 		}
 
+		@Override
+		public void detach() {
+			moving = false;
+			boomerang.returning = null;
+			super.detach();
+		}
+
+		public int nextPos() {
+			if(path != null && !path.isEmpty()) return path.get(0);
+			else return pos;
+		}
+
 		public Sprite sprite() {
 			if(sprite == null) sprite = new Sprite(); // you'll never get a null from this
-			try { target.sprite.parent.add(sprite); } catch (NullPointerException ignored) {}
+			try { target.sprite.parent.add(sprite); } catch (NullPointerException ignored) { /* just give up and move on. */}
 			return sprite;
 		}
 		public void refreshSprite() {
@@ -217,6 +236,10 @@ public class Boomerang extends MissileWeapon {
 				return true;
 			}
 			if( path.isEmpty() ) {
+				if(moving) {
+					spend(TICK); // hover for a turn
+					return moving = false;
+				}
 				boomerang.drop(pos);
 				return true;
 			}
@@ -227,7 +250,7 @@ public class Boomerang extends MissileWeapon {
 		@Override
 		public boolean act() {
 			if(!isActive()) { // wait
-				spend(1);
+				spend(TICK);
 				return true;
 			}
 			if( killIfNeeded() ) return true;
@@ -253,7 +276,7 @@ public class Boomerang extends MissileWeapon {
 				HeroSubClass subClass = ((Hero)target).subClass;
 				try {
 					((Hero) target).subClass = HeroSubClass.NONE; // nope.
-					boomerang.rangeBoost = boomerang.adjacentPenalty = 1f; // nullify these
+					boomerang.rangeBoost = boomerang.adjacentPenalty = 0.95f; // nullify these
 
 					if (curUser.shoot(ch, boomerang)) {
 						boomerang.useDurability();
@@ -269,22 +292,24 @@ public class Boomerang extends MissileWeapon {
 		}
 
 		private static String
-			LAST_POS = "LASTPOS";
+				POS = "pos", LAST_POS = "LASTPOS",
+				DPT = "distancePerTurn", PATH = "path",
+				RANG = "boomerang", DOO = "depthOfOrigin";
 
 		@Override
 		public void storeInBundle(Bundle bundle) {
 			super.storeInBundle(bundle);
 
-			bundle.put("pos",pos);
+			bundle.put(POS,pos);
 			bundle.put(LAST_POS,lastPos);
-			bundle.put("distancePerTurn",distancePerTurn);
+			bundle.put(DPT,distancePerTurn);
 
 			int[] path = new int[this.path.size()];
 			for(int i=0;i<path.length;i++) path[i] = this.path.get(i);
-			bundle.put("path",path);
+			bundle.put(PATH,path);
 
-			bundle.put("boomerang",boomerang);
-			bundle.put("depthOfOrigin",depthOfOrigin);
+			bundle.put(RANG,boomerang);
+			bundle.put(DOO,depthOfOrigin);
 		}
 
 		@Override
@@ -292,13 +317,13 @@ public class Boomerang extends MissileWeapon {
 			super.restoreFromBundle(bundle);
 
 			path = new ArrayList<>();
-			for (int pos : bundle.getIntArray("path")) path.add(pos);
+			for (int pos : bundle.getIntArray(PATH)) path.add(pos);
 
-			pos = bundle.getInt("pos");
+			pos = bundle.getInt(POS);
 			lastPos = bundle.contains(LAST_POS) ? bundle.getInt(LAST_POS) : pos;
-			distancePerTurn = bundle.getInt("distancePerTurn");
-			boomerang = (Boomerang) bundle.get("boomerang");
-			depthOfOrigin = bundle.getInt("depthOfOrigin");
+			distancePerTurn = bundle.getInt(DPT);
+			boomerang = (Boomerang) bundle.get(RANG);
+			depthOfOrigin = bundle.getInt(DOO);
 		}
 
 		class Sprite extends MissileSprite { // yay multiple inheritance
