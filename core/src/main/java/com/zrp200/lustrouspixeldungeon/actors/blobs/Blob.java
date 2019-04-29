@@ -279,7 +279,10 @@ public class Blob extends Actor {
 	}
 
 	public static int volumeAt( int cell, Class<? extends Blob> type){
-		Blob gas = level.blobs.get( type );
-		return gas != null ? gas.volumeAt(cell) : 0;
+		try {
+			return level.blobs.get( type ).volumeAt(cell);
+		} catch (NullPointerException e) {
+			return 0;
+		}
 	}
 }
