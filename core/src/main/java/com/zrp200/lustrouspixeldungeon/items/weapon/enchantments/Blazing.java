@@ -54,7 +54,7 @@ public class Blazing extends Weapon.Enchantment {
 			if(!onFlamableTile) burnDuration /= 2;
 
 			if(alreadyBurning || Random.Float() < igniteChance) { // always ignites if target is already burning
-				Buff.prolong(defender, Burning.class, burnDuration);
+				Burning.reignite(target, burnDuration);
 				if(!alreadyBurning) damageMultiplier = 0; // no damage for initial ignition.
 			}
 

@@ -214,7 +214,7 @@ public abstract class Shaman extends Mob {
 		protected void applyZap() {
             enemy.sprite.centerEmitter().burst(FlameParticle.FACTORY, 3);
             applyZap( NormalIntRange(4,12) );
-			Buff.affect( enemy, Burning.class ).reignite();
+			Burning.reignite(enemy);
         }
     }
     public static class Frost extends Shaman {

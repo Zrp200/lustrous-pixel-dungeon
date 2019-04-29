@@ -110,11 +110,11 @@ public class CursedWand {
 							switch (Random.Int(2)){
 								case 0:
 									if (target != null)
-										Buff.affect(target, Burning.class).reignite();
+									Burning.reignite(target);
 									Buff.affect(user, Frost.class, Frost.duration(user) * Random.Float(3f, 5f));
 									break;
 								case 1:
-									Buff.affect(user, Burning.class).reignite();
+									Burning.reignite(user);
 									if (target != null)
 										Buff.affect(target, Frost.class, Frost.duration(target) * Random.Float(3f, 5f));
 									break;

@@ -75,7 +75,7 @@ public class Fire extends Blob {
 						GameScene.updateMap(cell);
 
 					}
-				} else if (volumeAt(cell,Freezing.class) <= 0) { // see if we ignite the cell
+				} else if (volumeAt(cell,Freezing.class) <= 0) { // see if we reignite the cell
 					if (cellFlammable
 							&& (cell > 0 && cur[cell-1] > 0
 							|| cur[cell+1] > 0
@@ -97,7 +97,7 @@ public class Fire extends Blob {
 	public static void burn( int pos ) {
 		Char ch = Actor.findChar( pos );
 		if (ch != null && !ch.isImmune(Fire.class)) {
-			Buff.affect( ch, Burning.class ).reignite();
+			Burning.reignite(ch);
 		}
 		
 		Heap heap = level.heaps.get( pos );

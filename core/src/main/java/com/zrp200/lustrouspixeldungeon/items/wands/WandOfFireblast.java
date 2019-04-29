@@ -80,7 +80,7 @@ public class WandOfFireblast extends DamageWand {
 				continue;
 			}
 			
-			//only ignite cells directly near caster if they are flammable
+			//only reignite cells directly near caster if they are flammable
 			if (!Dungeon.level.adjacent(bolt.sourcePos, cell)
 					|| Dungeon.level.flamable[cell]){
 				GameScene.add( Blob.seed( cell, 1+chargesPerCast(), Fire.class ) );
@@ -95,14 +95,14 @@ public class WandOfFireblast extends DamageWand {
 		for ( Char ch : affectedChars ){
 			processSoulMark(ch, chargesPerCast());
 			ch.damage(damageRoll(), this);
-			Buff.affect( ch, Burning.class ).reignite();
+			Burning.reignite(ch);
 			switch(chargesPerCast()){
-				case 1:
-					break; //no effects
+				// no effects for 1 charge
 				case 3:
 					Buff.affect(ch, Paralysis.class, 4f);
+					// fall through
 				case 2:
-					Buff.affect(ch, Cripple.class, 4f); break;
+					Buff.affect(ch, Cripple.class, 4f);
 			}
 		}
 	}

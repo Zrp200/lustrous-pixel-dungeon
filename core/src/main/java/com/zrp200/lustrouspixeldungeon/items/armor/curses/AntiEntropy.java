@@ -48,8 +48,8 @@ public class AntiEntropy extends Glyph {
 				Buff.prolong(attacker, Frost.class, Frost.duration(attacker) * Random.Float(0.5f, 1f));
 				CellEmitter.get(attacker.pos).start(SnowParticle.FACTORY, 0.2f, 6);
 			}
-			
-			Buff.affect( defender, Burning.class ).reignite();
+
+			Burning.reignite(defender);
 			defender.sprite.emitter().burst( FlameParticle.FACTORY, 5 );
 
 		}

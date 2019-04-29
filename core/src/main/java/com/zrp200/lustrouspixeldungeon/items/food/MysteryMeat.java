@@ -45,7 +45,7 @@ public class MysteryMeat extends Meat {
 		switch (Random.Int( 5 )) {
 			case 0:
 				GLog.w( Messages.get(MysteryMeat.class, "hot") );
-				Buff.affect( hero, Burning.class ).reignite();
+				Burning.reignite(hero);
 				break;
 			case 1:
 				GLog.w( Messages.get(MysteryMeat.class, "legs") );

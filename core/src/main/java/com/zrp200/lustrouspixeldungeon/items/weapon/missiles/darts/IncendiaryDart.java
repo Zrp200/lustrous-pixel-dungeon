@@ -25,7 +25,6 @@ import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.Blob;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.Fire;
-import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Burning;
 import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
@@ -47,7 +46,7 @@ public class IncendiaryDart extends TippedDart {
 	
 	@Override
 	public int proc( Char attacker, Char defender, int damage ) {
-		Buff.affect( defender, Burning.class ).reignite();
+		Burning.reignite(defender);
 		return super.proc( attacker, defender, damage );
 	}
 	

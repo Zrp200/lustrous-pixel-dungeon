@@ -133,7 +133,7 @@ public class Swarm extends Mob {
 			Buff.prolong(clone, activeBuff.getClass(),activeBuff.getLeft() / 2);
 			Buff.prolong(this, activeBuff.getClass(),activeBuff.getLeft() / 2);
 		}
-		if ( buff( Burning.class  ) != null) Buff.affect(clone, Burning.class).reignite();
+		if ( buff( Burning.class  ) != null) Burning.reignite(clone);
 		if ( buff(Corruption.class) != null) Buff.affect(clone, Corruption.class);
 
 		if (Dungeon.level.map[clone.pos] == Terrain.DOOR) Door.enter(clone.pos);
