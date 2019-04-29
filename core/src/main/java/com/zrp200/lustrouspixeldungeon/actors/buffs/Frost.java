@@ -30,7 +30,6 @@ import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.food.FrozenCarpaccio;
 import com.zrp200.lustrouspixeldungeon.items.food.MysteryMeat;
 import com.zrp200.lustrouspixeldungeon.items.potions.Potion;
-import com.zrp200.lustrouspixeldungeon.items.potions.PotionOfStrength;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.sprites.CharSprite;
 import com.zrp200.lustrouspixeldungeon.ui.BuffIndicator;
@@ -45,6 +44,7 @@ public class Frost extends FlavourBuff {
 	{
 		type = buffType.NEGATIVE;
 		announced = true;
+		fx = CharSprite.State.FROZEN;
 	}
 	
 	@Override
@@ -113,11 +113,7 @@ public class Frost extends FlavourBuff {
 		return BuffIndicator.FROST;
 	}
 
-	@Override
-	public void fx(boolean on) {
-		if (on) target.sprite.add(CharSprite.State.FROZEN);
-		else target.sprite.remove(CharSprite.State.FROZEN);
-	}
+
 
 
 	@Override

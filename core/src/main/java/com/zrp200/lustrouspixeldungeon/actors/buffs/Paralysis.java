@@ -36,6 +36,7 @@ public class Paralysis extends FlavourBuff {
 	{
 		type = buffType.NEGATIVE;
 		announced = true;
+		fx = CharSprite.State.PARALYSED;
 	}
 	
 	@Override
@@ -75,11 +76,7 @@ public class Paralysis extends FlavourBuff {
 		return BuffIndicator.PARALYSIS;
 	}
 
-	@Override
-	public void fx(boolean on) {
-		if (on) target.sprite.add(CharSprite.State.PARALYSED);
-		else target.sprite.remove(CharSprite.State.PARALYSED);
-	}
+
 
 	@Override
 	public String heroMessage() {

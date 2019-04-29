@@ -27,11 +27,15 @@ import com.zrp200.lustrouspixeldungeon.actors.Char;
 public abstract class ShieldBuff extends Buff {
 	
 	private int shielding;
+
+	public void requestUpdate() {
+		target.needsShieldUpdate = true;
+	}
 	
 	@Override
 	public boolean attachTo(Char target) {
 		if (super.attachTo(target)) {
-			target.needsShieldUpdate = true;
+			requestUpdate();
 			return true;
 		} else {
 			return false;
@@ -40,7 +44,7 @@ public abstract class ShieldBuff extends Buff {
 	
 	@Override
 	public void detach() {
-		target.needsShieldUpdate = true;
+		requestUpdate();
 		super.detach();
 	}
 	

@@ -40,6 +40,7 @@ public class Invisibility extends FlavourBuff {
 	{
 		type = buffType.POSITIVE;
 		announced = true;
+		fx = CharSprite.State.INVISIBLE;
 	}
 	
 	@Override
@@ -74,8 +75,7 @@ public class Invisibility extends FlavourBuff {
 
 	@Override
 	public void fx(boolean on) {
-		if (on) target.sprite.add( CharSprite.State.INVISIBLE );
-		else if (target.invisible == 0) target.sprite.remove( CharSprite.State.INVISIBLE );
+		if(on || target.invisible == 0) super.fx(on);
 	}
 
 	@Override

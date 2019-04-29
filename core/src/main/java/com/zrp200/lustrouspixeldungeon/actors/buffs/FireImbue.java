@@ -24,7 +24,7 @@ package com.zrp200.lustrouspixeldungeon.actors.buffs;
 import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
-import com.zrp200.lustrouspixeldungeon.effects.particles.FlameParticle;
+import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Blazing;
 import com.zrp200.lustrouspixeldungeon.levels.Level;
 import com.zrp200.lustrouspixeldungeon.levels.Terrain;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
@@ -51,8 +51,7 @@ public class FireImbue extends ActiveBuff {
 
 	public void proc(Char enemy){
 		if (Random.Int(2) == 0) {
-			Buff.affect(enemy, Burning.class).reignite();
-			enemy.sprite.emitter().burst(FlameParticle.FACTORY, 2);
+			Blazing.proc(enemy); // because why not
 		}
     }
 

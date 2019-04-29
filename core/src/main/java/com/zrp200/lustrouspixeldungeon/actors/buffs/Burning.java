@@ -25,6 +25,7 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Badges;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
+import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.Blob;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.Fire;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
@@ -45,23 +46,29 @@ import com.zrp200.lustrouspixeldungeon.utils.GLog;
 import java.util.ArrayList;
 
 public class Burning extends ActiveBuff implements Hero.Doom {
+
+	{
+		fx = CharSprite.State.BURNING;
+	}
 	
 	public static final float DURATION = 8f;
 
 	//for tracking burning of hero items
 	private int burnIncrement = 0;
 
+	public static Burning reignite(Char target, float duration) {
+		return Buff.prolong(target, Burning.class, duration);
+	}
+	public static Burning reignite(Char target) {
+		return Buff.prolong(target, Burning.class, DURATION);
+	}
+
+
 	private static final String BURN	= "burnIncrement";
 
 	{
 		type = buffType.NEGATIVE;
 		startGrey = 2;
-	}
-
-	@Override
-	protected void onAdd() {
-		reignite();
-		super.onAdd();
 	}
 
 	@Override
@@ -175,12 +182,6 @@ public class Burning extends ActiveBuff implements Hero.Doom {
 	@Override
 	public int icon() {
 		return BuffIndicator.FIRE;
-	}
-
-	@Override
-	public void fx(boolean on) {
-		if (on) target.sprite.add(CharSprite.State.BURNING);
-		else target.sprite.remove(CharSprite.State.BURNING);
 	}
 
 	@Override

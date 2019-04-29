@@ -110,8 +110,12 @@ public class Buff extends Actor implements Hero.Doom {
 	public void tintIcon( Image icon ){
 		//do nothing by default
 	}
+
+	protected CharSprite.State fx = null;
 	public void fx(boolean on) {
-		//do nothing by default
+		if(fx == null) return;
+		if (on) target.sprite.add(fx);
+		else target.sprite.remove(fx);
 	}
 
     public String heroMessage(){

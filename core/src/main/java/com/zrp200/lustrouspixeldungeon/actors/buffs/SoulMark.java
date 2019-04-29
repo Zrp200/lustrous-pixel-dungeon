@@ -32,17 +32,12 @@ public class SoulMark extends FlavourBuff {
 	{
 		type = buffType.NEGATIVE;
 		announced = true;
+		fx = CharSprite.State.MARKED;
 	}
 
 	@Override
 	public int icon() {
 		return BuffIndicator.CORRUPT;
-	}
-
-	@Override
-	public void fx(boolean on) {
-		if (on) target.sprite.add(CharSprite.State.MARKED);
-		else target.sprite.remove(CharSprite.State.MARKED);
 	}
 
 	@Override

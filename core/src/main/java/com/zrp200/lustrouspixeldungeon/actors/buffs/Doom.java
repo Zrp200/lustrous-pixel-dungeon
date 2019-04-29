@@ -30,12 +30,12 @@ public class Doom extends Buff {
 	{
 		type = buffType.NEGATIVE;
 		announced = true;
+		fx = CharSprite.State.DARKENED;
 	}
 	
 	@Override
 	public void fx(boolean on) {
-		if (on) target.sprite.add( CharSprite.State.DARKENED );
-		else if (target.invisible == 0) target.sprite.remove( CharSprite.State.DARKENED );
+		if(on || target.invisible == 0) super.fx(on);
 	}
 	
 	@Override

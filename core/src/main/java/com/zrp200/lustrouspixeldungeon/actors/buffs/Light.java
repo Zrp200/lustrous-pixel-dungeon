@@ -25,13 +25,14 @@ import com.watabou.noosa.Image;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
-import com.zrp200.lustrouspixeldungeon.sprites.CharSprite;
 import com.zrp200.lustrouspixeldungeon.ui.BuffIndicator;
+import static com.zrp200.lustrouspixeldungeon.sprites.CharSprite.State.ILLUMINATED;
 
 public class Light extends FlavourBuff {
 	
 	{
 		type = buffType.POSITIVE;
+		fx = ILLUMINATED;
 	}
 
 	public static final float DURATION	= 300f;
@@ -67,11 +68,7 @@ public class Light extends FlavourBuff {
 		greyIcon(icon, 20f, cooldown());
 	}
 
-	@Override
-	public void fx(boolean on) {
-		if (on) target.sprite.add(CharSprite.State.ILLUMINATED);
-		else target.sprite.remove(CharSprite.State.ILLUMINATED);
-	}
+
 
 	@Override
 	public String toString() {

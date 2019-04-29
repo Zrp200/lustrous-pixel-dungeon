@@ -40,6 +40,7 @@ public class Healing extends Buff {
 		actPriority = HERO_PRIO - 1;
 		
 		type = buffType.POSITIVE;
+		fx = CharSprite.State.HEALING;
 	}
 	
 	@Override
@@ -48,13 +49,13 @@ public class Healing extends Buff {
 		target.HP = Math.min(target.HT, target.HP + healingThisTick());
 		
 		healingLeft -= healingThisTick();
-		
+
 		if (healingLeft <= 0){
 			detach();
 		}
 		
 		spend( TICK );
-		
+
 		return true;
 	}
 	
@@ -72,12 +73,6 @@ public class Healing extends Buff {
 	
 	public void increaseHeal( int amount ){
 		healingLeft += amount;
-	}
-	
-	@Override
-	public void fx(boolean on) {
-		if (on) target.sprite.add( CharSprite.State.HEALING );
-		else    target.sprite.remove( CharSprite.State.HEALING );
 	}
 	
 	private static final String LEFT = "left";

@@ -30,6 +30,7 @@ public class Barrier extends ShieldBuff {
 	
 	{
 		type = buffType.POSITIVE;
+		fx = CharSprite.State.SHIELDED;
 	}
 	
 	@Override
@@ -44,12 +45,6 @@ public class Barrier extends ShieldBuff {
 		spend( TICK );
 		
 		return true;
-	}
-	
-	@Override
-	public void fx(boolean on) {
-		if (on) target.sprite.add(CharSprite.State.SHIELDED);
-		else target.sprite.remove(CharSprite.State.SHIELDED);
 	}
 	
 	@Override

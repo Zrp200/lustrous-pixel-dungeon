@@ -33,6 +33,7 @@ public class Chill extends FlavourBuff {
 	{
 		type = buffType.NEGATIVE;
 		announced = true;
+		fx = CharSprite.State.CHILLED;
 	}
 
 	@Override
@@ -58,11 +59,6 @@ public class Chill extends FlavourBuff {
 		return BuffIndicator.FROST;
 	}
 
-	@Override
-	public void fx(boolean on) {
-		if (on) target.sprite.add(CharSprite.State.CHILLED);
-		else target.sprite.remove(CharSprite.State.CHILLED);
-	}
 
 	@Override
 	public String toString() {

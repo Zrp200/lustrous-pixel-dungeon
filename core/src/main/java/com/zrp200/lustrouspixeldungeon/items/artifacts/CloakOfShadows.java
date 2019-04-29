@@ -193,6 +193,7 @@ public class CloakOfShadows extends Artifact {
 		
 		{
 			type = buffType.POSITIVE;
+			fx = CharSprite.State.INVISIBLE;
 		}
 		
 		int turnsToCost = 0;
@@ -262,8 +263,7 @@ public class CloakOfShadows extends Artifact {
 
 		@Override
 		public void fx(boolean on) {
-			if (on) target.sprite.add( CharSprite.State.INVISIBLE );
-			else if (target.invisible == 0) target.sprite.remove( CharSprite.State.INVISIBLE );
+			if (on || target.invisible == 0) super.fx(on);
 		}
 
 		@Override

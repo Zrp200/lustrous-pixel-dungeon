@@ -32,6 +32,7 @@ public class Levitation extends FlavourBuff {
 	
 	{
 		type = buffType.POSITIVE;
+		fx = CharSprite.State.LEVITATING;
 	}
 
 	public static final float DURATION	= 20f;
@@ -63,12 +64,7 @@ public class Levitation extends FlavourBuff {
 	public void tintIcon(Image icon) {
 		greyIcon(icon, 5f, cooldown());
 	}
-	
-	@Override
-	public void fx(boolean on) {
-		if (on) target.sprite.add(CharSprite.State.LEVITATING);
-		else target.sprite.remove(CharSprite.State.LEVITATING);
-	}
+
 
 	@Override
 	public String toString() {
