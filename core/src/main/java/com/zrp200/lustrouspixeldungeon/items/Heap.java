@@ -231,7 +231,7 @@ public class Heap implements Bundlable {
 		if (type == Type.MIMIC) {
 			Mimic m = Mimic.spawnAt( pos, items );
 			if (m != null) {
-				Buff.affect( m, Burning.class ).reignite();
+				Burning.reignite(m);
 				m.sprite.emitter().burst( FlameParticle.FACTORY, 5 );
 				destroy();
 			}
