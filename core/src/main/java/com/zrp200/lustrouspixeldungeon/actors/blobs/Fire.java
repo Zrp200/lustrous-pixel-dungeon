@@ -71,7 +71,7 @@ public class Fire extends Blob {
 							regrowth.clear(cell,1);
 						}
 					}
-					else if(fire <= 2 && (level.map[cell] == Terrain.HIGH_GRASS || level.map[cell] == Terrain.FURROWED_GRASS)) {
+					else if(fire <= igniteAmounts.get(Terrain.GRASS) && (level.map[cell] == Terrain.HIGH_GRASS || level.map[cell] == Terrain.FURROWED_GRASS)) {
 						Level.set(cell,Terrain.GRASS);
 						observe = true;
 						GameScene.updateMap(cell);
@@ -126,13 +126,12 @@ public class Fire extends Blob {
 
 		@Override
 		public Integer get(Object key) {
+			if(!(key instanceof Integer)) return null;
+			int pos = (Integer) key;
 			try {
-				return super.get(level.map[(Integer)key]);
+				return super.get(level.map[pos]);
 			} catch (NullPointerException e) {
-				if(level.flamable[(Integer) key]) {
-					return 4;
-				}
-				return null;
+				return level.flamable[pos] ? 4 : 0;
 			}
 		}
 	};
@@ -141,7 +140,7 @@ public class Fire extends Blob {
 	@SuppressWarnings("ConstantConditions")
 	@Override
 	public void seed(Level level, int cell, int amount) {
-		if(igniteAmounts.get(cell) > 0) amount = igniteAmounts.get(cell);
+		amount = Math.max(amount, igniteAmounts.get(cell));
 		super.seed(level, cell, amount);
 	}
 
