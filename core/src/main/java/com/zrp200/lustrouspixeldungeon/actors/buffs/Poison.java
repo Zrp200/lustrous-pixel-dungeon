@@ -34,6 +34,7 @@ public class Poison extends ActiveBuff implements Hero.Doom {
 
 	{
 		type = buffType.NEGATIVE;
+		isDamaging = true;
 	}
 	
 	@Override

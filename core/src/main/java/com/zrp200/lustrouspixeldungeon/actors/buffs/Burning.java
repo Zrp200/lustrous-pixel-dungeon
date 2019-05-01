@@ -46,19 +46,18 @@ import com.zrp200.lustrouspixeldungeon.utils.GLog;
 import java.util.ArrayList;
 
 public class Burning extends ActiveBuff implements Hero.Doom {
-
-	{
-		fx = CharSprite.State.BURNING;
-	}
 	
 	public static final float DURATION = 8f;
 
 	//for tracking burning of hero items
 	private int burnIncrement = 0;
 
+	// you shouldn't really be doing anything other than this
 	public static Burning reignite(Char target, float duration) {
 		return Buff.prolong(target, Burning.class, duration);
 	}
+
+	// shortcut for just adding burning with standard duration
 	public static Burning reignite(Char target) {
 		return Buff.prolong(target, Burning.class, DURATION);
 	}
@@ -69,6 +68,9 @@ public class Burning extends ActiveBuff implements Hero.Doom {
 	{
 		type = buffType.NEGATIVE;
 		startGrey = 2;
+		fx = CharSprite.State.BURNING;
+
+		isDamaging = true;
 	}
 
 	@Override

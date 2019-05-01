@@ -35,6 +35,7 @@ public class Corrosion extends ActiveBuff {
 
 	{
 		type = buffType.NEGATIVE;
+		isDamaging = true;
 	}
 
 	@Override

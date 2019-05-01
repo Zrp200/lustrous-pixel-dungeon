@@ -36,6 +36,7 @@ public class Bleeding extends ActiveBuff {
 		type = buffType.NEGATIVE;
 		startGrey = Dungeon.hero != null ? Dungeon.hero.HP/10f : 3;
 		turnReduction = 0; // handled manually
+		isDamaging = true;
 	}
 	
 	@Override

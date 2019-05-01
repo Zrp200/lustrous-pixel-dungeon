@@ -3,6 +3,7 @@ package com.zrp200.lustrouspixeldungeon.actors.buffs;
 import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
+import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.ui.BuffIndicator;
 
@@ -10,9 +11,15 @@ public class ActiveBuff extends Buff { // this uses an internal counter so it ca
     {
         announced = true;
     }
-    @SuppressWarnings("WeakerAccess")
     protected float left, initial, turnReduction = TICK;
     protected float startGrey = 5;
+
+    boolean isDamaging = false;
+
+    @Override
+    protected float modifyDurationForResist(float duration, Char target) {
+        return isDamaging ? duration : super.modifyDurationForResist(duration, target);
+    }
 
     public float getLeft() {
         return left;

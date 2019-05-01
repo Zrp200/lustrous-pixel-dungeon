@@ -132,6 +132,11 @@ public class Buff extends Actor implements Hero.Doom {
 		return new DecimalFormat("#.##").format(input);
 	}
 
+	// a poorly named way to handle resists relating to duration.
+	protected float modifyDurationForResist(float duration, Char target) {
+		return target == null ? duration : target.resist(getClass()) * duration;
+	}
+
 	//creates a fresh instance of the buff and attaches that, this allows duplication.
 	public static<T extends Buff> T append( Char target, Class<T> buffClass ) {
 		try {
@@ -146,7 +151,8 @@ public class Buff extends Actor implements Hero.Doom {
 
 	public static<T extends Buff> T append( Char target, Class<T> buffClass, float duration ) {
 		T buff = append( target, buffClass );
-		duration *= target.resist(buffClass);
+		if(buff != null)
+			duration = buff.modifyDurationForResist(duration,target);
 		if(buff instanceof FlavourBuff)
 			buff.spend(duration);
 		else if(buff instanceof ActiveBuff)
@@ -158,6 +164,7 @@ public class Buff extends Actor implements Hero.Doom {
 	public static<T extends Buff> T affect( Char target, Class<T> buffClass ) {
 		T buff = target.buff( buffClass );
 		if (buff != null) {
+		    buff.onAdd();
 			return buff;
 		} else {
 			return append( target, buffClass );
@@ -166,7 +173,8 @@ public class Buff extends Actor implements Hero.Doom {
 	
 	public static<T extends Buff> T affect( Char target, Class<T> buffClass, float duration ) {
 		T buff = affect( target, buffClass );
-		duration *= target.resist(buffClass);
+		if(buff != null)
+			duration = buff.modifyDurationForResist(duration,target);
 		if(buff instanceof ActiveBuff) {
 			((ActiveBuff) buff).extend(duration);
  		} else if(buff instanceof FlavourBuff) {
@@ -178,7 +186,8 @@ public class Buff extends Actor implements Hero.Doom {
 	//postpones an already active buff, or creates & attaches a new buff and delays that.
 	public static<T extends Buff> T prolong( Char target, Class<T> buffClass, float duration ) {
 		T buff = affect( target, buffClass );
-		duration *= target.resist(buffClass);
+		if(buff != null)
+			duration = buff.modifyDurationForResist(duration, target);
 		if(buff instanceof FlavourBuff)  {
 			buff.postpone( duration );
 		} else if(buff instanceof ActiveBuff) {
