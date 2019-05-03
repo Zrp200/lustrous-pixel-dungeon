@@ -64,8 +64,6 @@ public class Terror extends ActiveBuff {
 	public boolean attachTo(Char target) {
 		if(target instanceof Mob && super.attachTo(target) ) {
 			this.target = (Mob) super.target;
-			for(Amok buff : this.target.buffs(Amok.class))
-				buff.detach();
 			this.target.state = this.target.FLEEING; // right away.
 			return true;
 		}

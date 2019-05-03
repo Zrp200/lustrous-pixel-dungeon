@@ -130,19 +130,14 @@ public class Boomerang extends MissileWeapon {
 		}
 
 		Trap trapAtCell = Dungeon.level.traps.get(cell);
-		if(!rangedHit && Actor.findChar(cell) == null) {
-			if (!Dungeon.level.pit[cell]) {
-				if(trapAtCell != null && (
-						trapAtCell instanceof TeleportationTrap
-								|| trapAtCell instanceof DisarmingTrap
-								|| (trapAtCell instanceof ExplosiveTrap || trapAtCell instanceof DisintegrationTrap) && isDestroyable() )
-				) {
-					super.onThrowComplete(cell);
-					return; // it's not coming back.
-				} else Dungeon.level.press(cell, null,true);
-			}
-			// TODO implement smooth return
-		}
+		// TODO implement smooth return
+		if(!rangedHit && Actor.findChar(cell) == null && !Dungeon.level.pit[cell])
+			if (trapAtCell != null && (trapAtCell instanceof TeleportationTrap || trapAtCell instanceof DisarmingTrap
+					|| (trapAtCell instanceof ExplosiveTrap || trapAtCell instanceof DisintegrationTrap)
+					&& isDestroyable())) {
+				super.onThrowComplete(cell);
+				return; // it's not coming back.
+			} else Dungeon.level.press(cell, null, true);
 		returning = Buff.append(curUser,Returning.class).set(this,cell);
 
 		parent = null;
@@ -167,7 +162,7 @@ public class Boomerang extends MissileWeapon {
 		ArrayList<Integer> path;
 
 		private static final float
-				MIN_SPEED = 2,
+				MIN_SPEED = 1,
 				TURNS_TO_RETURN = 3f;
 
 		float distancePerTurn;
@@ -237,10 +232,9 @@ public class Boomerang extends MissileWeapon {
 			}
 			if( path.isEmpty() ) {
 				if(moving) {
-					spend(TICK); // hover for a turn
-					return moving = false;
-				}
-				boomerang.drop(pos);
+					spend(TICK); // hover for a bit
+					moving = false;
+				} else boomerang.drop(pos);
 				return true;
 			}
 
@@ -255,39 +249,46 @@ public class Boomerang extends MissileWeapon {
 			}
 			if( killIfNeeded() ) return true;
 			spend(1f/distancePerTurn);
-
+			final Char ch1;
+			if(pos != lastPos) // don't wanna hit the guy we just attacked.
+				onCharCollision(ch1=findChar(pos));
+			else
+				ch1 = null;
 			final int dest = path.remove(0);
 			sprite().reset(dest, new Callback() {
 				@Override
 				public void call() {
 					setPosTo(dest);
-					onCharCollision( findChar(pos) );
+					Char ch2 = findChar(pos);
+					if(ch1 != ch2) // don't wanna hit the same guy twice
+						onCharCollision( ch2 );
 					next();
 				}
 			});
 			return false;
 		}
 		public void onCharCollision(Char ch) {
-			if (ch != null && !killIfNeeded()) {
+			if (ch == null || killIfNeeded()) {
+				return;
+			}
 
-				float 	rangeBoost      = boomerang.rangeBoost,
-						adjacentPenalty = boomerang.adjacentPenalty;
+			float 	rangeBoost      = boomerang.rangeBoost,
+					adjacentPenalty = boomerang.adjacentPenalty;
 
-				HeroSubClass subClass = ((Hero)target).subClass;
-				try {
-					((Hero) target).subClass = HeroSubClass.NONE; // nope.
-					boomerang.rangeBoost = boomerang.adjacentPenalty = 0.95f; // nullify these
+			HeroSubClass subClass = ((Hero)target).subClass;
+			try {
+				((Hero) target).subClass = HeroSubClass.NONE; // nope.
+				boomerang.rangeBoost = boomerang.adjacentPenalty = 0.95f; // nullify these, and apply an additional 5% penalty
 
-					if (curUser.shoot(ch, boomerang)) {
-						boomerang.useDurability();
-						if (boomerang.durability <= 0) Returning.this.detach();
-					}
-
-				} finally {
-					boomerang.rangeBoost      = rangeBoost;
-					boomerang.adjacentPenalty = adjacentPenalty;
-					((Hero)target).subClass   = subClass;
+				if (curUser.shoot(ch, boomerang)) {
+					boomerang.useDurability();
+					if (boomerang.durability <= 0) Returning.this.detach();
 				}
+
+			} finally {
+				boomerang.rangeBoost      = rangeBoost;
+				boomerang.adjacentPenalty = adjacentPenalty;
+				((Hero)target).subClass   = subClass;
 			}
 		}
 
@@ -353,16 +354,13 @@ public class Boomerang extends MissileWeapon {
 			@Override
 			public synchronized void onComplete(Tweener tweener) {
 				super.onComplete(tweener);
-				revive(); // 80% sure this will work
+				revive();
 			}
 		}
 		public class Chase extends HeroAction { // this allows it to be stored.
 			// >no multiple inheritance
-			public Returning getBuff() {
-				return Returning.this;
-			}
 			public HeroAction getAction() {
-				if( curUser.buffs(Returning.this.getClass() ).contains(Returning.this)) return new HeroAction.Move(pos);
+				if( Dungeon.hero.buffs( Returning.class ).contains( Returning.this )) return new HeroAction.Move(pos);
 				if( Dungeon.level.containsItem(boomerang) ) return new HeroAction.PickUp(pos);
 				return null;
 			}

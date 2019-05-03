@@ -360,7 +360,7 @@ abstract public class Weapon extends KindOfWeapon {
 			enchant(Enchantment.random());
 		else if(hasCurseEnchant() && Random.Int(3) == 0)
 		    enchant(null);
-		else if (hasGoodEnchant() && level() >= 4 && Random.Float(10) < Math.pow(2, level()-4))
+		else if (hasGoodEnchant() && level() >= 3 && Random.Float(10) < Math.pow(2, level()-3))
 			enchant(null);
 		
 		cursed = false;

@@ -366,12 +366,10 @@ public abstract class Mob extends Char {
 		int step = -1;
 
 		if (level.adjacent( pos, target )) {
-
 			path = null;
 			if (!Dungeon.getTempBlock(this, fieldOfView)[target] && level.passable[target]) {
 				step = target;
 			}
-
 		} else {
 
 			boolean newPath = false;

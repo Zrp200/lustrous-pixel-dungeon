@@ -159,7 +159,7 @@ public abstract class Shaman extends Mob {
 		protected void applyZap() {
 			int damage = NormalIntRange(4, 12);
 			if (Dungeon.level.water[enemy.pos] && !enemy.flying)
-				damage *= 1.5f;
+				damage *= 4/3f;
 			enemy.sprite.centerEmitter().burst( SparkParticle.FACTORY, 3 );
 			enemy.sprite.flash();
 			if(enemy == Dungeon.hero)

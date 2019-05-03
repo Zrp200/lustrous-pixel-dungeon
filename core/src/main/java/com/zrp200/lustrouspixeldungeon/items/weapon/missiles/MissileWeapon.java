@@ -236,6 +236,7 @@ abstract public class MissileWeapon extends Weapon {
 		return false;
 	}
 
+
 	public boolean detach() {
 		Char holder;
 		if(embed != null) { // mutually exclusive

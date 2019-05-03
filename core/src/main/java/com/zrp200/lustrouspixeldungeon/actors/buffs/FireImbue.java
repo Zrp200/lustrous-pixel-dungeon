@@ -51,7 +51,7 @@ public class FireImbue extends ActiveBuff {
 
 	public void proc(Char enemy){
 		if (Random.Int(2) == 0) {
-			Blazing.proc(enemy); // because why not
+			Blazing.proc(enemy, 0); // because blazing is good and fun. 0 damage because it happens after damage calculation.
 		}
     }
 

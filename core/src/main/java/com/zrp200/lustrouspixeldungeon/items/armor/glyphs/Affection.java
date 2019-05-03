@@ -40,8 +40,7 @@ public class Affection extends Glyph {
 		int level = Math.max(0, armor.level());
 		
 		if (Random.Int( level + 20 ) >= 18) {
-			for(int i = 0; i <= level; i++)
-				Buff.prolong( attacker, Charm.class, Random.IntRange(4, 12) ).object = defender.id();
+		    Buff.prolong( attacker, Charm.class, Random.IntRange(4, 12) ).object = defender.id();
 		}
 		
 		return damage;

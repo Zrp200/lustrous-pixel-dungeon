@@ -71,7 +71,7 @@ public class Elemental extends Mob {
 	public int attackProc( Char enemy, int damage ) {
 		damage = super.attackProc( enemy, damage );
 		if (Random.Int( 2 ) == 0) {
-			Burning.reignite(enemy);
+			Burning.reignite(enemy, 6);
 		}
 		
 		return damage;
