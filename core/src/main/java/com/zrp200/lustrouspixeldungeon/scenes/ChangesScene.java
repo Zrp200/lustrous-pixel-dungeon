@@ -36,6 +36,7 @@ import com.zrp200.lustrouspixeldungeon.Chrome;
 import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
 import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon.Version;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.Burning;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Charm;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Terror;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.ToxicImbue;
@@ -127,18 +128,18 @@ import static com.zrp200.lustrouspixeldungeon.ui.Icons.get;
 public class ChangesScene extends PixelScene {
 
 	public enum Milestone {
-		LUST011 (Version.v011,			 4, 4,2019),
-		LUST010 (Version.v010,		 	 2,14,2019),
-		LUST001 (Version.v001,			12,20,2018),
-		LUST000b("Lustrous v0.0.0b",	12, 6,2018),
-		LUST000a("Lustrous v0.0.0a",  	12, 4,2018),
-		LUST000 ("Lustrous v0.0.0",		12, 1,2018),
+		LUST011 (Version.v011,			 		4, 4 ,2019),
+		LUST010 (Version.v010,		 	 		2, 14,2019),
+		LUST001 (Version.v001,					12,20,2018),
+		LUST000b("Lustrous v0.0.0b",		12,6 ,2018),
+		LUST000a("Lustrous v0.0.0a",  	12,4 ,2018),
+		LUST000 ("Lustrous v0.0.0",		12,1 ,2018),
 
-		SHPD072 ("Shattered v0.7.2", 	 3,18,2019),
-		SHPD071d("Shattered v0.7.1d",	 1,18,2019),
+		SHPD072 ("Shattered v0.7.2", 	 	3 ,18,2019),
+		SHPD071d("Shattered v0.7.1d",	 	1 ,18,2019),
 		SHPD071b("Shattered v0.7.1b", 	12,30,2018),
-		SHPD071 ("Shattered v0.7.1",	12,18,2018),
-		SHPD070 ("Shattered v0.7.0",	10,18,2018);
+		SHPD071 ("Shattered v0.7.1",		12,18,2018),
+		SHPD070 ("Shattered v0.7.0",		10,18,2018);
 
 		private String name;
 		private Date releaseDate;
@@ -189,17 +190,52 @@ public class ChangesScene extends PixelScene {
 	private void add011Changes() {
 		new ChangeInfo(Version.v011.name, true);
 		new ChangeInfo("v0.1.1b",false).addButtons(
-				ChangeButton.misc(
+				new ChangeButton(new ItemSprite(new Longsword().enchant(new Blazing())),"Partially Implemented Shattered v0.7.2b")
+                        .appendList("Swift buff duration increased to 4, from 2 (was increased to 5 in shattered)",
+                                "Vampiric heal internally now 2.5%-15%, from 0-10%. New variation mechanic remains however.",
+                                "Lucky base proc rate boosted to 8%",
+                                "Grim changes implemented to the letter, overwriting previous changes.",
+                                "Blooming and blazing changes not implemented."),
+		        new ChangeButton(new Burning().getLargeIcon(), "Fire-based mechanics").appendList(
+						"Blazing now has a 60% chance to ignite when not on flammable tiles, up from 50%",
+						"Fire imbue now has a 50% chance to proc blazing effect, rather than just inflict burning.",
+						"Firebolt shaman and fire elementals now inflict 6 turns of burning, down from 8, from their attacks.",
+						"Certain types of terrain will always burn for a specific amount of time; mostly " +
+								"flammable things will burn for 4 turns, but tall grass, barricades, " +
+								"and bookshelves will burn for 5, and grass will burn for 2.",
+						"Blazing burning duration now matches shattered exactly; 4, down from 6."
+				),
+		        ChangeButton.misc(
+		                "Hunting mobs will now cluster around their target even if some can't actually reach.",
 				        "Mobs now avoid returning boomerangs if not amok",
-                        "Blazing burning duration now matches shattered exactly; 4, down from 6.",
-                        "Adjusted swift description to better indicate wand option"
+                        "Returning boomerang can no longer surprise attack and has a 5% accuracy penalty",
+                        "Terror no longer removes amok",
+                        "Spinner now show rage vfx when switching back to hunting their targets",
+                        "Weakness grey starts at 3 turns now",
+                        "Scroll of Upgrade's enchant nullification chance now starts at +3, down from +4, and is guarenteed at +7, down from +8.",
+                        "Adjusted swift description to better indicate wand option, and added a proc vfx",
+                        "Shaman resistances should be a bit more sensical",
+                        "Readded key-bug code that will prevent future key bugs from destroying games"
                 ),
 				ChangeButton.bugfix(
-				        "sad ghost always moving at 1x speed",
+				        "Quest sad ghost always moving at 1x speed",
+                        "Various bugs that result in losing items",
+                        "Rose sad ghost crashing the game if fighting without a weapon.",
                         "Various issues with mage's staff when starting a game",
                         "Blooming rooting non-enemy targets for 2 turns instead of one turn",
                         "Tipped darts temporarily hiding enchantment when becoming untipped.",
+                        "Guardian traps causing enchant reveal animation to play",
+                        "Resists affecting damaging debuff duration",
+                        "Incorrect pricing of some missile weapons",
                         "Formatting error with shields and typical blocking")
+                        .appendLine("\nFrom Shattered v0.7.2b")
+                        .appendList(
+                                "Cloak of Shadows not able to be turned off at 0 charges",
+                                "Multiplicity curse spawning rats on floor 5",
+                                "Dried rose rarely being usable before completing ghost quest",
+                                "Corrupted thieves being able to steal from the hero",
+                                "Rare crashes involving rankings window",
+                                "Crashes and other odd behavior when a berserking hero is affected by shielding buffs")
 		);
 		new ChangeInfo("v0.1.1a",false).addButtons(
 		        new ChangeButton(new ItemSprite(new Glaive().enchant(new Dazzling())), "Dazzling",
@@ -350,7 +386,7 @@ public class ChangesScene extends PixelScene {
 								"Now uncommon (was common)",
 								"Proc rate reduced to (1+L)/(5+L)",
 								"Old behavior merged with new behavior.",
-								"Still has a 50% chance to ignite, but now has 75% chance to ignite on flammable tiles.",
+								"Still has a 50% chance to reignite, but now has 75% chance to reignite on flammable tiles.",
 								"Damage scales based on depth instead of level",
 								"Initial ignition is not accompanied by damage",
 								"Procs on a burning target do slightly reduced blazing damage, "
@@ -1117,7 +1153,7 @@ public class ChangesScene extends PixelScene {
 						"Firebolt Shaman",
 						"_-_ 1/8 of all shamans\n" +
 								"_-_ bolts do 6-12 damage and inflict burning\n" +
-								"_-_ bolts will ignite the tile they are targeted at whether or not they hit their target\n" +
+								"_-_ bolts will reignite the tile they are targeted at whether or not they hit their target\n" +
 								"_-_ Firebolt Shamans resist fire-based attacks and effects.\n" +
 								"_-_ You probably shouldn't be letting these shoot at you."
 				),
