@@ -22,13 +22,14 @@
 package com.zrp200.lustrouspixeldungeon.levels.rooms.special;
 
 import com.watabou.utils.Point;
+import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Challenges;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
+import com.zrp200.lustrouspixeldungeon.items.EquipableItem;
 import com.zrp200.lustrouspixeldungeon.items.Generator;
 import com.zrp200.lustrouspixeldungeon.items.Gold;
 import com.zrp200.lustrouspixeldungeon.items.Heap;
 import com.zrp200.lustrouspixeldungeon.items.Item;
-import com.zrp200.lustrouspixeldungeon.items.armor.Armor;
 import com.zrp200.lustrouspixeldungeon.items.keys.IronKey;
 import com.zrp200.lustrouspixeldungeon.levels.Level;
 import com.zrp200.lustrouspixeldungeon.levels.Terrain;
@@ -75,9 +76,13 @@ public class CryptRoom extends SpecialRoom {
 	private static Item prize() {
 		
 		//1 floor set higher than normal
-		Armor prize = Generator.randomArmor( (Dungeon.depth / 5) + 1);
+		int floorset = Dungeon.depth/5 +1;
 
-		if (Challenges.isItemBlocked(prize)){
+		EquipableItem prize = Random.Int(3) == 0
+				? Generator.randomWeapon(floorset)
+				: Generator.randomArmor(floorset);
+
+		if (Challenges.isItemBlocked(prize) || prize == null){
 			return new Gold().random();
 		}
 
