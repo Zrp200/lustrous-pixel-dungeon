@@ -46,7 +46,7 @@ public class Swift extends Weapon.Enchantment {
 		// lvl 2 - 30%
 		int level = Math.max( 0, weapon.level() );
 		
-		if (Random.Int( level + 8 ) >= 7) {
+		if (Random.Int( level + 8 ) >= 7 && attacker instanceof Hero) {
 			Buff.prolong(attacker, SwiftAttack.class, 5).setSourceType(weapon instanceof MeleeWeapon);
 		}
 		
@@ -61,7 +61,7 @@ public class Swift extends Weapon.Enchantment {
 	public static class SwiftAttack extends FlavourBuff {
 		
 		boolean sourceWasMelee;
-		
+
 		public void setSourceType( boolean melee ){
 			this.sourceWasMelee = melee;
 		}
@@ -83,7 +83,7 @@ public class Swift extends Weapon.Enchantment {
 		public int icon() {
 			return BuffIndicator.WEAPON;
 		}
-		
+
 		@Override
 		public void tintIcon(Image icon) {
 			icon.hardlight(1, 1, 0);

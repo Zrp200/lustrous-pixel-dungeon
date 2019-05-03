@@ -41,7 +41,7 @@ public class Weakness extends FlavourBuff {
 
 	@Override
 	public void tintIcon(Image icon) {
-		greyIcon( icon,5, cooldown() );
+		greyIcon( icon,3, cooldown() );
 	}
 
 	@Override

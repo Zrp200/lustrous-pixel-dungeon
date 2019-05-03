@@ -89,8 +89,7 @@ public class Spinner extends Mob {
 				boolean result = super.act(justAlerted);
 				if(buff( Terror.class ) == null &&
 						enemy != null && enemySeen && enemy.buff( Poison.class ) == null) {
-					state = HUNTING;
-					// no vfx
+					Terror.onRemove(Spinner.this);
 				}
 				return result;
 			}

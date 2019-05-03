@@ -12,6 +12,6 @@ public class InfernalTrap extends BlobTrap {
 
     @Override
     public String desc() {
-        return "When activated, this trap will summon a destructive inferno that will ignite anything it touches in flames.";
+        return "When activated, this trap will summon a destructive inferno that will reignite anything it touches in flames.";
     }
 }
