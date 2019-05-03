@@ -56,23 +56,9 @@ public class GuardianTrap extends AlarmTrap {
 		}
 
 		Guardian(){
-			super();
-
-			weapon.enchant(null);
+			weapon.enchant(null,false);
 			weapon.degrade(weapon.level());
 		}
-
-		@Override
-		public void beckon(int cell) {
-			//Beckon works on these ones, unlike their superclass.
-			notice();
-
-			if (state != HUNTING) {
-				state = WANDERING;
-			}
-			target = cell;
-		}
-
 	}
 
 	public static class GuardianSprite extends StatueSprite {

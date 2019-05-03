@@ -12,7 +12,7 @@ public abstract class Gas extends Blob {
             @Override
             protected void call() {
                 Char ch = Actor.findChar(cell);
-                if (cur[cell] > 0 && ch != null && !ch.isImmune(getClass())) {
+                if (cur[cell] > 0 && ch != null && !ch.isImmune( Gas.this.getClass() )) {
                     affectChar(ch);
                 }
             }

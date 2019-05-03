@@ -128,11 +128,8 @@ public class Fire extends Blob {
 		public Integer get(Object key) {
 			if(!(key instanceof Integer)) return null;
 			int pos = (Integer) key;
-			try {
-				return super.get(level.map[pos]);
-			} catch (NullPointerException e) {
-				return level.flamable[pos] ? 4 : 0;
-			}
+			Integer amount = super.get(level.map[pos]);
+			return amount != null ? amount : level.flamable[pos] ? 4 : 0;
 		}
 	};
 	public static final Set<Integer> flammableTerrain = igniteAmounts.keySet();

@@ -41,12 +41,12 @@ public class Precise extends Weapon.Enchantment {
 		// lvl 0 - 13%
 		// lvl 1 - 22%
 		// lvl 2 - 30%
-		int level = Math.max( 0, weapon.level() );
 		boolean unstable = false;
+		if(weapon == null) return false;
 		if (weapon.hasEnchant(Precise.class, owner)
 				|| ((unstable = weapon.hasEnchant(Unstable.class, owner)
 				&& Unstable.randomEnchantment(true) instanceof Precise)
-				&& (Random.Int(level + 8) >= 7))) {
+				&& (Random.Int(Math.max(weapon.level(), 0) + 8) >= 7))) {
 			if(unstable) Unstable.justRolledPrecise = true;
 			return true;
 		}

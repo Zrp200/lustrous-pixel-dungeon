@@ -33,7 +33,7 @@ public class PinCushion extends Buff {
 
 	public void stick(MissileWeapon projectile){
 		if( !projectile.attachedTo(this) ) {
-			projectile.stickTo(target); // this is actually a recursive call. you can call whatever's easier.
+			projectile.stickTo(this); // this is actually a recursive call. you can call whatever's easier.
 			return;
 		}
 

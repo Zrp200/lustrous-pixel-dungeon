@@ -47,7 +47,7 @@ public class ActiveBuff extends Buff { // this uses an internal counter so it ca
         spend(TICK);
         if ( !target.isAlive() || (left -= turnReduction) <= 0 ){
             detach();
-        } else if (left < startGrey){
+        } else {
             BuffIndicator.refreshHero();
         }
         return true;

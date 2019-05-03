@@ -26,10 +26,8 @@ import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
-import com.zrp200.lustrouspixeldungeon.actors.blobs.Blizzard;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.Blob;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.Fire;
-import com.zrp200.lustrouspixeldungeon.actors.blobs.Freezing;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Burning;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Chill;
@@ -46,6 +44,7 @@ import com.zrp200.lustrouspixeldungeon.items.wands.WandOfFireblast;
 import com.zrp200.lustrouspixeldungeon.items.wands.WandOfFrost;
 import com.zrp200.lustrouspixeldungeon.items.wands.WandOfLightning;
 import com.zrp200.lustrouspixeldungeon.items.wands.WandOfMagicMissile;
+import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Blazing;
 import com.zrp200.lustrouspixeldungeon.mechanics.Ballistica;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
@@ -201,8 +200,6 @@ public abstract class Shaman extends Mob {
 
             wandLoot 	= WandOfFireblast.class;
             potionLoot 	= PotionOfLiquidFlame.class;
-
-            properties.add(Property.FIERY);
         }
 
 		@Override
@@ -214,9 +211,21 @@ public abstract class Shaman extends Mob {
 		protected void applyZap() {
             enemy.sprite.centerEmitter().burst(FlameParticle.FACTORY, 3);
             applyZap( NormalIntRange(4,12) );
-			Burning.reignite(enemy);
+			Burning.reignite(enemy,6);
         }
-    }
+
+		@Override
+		public void damage(int dmg, Object src, boolean magic) {
+        	if(src instanceof Firebolt && magic) dmg /= 2; // magic resist.
+			super.damage(dmg, src, magic);
+		}
+
+		{
+			resistances.add(Burning.class);
+			resistances.add(Blazing.class);
+			resistances.add(WandOfFireblast.class);
+		}
+	}
     public static class Frost extends Shaman {
 		{
 			spriteClass = ShamanSprite.Frost.class;
@@ -234,13 +243,16 @@ public abstract class Shaman extends Mob {
 			Heap heap = Dungeon.level.heaps.get(enemy.pos);
 			if(heap != null) heap.freeze();
 		}
-	}
+
+        @Override
+        public void damage(int dmg, Object src, boolean magic) {
+            if(src instanceof Frost && magic) dmg/=2;
+		    super.damage(dmg, src, magic);
+        }
+    }
 	{
 		resistances.add(Chill.class);
-		resistances.add(Shaman.Frost.class);
 		resistances.add(WandOfFrost.class);
-		resistances.add(Blizzard.class);
 		resistances.add(com.zrp200.lustrouspixeldungeon.actors.buffs.Frost.class);
-		resistances.add(Freezing.class);
 	}
 }

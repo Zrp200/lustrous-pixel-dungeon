@@ -151,19 +151,6 @@ public class Ghost extends Noncombatant {
 
 		private static Quest current;
 
-		public static Mob createBoss() {
-			Mob questBoss;
-			try {
-				questBoss = current.bossClass.newInstance();
-				return questBoss;
-			} catch (Exception e) {
-				LustrousPixelDungeon.reportException(e);
-				questBoss = new FetidRat();
-			}
-			questBoss.pos = Dungeon.level.randomRespawnCell();
-			return questBoss;
-		}
-
 		private static boolean given;
 		private static boolean processed;
 		
@@ -228,7 +215,7 @@ public class Ghost extends Noncombatant {
 				reset();
 			}
 		}
-		
+
 		public static void spawn( SewerLevel level ) {
 			if (!spawned && Dungeon.depth > 1 && Random.Int( 5 - Dungeon.depth ) == 0) {
 				
@@ -306,6 +293,22 @@ public class Ghost extends Noncombatant {
 				}
 
 			}
+		}
+
+		public static Mob createBoss() {
+			Mob questBoss;
+			try {
+				questBoss = current.bossClass.newInstance();
+			} catch (Exception e) {
+				LustrousPixelDungeon.reportException(e);
+				questBoss = new FetidRat();
+			}
+			do {
+				questBoss.pos = Dungeon.level.randomRespawnCell();
+			} while (questBoss.pos == -1);
+			GameScene.add(questBoss);
+
+			return questBoss;
 		}
 		
 		public static void process() {

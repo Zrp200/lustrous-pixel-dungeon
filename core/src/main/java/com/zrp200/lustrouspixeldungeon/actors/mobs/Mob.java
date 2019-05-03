@@ -601,7 +601,8 @@ public abstract class Mob extends Char {
 			if(alignment == Alignment.ALLY) return true;
 		}
 		if(enemy instanceof MirrorImage && !Dungeon.hero.canSurpriseAttack()) return false;
-		if(enemy instanceof DriedRose.GhostHero && !(((DriedRose.GhostHero)enemy).weapon() instanceof Flail)) return false;
+		if(enemy instanceof DriedRose.GhostHero && !((DriedRose.GhostHero)enemy).canSurpriseAttack())
+			return false;
 		return !enemySeen() || enemy.invisible > 0 || paralysed > 0;
 	}
 

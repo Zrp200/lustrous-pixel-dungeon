@@ -23,7 +23,6 @@ package com.zrp200.lustrouspixeldungeon.items.weapon.enchantments;
 
 import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
-import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Burning;
 import com.zrp200.lustrouspixeldungeon.effects.particles.FlameParticle;
 import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
@@ -39,16 +38,23 @@ public class Blazing extends Weapon.Enchantment {
 	
 	@Override
 	public int proc( Weapon weapon, Char attacker, Char defender, int damage ) {
-		// lvl 0 - 20% (10% ignite)
-		// lvl 1 - 33% (17% ignite)
-		// lvl 2 - 50% (25% ignite)
+		// lvl 0 - 20% (10% reignite)
+		// lvl 1 - 33% (17% reignite)
+		// lvl 2 - 50% (25% reignite)
 
 		if (Random.Int( weapon.level() + 5 ) >= 4) {
-			boolean alreadyBurning = defender.buff(Burning.class) != null,
-					onFlamableTile = level.flamable[defender.pos];
+			proc(defender, damage);
+		}
 
-			float damageMultiplier = !alreadyBurning ? 2/3f : 1/2f; // proportion of burning damage applied, more for initial ignition
-			float igniteChance = onFlamableTile ? 2/3f : 1/2f;
+		return damage;
+	}
+
+	public static void proc(Char target, int damage) {
+		boolean alreadyBurning = target.buff(Burning.class) != null,
+				onFlamableTile = level.flamable[target.pos];
+
+			float damageMultiplier = !alreadyBurning ? 2/3f : 1/2f; // proportion of burning damage applied, more if not on fire.
+			float igniteChance = 3/(onFlamableTile ? 4f : 5f); // 75% ignite on flamable tiles, 60% on not.
 
 			float burnDuration = Burning.DURATION;
 			if(!onFlamableTile) burnDuration /= 2;
@@ -58,15 +64,10 @@ public class Blazing extends Weapon.Enchantment {
 				if(!alreadyBurning) damageMultiplier = 0; // no damage for initial ignition.
 			}
 
-			defender.sprite.emitter().burst( FlameParticle.FACTORY, depth/4+1);
-
-			int blazeDamage = (int)Math.ceil(Burning.damageRoll() * damageMultiplier); // round up
-			if(blazeDamage > 0 && !defender.isImmune( getClass() ) )
-				defender.damage(blazeDamage, this);
-		}
-
-		return damage;
-
+			target.sprite.emitter().burst( FlameParticle.FACTORY, depth/4+1);
+			final int blazeDamage = (int)Math.ceil(Burning.damageRoll() * damageMultiplier); // round up
+			if(blazeDamage > 0 && !target.isImmune( Blazing.class ) && target.HP-damage > 0)
+				target.damage(blazeDamage,Blazing.class);
 	}
 	
 	@Override

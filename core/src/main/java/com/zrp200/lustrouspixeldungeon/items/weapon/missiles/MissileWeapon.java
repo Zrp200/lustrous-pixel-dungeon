@@ -216,36 +216,38 @@ abstract public class MissileWeapon extends Weapon {
 	public int proc(Char attacker, Char defender, int damage) {
 		rangedHit = true;
 		onRangedHit(defender,defender.pos);
-		if( hasHiddenEnchant() ) enchantKnown = true;
+		if( hasHiddenEnchant() ) revealEnchant();
 		return super.proc(attacker, defender, damage);
 	}
 
 	private PinCushion embed = null;
 	public boolean stickTo(Char enemy) {
-		if(enemy != null && sticky && durability > 0) {
+		if(enemy != null) {
 			PinCushion p = Buff.affect(enemy, PinCushion.class);
-			if (p != null && p.target == enemy){
-				embed = p; // important that this goes first.
-				p.stick(this);
-				return true;
-			} else return false;
+			return stickTo(p);
+		}
+		return false;
+	}
+	public boolean stickTo(PinCushion p) {
+		if (p != null && sticky && durability > 0) {
+			embed = p; // important that this goes first.
+			p.stick(this);
+			return true;
 		}
 		return false;
 	}
 
 	public boolean detach() {
-		if(curUser != null && curUser.belongings.contains(this)) {
-			detachAll(curUser.belongings.backpack);
-			drop(curUser.pos);
-			return true;
-		}
-		else if(embed != null) { // mutually exclusive
-			int dropPos = embed.target.pos;
+		Char holder;
+		if(embed != null) { // mutually exclusive
+			holder = embed.target;
 			embed = null;
-			drop(dropPos);
-			return true;
-		}
-		return false;
+		} else if(Dungeon.hero != null && Dungeon.hero.belongings.contains(this)) {
+			detachAll(Dungeon.hero.belongings.backpack);
+			holder = Dungeon.hero;
+		} else return false;
+		drop(holder.pos);
+		return true;
 	}
 
 	public boolean attachedTo(PinCushion p) { return embed != null && embed.equals(p); }
@@ -382,11 +384,6 @@ abstract public class MissileWeapon extends Weapon {
 			info += " " + Messages.get(this, "unlimited_uses");
 		}
 		return info;
-	}
-	
-	@Override
-	public int price() {
-		return 6 * tier * quantity * (level() + 1);
 	}
 	
 	private static final String DURABILITY = "durability";
