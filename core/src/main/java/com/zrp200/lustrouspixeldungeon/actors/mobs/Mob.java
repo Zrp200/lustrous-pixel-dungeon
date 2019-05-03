@@ -71,6 +71,7 @@ import com.zrp200.lustrouspixeldungeon.utils.GLog;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import static com.zrp200.lustrouspixeldungeon.Dungeon.getTempBlock;
 import static com.zrp200.lustrouspixeldungeon.Dungeon.level;
 
 public abstract class Mob extends Char {
@@ -92,6 +93,7 @@ public abstract class Mob extends Char {
 	public Class<? extends CharSprite> spriteClass;
 	
 	protected int target = -1;
+	public boolean isIgnoringBlockages; // an inelegant way to tell the game to ignore temporary blockages while pathfinding.
 	
 	protected int defenseSkill = 0;
 	protected int attackSkill = 0;
@@ -366,8 +368,7 @@ public abstract class Mob extends Char {
 		if (level.adjacent( pos, target )) {
 
 			path = null;
-
-			if (Actor.findChar( target ) == null && level.passable[target]) {
+			if (!Dungeon.getTempBlock(this, fieldOfView)[target] && level.passable[target]) {
 				step = target;
 			}
 
@@ -429,7 +430,14 @@ public abstract class Mob extends Char {
 			// of a temporary blockage, and therefore waiting for it to clear is the best option.
 			if (path == null ||
 					(state == HUNTING && path.size() > Math.max(9, 2* level.distance(pos, target)))) {
-				return false;
+				if(isIgnoringBlockages) {
+					return false;
+				} else {
+					isIgnoringBlockages = true;
+					boolean result = getCloser(target);
+					isIgnoringBlockages = false;
+					return result;
+				}
 			}
 
 			step = path.removeFirst();
@@ -451,7 +459,7 @@ public abstract class Mob extends Char {
 		if(path == null) return false;
 		for (int i = 0; i < distance; i++) {
 			int cell = path.get(i);
-			if (!level.passable[cell] || (fieldOfView[cell] && Actor.findChar(cell) != null)) {
+			if (!level.passable[cell] || (getTempBlock(this,fieldOfView)[cell])) {
 				return false;
 			}
 		}

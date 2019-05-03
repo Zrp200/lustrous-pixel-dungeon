@@ -797,7 +797,7 @@ public class Dungeon {
 	//we store this to avoid having to re-allocate the array with each pathfind
 	private static boolean[] passable;
 
-	private static boolean[] getPassable(Char ch, boolean[] pass, boolean[] visible){
+	public static boolean[] getPassable(Char ch, boolean[] pass, boolean[] visible){
 		if (passable == null || passable.length != Dungeon.level.length())
 			passable = new boolean[Dungeon.level.length()];
 		else
@@ -809,36 +809,49 @@ public class Dungeon {
 			System.arraycopy( pass, 0, passable, 0, Dungeon.level.length() );
 		}
 
-		for (Char c : Actor.chars()) {
-			if (visible[c.pos]) {
-				passable[c.pos] = false;
-			}
-		}
-
-		if(ch instanceof Mob && ch.buff(Amok.class) == null) {
-			for(Boomerang.Returning returning : boomerangsThisDepth()) {
-				int pos = returning.pos;
-				if(visible[pos])
-					passable[pos] = false;
-			}
-		}
-
+		BArray.and(passable, BArray.not(getTempBlock(ch, visible),null), passable);
 		return passable;
 	}
 
-	public static PathFinder.Path findPath(Char ch, int from, int to, boolean pass[], boolean[] visible ) {
+	public static boolean[] getTempBlock(Char ch, boolean[] visible) {
+		boolean[] tempBlock = new boolean[level.length()];
+
+		if (ch instanceof Mob) {
+            if (((Mob) ch).isIgnoringBlockages) {
+                // reduce effective field of view to 3x3 for temporary blockages that can't be passed through (characters).
+                BArray.setFalse(visible);
+                for (int offset : PathFinder.NEIGHBOURS9)
+                    visible[ch.pos + offset] = true;
+            }
+            if (ch.buff(Amok.class) == null) // process temporary things that should be avoided unless amok
+                for (Boomerang.Returning returning : boomerangsThisDepth()) { // boomerangs
+                    int pos = returning.pos;
+                    if (ch.pos == pos)
+                        pos = returning.nextPos(); // don't step in front of it if it's already in the same square, that's just dumb.
+                    if (visible[pos])
+                        tempBlock[pos] = true;
+                }
+        }
+
+		for (Char c : Actor.chars())
+		    if (visible[c.pos])
+				tempBlock[c.pos] = true;
+
+		return tempBlock;
+	}
+
+	public static PathFinder.Path findPath(Char ch, int from, int to, boolean[] pass, boolean[] visible ) {
 		return PathFinder.find( from, to, getPassable(ch, pass, visible) );
 	}
 	
-	public static int findStep(Char ch, int from, int to, boolean pass[], boolean[] visible ) {
+	public static int findStep(Char ch, int from, int to, boolean[] pass, boolean[] visible ) {
 		getPassable(ch, pass, visible);
-		if (Dungeon.level.adjacent( from, to )) {
-			return Actor.findChar( to ) == null && (pass[to] || Dungeon.level.avoid[to]) ? to : -1;
-		}
+		if (Dungeon.level.adjacent( from, to ))
+            return Actor.findChar( to ) == null && (pass[to] || Dungeon.level.avoid[to]) ? to : -1;
 		return PathFinder.getStep( from, to, passable );
 	}
 	
-	public static int flee( Char ch, int cur, int from, boolean pass[], boolean[] visible ) {
+	public static int flee(Char ch, int cur, int from, boolean[] pass, boolean[] visible ) {
 		getPassable(ch, pass, visible);
 		passable[cur] = true;
 		return PathFinder.getStepBack( cur, from, passable );
