@@ -21,11 +21,7 @@
 
 package com.zrp200.lustrouspixeldungeon.actors.mobs.npcs;
 
-import com.watabou.utils.PathFinder;
-import com.watabou.utils.Random;
-import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.Mob;
-import com.zrp200.lustrouspixeldungeon.items.Heap;
 
 public abstract class NPC extends Mob {
 

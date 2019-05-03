@@ -44,7 +44,8 @@ public class Inferno extends Blob {
 					if (fire != null)   fire.clear(cell);
 					if (freeze != null) freeze.clear(cell);
 
-					if (bliz != null && bliz.volume > 0 && bliz.cur[cell] > 0){
+					if (volumeAt(cell,Blizzard.class) > 0){
+						//noinspection ConstantConditions
 						bliz.clear(cell);
 						off[cell] = cur[cell] = 0;
 						return;

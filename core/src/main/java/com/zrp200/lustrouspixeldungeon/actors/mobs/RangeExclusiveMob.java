@@ -11,7 +11,7 @@ public class RangeExclusiveMob extends Mob {
         Ballistica attack = new Ballistica( pos, enemy.pos, Ballistica.PROJECTILE);
         boolean isAdjacent = Dungeon.level.adjacent(pos, enemy.pos);
         return (isAdjacent
-                ? !canGetFurther(target)
+                ? isTrapped(target)
                 : attack.collisionPos == enemy.pos);
     }
 

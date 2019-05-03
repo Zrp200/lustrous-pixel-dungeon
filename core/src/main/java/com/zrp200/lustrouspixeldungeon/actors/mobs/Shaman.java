@@ -181,7 +181,7 @@ public abstract class Shaman extends Mob {
 
 		public void onZapComplete(boolean next) {
 			zapping = true; // this boosts its accuracy temporarily
-			try { // we have to override this manually
+			try { // this is the whole reason onZapComplete takes an argument.
 				super.onZapComplete(false);
 			} finally {
 				zapping = false;  // deactivate said boost

@@ -75,14 +75,9 @@ public abstract class EquipableItem extends Item {
 
 	@Override
 	public void cast( final Hero user, int dst ) {
-
-		if (isEquipped( user )) {
-			if (quantity == 1 && !this.doUnequip( user, false, false )) {
-				return;
-			}
+		if (!isEquipped(user) || (quantity > 1 || this.doUnequip(user, false, false))) {
+			super.cast(user, dst);
 		}
-
-		super.cast( user, dst );
 	}
 
 	public static void equipCursed( Hero hero ) {

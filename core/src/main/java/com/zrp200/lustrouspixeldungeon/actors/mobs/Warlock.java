@@ -95,7 +95,7 @@ public class Warlock extends Mob implements Callback {
 		}
 	}
 	
-	private void zap() {
+	public void zap() {
 		spend( TIME_TO_ZAP );
 		
 		if (hit( this, enemy, true )) {

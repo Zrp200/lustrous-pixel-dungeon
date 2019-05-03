@@ -106,7 +106,6 @@ import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Blocking;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Precise;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Swift;
-import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Flail;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Boomerang;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.zrp200.lustrouspixeldungeon.journal.Notes;
@@ -134,6 +133,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import static com.zrp200.lustrouspixeldungeon.Dungeon.depth;
+import static com.zrp200.lustrouspixeldungeon.Dungeon.level;
 
 public class Hero extends Char {
 
@@ -429,7 +429,7 @@ public class Hero extends Char {
 		}
 
 		//can always attack adjacent enemies
-		if (Dungeon.level.adjacent(pos, enemy.pos)) {
+		if (level.adjacent(pos, enemy.pos)) {
 			return true;
 		}
 
@@ -488,7 +488,7 @@ public class Hero extends Char {
 	public boolean act() {
 
 		//calls to dungeon.observe will also update hero's local FOV.
-		fieldOfView = Dungeon.level.heroFOV;
+		fieldOfView = level.heroFOV;
 
 		if (!ready) {
 			//do a full observe (including fog update) if not resting.
@@ -496,7 +496,7 @@ public class Hero extends Char {
 				Dungeon.observe();
 			} else {
 				//otherwise just directly re-calculate FOV
-				Dungeon.level.updateFieldOfView(this, fieldOfView);
+				level.updateFieldOfView(this, fieldOfView);
 			}
 		}
 
@@ -562,7 +562,7 @@ public class Hero extends Char {
 			}
 		}
 
-		if( subClass == HeroSubClass.WARDEN && Dungeon.level.map[pos] == Terrain.FURROWED_GRASS){
+		if( subClass == HeroSubClass.WARDEN && level.map[pos] == Terrain.FURROWED_GRASS){
 			Buff.affect(this, Barkskin.class).set( lvl + 5, 1 );
 		}
 		return actResult;
@@ -629,7 +629,7 @@ public class Hero extends Char {
 		
 		NPC npc = action.npc;
 
-		if (Dungeon.level.adjacent( pos, npc.pos )) {
+		if (level.adjacent( pos, npc.pos )) {
 			
 			ready();
 			sprite.turnTo( pos, npc.pos );
@@ -651,11 +651,11 @@ public class Hero extends Char {
 	
 	private boolean actBuy( HeroAction.Buy action ) {
 		int dst = action.dst;
-		if (pos == dst || Dungeon.level.adjacent( pos, dst )) {
+		if (pos == dst || level.adjacent( pos, dst )) {
 
 			ready();
 			
-			Heap heap = Dungeon.level.heaps.get( dst );
+			Heap heap = level.heaps.get( dst );
 			if (heap != null && heap.type == Type.FOR_SALE && heap.size() == 1) {
 				GameScene.show( new WndTradeItem( heap, true ) );
 			}
@@ -674,7 +674,7 @@ public class Hero extends Char {
 
 	private boolean actAlchemy( HeroAction.Alchemy action ) {
 		int dst = action.dst;
-		if (Dungeon.level.distance(dst, pos) <= 1) {
+		if (level.distance(dst, pos) <= 1) {
 
 			ready();
 
@@ -683,7 +683,7 @@ public class Hero extends Char {
 				GLog.w( Messages.get(AlchemistsToolkit.class, "cursed"));
 				return false;
 			}
-			Alchemy alch = (Alchemy) Dungeon.level.blobs.get(Alchemy.class);
+			Alchemy alch = (Alchemy) level.blobs.get(Alchemy.class);
 			//TODO logic for a well having dried up?
 			if (alch != null) {
 				Alchemy.alchPos = dst;
@@ -706,7 +706,7 @@ public class Hero extends Char {
 		int dst = action.dst;
 		if (pos == dst) {
 			
-			Heap heap = Dungeon.level.heaps.get( pos );
+			Heap heap = level.heaps.get( pos );
 			if (heap != null) {
 				Item item = heap.peek();
 				if (item.doPickUp( this )) {
@@ -754,9 +754,9 @@ public class Hero extends Char {
 	
 	private boolean actOpenChest( HeroAction.OpenChest action ) {
 		int dst = action.dst;
-		if (Dungeon.level.adjacent( pos, dst ) || pos == dst) {
+		if (level.adjacent( pos, dst ) || pos == dst) {
 			
-			Heap heap = Dungeon.level.heaps.get( dst );
+			Heap heap = level.heaps.get( dst );
 			if (heap != null) {
 				switch (heap.type) {
 				case FOR_SALE:
@@ -847,7 +847,7 @@ public class Hero extends Char {
 	
 	private boolean actDescend( HeroAction.Descend action ) {
 		int stairs = action.dst;
-		if (pos == stairs && pos == Dungeon.level.exit) {
+		if (pos == stairs && pos == level.exit) {
 			
 			curAction = null;
 
@@ -865,7 +865,7 @@ public class Hero extends Char {
 	
 	private boolean actAscend( HeroAction.Ascend action ) {
 		int stairs = action.dst;
-		if (pos == stairs && pos == Dungeon.level.entrance) {
+		if (pos == stairs && pos == level.entrance) {
 			
 			if (depth == 1) {
 				
@@ -1029,7 +1029,7 @@ public class Hero extends Char {
 		boolean newMob = false;
 
 		Mob target = null;
-		for (Mob m : Dungeon.level.mobs.toArray(new Mob[0])) {
+		for (Mob m : level.mobs.toArray(new Mob[0])) {
 			if (fieldOfView[ m.pos ] && m.alignment == Alignment.ENEMY) {
 				visible.add(m);
 				if (!visibleEnemies.contains( m )) {
@@ -1080,12 +1080,12 @@ public class Hero extends Char {
 		
 		int step = -1;
 		
-		if (Dungeon.level.adjacent( pos, target )) {
+		if (level.adjacent( pos, target )) {
 
 			path = null;
 
 			if (Actor.findChar( target ) == null) {
-				if (Dungeon.level.pit[target] && !flying && !Dungeon.level.solid[target]) {
+				if (level.pit[target] && !flying && !level.solid[target]) {
 					if (!Chasm.jumpConfirmed){
 						Chasm.heroJump(this);
 						interrupt();
@@ -1094,7 +1094,7 @@ public class Hero extends Char {
 					}
 					return false;
 				}
-				if (Dungeon.level.passable[target] || Dungeon.level.avoid[target]) {
+				if (level.passable[target] || level.avoid[target]) {
 					step = target;
 				}
 			}
@@ -1102,7 +1102,7 @@ public class Hero extends Char {
 		} else {
 
 			boolean newPath = false;
-			if (path == null || path.isEmpty() || !Dungeon.level.adjacent(pos, path.getFirst()))
+			if (path == null || path.isEmpty() || !level.adjacent(pos, path.getFirst()))
 				newPath = true;
 			else if (path.getLast() != target)
 				newPath = true;
@@ -1112,7 +1112,7 @@ public class Hero extends Char {
 				int lookAhead = (int) GameMath.gate(0, path.size()-1, 2);
 				for (int i = 0; i < lookAhead; i++){
 					int cell = path.get(i);
-					if (!Dungeon.level.passable[cell] || (fieldOfView[cell] && Actor.findChar(cell) != null)) {
+                    if (!level.passable[cell] || (fieldOfView[cell] && Actor.findChar(cell) != null)) {
 						newPath = true;
 						break;
 					}
@@ -1121,10 +1121,10 @@ public class Hero extends Char {
 
 			if (newPath) {
 
-				int len = Dungeon.level.length();
-				boolean[] p = Dungeon.level.passable;
-				boolean[] v = Dungeon.level.visited;
-				boolean[] m = Dungeon.level.mapped;
+				int len = level.length();
+				boolean[] p = level.passable;
+				boolean[] v = level.visited;
+				boolean[] m = level.mapped;
 				boolean[] passable = new boolean[len];
 				for (int i = 0; i < len; i++) {
 					passable[i] = p[i] && (v[i] || m[i]);
@@ -1173,7 +1173,7 @@ public class Hero extends Char {
 		Char ch;
 		Heap heap;
 
-		if (Dungeon.level.map[cell] == Terrain.ALCHEMY && cell != pos) {
+		if (level.map[cell] == Terrain.ALCHEMY && cell != pos) {
 			
 			curAction = new HeroAction.Alchemy( cell );
 			
@@ -1184,7 +1184,7 @@ public class Hero extends Char {
 			} else {
 				curAction = new HeroAction.Attack(ch);
 			}
-		} else if ((heap = Dungeon.level.heaps.get( cell )) != null
+		} else if ((heap = level.heaps.get( cell )) != null
 				//moving to an item doesn't auto-pickup when enemies are near...
 				&& (visibleEnemies.size() == 0 || cell == pos ||
 				//...but only for standard heaps, chests and similar open as normal.
@@ -1203,15 +1203,15 @@ public class Hero extends Char {
 				curAction = new HeroAction.OpenChest( cell );
 			}
 			
-		} else if (Dungeon.level.map[cell] == Terrain.LOCKED_DOOR || Dungeon.level.map[cell] == Terrain.LOCKED_EXIT) {
+		} else if (level.map[cell] == Terrain.LOCKED_DOOR || level.map[cell] == Terrain.LOCKED_EXIT) {
 			
 			curAction = new HeroAction.Unlock( cell );
 			
-		} else if (cell == Dungeon.level.exit && depth < 26) {
+		} else if (cell == level.exit && depth < 26) {
 			
 			curAction = new HeroAction.Descend( cell );
 			
-		} else if (cell == Dungeon.level.entrance) {
+		} else if (cell == level.entrance) {
 			
 			curAction = new HeroAction.Ascend( cell );
 			
@@ -1394,10 +1394,10 @@ public class Hero extends Char {
 	
 	public static void reallyDie( Object cause ) {
 		
-		int length = Dungeon.level.length();
-		int[] map = Dungeon.level.map;
-		boolean[] visited = Dungeon.level.visited;
-		boolean[] discoverable = Dungeon.level.discoverable;
+		int length = level.length();
+		int[] map = level.map;
+		boolean[] visited = level.visited;
+		boolean[] discoverable = level.discoverable;
 		
 		for (int i=0; i < length; i++) {
 			
@@ -1407,7 +1407,7 @@ public class Hero extends Char {
 				
 				visited[i] = true;
 				if ((Terrain.flags[terr] & Terrain.SECRET) != 0) {
-					Dungeon.level.discover( i );
+					level.discover( i );
 				}
 			}
 		}
@@ -1424,7 +1424,7 @@ public class Hero extends Char {
 		ArrayList<Integer> passable = new ArrayList<>();
 		for (Integer ofs : PathFinder.NEIGHBOURS8) {
 			int cell = pos + ofs;
-			if ((Dungeon.level.passable[cell] || Dungeon.level.avoid[cell]) && Dungeon.level.heaps.get( cell ) == null) {
+			if ((level.passable[cell] || level.avoid[cell]) && level.heaps.get( cell ) == null) {
 				passable.add( cell );
 			}
 		}
@@ -1437,7 +1437,7 @@ public class Hero extends Char {
 			}
 
 			Item item = Random.element( items );
-			Dungeon.level.drop( item, cell ).sprite.drop( pos );
+			level.drop( item, cell ).sprite.drop( pos );
 			items.remove( item );
 		}
 
@@ -1472,7 +1472,7 @@ public class Hero extends Char {
 		super.move( step );
 		
 		if (!flying) {
-			if (Dungeon.level.water[pos]) {
+			if (level.water[pos]) {
 				Sample.INSTANCE.play( Assets.SND_WATER, 1, 1, Random.Float( 0.8f, 1.25f ) );
 			} else {
 				Sample.INSTANCE.play( Assets.SND_STEP );
@@ -1510,7 +1510,7 @@ public class Hero extends Char {
 		if (curAction instanceof HeroAction.Unlock) {
 
 			int doorCell = ((HeroAction.Unlock)curAction).dst;
-			int door = Dungeon.level.map[doorCell];
+			int door = level.map[doorCell];
 
 			if (door == Terrain.LOCKED_DOOR){
 				Notes.remove(new IronKey(depth));
@@ -1527,7 +1527,7 @@ public class Hero extends Char {
 			
 		} else if (curAction instanceof HeroAction.OpenChest) {
 
-			Heap heap = Dungeon.level.heaps.get( ((HeroAction.OpenChest)curAction).dst );
+			Heap heap = level.heaps.get( ((HeroAction.OpenChest)curAction).dst );
 			if (heap.type == Type.SKELETON || heap.type == Type.REMAINS) {
 				Sample.INSTANCE.play( Assets.SND_BONES );
 			} else if (heap.type == Type.LOCKED_CHEST){
@@ -1551,29 +1551,29 @@ public class Hero extends Char {
 		boolean smthFound = false;
 
 		int distance = heroClass == HeroClass.ROGUE ? 2 : 1;
-		int cx = pos % Dungeon.level.width();
-		int cy = pos / Dungeon.level.width();
+		int cx = pos % level.width();
+		int cy = pos / level.width();
 		int ax = cx - distance;
 		if (ax < 0) {
 			ax = 0;
 		}
 		int bx = cx + distance;
-		if (bx >= Dungeon.level.width()) {
-			bx = Dungeon.level.width() - 1;
+		if (bx >= level.width()) {
+			bx = level.width() - 1;
 		}
 		int ay = cy - distance;
 		if (ay < 0) {
 			ay = 0;
 		}
 		int by = cy + distance;
-		if (by >= Dungeon.level.height()) {
-			by = Dungeon.level.height() - 1;
+		if (by >= level.height()) {
+			by = level.height() - 1;
 		}
 
 		TalismanOfForesight.Foresight talisman = buff( TalismanOfForesight.Foresight.class );
 		boolean cursed = talisman != null && talisman.isCursed();
 		for (int y = ay; y <= by; y++) {
-			for (int x = ax, p = ax + y * Dungeon.level.width(); x <= bx; x++, p++) {
+			for (int x = ax, p = ax + y * level.width(); x <= bx; x++, p++) {
 				
 				if (fieldOfView[p] && p != pos) {
 					
@@ -1581,7 +1581,7 @@ public class Hero extends Char {
 						sprite.parent.addToBack( new CheckedCell( p ) );
 					}
 					
-					if (Dungeon.level.secret[p]){
+					if (level.secret[p]){
 						
 						float chance;
 						//intentional searches always succeed
@@ -1596,7 +1596,7 @@ public class Hero extends Char {
 						} else if (buff(Foresight.class) != null){
 							chance = 1f;
 						//unintentional trap detection scales from 40% at floor 0 to 30% at floor 25
-						} else if (Dungeon.level.map[p] == Terrain.SECRET_TRAP) {
+						} else if (level.map[p] == Terrain.SECRET_TRAP) {
 							chance = 0.4f - (depth / 250f);
 							
 						//unintentional door detection scales from 20% at floor 0 to 0% at floor 20
@@ -1606,11 +1606,11 @@ public class Hero extends Char {
 						
 						if (Random.Float() < chance) {
 						
-							int oldValue = Dungeon.level.map[p];
+							int oldValue = level.map[p];
 							
 							GameScene.discoverTile( p, oldValue );
 							
-							Dungeon.level.discover( p );
+							level.discover( p );
 							
 							ScrollOfMagicMapping.discover( p );
 							
@@ -1627,7 +1627,7 @@ public class Hero extends Char {
 		if (intentional) {
 			sprite.showStatus( CharSprite.DEFAULT, Messages.get(this, "search") );
 			sprite.operate( pos );
-			if (!Dungeon.level.locked) {
+			if (!level.locked) {
 				if (cursed) {
 					GLog.n(Messages.get(this, "search_distracted"));
 					buff(Hunger.class).reduceHunger(TIME_TO_SEARCH - (2 * HUNGER_FOR_SEARCH));

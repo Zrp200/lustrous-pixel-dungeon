@@ -111,7 +111,7 @@ abstract public class MissileWeapon extends Weapon {
 		return (7 + tier * 2) - (int)(Math.sqrt(8 * lvl + 1) - 1)/2;
 	}
 
-	@SuppressWarnings("WeakerAccess")
+
 	protected float
 			rangeBoost = 1.5f,
 			adjacentPenalty = 0.5f;
@@ -119,8 +119,7 @@ abstract public class MissileWeapon extends Weapon {
 	@Override
 	public float accuracyFactor(Char owner) {
 		Hero user = (Hero)owner;
-		float accuracy = super.accuracyFactor(owner);
-		return accuracy * (Dungeon.level.adjacent(owner.pos,user.enemy().pos) ? adjacentPenalty : rangeBoost);
+		return super.accuracyFactor(owner) * (Dungeon.level.adjacent(owner.pos,user.enemy().pos) ? adjacentPenalty : rangeBoost);
 	}
 
 	@SuppressWarnings("ConstantConditions")

@@ -96,12 +96,11 @@ public class Berserk extends Buff {
 		} else {
 			power -= Math.max(0.1f, power) * 0.1f * Math.pow( ( target.HP / (float) target.HT ), 2); // -10% rage per turn at full hp
 
-			if (power <= 0) switch(state) {
-				case RECOVERING:
+			if (power <= 0)
+				if (state == State.RECOVERING)
 					power = 0f;
-					break;
-				default: detach();
-			}
+				else
+					detach();
 			BuffIndicator.refreshHero();
 		}
 		spend(TICK);
@@ -185,6 +184,7 @@ public class Berserk extends Buff {
 		icon.hardlight(r,g,b);
 	}
 	
+	@SuppressWarnings("NullableProblems")
 	@Override
 	public String toString() {
 		switch (state){

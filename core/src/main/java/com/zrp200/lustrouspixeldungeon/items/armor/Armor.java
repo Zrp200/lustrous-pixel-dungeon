@@ -92,7 +92,7 @@ public class Armor extends EquipableItem {
 		return super.identify();
 	}
 
-	private void revealGlyph() {
+	public void revealGlyph() {
 		glyphKnown = true;
 		ItemChange.show(Dungeon.hero,this);
 	}

@@ -188,7 +188,7 @@ public class Item implements Bundlable, Cloneable {
 	}
 
 	public synchronized Heap drop(int pos) {
-		Heap heap = Dungeon.level.drop(quantity > 0 && !Dungeon.hero.belongings.contains(this) ? this : null,pos);
+		Heap heap = Dungeon.level.drop(quantity > 0 ? this : null , pos);
 		if(!heap.isEmpty()) heap.sprite.drop();
 		return heap;
 	}

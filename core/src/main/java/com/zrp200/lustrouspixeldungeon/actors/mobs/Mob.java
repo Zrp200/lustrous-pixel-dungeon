@@ -61,7 +61,6 @@ import com.zrp200.lustrouspixeldungeon.items.weapon.SpiritBow;
 import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Necromantic;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Lucky;
-import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Flail;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.zrp200.lustrouspixeldungeon.levels.features.Chasm;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
@@ -418,10 +417,7 @@ public abstract class Mob extends Char {
 				}
 
 			}
-
-			newPath = newPath || !pathValid();
-
-			if (newPath) {
+			if (newPath || !isPathValid()) {
 				path = Dungeon.findPath(this, pos, target,
 						level.passable,
 						fieldOfView);
@@ -451,7 +447,7 @@ public abstract class Mob extends Char {
 				|| (fieldOfView[pos] && Actor.findChar(pos) != null);
 	}
 
-	private boolean lookAhead(int distance) { //looks ahead for path validity
+	private boolean isPathValid(int distance) { //looks ahead for path validity
 		if(path == null) return false;
 		for (int i = 0; i < distance; i++) {
 			int cell = path.get(i);
@@ -461,19 +457,18 @@ public abstract class Mob extends Char {
 		}
 		return true;
 	}
-	private boolean pathValid() {
-		return path != null && lookAhead((int)GameMath.gate(1, path.size()-1, 4));
+	private boolean isPathValid() {
+		return isPathValid((int)GameMath.gate(1, path.size()-1, 4));
 	}
 
-	boolean canGetFurther(int target) {
-		return !( rooted
+	boolean isTrapped(int target) {
+		return rooted
 				|| target == pos
-				|| Dungeon.flee(this, pos, target, level.passable, fieldOfView) == -1
-		);
+				|| Dungeon.flee(this, pos, target, level.passable, fieldOfView) == -1;
 	}
 
 	protected boolean getFurther( int target ) {
-		if(!canGetFurther(target)) return false;
+		if(isTrapped(target)) return false;
 		move( Dungeon.flee(this, pos, target, level.passable, fieldOfView) );
 		return true;
 	}

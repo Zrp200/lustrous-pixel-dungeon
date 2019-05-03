@@ -21,17 +21,19 @@
 
 package com.zrp200.lustrouspixeldungeon.items.weapon.enchantments;
 
+import com.watabou.noosa.Image;
+import com.watabou.utils.Bundle;
+import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.FlavourBuff;
+import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
+import com.zrp200.lustrouspixeldungeon.effects.Speck;
 import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSprite;
 import com.zrp200.lustrouspixeldungeon.ui.BuffIndicator;
-import com.watabou.noosa.Image;
-import com.watabou.utils.Bundle;
-import com.watabou.utils.Random;
 
 public class Swift extends Weapon.Enchantment {
 	
@@ -63,7 +65,12 @@ public class Swift extends Weapon.Enchantment {
 		public void setSourceType( boolean melee ){
 			this.sourceWasMelee = melee;
 		}
-		
+
+		@Override
+		protected void onAdd() {
+			target.sprite.emitter().start( Speck.factory(Speck.LIGHT), 0.01f, 4); // slow so people can actually notice.
+		}
+
 		public boolean boostsMelee(){
 			return !sourceWasMelee;
 		}

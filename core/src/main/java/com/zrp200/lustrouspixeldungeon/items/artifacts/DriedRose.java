@@ -43,7 +43,6 @@ import com.zrp200.lustrouspixeldungeon.effects.CellEmitter;
 import com.zrp200.lustrouspixeldungeon.effects.Speck;
 import com.zrp200.lustrouspixeldungeon.effects.particles.ShaftParticle;
 import com.zrp200.lustrouspixeldungeon.items.Item;
-import com.zrp200.lustrouspixeldungeon.items.KindOfWeapon;
 import com.zrp200.lustrouspixeldungeon.items.armor.Armor;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfRetribution;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
@@ -399,11 +398,14 @@ public class DriedRose extends Artifact {
 		
 		private DriedRose rose = null;
 		
+		@SuppressWarnings("unused")
 		public GhostHero(){
 			super();
 		}
 
-		public KindOfWeapon weapon() {return rose.weapon;}
+		public boolean canSurpriseAttack() {
+		    return rose.weapon != null && rose.weapon.canSurpriseAttack();
+        }
 
 		public GhostHero(DriedRose rose){
 			super();

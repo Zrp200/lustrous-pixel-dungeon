@@ -23,8 +23,8 @@ package com.zrp200.lustrouspixeldungeon.ui;
 
 import com.watabou.noosa.Image;
 import com.watabou.noosa.ui.Button;
-import com.watabou.utils.PathFinder;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
+import com.zrp200.lustrouspixeldungeon.QuickSlot;
 import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.items.Item;
@@ -32,12 +32,11 @@ import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
 import com.zrp200.lustrouspixeldungeon.scenes.PixelScene;
 import com.zrp200.lustrouspixeldungeon.sprites.CharSprite;
-import com.zrp200.lustrouspixeldungeon.utils.BArray;
 import com.zrp200.lustrouspixeldungeon.windows.WndBag;
 
 public class QuickSlotButton extends Button implements WndBag.Listener {
-	
-	private static QuickSlotButton[] instance = new QuickSlotButton[4];
+
+	private static QuickSlotButton[] instance = new QuickSlotButton[QuickSlot.SIZE];
 	private int slotNum;
 
 	private ItemSlot slot;
@@ -64,7 +63,7 @@ public class QuickSlotButton extends Button implements WndBag.Listener {
 	}
 
 	public static void reset() {
-		instance = new QuickSlotButton[4];
+		instance = new QuickSlotButton[QuickSlot.SIZE];
 
 		lastTarget = null;
 	}
@@ -134,7 +133,7 @@ public class QuickSlotButton extends Button implements WndBag.Listener {
 	
 	@Override
 	protected boolean onLongClick() {
-		GameScene.selectItem( this, WndBag.Mode.QUICKSLOT, Messages.get(this, "select_item") );
+		onClick();
 		return true;
 	}
 
