@@ -772,8 +772,7 @@ public class Hero extends Char {
 					break;
 				case CRYSTAL_CHEST:
 				case LOCKED_CHEST:
-					boolean hasKey = hasKey(heap.type == Type.LOCKED_CHEST ? GoldenKey.class : CrystalKey.class);
-					if(!hasKey) {
+					if(!hasKey(heap.type == Type.LOCKED_CHEST ? GoldenKey.class : CrystalKey.class)) {
 						GLog.w(Messages.get(this, "locked_chest"));
 						ready();
 						return false;
@@ -808,29 +807,34 @@ public class Hero extends Char {
 			return false;
 		}
 		key.depth = depth;
-		return Notes.keyCount(key) > 0;
+
+		boolean hasKey = Notes.keyCount(key) > 0;
+
+		// lock picking logic for when I accidentally make key bugs.
+		// Without this it would be impossible to tell something is wrong.
+		if (hasKey || keyClass == SkeletonKey.class || level.containsItem(keyClass))
+			return hasKey;
+
+		if (keyClass == CrystalKey.class) {
+			int chests = 0;
+			for (Heap heap : level.heaps.values())
+				if (heap.type == Type.CRYSTAL_CHEST) chests++;
+			if (chests % 2 == 1) return false;
+		}
+
+		Dungeon.hero.sprite.showStatus( // we've picked the lock at this point
+				CharSprite.POSITIVE, "You somehow managed to pick the lock!");
+		return true;
 	}
 
 	private boolean actUnlock( HeroAction.Unlock action ) {
 		int doorCell = action.dst;
-		if (Dungeon.level.adjacent( pos, doorCell )) {
-			
-			boolean hasKey = false;
+		if (level.adjacent( pos, doorCell )) {
 
-			int door = Dungeon.level.map[doorCell];
-			
-			if (door == Terrain.LOCKED_DOOR) {
-				hasKey = hasKey(IronKey.class);
+			int door = level.map[doorCell];
 
-			} else if (door == Terrain.LOCKED_EXIT
+			if (door == Terrain.LOCKED_DOOR && hasKey(IronKey.class) || door == Terrain.LOCKED_EXIT
 					&& hasKey(SkeletonKey.class)) {
-				hasKey = true;
-				
-			}
-
-
-			if (hasKey) {
-				
 				sprite.operate( doorCell );
 				
 				Sample.INSTANCE.play( Assets.SND_UNLOCK );

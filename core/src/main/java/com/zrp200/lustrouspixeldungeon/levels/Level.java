@@ -475,6 +475,16 @@ public abstract class Level implements Bundlable {
 		}
 		return false;
 	}
+	public boolean containsItem(Class<?extends Item> itemClass) {
+		for(Heap heap : heaps.values()) {
+			for(Item item : heap.items) {
+				if(itemClass.isInstance(item)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 
 	public Actor respawner() {
 		return new Actor() {
