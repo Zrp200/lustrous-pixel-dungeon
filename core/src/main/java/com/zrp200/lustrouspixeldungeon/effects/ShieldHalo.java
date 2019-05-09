@@ -23,6 +23,7 @@ package com.zrp200.lustrouspixeldungeon.effects;
 
 import com.watabou.glwrap.Blending;
 import com.watabou.noosa.Game;
+import com.watabou.noosa.Halo;
 import com.watabou.utils.PointF;
 import com.zrp200.lustrouspixeldungeon.sprites.CharSprite;
 
