@@ -22,13 +22,13 @@
 package com.zrp200.lustrouspixeldungeon.levels;
 
 import com.watabou.noosa.Group;
+import com.watabou.noosa.Halo;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.npcs.Wandmaker;
-import com.zrp200.lustrouspixeldungeon.effects.Halo;
 import com.zrp200.lustrouspixeldungeon.effects.particles.FlameParticle;
 import com.zrp200.lustrouspixeldungeon.levels.painters.Painter;
 import com.zrp200.lustrouspixeldungeon.levels.painters.PrisonPainter;

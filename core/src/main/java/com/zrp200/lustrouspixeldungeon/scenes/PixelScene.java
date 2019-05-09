@@ -29,6 +29,7 @@ import com.watabou.noosa.BitmapTextMultiline;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.ColorBlock;
 import com.watabou.noosa.Game;
+import com.watabou.noosa.Gizmo;
 import com.watabou.noosa.RenderedText;
 import com.watabou.noosa.Scene;
 import com.watabou.noosa.Visual;
@@ -39,6 +40,9 @@ import com.zrp200.lustrouspixeldungeon.Badges;
 import com.zrp200.lustrouspixeldungeon.LustSettings;
 import com.zrp200.lustrouspixeldungeon.effects.BadgeBanner;
 import com.zrp200.lustrouspixeldungeon.ui.RenderedTextMultiline;
+import com.zrp200.lustrouspixeldungeon.ui.Window;
+
+import java.util.ArrayList;
 
 public class PixelScene extends Scene {
 
@@ -127,6 +131,31 @@ public class PixelScene extends Scene {
 			font2x.baseLine = 38;
 			font2x.tracking = -4;
 			font2x.texture.filter(Texture.LINEAR, Texture.NEAREST);*/
+		}
+	}
+
+	//FIXME this system currently only works for a subset of windows
+	private static ArrayList<Class<?extends Window>> savedWindows = new ArrayList<>();
+
+	public void saveWindows(){
+		savedWindows.clear();
+		for (Gizmo g : members){
+			if (g instanceof Window){
+				savedWindows.add((Class<? extends Window>) g.getClass());
+			}
+		}
+	}
+
+	public void restoreWindows(){
+		if (!savedWindows.isEmpty()){
+			for (Class<?extends Window> w : savedWindows){
+				try{
+					add(w.newInstance());
+				} catch (Exception e){
+					//window has no public zero-arg constructor, just eat the exception
+				}
+			}
+			savedWindows.clear();
 		}
 	}
 

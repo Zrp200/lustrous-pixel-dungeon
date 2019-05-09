@@ -23,6 +23,7 @@ package com.zrp200.lustrouspixeldungeon.levels.rooms.secret;
 
 import com.watabou.utils.Point;
 import com.watabou.utils.Random;
+import com.zrp200.lustrouspixeldungeon.Challenges;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Hunger;
 import com.zrp200.lustrouspixeldungeon.items.food.ChargrilledMeat;
@@ -55,8 +56,9 @@ public class SecretLarderRoom extends SecretRoom {
 		
 		Painter.fill(level, c.x-1, c.y-1, 3, 3, Terrain.WATER);
 		Painter.set(level, c, Terrain.GRASS);
-
-		level.plant(new BlandfruitBush.Seed(), level.pointToCell(c));
+if (!Dungeon.isChallenged(Challenges.NO_FOOD)) {
+			level.plant(new BlandfruitBush.Seed(), level.pointToCell(c));
+		}
 		
 		int extraFood = (int)(Hunger.STARVING - Hunger.HUNGRY) * (1 + Dungeon.depth / 5);
 		while (extraFood > Hunger.HUNGRY/2 ){
