@@ -50,6 +50,7 @@ import static com.watabou.utils.Bundle.addAlias;
 public class LustrousPixelDungeon extends Game {
 
 	public enum Version {
+		v012("0.1.2",422),
 		v011("0.1.1",418),
 		v010("0.1.0",416),
 		v001("0.0.1",407);

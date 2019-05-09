@@ -281,7 +281,7 @@ public class ChangesScene extends PixelScene {
 						"Minor fire bugs",
 						"Visual visual issues with fire elementals and buffs"));
 		new ChangeInfo(ChangeInfo.Template.NEW_CONTENT).addButtons(
-				addDeveloperCommentary(Milestone.LUST011,null, Milestone.SHPD072),
+				addDeveloperCommentary(Milestone.LUST011,Messages.get(Milestone.class, "011"), Milestone.SHPD072),
 				new ChangeButton(new ArmageddonTrap().getImage(), "New Demon Halls Trap!",
 						"Armageddon traps now appear quite rarely in floors 22-24, " +
 								"and inflict fiery death upon all who are unfortunate enough to " +
