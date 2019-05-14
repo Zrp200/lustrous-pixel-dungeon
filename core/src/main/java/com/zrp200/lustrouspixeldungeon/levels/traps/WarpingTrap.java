@@ -23,7 +23,7 @@ package com.zrp200.lustrouspixeldungeon.levels.traps;
 
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Actor;
-import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
+import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
 import com.zrp200.lustrouspixeldungeon.utils.BArray;
 
@@ -33,12 +33,17 @@ public class WarpingTrap extends TeleportationTrap {
 
 	@Override
 	public void activate() {
+		Char charAtPos = Actor.findChar(pos);
 		super.activate();
-		if (Actor.findChar(pos) instanceof Hero) {
-			BArray.setFalse(Dungeon.level.visited);
-			BArray.setFalse(Dungeon.level.mapped);
-			GameScene.updateFog();
-			Dungeon.observe();
+		if (charAtPos == Dungeon.hero) {
+			obfuscateLevel();
 		}
+	}
+
+	public static void obfuscateLevel() {
+		BArray.setFalse(Dungeon.level.visited);
+		BArray.setFalse(Dungeon.level.mapped);
+		GameScene.updateFog();
+		Dungeon.observe();
 	}
 }

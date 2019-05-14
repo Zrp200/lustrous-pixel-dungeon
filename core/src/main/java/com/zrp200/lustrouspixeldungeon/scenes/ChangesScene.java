@@ -132,9 +132,17 @@ public class ChangesScene extends PixelScene {
 			@Override
 			public void addChanges() {
 				new ChangeInfo(Version.v012.name, true);
+				new ChangeInfo(ChangeInfo.Template.BUFFS).addButtons(
+				        new ChangeButton(new ArmageddonTrap().getImage(), "Armageddon Trap", "Look, it's your fault for activating this.\n").appendList(
+				                "Regrowth seeded up to 30 units from 24",
+                                "The game now tries twice as hard to surround the hero with grass",
+                                "The game now tries twice as hard to place enemies on grass tiles",
+                                "Passive mobs are no longer teleported, but active statues can be teleported."
+                        )
+                );
 				new ChangeInfo(ChangeInfo.Template.CHANGES).addButtons(
 						ChangeButton.bugfix("Issues with guaranteed scroll of transmutation drop",
-								"Distortion traps destroying important items")
+								"Distortion traps destroying important items", "Warping trap not hiding level")
 				);
 			}
 		},

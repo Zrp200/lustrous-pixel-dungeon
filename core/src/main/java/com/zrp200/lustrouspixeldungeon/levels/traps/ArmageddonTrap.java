@@ -12,7 +12,6 @@ import com.zrp200.lustrouspixeldungeon.actors.blobs.Fire;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.Regrowth;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.Mob;
-import com.zrp200.lustrouspixeldungeon.actors.mobs.Statue;
 import com.zrp200.lustrouspixeldungeon.effects.Flare;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.zrp200.lustrouspixeldungeon.items.wands.CursedWand;
@@ -48,7 +47,7 @@ public class ArmageddonTrap extends Trap {
 
         // place all characters on a flammable tile...
         for(Char ch : chars) {
-            if(ch instanceof Statue || ch.properties().contains(Char.Property.IMMOVABLE))
+            if(ch instanceof Mob && ((Mob)ch).state == ((Mob) ch).PASSIVE || ch.properties().contains(Char.Property.IMMOVABLE))
                 continue;
             int tries = 0, heroTries=0;
             int respawn;
@@ -62,19 +61,19 @@ public class ArmageddonTrap extends Trap {
                         illegal = true;
                         continue teleport;
                     }
-                    if(ch instanceof Hero && !Terrain.fertile(respawn+dir)&& heroTries++ < 100) {
+                    if(ch instanceof Hero && !Terrain.fertile(respawn+dir)&& heroTries++ < 200) {
                         illegal = true;
                         continue teleport;
                     }
                 }
-            } while(illegal || !Terrain.fertile(respawn) && tries++ < 150);
+            } while(illegal || !Terrain.fertile(respawn) && tries++ < 300);
             ScrollOfTeleportation.appear(ch,respawn,true);
         }
 
         // flood the dungeon floor with grass...
         for (int i = 0; i < level.length(); i++)
-            GameScene.add( Blob.seed(i, 24, Regrowth.class));
-        level.blobs.get(Regrowth.class).act();
+            GameScene.add( Blob.seed(i, 30, Regrowth.class));
+        level.blobs.get(Regrowth.class).act(); // get the grass up
 
         // light 'em up!
         int fire = 0, seed;
@@ -96,10 +95,7 @@ public class ArmageddonTrap extends Trap {
         Sample.INSTANCE.play(Assets.SND_BURNING);
 
         // acts like a warping trap just for visual effect.
-        BArray.setFalse(level.visited);
-        BArray.setFalse(level.mapped);
-        GameScene.updateFog();
-        Dungeon.observe();
+        WarpingTrap.obfuscateLevel();
 
         GameScene.flash(new Blazing().glowing().color);
         new Flare(8, 32).color(0xFFFF66, true).show(Dungeon.hero.sprite, 1f); // external vfx
