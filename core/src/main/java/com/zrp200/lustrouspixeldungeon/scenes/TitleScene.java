@@ -30,8 +30,8 @@ import com.watabou.noosa.RenderedText;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.ui.Button;
+import com.watabou.utils.DeviceCompat;
 import com.zrp200.lustrouspixeldungeon.Assets;
-import com.zrp200.lustrouspixeldungeon.BuildConfig;
 import com.zrp200.lustrouspixeldungeon.GamesInProgress;
 import com.zrp200.lustrouspixeldungeon.LustSettings;
 import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
@@ -43,7 +43,6 @@ import com.zrp200.lustrouspixeldungeon.ui.ChangesButton;
 import com.zrp200.lustrouspixeldungeon.ui.ExitButton;
 import com.zrp200.lustrouspixeldungeon.ui.PrefsButton;
 import com.zrp200.lustrouspixeldungeon.windows.WndStartGame;
-import com.watabou.utils.DeviceCompat;
 
 public class TitleScene extends PixelScene {
 	

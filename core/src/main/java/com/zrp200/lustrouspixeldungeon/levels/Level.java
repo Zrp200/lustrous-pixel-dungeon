@@ -190,7 +190,7 @@ public abstract class Level implements Bundlable {
 
 			// one scroll of transmutation is guaranteed to spawn... somewhere.
 			long tranSeed = Dungeon.seed / 7; // gotta love prime numbers.
-			int tranChapter = (int)(tranSeed % 3 + 1),
+			int tranChapter = (int)(tranSeed % 5 + 1),
 				tranFloor   = (int)(tranSeed % 4 + 1);
 
 			if(tranChapter == 5 && tranFloor == 1) tranFloor++;

@@ -347,6 +347,7 @@ public class DriedRose extends Artifact {
 		{
 			stackable = true;
 			image = ItemSpriteSheet.PETAL;
+			unique = true;
 		}
 
 		@Override

@@ -39,6 +39,8 @@ import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
 import com.zrp200.lustrouspixeldungeon.Statistics;
 import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
+import com.zrp200.lustrouspixeldungeon.items.Heap;
+import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.artifacts.DriedRose;
 import com.zrp200.lustrouspixeldungeon.levels.Level;
 import com.zrp200.lustrouspixeldungeon.levels.features.Chasm;
@@ -50,6 +52,7 @@ import com.zrp200.lustrouspixeldungeon.windows.WndStory;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class InterlevelScene extends PixelScene {
 	
@@ -416,7 +419,16 @@ public class InterlevelScene extends PixelScene {
 		SpecialRoom.resetPitRoom(Dungeon.depth+1);
 
 		Dungeon.depth--;
-		Level level = Dungeon.newLevel();
+
+		ArrayList<Item> items = new ArrayList<>();
+		for(Heap heap : Dungeon.level.heaps.values()) {
+			for(Item item : heap.items) {
+				if(item.unique || heap.type != Heap.Type.TOMB && item.level() > 2) {
+					items.add(item);
+				}
+			}
+		}
+		Level level = Dungeon.newLevel(items.toArray(new Item[0]));
 		Dungeon.switchLevel( level, level.entrance );
 	}
 	

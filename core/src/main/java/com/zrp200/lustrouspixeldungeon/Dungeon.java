@@ -231,7 +231,7 @@ public class Dungeon {
 		return (challenges & mask) != 0;
 	}
 	
-	public static Level newLevel() {
+	public static Level newLevel(Item... itemsToSpawn) {
 		
 		Dungeon.level = null;
 		Actor.clear();
@@ -299,7 +299,11 @@ public class Dungeon {
 			level = new DeadEndLevel();
 			Statistics.deepestFloor--;
 		}
-		
+
+		for(Item item : itemsToSpawn) {
+			level.addItemToSpawn(item);
+		}
+
 		level.create();
 		
 		Statistics.qualifiedForNoKilling = !bossLevel();
