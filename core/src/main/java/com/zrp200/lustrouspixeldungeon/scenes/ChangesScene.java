@@ -139,7 +139,12 @@ public class ChangesScene extends PixelScene {
                                 "The game now tries twice as hard to surround the hero with grass",
                                 "The game now tries twice as hard to place enemies on grass tiles",
                                 "Passive mobs are no longer teleported, but active statues can be teleported now."
-                        )
+                        ),
+						new ChangeButton(new WarlockSprite(), "Warlock").appendList(
+								"Warlocks will now always extend existing weaken duration if applicable",
+								"Warlock weaken will still always result in a debuff lasting at least 6 turns but less than 40 turns",
+								"Weaken can last partial turns"
+						)
                 );
 				new ChangeInfo(ChangeInfo.Template.CHANGES).addButtons(
 						ChangeButton.misc(
