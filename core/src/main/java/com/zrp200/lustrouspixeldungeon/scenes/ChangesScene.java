@@ -145,7 +145,8 @@ public class ChangesScene extends PixelScene {
 						ChangeButton.misc(
 								"Only transmuting the original starting weapon will result in a cord; a warrior transmuting a dagger will not get a cord guarenteed, though it is still a chance.",
 								"Result from transmuting tier-1 weapons is now weighted where Gloves > Dagger = Cord > Worn Shortsword; " +
-										"you are more likely to get gloves and less likely to get worn shortsword than before"
+										"you are more likely to get gloves and less likely to get worn shortsword than before",
+                                "Reverted blazing description to pre-0.7.2"
 						),
 						ChangeButton.bugfix("Issues with guaranteed scroll of transmutation drop",
 								"Distortion traps destroying important items", "Warping trap not hiding level")
