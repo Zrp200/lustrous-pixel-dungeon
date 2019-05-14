@@ -133,14 +133,20 @@ public class ChangesScene extends PixelScene {
 			public void addChanges() {
 				new ChangeInfo(Version.v012.name, true);
 				new ChangeInfo(ChangeInfo.Template.BUFFS).addButtons(
-				        new ChangeButton(new ArmageddonTrap().getImage(), "Armageddon Trap", "Look, it's your fault for activating this.\n").appendList(
+				        new ChangeButton(new ArmageddonTrap().getImage(), "Armageddon Trap",
+								"Look, it's your fault for activating this.\n").appendList(
 				                "Regrowth seeded up to 30 units from 24",
                                 "The game now tries twice as hard to surround the hero with grass",
                                 "The game now tries twice as hard to place enemies on grass tiles",
-                                "Passive mobs are no longer teleported, but active statues can be teleported."
+                                "Passive mobs are no longer teleported, but active statues can be teleported now."
                         )
                 );
 				new ChangeInfo(ChangeInfo.Template.CHANGES).addButtons(
+						ChangeButton.misc(
+								"Only transmuting the original starting weapon will result in a cord; a warrior transmuting a dagger will not get a cord guarenteed, though it is still a chance.",
+								"Result from transmuting tier-1 weapons is now weighted where Gloves > Dagger = Cord > Worn Shortsword; " +
+										"you are more likely to get gloves and less likely to get worn shortsword than before"
+						),
 						ChangeButton.bugfix("Issues with guaranteed scroll of transmutation drop",
 								"Distortion traps destroying important items", "Warping trap not hiding level")
 				);

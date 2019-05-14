@@ -119,9 +119,9 @@ public enum HeroClass {
 	};
 
 	private String title, spritesheet;
-	private HeroSubClass[] subClasses;
-	private Class<?extends MeleeWeapon> meleeClass;
-	private Class<?extends Bag> bagClass;
+	public final HeroSubClass[] subClasses;
+	public final Class<?extends MeleeWeapon> meleeClass;
+	public final Class<?extends Bag> bagClass;
 	private Class<?extends Potion> idPotion;
 	private Class<?extends Scroll> idScroll;
 	private Badge masteryBadge;
