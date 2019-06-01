@@ -41,7 +41,6 @@ public class DisintegrationTrap extends AimingTrap {
 	{
 		color = VIOLET;
 		shape = CROSSHAIR;
-		hideable = false;
 	}
 
 	@Override
@@ -57,9 +56,8 @@ public class DisintegrationTrap extends AimingTrap {
 			Sample.INSTANCE.play(Assets.SND_RAY);
 			LustrousPixelDungeon.scene().add(new Beam.DeathRay(DungeonTilemap.tileCenterToWorld(pos), target.sprite.center()));
 		}
-		target.damage( Math.max( target.HT/5, Random.Int(target.HP / 2, 2 * target.HP / 3) ), this );
-		if(target != Dungeon.hero) return;
-
+		target.damage( Random.NormalIntRange(30, 50) + Dungeon.depth, this );
+		if (target != Dungeon.hero) return;
 		Hero hero = (Hero)target;
 		if (!hero.isAlive()){
 			Dungeon.fail( getClass() );

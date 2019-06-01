@@ -88,6 +88,7 @@ import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.darts.ShockingDart;
 import com.zrp200.lustrouspixeldungeon.levels.Terrain;
 import com.zrp200.lustrouspixeldungeon.levels.features.Chasm;
 import com.zrp200.lustrouspixeldungeon.levels.features.Door;
+import com.zrp200.lustrouspixeldungeon.levels.traps.GrimTrap;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.sprites.CharSprite;
 import com.zrp200.lustrouspixeldungeon.utils.GLog;
@@ -260,6 +261,10 @@ public abstract class Char extends Actor {
 
 			if (!enemy.isAlive() && visibleFight) {
 				if (enemy == Dungeon.hero) {
+					
+					if (this == Dungeon.hero) {
+						return true;
+					}
 
 					Dungeon.fail( getClass() );
 					GLog.n( Messages.capitalize(Messages.get(Char.class, "kill", name)) );
@@ -349,7 +354,7 @@ public abstract class Char extends Actor {
 		return cachedShield;
 	}
 	
-	public void damage( int dmg, Object src, boolean magic ) { // magic for extremely stone usage.
+	public void damage(int dmg, Object src) { // magic for extremely stone usage.
 		if (!isAlive() || dmg < 0) return;
 		Charm c = buff(Charm.class);
 		if (c != null && src instanceof Char && isCharmedBy( (Char) src) )
@@ -387,9 +392,6 @@ public abstract class Char extends Actor {
 			Buff.detach(this, MagicalSleep.class);
 		if (buff( Paralysis.class ) != null)
 			buff( Paralysis.class ).processDamage(dmg);
-	}
-	public final void damage(int damage, Object src) {
-		damage(damage, src, false);
 	}
 	
 	public void destroy() {
@@ -604,7 +606,7 @@ public abstract class Char extends Actor {
 		BOSS (
 		        new HashSet<Class>(
 		                Arrays.asList(
-		                        Grim.class, ScrollOfRetribution.class, ScrollOfPsionicBlast.class, Terror.class)
+		                        Grim.class, GrimTrap.class, ScrollOfRetribution.class, ScrollOfPsionicBlast.class, Terror.class)
                 ), new HashSet<Class>( Arrays.asList(Corruption.class, Amok.class, StoneOfAggression.Aggression.class) ) ),
 		MINIBOSS ( new HashSet<Class>(),
 				new HashSet<Class>( Arrays.asList(Corruption.class) )),

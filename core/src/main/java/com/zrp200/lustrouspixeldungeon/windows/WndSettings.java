@@ -114,17 +114,7 @@ public class WndSettings extends WndTabbed {
 				protected void onChange() {
 					if (getSelectedValue() != LustSettings.scale()) {
 						LustSettings.scale(getSelectedValue());
-						LustrousPixelDungeon.switchNoFade((Class<? extends PixelScene>) LustrousPixelDungeon.scene().getClass(), new Game.SceneChangeCallback() {
-							@Override
-							public void beforeCreate() {
-								//do nothing
-							}
-
-							@Override
-							public void afterCreate() {
-								Game.scene().add(new WndSettings());
-							}
-						});
+						LustrousPixelDungeon.seamlessResetScene();
 					}
 				}
 			};
@@ -293,7 +283,7 @@ public class WndSettings extends WndTabbed {
 				@Override
 				protected void onClick() {
 					super.onClick();
-					LustrousPixelDungeon.switchNoFade((Class<? extends PixelScene>) LustrousPixelDungeon.scene().getClass(), new Game.SceneChangeCallback() {
+					LustrousPixelDungeon.seamlessResetScene(new Game.SceneChangeCallback() {
 						@Override
 						public void beforeCreate() {
 							LustSettings.systemFont(checked());
@@ -301,7 +291,7 @@ public class WndSettings extends WndTabbed {
 
 						@Override
 						public void afterCreate() {
-							Game.scene().add(new WndSettings());
+							//do nothing
 						}
 					});
 				}

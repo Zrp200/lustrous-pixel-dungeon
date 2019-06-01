@@ -131,8 +131,8 @@ public class DM300 extends Mob {
 	}
 
 	@Override
-	public void damage(int dmg, Object src, boolean magic ) {
-		super.damage(dmg, src, magic);
+	public void damage(int dmg, Object src) {
+		super.damage(dmg, src);
 		LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
 		if (lock != null && !isImmune(src.getClass())) lock.addTime(dmg*1.5f);
 	}

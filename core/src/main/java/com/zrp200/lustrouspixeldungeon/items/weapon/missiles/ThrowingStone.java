@@ -30,15 +30,15 @@ public class ThrowingStone extends MissileWeapon {
 		
 		bones = false;
 		
-		tier = 1;
-		baseUses = 3;
+		tier = 1; // 2-5 base damage @ +1/+1 scaling
+		baseUses = 5;
 		sticky = false;
 
 		value /= 2; // half normal value
 	}
 	
 	@Override
-	public int minBase() {
-		return tier; //1 base, down from 2
+	public int price() {
+		return super.price()/2; //half normal value
 	}
 }

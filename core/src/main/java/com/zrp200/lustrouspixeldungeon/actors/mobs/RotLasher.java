@@ -59,12 +59,12 @@ public class RotLasher extends Mob {
 	}
 
 	@Override
-	public void damage(int dmg, Object src, boolean magic ) {
+	public void damage(int dmg, Object src) {
 		if (src instanceof Burning) {
 			destroy();
 			sprite.die();
 		} else {
-			super.damage(dmg, src, magic);
+			super.damage(dmg, src);
 		}
 	}
 

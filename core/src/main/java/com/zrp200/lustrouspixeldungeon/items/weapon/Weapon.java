@@ -46,16 +46,16 @@ import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Sacrificial;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Wayward;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.WeaponCurse;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Blazing;
+import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Blocking;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Blooming;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Chilling;
-import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Dazzling;
+import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Corrupting;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Elastic;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Grim;
+import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Kinetic;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Lucky;
-import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Precise;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Projecting;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Shocking;
-import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Swift;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Unstable;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Vampiric;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
@@ -66,8 +66,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 abstract public class Weapon extends KindOfWeapon {
-
-	private static final int HITS_TO_KNOW    = 20;
 
 	protected float 	ACC = 1f;	// Accuracy modifier
 	protected float 	DLY	= 1f;	// Speed modifier
@@ -106,6 +104,11 @@ abstract public class Weapon extends KindOfWeapon {
 	
 	public Enchantment enchantment;
 	public boolean enchantKnown = false;
+	private static final int USES_TO_ID = 20;
+	private int usesLeftToID = USES_TO_ID;
+	private float availableUsesToID = USES_TO_ID/2f;
+
+	public boolean curseInfusionBonus = false;
 
 	protected float surpriseToMax = 0f;
 
@@ -160,10 +163,6 @@ abstract public class Weapon extends KindOfWeapon {
 	protected final boolean hasHiddenEnchant() {
 		return hasEnchant() && !enchantKnown;
 	}
-
-	private static final int USES_TO_ID = 20;
-	private int usesLeftToID = USES_TO_ID;
-	private float availableUsesToID = USES_TO_ID/2f;
 
 	@Override
 	public int proc( Char attacker, Char defender, int damage ) {
@@ -257,7 +256,8 @@ abstract public class Weapon extends KindOfWeapon {
 			AUGMENT			= "augment",
 			ENCHANTMENT_KNOWN = "enchant known",
             USES_LEFT_TO_ID = "uses_left_to_id",
-            AVAILABLE_USES  = "available_uses";
+            AVAILABLE_USES  = "available_uses",
+			CURSE_INFUSION_BONUS = "curse_infusion_bonus";
 	
 	public void onHeroGainExp( float levelPercent, Hero hero ){
 		if (!levelKnown && isEquipped(hero) && availableUsesToID <= USES_TO_ID/2f) {
@@ -272,6 +272,7 @@ abstract public class Weapon extends KindOfWeapon {
         bundle.put( USES_LEFT_TO_ID, usesLeftToID );
         bundle.put( AVAILABLE_USES, availableUsesToID );
 		bundle.put( ENCHANTMENT, enchantment );
+		bundle.put( CURSE_INFUSION_BONUS, curseInfusionBonus );
 		bundle.put( AUGMENT, augment );
 		bundle.put( ENCHANTMENT_KNOWN, enchantKnown);
 	}
@@ -283,14 +284,16 @@ abstract public class Weapon extends KindOfWeapon {
 		enchantKnown = bundle.getBoolean(ENCHANTMENT_KNOWN);
 		usesLeftToID = bundle.getInt( USES_LEFT_TO_ID );
 		availableUsesToID = bundle.getInt( AVAILABLE_USES );
-		augment = bundle.getEnum(AUGMENT, Augment.class);
-		if(augment == null) augment = Augment.NONE;
+		enchantment = (Enchantment)bundle.get( ENCHANTMENT );
+		curseInfusionBonus = bundle.getBoolean( CURSE_INFUSION_BONUS );
 		
 		//pre-0.7.2 saves
 		if (bundle.contains( "unfamiliarity" )){
 			usesLeftToID = bundle.getInt( "unfamiliarity" );
 			availableUsesToID = USES_TO_ID/2f;
 		}
+
+		augment = bundle.getEnum(AUGMENT, Augment.class);
 	}
 	
 	@Override
@@ -349,6 +352,11 @@ abstract public class Weapon extends KindOfWeapon {
 
 	public abstract int STRReq(int lvl);
 	
+	@Override
+	public int level() {
+		return super.level() + (curseInfusionBonus ? 1 : 0);
+	}
+
 	@Override
 	public Item upgrade() {
 		return upgrade(false);
@@ -482,12 +490,12 @@ abstract public class Weapon extends KindOfWeapon {
 	public static abstract class Enchantment implements Bundlable {
 
 		protected static final Class<?>[] common = new Class<?>[]{
-				Precise.class, Chilling.class, Shocking.class, Blooming.class};
+				Kinetic.class, Chilling.class, Shocking.class, Blazing.class};
 		protected static final Class<?>[] uncommon = new Class<?>[]{
-				Blazing.class, Elastic.class, Projecting.class,
-				Unstable.class, Lucky.class, Swift.class};
+				Blocking.class, Elastic.class, Projecting.class,
+				Unstable.class, Lucky.class, Blooming.class};
 		protected static final Class<?>[] rare = new Class<?>[]{
-				Grim.class, Vampiric.class, Dazzling.class};
+				Grim.class, Vampiric.class, Corrupting.class};
 
 		private static final float[] typeChances = new float[]{
 				50, //12.5% each

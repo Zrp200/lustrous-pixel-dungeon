@@ -23,6 +23,7 @@ package com.zrp200.lustrouspixeldungeon.items.rings;
 
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
+import com.zrp200.lustrouspixeldungeon.Challenges;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.items.Generator;
@@ -90,11 +91,19 @@ public class RingOfWealth extends Ring {
 		triesToDrop -= dropProgression(target, tries);
 		while ( triesToDrop <= 0 ){
 			if (dropsToRare <= 0){
-				drops.add(genRareDrop());
+				Item i;
+				do {
+					i = genRareDrop();
+				} while (Challenges.isItemBlocked(i));
+				drops.add(i);
 				latestDropWasRare = true;
 				dropsToRare = Random.NormalInt(20);
 			} else {
-				drops.add(genStandardDrop());
+				Item i;
+				do {
+					i = genStandardDrop();
+				} while (Challenges.isItemBlocked(i));
+				drops.add(i);
 				dropsToRare--;
 			}
 			triesToDrop += Random.NormalIntRange(0, 60);

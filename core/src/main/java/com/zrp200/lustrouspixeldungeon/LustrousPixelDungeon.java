@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2018 Evan Debenham
+ * Copyright (C) 2014-2019 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,7 +38,6 @@ import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Chaotic;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Chilling;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Dazzling;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Elastic;
-import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Precise;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Gloves;
 import com.zrp200.lustrouspixeldungeon.scenes.PixelScene;
 import com.zrp200.lustrouspixeldungeon.scenes.WelcomeScene;
@@ -93,8 +92,16 @@ public class LustrousPixelDungeon extends Game {
 				Chilling.class,
 				"com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Venomous" );
 		addAlias(
-				Precise.class,
+				com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Kinetic.class,
 				"com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Vorpal" );
+
+		//0.1.2
+		com.watabou.utils.Bundle.addAlias(
+				com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Kinetic.class,
+				"com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Precise" );
+		com.watabou.utils.Bundle.addAlias(
+				com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Kinetic.class,
+				"com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Swift" );
 	}
 
 	
@@ -134,6 +141,14 @@ public class LustrousPixelDungeon extends Game {
 	}
 
 	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		if (scene instanceof PixelScene){
+			((PixelScene) scene).saveWindows();
+		}
+		super.onSaveInstanceState(outState);
+	}
+
+	@Override
 	public void onWindowFocusChanged( boolean hasFocus ) {
 		super.onWindowFocusChanged( hasFocus );
 		if (hasFocus) updateSystemUI();
@@ -155,8 +170,34 @@ public class LustrousPixelDungeon extends Game {
 		switchScene( c, callback );
 	}
 
+	public static void seamlessResetScene(SceneChangeCallback callback) {
+		if (scene() instanceof PixelScene){
+			((PixelScene) scene()).saveWindows();
+			switchNoFade((Class<? extends PixelScene>) sceneClass, callback );
+		} else {
+			resetScene();
+		}
+	}
+
+	public static void seamlessResetScene(){
+		seamlessResetScene(null);
+	}
+
+	@Override
+	protected void switchScene() {
+		super.switchScene();
+		if (scene instanceof PixelScene){
+			((PixelScene) scene).restoreWindows();
+		}
+	}
+
 	@Override
 	public void onSurfaceChanged( GL10 gl, int width, int height ) {
+
+		if (scene instanceof PixelScene &&
+				(height != Game.height || width != Game.width)) {
+			((PixelScene) scene).saveWindows();
+		}
 
 		super.onSurfaceChanged( gl, width, height );
 
@@ -166,8 +207,7 @@ public class LustrousPixelDungeon extends Game {
 
 	public void updateDisplaySize(){
 		boolean landscape = LustSettings.landscape();
-		
-		if (landscape != (width > height)) {
+
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
 				instance.setRequestedOrientation(landscape ?
 						ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE :
@@ -177,7 +217,6 @@ public class LustrousPixelDungeon extends Game {
 						ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE :
 						ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 			}
-		}
 		
 		if (view.getMeasuredWidth() == 0 || view.getMeasuredHeight() == 0)
 			return;

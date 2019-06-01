@@ -137,11 +137,9 @@ public class Eye extends Mob {
 
 	}
 
-	public void damage(int dmg, Object src, boolean magic) {
-		if(src instanceof Eye && magic) dmg /= 2; // deathgaze resist
+	public void damage(int dmg, Object src) {
 		if(beamCharged) dmg /= 4;
-		super.damage(dmg, src, magic);
-
+		super.damage(dmg, src);
 	}
 
 	private void resetDeathgaze() {
@@ -152,6 +150,9 @@ public class Eye extends Mob {
 		sprite.idle();
 		spend( attackDelay() - cooldown() );
 	}
+
+	//used so resistances can differentiate between melee and magical attacks
+	public static class DeathGaze{}
 
 	public void deathGaze(){
 		if (!beamCharged || beamCooldown > 0 || beam == null)
@@ -174,7 +175,7 @@ public class Eye extends Mob {
 			}
 
 			if (hit( this, ch, true )) {
-				ch.damage( Random.NormalIntRange( 30, 50 ), this, true );
+				ch.damage( Random.NormalIntRange( 30, 50 ), new DeathGaze() );
 
 				if (Dungeon.level.heroFOV[pos]) {
 					ch.sprite.flash();
@@ -239,6 +240,7 @@ public class Eye extends Mob {
 	{
 		resistances.add( Grim.class );
 
+		resistances.add( DeathGaze.class );
 		resistances.add( DisintegrationTrap.class );
 		resistances.add( GrimTrap.class );
 

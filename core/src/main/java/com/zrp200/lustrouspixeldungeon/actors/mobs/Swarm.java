@@ -85,8 +85,8 @@ public class Swarm extends Mob {
 	}
 
 	@Override
-	public void damage(int dmg, Object src, boolean magic) {
-		super.damage(dmg, src, magic);
+	public void damage(int dmg, Object src) {
+		super.damage(dmg, src);
 		if( isAlive() && needsToSplit ) split();
 	}
 

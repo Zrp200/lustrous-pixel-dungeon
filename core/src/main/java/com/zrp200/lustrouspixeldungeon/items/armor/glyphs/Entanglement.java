@@ -21,13 +21,8 @@
 
 package com.zrp200.lustrouspixeldungeon.items.armor.glyphs;
 
-import com.watabou.noosa.Camera;
-import com.watabou.utils.Bundle;
-import com.watabou.utils.Random;
-import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
-import com.zrp200.lustrouspixeldungeon.actors.buffs.Roots;
 import com.zrp200.lustrouspixeldungeon.effects.CellEmitter;
 import com.zrp200.lustrouspixeldungeon.effects.particles.EarthParticle;
 import com.zrp200.lustrouspixeldungeon.items.armor.Armor;
@@ -35,6 +30,8 @@ import com.zrp200.lustrouspixeldungeon.items.armor.Armor.Glyph;
 import com.zrp200.lustrouspixeldungeon.plants.Earthroot;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSprite;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSprite.Glowing;
+import com.watabou.noosa.Camera;
+import com.watabou.utils.Random;
 
 public class Entanglement extends Glyph {
 	
@@ -43,37 +40,13 @@ public class Entanglement extends Glyph {
 	@Override
 	public int proc(Armor armor, Char attacker, final Char defender, final int damage ) {
 
-		final int level = armor == null ? 0 : Math.max( 0, armor.level() );
-		
-		final int pos = defender.pos;
+		final int level = Math.max( 0, armor.level() );
 		
 		if (Random.Int( 4 ) == 0) {
 			
-			Actor delay = new Actor() {
-				
-				{
-					actPriority = HERO_PRIO+1;
-				}
-				
-				@Override
-				protected boolean act() {
-					
-					Buff.affect( defender, Earthroot.Armor.class ).level( 4 * (level + 1) );
-					CellEmitter.bottom( defender.pos ).start( EarthParticle.FACTORY, 0.05f, 8 );
-					Camera.main.shake( 1, 0.4f );
-					
-					if (defender.buff(Roots.class) != null){
-						Buff.prolong(defender, Roots.class, 5);
-					} else {
-						DelayedRoot root = Buff.append(defender, DelayedRoot.class);
-						root.setup(pos);
-					}
-					
-					Actor.remove(this);
-					return true;
-				}
-			};
-			Actor.addDelayed(delay, defender.cooldown());
+			Buff.affect( defender, Earthroot.Armor.class ).level( 5 + 2 * level );
+			CellEmitter.bottom( defender.pos ).start( EarthParticle.FACTORY, 0.05f, 8 );
+			Camera.main.shake( 1, 0.4f );
 			
 		}
 
@@ -85,41 +58,4 @@ public class Entanglement extends Glyph {
 		return BROWN;
 	}
 	
-	public static class DelayedRoot extends Buff{
-		
-		{
-			actPriority = HERO_PRIO-1;
-		}
-		
-		private int pos;
-		
-		@Override
-		public boolean act() {
-			
-			if (target.pos == pos){
-				Buff.prolong( target, Roots.class, 5 );
-			}
-			
-			detach();
-			return true;
-		}
-		
-		private void setup( int pos ){
-			this.pos = pos;
-		}
-		
-		private static final String POS = "pos";
-		
-		@Override
-		public void restoreFromBundle(Bundle bundle) {
-			super.restoreFromBundle(bundle);
-			pos = bundle.getInt(POS);
-		}
-		
-		@Override
-		public void storeInBundle(Bundle bundle) {
-			super.storeInBundle(bundle);
-			bundle.put(POS, pos);
-		}
-	}
 }

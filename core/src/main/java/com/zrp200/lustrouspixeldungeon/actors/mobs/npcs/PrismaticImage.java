@@ -32,6 +32,7 @@ import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.Mob;
 import com.zrp200.lustrouspixeldungeon.effects.CellEmitter;
 import com.zrp200.lustrouspixeldungeon.effects.Speck;
+import com.zrp200.lustrouspixeldungeon.levels.features.Chasm;
 import com.zrp200.lustrouspixeldungeon.sprites.CharSprite;
 import com.zrp200.lustrouspixeldungeon.sprites.PrismaticSprite;
 
@@ -77,7 +78,10 @@ public class PrismaticImage extends HeroImage {
 
 	@Override
 	public void die(Object cause) {
-		if (deathTimer == -1) {
+		if(deathTimer != -1) return;
+		if(cause == Chasm.class) {
+			super.die(cause);
+		} else {
 			deathTimer = 5;
 			sprite.add(CharSprite.State.PARALYSED);
 		}
@@ -98,9 +102,9 @@ public class PrismaticImage extends HeroImage {
 	}
 	
 	public void duplicate( Hero hero, int HP ) {
+		super.duplicate(hero);
 		this.HP = HP;
 		HT = PrismaticGuard.maxHP( hero );
-		super.duplicate(hero);
 	}
 	
 	@Override

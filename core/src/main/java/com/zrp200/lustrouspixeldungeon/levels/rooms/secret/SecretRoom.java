@@ -86,7 +86,7 @@ public abstract class SecretRoom extends SpecialRoom {
 		if (floorsLeft == 0) {
 			secrets = regionSecretsThisRun[region];
 		} else {
-			secrets = regionSecretsThisRun[region] / floorsLeft;
+			secrets = regionSecretsThisRun[region] / (float)floorsLeft;
 			if (Random.Float() < secrets % 1f){
 				secrets = (float)Math.ceil(secrets);
 			} else {

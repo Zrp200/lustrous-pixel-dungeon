@@ -51,6 +51,7 @@ import com.zrp200.lustrouspixeldungeon.actors.buffs.Foresight;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Fury;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Hunger;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Invisibility;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.MagicImmune;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.MindVision;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Momentum;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Paralysis;
@@ -104,8 +105,6 @@ import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.zrp200.lustrouspixeldungeon.items.weapon.SpiritBow;
 import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Blocking;
-import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Precise;
-import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Swift;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Boomerang;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.zrp200.lustrouspixeldungeon.journal.Notes;
@@ -294,20 +293,17 @@ public class Hero extends Char {
 	public int tier() {
 		return armor() == null ? 0 : armor().tier;
 	}
-
-	//this variable is only needed because of the boomerang, remove if/when it is no longer equippable
-	private boolean rangedAttack = false;
 	
 	public boolean shoot( Char enemy, Weapon wep ) {
 
 		//temporarily set the hero's weapon to the missile weapon being used
 		KindOfWeapon equipped = belongings.weapon;
-		boolean result;
+		boolean hit;
 		Char trueEnemy = this.enemy;
 		try {
 			this.enemy = enemy;
 			belongings.weapon = wep;
-			result = attack(enemy);
+			hit = attack(enemy);
 			Invisibility.dispel();
 		}
 		finally {
@@ -315,7 +311,16 @@ public class Hero extends Char {
 			this.enemy = trueEnemy;
 		} // prevent weird run-destroying issues.
 
-		return result;
+		if (subClass == HeroSubClass.GLADIATOR){
+			if (hit) {
+				Buff.affect( this, Combo.class ).hit( enemy );
+			} else {
+				Combo combo = buff(Combo.class);
+				if (combo != null) combo.miss( enemy );
+			}
+		}
+
+		return hit;
 	}
 	
 	@Override
@@ -324,14 +329,8 @@ public class Hero extends Char {
 		
 		float accuracy = ACCURACY + lvl;
 		accuracy *= RingOfAccuracy.accuracyMultiplier( this );
-		
+
 		if (wep != null) accuracy *= wep.accuracyFactor(this);
-		if (wep instanceof Weapon){
-			if (Precise.rollToGuaranteeHit((Weapon) wep, this)){
-				Precise.playVFX(target);
-				return Integer.MAX_VALUE;
-			}
-		}
 		return (int) accuracy;
 	}
 	
@@ -443,12 +442,6 @@ public class Hero extends Char {
 	}
 	
 	public float attackDelay() {
-		if (buff(Swift.SwiftAttack.class) != null
-				&& buff(Swift.SwiftAttack.class).boostsMelee()) {
-			buff(Swift.SwiftAttack.class).detach();
-			return 0;
-		}
-
 		if (belongings.weapon != null) {
 			
 			return belongings.weapon.speedFactor( this );
@@ -998,7 +991,7 @@ public class Hero extends Char {
 	}
 	
 	@Override
-	public void damage( int dmg, Object src, boolean magic ) {
+	public void damage( int dmg, Object src) {
 		if (buff(TimekeepersHourglass.timeStasis.class) != null)
 			return;
 
@@ -1021,10 +1014,10 @@ public class Hero extends Char {
 		dmg = (int)Math.ceil(dmg * RingOfTenacity.damageMultiplier( this ));
 
 		//TODO improve this when I have proper damage source logic
-		if (armor() != null && armor().hasGlyph(Stone.class, this) && (src instanceof Char) )
-				dmg = ((Stone) (armor().glyph)).reduceDamage(this, (Char)src, magic, dmg);
+		if (armor() != null && armor().hasGlyph(Stone.class, this) && (src instanceof Char) || new MagicImmune().immunities().contains(src))
+				dmg = ((Stone) (armor().glyph)).reduceDamage(this, (Char)src, false, dmg);
 
-		super.damage( dmg, src, magic );
+		super.damage( dmg, src);
 	}
 	
 	public void checkVisibleMobs() {
@@ -1072,6 +1065,8 @@ public class Hero extends Char {
 		return visibleEnemies.get(index % visibleEnemies.size());
 	}
 	
+	private boolean walkingToVisibleTrapInFog = false;
+	
 	private boolean getCloser( final int target ) {
 
 		if (target == pos)
@@ -1100,6 +1095,11 @@ public class Hero extends Char {
 				}
 				if (level.passable[target] || level.avoid[target]) {
 					step = target;
+				}
+				if (walkingToVisibleTrapInFog
+						&& Dungeon.level.traps.get(target) != null
+						&& Dungeon.level.traps.get(target).isVisible()){
+					return false;
 				}
 			}
 			
@@ -1226,6 +1226,13 @@ public class Hero extends Char {
 					curAction = airborne.heroChase();
 					return true;
 				}
+			}
+			
+			if (!Dungeon.level.visited[cell] && !Dungeon.level.mapped[cell]
+					&& Dungeon.level.traps.get(cell) != null && Dungeon.level.traps.get(cell).isVisible()) {
+				walkingToVisibleTrapInFog = true;
+			} else {
+				walkingToVisibleTrapInFog = false;
 			}
 			
 			curAction = new HeroAction.Move( cell );
@@ -1493,10 +1500,10 @@ public class Hero extends Char {
 
 		if (subClass == HeroSubClass.GLADIATOR){
 			if (hit) {
-				Buff.affect( this, Combo.class ).hit();
+				Buff.affect( this, Combo.class ).hit( enemy );
 			} else {
 				Combo combo = buff(Combo.class);
-				if (combo != null) combo.miss();
+				if (combo != null) combo.miss( enemy );
 			}
 		}
 		

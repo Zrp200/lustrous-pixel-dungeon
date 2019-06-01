@@ -21,45 +21,41 @@
 
 package com.zrp200.lustrouspixeldungeon.items.potions.elixirs;
 
-import com.zrp200.lustrouspixeldungeon.actors.buffs.Barrier;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.ArcaneArmor;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
-import com.zrp200.lustrouspixeldungeon.actors.buffs.Healing;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
-import com.zrp200.lustrouspixeldungeon.items.potions.PotionOfHealing;
-import com.zrp200.lustrouspixeldungeon.items.potions.exotic.PotionOfShielding;
+import com.zrp200.lustrouspixeldungeon.items.potions.exotic.PotionOfEarthenArmor;
+import com.zrp200.lustrouspixeldungeon.items.quest.GooBlob;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
 
-public class ElixirOfVitality extends Elixir {
+public class ElixirOfArcaneArmor extends Elixir {
 	
 	{
-		image = ItemSpriteSheet.ELIXIR_SURGE;
+		image = ItemSpriteSheet.ELIXIR_ARCANE;
 	}
 	
 	@Override
 	public void apply(Hero hero) {
-		Buff.affect( hero, Healing.class ).setHeal((int)(0.8f*hero.HT + 14), 0.25f, 0);
-		PotionOfHealing.cure(hero);
-		Buff.affect(hero, Barrier.class).setShield((int)(0.6f*hero.HT + 10));
+		Buff.affect(hero, ArcaneArmor.class).set(5 + hero.lvl/2, 80);
 	}
 	
 	@Override
 	public int price() {
 		//prices of ingredients
-		return quantity * (30 + 50);
+		return quantity * (50 + 40);
 	}
 	
 	public static class Recipe extends com.zrp200.lustrouspixeldungeon.items.Recipe.SimpleRecipe {
 		
 		{
-			inputs =  new Class[]{PotionOfHealing.class, PotionOfShielding.class};
+			inputs =  new Class[]{PotionOfEarthenArmor.class, GooBlob.class};
 			inQuantity = new int[]{1, 1};
 			
-			cost = 2;
+			cost = 8;
 			
-			output = ElixirOfVitality.class;
+			output = ElixirOfArcaneArmor.class;
 			outQuantity = 1;
 		}
 		
 	}
-	
 }

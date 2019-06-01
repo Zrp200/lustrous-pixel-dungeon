@@ -48,6 +48,7 @@ import com.zrp200.lustrouspixeldungeon.items.keys.SkeletonKey;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfRetribution;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Grim;
+import com.zrp200.lustrouspixeldungeon.levels.traps.GrimTrap;
 import com.zrp200.lustrouspixeldungeon.mechanics.Ballistica;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
@@ -107,7 +108,7 @@ public class Yog extends Mob {
 	}
 
 	@Override
-	public void damage( int dmg, Object src, boolean magic ) {
+	public void damage( int dmg, Object src) {
 
 		HashSet<Mob> fists = new HashSet<>();
 
@@ -117,7 +118,7 @@ public class Yog extends Mob {
 
 		dmg >>= fists.size();
 		
-		super.damage(dmg, src, magic);
+		super.damage(dmg, src);
 
 		if( isAlive() ) spawnLarva();
 
@@ -183,6 +184,7 @@ public class Yog extends Mob {
 	{
 		immunities.add( Buff.class );
 		immunities.add( Grim.class );
+		immunities.add( GrimTrap.class );
 		immunities.add( ToxicGas.class );
 		immunities.add( ScrollOfRetribution.class );
 		immunities.add( ScrollOfPsionicBlast.class );
@@ -265,8 +267,8 @@ public class Yog extends Mob {
 		}
 
 		@Override
-		public void damage(int dmg, Object src, boolean magic ) {
-			super.damage(dmg, src, magic);
+		public void damage(int dmg, Object src ) {
+			super.damage(dmg, src);
 			LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
 			if (lock != null) lock.addTime(dmg*0.5f);
 		}
@@ -321,6 +323,9 @@ public class Yog extends Mob {
 			return new Ballistica( pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos == enemy.pos;
 		}
 		
+		//used so resistances can differentiate between melee and magical attacks
+		public static class DarkBolt{}
+		
 		@Override
 		public boolean attack( Char enemy ) {
 			
@@ -330,7 +335,7 @@ public class Yog extends Mob {
 				if (hit( this, enemy, true )) {
 					
 					int dmg =  damageRoll();
-					enemy.damage( dmg, this, true );
+					enemy.damage( dmg, new DarkBolt() );
 					
 					enemy.sprite.bloodBurstA( sprite.center(), dmg );
 					enemy.sprite.flash();
@@ -362,8 +367,8 @@ public class Yog extends Mob {
 		}
 
 		@Override
-		public void damage(int dmg, Object src, boolean magic ) {
-			super.damage(dmg, src, magic);
+		public void damage(int dmg, Object src) {
+			super.damage(dmg, src);
 			LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
 			if (lock != null) lock.addTime(dmg*0.5f);
 		}

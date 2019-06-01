@@ -70,7 +70,7 @@ import com.zrp200.lustrouspixeldungeon.sprites.CharSprite;
 import com.zrp200.lustrouspixeldungeon.sprites.DiscardedItemSprite;
 import com.zrp200.lustrouspixeldungeon.sprites.HeroSprite;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSprite;
-import com.zrp200.lustrouspixeldungeon.tiles.CustomTiledVisual;
+import com.zrp200.lustrouspixeldungeon.tiles.CustomTilemap;
 import com.zrp200.lustrouspixeldungeon.tiles.DungeonTerrainTilemap;
 import com.zrp200.lustrouspixeldungeon.tiles.DungeonTileSheet;
 import com.zrp200.lustrouspixeldungeon.tiles.DungeonTilemap;
@@ -208,7 +208,7 @@ public class GameScene extends PixelScene {
 		customTiles = new Group();
 		terrain.add(customTiles);
 
-		for( CustomTiledVisual visual : Dungeon.level.customTiles){
+		for( CustomTilemap visual : Dungeon.level.customTiles){
 			addCustomTile(visual);
 		}
 
@@ -253,7 +253,7 @@ public class GameScene extends PixelScene {
 		customWalls = new Group();
 		add(customWalls);
 
-		for( CustomTiledVisual visual : Dungeon.level.customWalls){
+		for( CustomTilemap visual : Dungeon.level.customWalls){
 			addCustomWall(visual);
 		}
 
@@ -608,11 +608,11 @@ public class GameScene extends PixelScene {
 		}
 	}
 
-	public void addCustomTile( CustomTiledVisual visual){
+	public void addCustomTile( CustomTilemap visual){
 		customTiles.add( visual.create() );
 	}
 
-	public void addCustomWall( CustomTiledVisual visual){
+	public void addCustomWall( CustomTilemap visual){
 		customWalls.add( visual.create() );
 	}
 	

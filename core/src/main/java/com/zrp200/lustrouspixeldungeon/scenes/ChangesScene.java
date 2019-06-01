@@ -86,7 +86,6 @@ import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Sword;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Bolas;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Boomerang;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.MissileWeapon;
-import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.ObsidianKnife;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Shuriken;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.darts.TippedDart;
 import com.zrp200.lustrouspixeldungeon.levels.traps.ArmageddonTrap;
@@ -301,7 +300,7 @@ public class ChangesScene extends PixelScene {
 										"Magical Infusion spell implemented:\n" +
 										"_-_ Recipe changed to: upgrade + catalyst + 4 energy.\n" +
 										"_-_ No longer applies an enchant/glyph, instead is guaranteed to preserve one while upgrading."),
-						new ChangeButton(new ItemSprite(ItemSpriteSheet.BREW_WICKED, null), "Combination Items",
+						new ChangeButton(new ItemSprite(ItemSpriteSheet.BREW_CAUSTIC, null), "Combination Items",
 								"Implemented removal of combination brews and elixirs; the following items are no longer craftable:\n" +
 										"_-_ Wicked Brew\n" +
 										"_-_ Frigid Brew\n" +
@@ -415,8 +414,8 @@ public class ChangesScene extends PixelScene {
 				do {
 					try {
 						enchantedMissile = (MissileWeapon)Random.oneOf(Random.oneOf(Generator.misTiers).classes).newInstance();
-					} catch (Exception invalid) { enchantedMissile = TippedDart.randomTipped(); } // keep trying until we get something that works
-				} while(enchantedMissile instanceof Boomerang || enchantedMissile instanceof ObsidianKnife || enchantedMissile == null);
+					} catch (Exception invalid) { enchantedMissile = TippedDart.randomTipped(1); } // keep trying until we get something that works
+				} while(enchantedMissile instanceof Boomerang || enchantedMissile == null);
 				//noinspection unchecked
 				enchantedMissile.enchantment = MissileWeapon.Enchantment.random();
 				enchantedMissile.enchantKnown = true;
@@ -532,7 +531,7 @@ public class ChangesScene extends PixelScene {
 										"Can hit enemies while returning, does not benefit from subclass perks or missile weapon-specific accuracy modifiers while doing so.\n",
 										"Can be caught early by intercepting its flight path.\n",
 										"Original Idea Credit: _00-Evan_"),
-						new ChangeButton(new ObsidianKnife()).appendList(
+						new ChangeButton(new ItemSprite(ItemSpriteSheet.MISSILE_HOLDER, null),"Obsidian Knife").appendList(
 								"Tier-4 missile weapon",
 								"6-18 damage @ +2/+4 scaling",
 								"When surprise attacking, deals at least 50% of max-min to max (this is identical to Assassin's Blade mechanics).",

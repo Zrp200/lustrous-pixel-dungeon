@@ -46,10 +46,8 @@ import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.armor.Armor;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfRetribution;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
-import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Precise;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.BlockingWeapon;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.MeleeWeapon;
-import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Boomerang;
 import com.zrp200.lustrouspixeldungeon.levels.Level;
 import com.zrp200.lustrouspixeldungeon.messages.Languages;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
@@ -492,10 +490,6 @@ public class DriedRose extends Artifact {
 
 		@Override
 		public int attackSkill(Char target) {
-			if (Precise.rollToGuaranteeHit(rose.weapon, this)){
-				Precise.playVFX(target);
-				return Integer.MAX_VALUE;
-			}
 
 			//same accuracy as the hero.
 			int acc = Dungeon.hero.lvl + Hero.ACCURACY;
@@ -845,9 +839,9 @@ public class DriedRose extends Artifact {
 						GameScene.selectItem(new WndBag.Listener() {
 							@Override
 							public void onSelect(Item item) {
-								if (!(item instanceof MeleeWeapon || item instanceof Boomerang)) {
+								if (!(item instanceof MeleeWeapon)) {
 									//do nothing, should only happen when window is cancelled
-								} else if (item.unique || item instanceof Boomerang) {
+								} else if (item.unique) {
 									GLog.w( Messages.get(WndGhostHero.class, "cant_unique"));
 									hide();
 								} else if (!item.isIdentified()) {

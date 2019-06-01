@@ -47,7 +47,6 @@ import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.bags.Bag;
 import com.zrp200.lustrouspixeldungeon.items.bags.MagicalHolster;
 import com.zrp200.lustrouspixeldungeon.items.rings.RingOfEnergy;
-import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Swift;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.MagesStaff;
 import com.zrp200.lustrouspixeldungeon.mechanics.Ballistica;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
@@ -71,6 +70,7 @@ public abstract class Wand extends Item {
 	protected Charger charger;
 	
 	private boolean curChargeKnown = false;
+public boolean curseInfusionBonus = false;
 
 	private static final int USES_TO_ID = 10;
 	private int usesLeftToID = USES_TO_ID;
@@ -230,6 +230,15 @@ public abstract class Wand extends Item {
 	}
 	
 	@Override
+	public int level() {
+		if (!cursed && curseInfusionBonus){
+			curseInfusionBonus = false;
+			updateLevel();
+		}
+		return super.level() + (curseInfusionBonus ? 1 : 0);
+	}
+
+	@Override
 	public Item upgrade() {
 
 		super.upgrade();
@@ -302,11 +311,6 @@ public abstract class Wand extends Item {
 		updateQuickslot();
 
 		float timeToZap = TIME_TO_ZAP;
-		Swift.SwiftAttack swiftAttack = curUser.buff(Swift.SwiftAttack.class);
-		if(swiftAttack != null) {
-			swiftAttack.detach();
-			timeToZap = 0;
-		}
 		curUser.spendAndNext( timeToZap );
 	}
 	
@@ -356,7 +360,8 @@ public abstract class Wand extends Item {
 	private static final String CUR_CHARGES         = "curCharges";
 	private static final String CUR_CHARGE_KNOWN    = "curChargeKnown";
 	private static final String PARTIALCHARGE       = "partialCharge";
-	
+	private static final String CURSE_INFUSION_BONUS = "curse_infusion_bonus";
+
 	@Override
 	public void storeInBundle( Bundle bundle ) {
 		super.storeInBundle( bundle );
@@ -365,6 +370,7 @@ public abstract class Wand extends Item {
 		bundle.put( CUR_CHARGES, curCharges );
 		bundle.put( CUR_CHARGE_KNOWN, curChargeKnown );
 		bundle.put( PARTIALCHARGE , partialCharge );
+		bundle.put(CURSE_INFUSION_BONUS, curseInfusionBonus );
 	}
 	
 	@Override
@@ -381,6 +387,7 @@ public abstract class Wand extends Item {
 		curCharges = bundle.getInt( CUR_CHARGES );
 		curChargeKnown = bundle.getBoolean( CUR_CHARGE_KNOWN );
 		partialCharge = bundle.getFloat( PARTIALCHARGE );
+		curseInfusionBonus = bundle.getBoolean(CURSE_INFUSION_BONUS);
 	}
 	
 	@Override
@@ -431,10 +438,18 @@ public abstract class Wand extends Item {
 					Invisibility.dispel();
 					
 					if (curWand.cursed){
+						CursedWand.cursedZap(curWand,
+								curUser,
+								new Ballistica(curUser.pos, target, Ballistica.MAGIC_BOLT),
+								new Callback() {
+									@Override
+									public void call() {
+										curWand.wandUsed();
+									}
+								});
 						if (!curWand.cursedKnown){
 							GLog.n(Messages.get(Wand.class, "curse_discover", curWand.name()));
 						}
-						CursedWand.cursedZap(curWand, curUser, new Ballistica( curUser.pos, target, Ballistica.MAGIC_BOLT));
 					} else {
 						curWand.fx(shot, new Callback() {
 							public void call() {

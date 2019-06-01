@@ -34,7 +34,6 @@ import com.zrp200.lustrouspixeldungeon.items.armor.PlateArmor;
 import com.zrp200.lustrouspixeldungeon.items.armor.RogueArmor;
 import com.zrp200.lustrouspixeldungeon.items.armor.ScaleArmor;
 import com.zrp200.lustrouspixeldungeon.items.armor.WarriorArmor;
-import com.zrp200.lustrouspixeldungeon.items.wands.WandOfCorrosion;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Cord;
 
 import java.util.ArrayList;
@@ -43,7 +42,16 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import static com.zrp200.lustrouspixeldungeon.items.Generator.Category.*;
+import static com.zrp200.lustrouspixeldungeon.items.Generator.Category.ARTIFACT;
+import static com.zrp200.lustrouspixeldungeon.items.Generator.Category.POTION;
+import static com.zrp200.lustrouspixeldungeon.items.Generator.Category.RING;
+import static com.zrp200.lustrouspixeldungeon.items.Generator.Category.SCROLL;
+import static com.zrp200.lustrouspixeldungeon.items.Generator.Category.WAND;
+import static com.zrp200.lustrouspixeldungeon.items.Generator.Category.WEP_T1;
+import static com.zrp200.lustrouspixeldungeon.items.Generator.Category.WEP_T2;
+import static com.zrp200.lustrouspixeldungeon.items.Generator.Category.WEP_T3;
+import static com.zrp200.lustrouspixeldungeon.items.Generator.Category.WEP_T4;
+import static com.zrp200.lustrouspixeldungeon.items.Generator.Category.WEP_T5;
 
 public enum Catalog {
 	
@@ -149,6 +157,7 @@ public enum Catalog {
 		
 		Badges.loadGlobal();
 
+
 		//catalog-specific badge logic
 		for (Catalog cat : values()){
 			if (Badges.isUnlocked(catalogBadges.get(cat)) || Badges.isUnlocked(Badges.Badge.ALL_ITEMS_IDENTIFIED) ){
@@ -159,13 +168,8 @@ public enum Catalog {
 		//general save/load
 		if (bundle.contains(CATALOGS)) {
 			List<String> seen = Arrays.asList(bundle.getStringArray(CATALOGS));
-			
-			//pre-0.6.3 saves
+
 			//TODO should adjust this to tie into the bundling system's class array
-			if (seen.contains("WandOfVenom")){
-				WANDS.seen.put(WandOfCorrosion.class, true);
-			}
-			
 			for (Catalog cat : values()) {
 				for (Class<? extends Item> item : cat.items()) {
 					if (seen.contains(item.getSimpleName())) {

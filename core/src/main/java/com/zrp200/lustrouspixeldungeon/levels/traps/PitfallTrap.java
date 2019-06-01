@@ -28,7 +28,9 @@ import com.zrp200.lustrouspixeldungeon.actors.mobs.Mob;
 import com.zrp200.lustrouspixeldungeon.items.Heap;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.levels.features.Chasm;
+import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
+import com.zrp200.lustrouspixeldungeon.utils.GLog;
 
 public class PitfallTrap extends Trap {
 
@@ -39,6 +41,12 @@ public class PitfallTrap extends Trap {
 
 	@Override
 	public void activate() {
+		
+		if( Dungeon.bossLevel() || Dungeon.depth > 25){
+			GLog.w(Messages.get(this, "no_pit"));
+			return;
+		}
+		
 		Heap heap = Dungeon.level.heaps.get( pos );
 
 		if (heap != null){

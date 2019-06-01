@@ -24,10 +24,10 @@ package com.zrp200.lustrouspixeldungeon.items.weapon.missiles.darts;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
+import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.actors.hero.HeroSubClass;
 import com.zrp200.lustrouspixeldungeon.items.Generator;
-import com.zrp200.lustrouspixeldungeon.items.Item;
-import com.zrp200.lustrouspixeldungeon.items.Recipe;
+import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.plants.Blindweed;
 import com.zrp200.lustrouspixeldungeon.plants.Dreamfoil;
 import com.zrp200.lustrouspixeldungeon.plants.Earthroot;
@@ -41,6 +41,8 @@ import com.zrp200.lustrouspixeldungeon.plants.Starflower;
 import com.zrp200.lustrouspixeldungeon.plants.Stormvine;
 import com.zrp200.lustrouspixeldungeon.plants.Sungrass;
 import com.zrp200.lustrouspixeldungeon.plants.Swiftthistle;
+import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
+import com.zrp200.lustrouspixeldungeon.windows.WndOptions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,6 +57,50 @@ public abstract class TippedDart extends Dart {
 
 		durabilityScaling = 1.8f;
 		enchantDurability = 1f; // no boost
+        value = 8;
+	}
+	
+	private static final String AC_CLEAN = "CLEAN";
+	
+	@Override
+	public ArrayList<String> actions(Hero hero) {
+		ArrayList<String> actions = super.actions( hero );
+		actions.remove( AC_TIP );
+		actions.add( AC_CLEAN );
+		return actions;
+	}
+	
+	@Override
+	public void execute(final Hero hero, String action) {
+		if (action.equals( AC_CLEAN )){
+			
+			GameScene.show(new WndOptions(Messages.get(this, "clean_title"),
+					Messages.get(this, "clean_desc"),
+					Messages.get(this, "clean_all"),
+					Messages.get(this, "clean_one"),
+					Messages.get(this, "cancel")){
+				@Override
+				protected void onSelect(int index) {
+					if (index == 0){
+						detachAll(hero.belongings.backpack);
+						new Dart().quantity(quantity).collect();
+						
+						hero.spend( 1f );
+						hero.busy();
+						hero.sprite.operate(hero.pos);
+					} else if (index == 1){
+						detach(hero.belongings.backpack);
+						if (!new Dart().collect()) Dungeon.level.drop(new Dart(), hero.pos).sprite.drop();
+						
+						hero.spend( 1f );
+						hero.busy();
+						hero.sprite.operate(hero.pos);
+					}
+				}
+			});
+			
+		}
+		super.execute(hero, action);
 	}
 	
 	//exact same damage as regular darts, despite being higher tier.
@@ -105,134 +151,23 @@ public abstract class TippedDart extends Dart {
 		types.put(Swiftthistle.Seed.class,  AdrenalineDart.class);
 	}
 	
-	public static TippedDart randomTipped(){
+	public static TippedDart getTipped( Plant.Seed s, int quantity ){
+		try {
+			return (TippedDart) types.get(s.getClass()).newInstance().quantity(quantity);
+		} catch (Exception e){
+			LustrousPixelDungeon.reportException(e);
+			return null;
+		}
+	}
+
+	public static TippedDart randomTipped( int quantity ){
 		Plant.Seed s;
 		do{
 			s = (Plant.Seed) Generator.random(Generator.Category.SEED);
 		} while (!types.containsKey(s.getClass()));
-		
-		try{
-			return (TippedDart) types.get(s.getClass()).newInstance().quantity(2);
-		} catch (Exception e) {
-			LustrousPixelDungeon.reportException(e);
-			return null;
-		}
-		
+
+		return getTipped(s, quantity );
+
 	}
 	
-	public static class TipDart extends Recipe{
-		
-		@Override
-		//also sorts ingredients if it can
-		public boolean testIngredients(ArrayList<Item> ingredients) {
-			if (ingredients.size() != 2) return false;
-			
-			if (ingredients.get(0).getClass() == Dart.class){
-				if (!(ingredients.get(1) instanceof Plant.Seed)){
-					return false;
-				}
-			} else if (ingredients.get(0) instanceof Plant.Seed){
-				if (ingredients.get(1).getClass() == Dart.class){
-					Item temp = ingredients.get(0);
-					ingredients.set(0, ingredients.get(1));
-					ingredients.set(1, temp);
-				} else {
-					return false;
-				}
-			} else {
-				return false;
-			}
-			
-			Plant.Seed seed = (Plant.Seed) ingredients.get(1);
-
-            return ingredients.get(0).quantity() >= 1
-                    && seed.quantity() >= 1
-                    && types.containsKey(seed.getClass());
-
-        }
-		
-		@Override
-		public int cost(ArrayList<Item> ingredients) {
-			return 0;
-		}
-		
-		@Override
-		public Item brew(ArrayList<Item> ingredients) {
-			Item output = sampleOutput(ingredients);
-			if(output == null) return null;
-			int produced = output.quantity();
-			
-			ingredients.get(0).quantity(ingredients.get(0).quantity() - produced);
-			ingredients.get(1).quantity(ingredients.get(1).quantity() - 1);
-			
-			return output;
-			
-		}
-		
-		@Override
-		public Item sampleOutput(ArrayList<Item> ingredients) {
-			if (!testIngredients(ingredients)) return null;
-			Dart darts = (Dart) ingredients.get(0);
-			int upgradeLevel = darts.level();
-			Enchantment enchantment = darts.enchantment;
-			
-			try{
-				int produced = Math.min(2, ingredients.get(0).quantity());
-				TippedDart output = (TippedDart) (types.get(ingredients.get(1).getClass()).newInstance().quantity( produced ));
-				output.level(upgradeLevel);
-				output.enchantment = enchantment;
-				output.enchantKnown = true;
-				return output;
-			} catch (Exception e) {
-				LustrousPixelDungeon.reportException(e);
-				return null;
-			}
-		}
-	}
-	public static class UntipDart extends Recipe{
-			@Override
-			public boolean testIngredients(ArrayList<Item> ingredients) {
-				for(Item ingredient1 : ingredients) for (Item ingredient2 : ingredients) {
-					if (!(ingredient1 instanceof TippedDart && ingredient2 instanceof TippedDart))
-						return false;
-					Dart[] darts = {(Dart) ingredient1, (Dart) ingredient2};
-					if (darts[0].level() != darts[1].level()) return false;
-					if (	!(		darts[0].enchantment == darts[1].enchantment
-											|| darts[0].enchantment.getClass().equals(darts[1].enchantment.getClass())
-							)
-						) return false;
-				}
-				return !ingredients.isEmpty();
-			}
-
-			@Override
-			public int cost(ArrayList<Item> ingredients) {
-				return 0;
-			}
-
-			@Override
-			public Item brew(ArrayList<Item> ingredients) {
-				Item output = sampleOutput(ingredients);
-				if(output == null) return null;
-				for(Item ingredient : ingredients) {
-					ingredient.quantity(0);
-				}
-				return output;
-
-			}
-
-			@Override
-			public Item sampleOutput(ArrayList<Item> ingredients) {
-				if (!testIngredients(ingredients)) return null;
-
-				try{
-					int produced = 0;
-					for(Item ingredient : ingredients) produced += ingredient.quantity();
-					return ((TippedDart) ingredients.get(0)).untip().quantity(produced);
-				} catch (Exception e) {
-					LustrousPixelDungeon.reportException(e);
-					return null;
-				}
-			}
-	}
 }

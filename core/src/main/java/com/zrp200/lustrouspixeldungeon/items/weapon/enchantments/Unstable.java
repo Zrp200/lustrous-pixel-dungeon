@@ -47,14 +47,14 @@ public class Unstable extends Weapon.Enchantment {
 		}
 	};
 
-	public static Weapon.Enchantment randomEnchantment(boolean preciseTest) {
+	public static Weapon.Enchantment randomEnchantment() {
 		//noinspection ConstantConditions
 		Class<?extends Weapon.Enchantment> enchantClass = (Class<? extends Weapon.Enchantment>) Random.oneOf(enchantList.toArray());
 		try {
-			return preciseTest || enchantClass != Precise.class ? enchantClass.newInstance() : randomEnchantment(preciseTest);
+			return enchantClass.newInstance();
 		} catch (Exception e) {
 			LustrousPixelDungeon.reportException(e);
-			return randomEnchantment(preciseTest);
+			return randomEnchantment();
 		}
 	}
 	
@@ -66,7 +66,7 @@ public class Unstable extends Weapon.Enchantment {
 			justRolledPrecise = false;
 			return damage;
 		}
-		return randomEnchantment(false).proc( weapon, attacker, defender, damage );
+		return randomEnchantment().proc( weapon, attacker, defender, damage );
 	}
 
 	@Override

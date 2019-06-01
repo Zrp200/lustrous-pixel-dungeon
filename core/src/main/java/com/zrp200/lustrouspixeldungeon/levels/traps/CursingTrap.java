@@ -35,7 +35,6 @@ import com.zrp200.lustrouspixeldungeon.items.KindOfWeapon;
 import com.zrp200.lustrouspixeldungeon.items.KindofMisc;
 import com.zrp200.lustrouspixeldungeon.items.armor.Armor;
 import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
-import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Boomerang;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.utils.GLog;
 
@@ -76,7 +75,7 @@ public class CursingTrap extends Trap {
 		ArrayList<Item> canCurse = new ArrayList<>();
 
 		KindOfWeapon weapon = hero.belongings.weapon;
-		if (weapon instanceof Weapon && !weapon.cursed && !(weapon instanceof Boomerang)){
+		if (weapon instanceof Weapon && !weapon.cursed){
 			if (((Weapon) weapon).enchantment == null)
 				priorityCurse.add(weapon);
 			else
@@ -124,7 +123,7 @@ public class CursingTrap extends Trap {
 		if (item instanceof Weapon){
 			Weapon w = (Weapon) item;
 			if (!w.hasEnchant()){
-				w.enchantment = Weapon.Enchantment.randomCurse(); // this bypasses missile weapon mechanics
+				w.enchant(Weapon.Enchantment.randomCurse()); // this bypasses missile weapon mechanics
 				if(w.isEquipped(Dungeon.hero) && w.enchantKnown) w.revealEnchant();
 				else w.enchantKnown = false;
 			}
@@ -132,7 +131,7 @@ public class CursingTrap extends Trap {
 		if (item instanceof Armor){
 			Armor a = (Armor) item;
 			if (a.glyph == null){
-				a.glyph = Armor.Glyph.randomCurse();
+				a.inscribe(Armor.Glyph.randomCurse());
 				if(a.isEquipped(Dungeon.hero) && a.glyphKnown) a.revealGlyph();
 				else a.glyphKnown = false;
 			}

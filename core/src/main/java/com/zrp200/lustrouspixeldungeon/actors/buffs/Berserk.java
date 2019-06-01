@@ -31,6 +31,7 @@ import com.zrp200.lustrouspixeldungeon.items.BrokenSeal.WarriorShield;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
 import com.zrp200.lustrouspixeldungeon.ui.BuffIndicator;
+import com.watabou.utils.GameMath;
 
 public class Berserk extends Buff {
 
@@ -94,7 +95,7 @@ public class Berserk extends Buff {
 				power = 0f;
 			}
 		} else {
-			power -= Math.max(0.1f, power) * 0.1f * Math.pow( ( target.HP / (float) target.HT ), 2); // -10% rage per turn at full hp
+			power -= GameMath.gate(0.1f, power, 1f) * 0.05f * Math.pow( ( target.HP / (float) target.HT ), 2); // -10% rage per turn at full hp
 
 			if (power <= 0)
 				if (state == State.RECOVERING)

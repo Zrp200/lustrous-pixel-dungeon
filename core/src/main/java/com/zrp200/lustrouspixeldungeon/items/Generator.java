@@ -146,10 +146,12 @@ import com.zrp200.lustrouspixeldungeon.items.weapon.melee.WornShortsword;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Bolas;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Boomerang;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.FishingSpear;
+import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.ForceCube;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Javelin;
+import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Kunai;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.MissileWeapon;
-import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.ObsidianKnife;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Shuriken;
+import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.ThrowingClub;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.ThrowingHammer;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.ThrowingKnife;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.ThrowingSpear;
@@ -386,35 +388,36 @@ public class Generator {
 					ThrowingKnife.class,
 					Dart.class,
 			};
-			MIS_T1.probs = new float[]{ 4, 3, 0 };
+			MIS_T1.probs = new float[]{ 6, 5 };
 			
 			MIS_T2.classes = new Class<?>[]{
 					FishingSpear.class,
+					ThrowingClub.class,
 					Shuriken.class,
 					TippedDart.class
 			};
-			MIS_T2.probs = new float[]{ 4, 3, 0 };
+			MIS_T2.probs = new float[]{ 6, 5, 4 };
 			
 			MIS_T3.classes = new Class<?>[]{
 					ThrowingSpear.class,
-					Bolas.class,
-					Boomerang.class
+					Kunai.class,
+					Bolas.class
 			};
-			MIS_T3.probs = new float[]{ 4, 3, 1 };
+			MIS_T3.probs = new float[]{ 6, 5, 4 };
 			
 			MIS_T4.classes = new Class<?>[]{
 					Javelin.class,
 					Tomahawk.class,
-					ObsidianKnife.class
+					Boomerang.class
 			};
-			MIS_T4.probs = new float[]{ 4, 3, 1 };
+			MIS_T4.probs = new float[]{ 6, 5, 4 };
 			
 			MIS_T5.classes = new Class<?>[]{
 					Trident.class,
-					ThrowingHammer.class
-				// 	Chakram?
+					ThrowingHammer.class,
+					ForceCube.class
 			};
-			MIS_T5.probs = new float[]{ 4, 3 };
+			MIS_T5.probs = new float[]{ 6, 5, 4 };
 			
 			FOOD.classes = new Class<?>[]{
 					Food.class,

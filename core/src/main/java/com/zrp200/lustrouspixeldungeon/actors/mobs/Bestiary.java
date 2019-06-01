@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2018 Evan Debenham
+ * Copyright (C) 2014-2019 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,7 +53,7 @@ public class Bestiary {
 						put(Swarm.class,	1f);
 						break;
 
-					case 4:
+					case 4: case 5:
 						put(	Rat.class,  	1f	);
 						put(	Gnoll.class,	2f	);
 						put(	Crab.class, 	3f	);
@@ -86,7 +86,7 @@ public class Bestiary {
 						put(Shaman.random(), 2f);
 						put(Guard.class, 2f);
 						break;
-					case 9:
+					case 9: case 10:
 						//3x skeleton, 1x thief, 2x shaman, 3x guard
 						put(Skeleton.class, 	3f);
 						put(Thief.class,    	1f);
@@ -152,7 +152,7 @@ public class Bestiary {
 						put(Golem.class,3f);
 						break;
 					// Halls
-					case 22:
+			        case 21: case 22:
 						//3x succubus, 3x evil eye
 						put(Eye.class, 3f);
 						put(Succubus.random(), 3f);
@@ -163,7 +163,7 @@ public class Bestiary {
 						put(Succubus.random(), 2f);
 						put(Scorpio.class,2f);
 						break;
-					case 24:
+					case 24: case 25: case 26:
 						//1x succubus, 2x evil eye, 3x scorpio
 						put(Eye.class, 2f);
 						put(Succubus.random(), 1f);

@@ -34,6 +34,7 @@ import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Bolas;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Boomerang;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.FishingSpear;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Javelin;
+import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Kunai;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Shuriken;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.ThrowingKnife;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.ThrowingSpear;
@@ -85,6 +86,7 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 		ANGULAR_SPEEDS.put(ThrowingKnife.class, 0);
 		ANGULAR_SPEEDS.put(FishingSpear.class,  0);
 		ANGULAR_SPEEDS.put(ThrowingSpear.class, 0);
+		ANGULAR_SPEEDS.put(Kunai.class,         0);
 		ANGULAR_SPEEDS.put(Javelin.class,       0);
 		ANGULAR_SPEEDS.put(Trident.class,       0);
 		
@@ -97,6 +99,8 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 		ANGULAR_SPEEDS.put(Bolas.class,         1440);
 		
 		ANGULAR_SPEEDS.put(Shuriken.class,      2160);
+
+		ANGULAR_SPEEDS.put(TenguSprite.TenguShuriken.class,      2160);
 	}
 
 	//TODO it might be nice to have a source and destination angle, to improve thrown weapon visuals
@@ -104,14 +108,15 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 
 		drySetup(from,to,item);
 		this.callback = listener;
-		
+
+
 		float speed = SPEED;
 		if (item instanceof Dart && Dungeon.hero.belongings.weapon instanceof Crossbow)
 			speed *= 3f;
 		else if(item instanceof Dart || item instanceof Shuriken) {
 			speed *= 1.25f; // those weapons that you flick
 		}
-		if(item instanceof SpiritBow.SpiritArrow || item instanceof ScorpioSprite.ScorpioShot){
+		if(item instanceof SpiritBow.SpiritArrow || item instanceof ScorpioSprite.ScorpioShot || item instanceof TenguSprite.TenguShuriken){
 			speed *= 1.5f;
 		}
 		try {

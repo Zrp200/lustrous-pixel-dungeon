@@ -31,10 +31,8 @@ import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.ToxicGas;
-import com.zrp200.lustrouspixeldungeon.actors.buffs.Amok;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Blindness;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
-import com.zrp200.lustrouspixeldungeon.actors.buffs.Burning;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.LockedFloor;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Paralysis;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Slow;
@@ -135,8 +133,8 @@ public class King extends Mob {
 	}
 
 	@Override
-	public void damage(int dmg, Object src, boolean magic ) {
-		super.damage(dmg, src, magic);
+	public void damage(int dmg, Object src) {
+		super.damage(dmg, src);
 		LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
 		if (lock != null) lock.addTime(dmg);
 	}
@@ -300,8 +298,8 @@ public class King extends Mob {
 		}
 		
 		@Override
-		public void damage( int dmg, Object src, boolean magic ) {
-			super.damage(dmg, src, magic);
+		public void damage(int dmg, Object src) {
+			super.damage(dmg, src);
 			if (src instanceof ToxicGas) {
 				((ToxicGas)src).clear( pos );
 			}

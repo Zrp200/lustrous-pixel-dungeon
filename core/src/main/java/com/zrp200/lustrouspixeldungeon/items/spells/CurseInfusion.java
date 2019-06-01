@@ -21,6 +21,20 @@
 
 package com.zrp200.lustrouspixeldungeon.items.spells;
 
+import com.zrp200.lustrouspixeldungeon.Assets;
+import com.zrp200.lustrouspixeldungeon.effects.CellEmitter;
+import com.zrp200.lustrouspixeldungeon.effects.particles.ShadowParticle;
+import com.zrp200.lustrouspixeldungeon.items.Item;
+import com.zrp200.lustrouspixeldungeon.items.armor.Armor;
+import com.zrp200.lustrouspixeldungeon.items.quest.MetalShard;
+import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfRemoveCurse;
+import com.zrp200.lustrouspixeldungeon.items.wands.Wand;
+import com.zrp200.lustrouspixeldungeon.items.weapon.SpiritBow;
+import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
+import com.zrp200.lustrouspixeldungeon.items.weapon.melee.MagesStaff;
+import com.zrp200.lustrouspixeldungeon.items.weapon.melee.MeleeWeapon;
+import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
+import com.zrp200.lustrouspixeldungeon.windows.WndBag;
 import com.watabou.noosa.audio.Sample;
 import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.effects.CellEmitter;
@@ -49,11 +63,14 @@ public class CurseInfusion extends InventorySpell {
 		item.cursed = true;
 		if (item instanceof Weapon && item.isEnchantable() ) {
 			Weapon w = (Weapon) item;
-			Class<? extends Weapon.Enchantment> curr = null;
 			if (w.hasEnchant()) {
 				w.enchant(Weapon.Enchantment.randomCurse(w.enchantment.getClass()));
 			} else {
-				w.enchant(Weapon.Enchantment.randomCurse(curr));
+				w.enchant(Weapon.Enchantment.randomCurse());
+			}
+			w.curseInfusionBonus = true;
+			if (w instanceof MagesStaff){
+				((MagesStaff) w).updateWand(true);
 			}
 		} else if (item instanceof Armor){
 			Armor a = (Armor) item;
@@ -62,13 +79,18 @@ public class CurseInfusion extends InventorySpell {
 			} else {
 				a.inscribe(Armor.Glyph.randomCurse());
 			}
+			a.curseInfusionBonus = true;
+		} else if (item instanceof Wand){
+			((Wand) item).curseInfusionBonus = true;
+			((Wand) item).updateLevel();
 		}
+		updateQuickslot();
 	}
 	
 	@Override
 	public int price() {
 		//prices of ingredients, divided by output quantity
-		return Math.round(quantity * ((30 + 100) / 4f));
+		return Math.round(quantity * ((30 + 100) / 3f));
 	}
 	
 	public static class Recipe extends com.zrp200.lustrouspixeldungeon.items.Recipe.SimpleRecipe {
@@ -77,10 +99,10 @@ public class CurseInfusion extends InventorySpell {
 			inputs =  new Class[]{ScrollOfRemoveCurse.class, MetalShard.class};
 			inQuantity = new int[]{1, 1};
 			
-			cost = 1;
+			cost = 4;
 			
 			output = CurseInfusion.class;
-			outQuantity = 4;
+			outQuantity = 3;
 		}
 		
 	}

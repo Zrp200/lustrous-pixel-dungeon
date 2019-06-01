@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2018 Evan Debenham
+ * Copyright (C) 2014-2019 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,22 +46,15 @@ import com.zrp200.lustrouspixeldungeon.items.bags.ScrollHolder;
 import com.zrp200.lustrouspixeldungeon.items.bags.VelvetPouch;
 import com.zrp200.lustrouspixeldungeon.items.bombs.Bomb;
 import com.zrp200.lustrouspixeldungeon.items.food.SmallRation;
-import com.zrp200.lustrouspixeldungeon.items.potions.Potion;
 import com.zrp200.lustrouspixeldungeon.items.potions.PotionOfHealing;
-import com.zrp200.lustrouspixeldungeon.items.scrolls.Scroll;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfMagicMapping;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfRemoveCurse;
-import com.zrp200.lustrouspixeldungeon.items.spells.Spell;
-import com.zrp200.lustrouspixeldungeon.items.stones.Runestone;
 import com.zrp200.lustrouspixeldungeon.items.stones.StoneOfAugmentation;
-import com.zrp200.lustrouspixeldungeon.items.wands.Wand;
-import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.darts.TippedDart;
 import com.zrp200.lustrouspixeldungeon.levels.Level;
 import com.zrp200.lustrouspixeldungeon.levels.Terrain;
 import com.zrp200.lustrouspixeldungeon.levels.painters.Painter;
-import com.zrp200.lustrouspixeldungeon.plants.Plant;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -159,7 +152,7 @@ public class ShopRoom extends SpecialRoom {
 				}
 
 				add(Generator.random(Generator.misTiers[tier]).quantity(2));
-				add(TippedDart.randomTipped());
+				add(TippedDart.randomTipped(2));
 				add(new MerchantsBeacon());
 
 				add(ChooseBag(Dungeon.hero.belongings));

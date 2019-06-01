@@ -29,7 +29,6 @@ import com.zrp200.lustrouspixeldungeon.items.Generator;
 import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
 import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon.Enchantment;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Grim;
-import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Precise;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.BlockingWeapon;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.zrp200.lustrouspixeldungeon.journal.Notes;
@@ -93,11 +92,7 @@ public class Statue extends Mob {
 	
 	@Override
 	public int attackSkill( Char target ) {
-		if (Precise.rollToGuaranteeHit(weapon, this)){
-			Precise.playVFX(target);
-			return Integer.MAX_VALUE;
-		}
-		return (int)((Hero.ACCURACY + Dungeon.depth) * weapon.accuracyFactor(this));
+		return (int)((9 + Dungeon.depth) * weapon.accuracyFactor(this));
 	}
 	
 	@Override
@@ -118,13 +113,13 @@ public class Statue extends Mob {
 	}
 	
 	@Override
-	public void damage( int dmg, Object src, boolean magic ) {
+	public void damage( int dmg, Object src) {
 
 		if (state == PASSIVE) {
 			state = HUNTING;
 		}
 		
-		super.damage(dmg, src, magic);
+		super.damage(dmg, src);
 	}
 	
 	@Override

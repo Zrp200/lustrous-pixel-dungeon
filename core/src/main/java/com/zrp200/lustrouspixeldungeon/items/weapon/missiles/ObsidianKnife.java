@@ -25,7 +25,7 @@ import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
 
 public class ObsidianKnife extends ThrowingKnife {
     {
-        image = ItemSpriteSheet.OBSIDIAN_KNIFE;
+        image = ItemSpriteSheet.MISSILE_HOLDER;
 
         bones = true;
 

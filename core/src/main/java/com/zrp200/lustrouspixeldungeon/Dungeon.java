@@ -145,13 +145,6 @@ public class Dungeon {
 				}
 				
 			}
-			//saves prior to 0.6.4
-			if (bundle.contains("SEED_POUCH")) {
-				LimitedDrops.VELVET_POUCH.count = bundle.getInt("SEED_POUCH");
-			}
-			if (bundle.contains("WAND_HOLSTER")) {
-				LimitedDrops.MAGICAL_HOLSTER.count = bundle.getInt("WAND_HOLSTER");
-			}
 		}
 
 	}
@@ -280,6 +273,7 @@ public class Dungeon {
 			break;
 		case 20:
 			level = new CityBossLevel();
+
 			break;
 		case 21:
 			level = new LastShopLevel();

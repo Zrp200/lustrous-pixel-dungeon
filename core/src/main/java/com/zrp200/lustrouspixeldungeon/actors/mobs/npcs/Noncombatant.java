@@ -15,7 +15,7 @@ public abstract class Noncombatant extends NPC {
     }
 
     @Override
-    public void damage( int dmg, Object src, boolean magic ) { }
+    public void damage(int dmg, Object src) { }
 
     @Override
     public void add( Buff buff ) { }

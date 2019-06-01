@@ -27,7 +27,7 @@ import com.zrp200.lustrouspixeldungeon.actors.blobs.Blob;
 import com.zrp200.lustrouspixeldungeon.levels.Terrain;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.scenes.PixelScene;
-import com.zrp200.lustrouspixeldungeon.tiles.CustomTiledVisual;
+import com.zrp200.lustrouspixeldungeon.tiles.CustomTilemap;
 import com.zrp200.lustrouspixeldungeon.tiles.DungeonTerrainTilemap;
 import com.zrp200.lustrouspixeldungeon.tiles.DungeonTilemap;
 import com.zrp200.lustrouspixeldungeon.ui.RenderedTextMultiline;
@@ -50,11 +50,11 @@ public class WndInfoCell extends Window {
 			tile = Terrain.CHASM;
 		}
 
-		CustomTiledVisual customTile = null;
+		CustomTilemap customTile = null;
 		Image customImage = null;
 		int x = cell % Dungeon.level.width();
 		int y = cell / Dungeon.level.width();
-		for (CustomTiledVisual i : Dungeon.level.customTiles){
+		for (CustomTilemap i : Dungeon.level.customTiles){
 			if ((x >= i.tileX && x < i.tileX+i.tileW) &&
 					(y >= i.tileY && y < i.tileY+i.tileH)){
 				if ((customImage = i.image(x - i.tileX, y - i.tileY)) != null) {

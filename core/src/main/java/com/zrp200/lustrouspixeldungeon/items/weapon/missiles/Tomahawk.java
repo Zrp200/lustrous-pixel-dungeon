@@ -39,20 +39,13 @@ public class Tomahawk extends MissileWeapon {
 	public int minBase() {
 		return Math.round(1.5f * tier); //6 base, down from 8
 	}
-	
-	@Override
-	public int maxBase() {
-		return Math.round(3.75f * tier); //15 base, down from 20
-	}
 
-	@Override
-	public int maxScale() {
-		return tier/2; // +2/+2, down from +2/+4
-	}
-
+	public int maxBase() { //15 base, down from 20
+	    return Math.round(3.75f * tier);
+    }
 	@Override
 	public int proc( Char attacker, Char defender, int damage ) {
-		Buff.affect( defender, Bleeding.class ).afflict( damage );
+		Buff.affect( defender, Bleeding.class ).afflict( Math.round(damage*0.6f) );
 		return super.proc( attacker, defender, damage );
 	}
 }

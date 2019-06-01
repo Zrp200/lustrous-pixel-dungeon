@@ -53,14 +53,14 @@ public class RotHeart extends Mob {
 	}
 
 	@Override
-	public void damage(int dmg, Object src, boolean magic ) {
+	public void damage(int dmg, Object src) {
 		//TODO: when effect properties are done, change this to FIRE
 		if (src instanceof Burning) {
 			destroy();
 			sprite.die();
 		} else {
 			GameScene.add(Blob.seed(pos, 20, ToxicGas.class));
-			super.damage(dmg, src, magic);
+			super.damage(dmg, src);
 		}
 	}
 

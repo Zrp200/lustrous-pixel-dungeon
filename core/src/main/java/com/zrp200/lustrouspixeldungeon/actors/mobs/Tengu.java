@@ -103,7 +103,7 @@ public class Tengu extends Mob {
 	}
 
 	@Override
-	public void damage(int dmg, Object src, boolean magic ) {
+	public void damage(int dmg, Object src) {
 		
 		PrisonBossLevel.State state = ((PrisonBossLevel)Dungeon.level).state();
 		
@@ -115,7 +115,7 @@ public class Tengu extends Mob {
 		}
 
 		int beforeHitHP = HP;
-		super.damage(dmg, src, magic);
+		super.damage(dmg, src);
 		dmg = beforeHitHP - HP;
 
 		LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
@@ -178,12 +178,10 @@ public class Tengu extends Mob {
 	//tengu's attack is always visible
 	@Override
 	protected boolean doAttack(Char enemy) {
-		if (enemy == Dungeon.hero)
-			Dungeon.hero.resting = false;
 		sprite.attack( enemy.pos );
 		spend( attackDelay() );
-		return !Dungeon.level.adjacent(pos, enemy.pos);
-}
+		return false;
+	}
 
 	private void jump() {
 		

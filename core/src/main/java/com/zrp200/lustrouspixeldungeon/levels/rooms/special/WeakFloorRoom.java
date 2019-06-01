@@ -21,6 +21,7 @@
 
 package com.zrp200.lustrouspixeldungeon.levels.rooms.special;
 
+import com.watabou.noosa.Tilemap;
 import com.watabou.utils.Point;
 import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Assets;
@@ -29,7 +30,7 @@ import com.zrp200.lustrouspixeldungeon.levels.Level;
 import com.zrp200.lustrouspixeldungeon.levels.Terrain;
 import com.zrp200.lustrouspixeldungeon.levels.painters.Painter;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
-import com.zrp200.lustrouspixeldungeon.tiles.CustomTiledVisual;
+import com.zrp200.lustrouspixeldungeon.tiles.CustomTilemap;
 
 public class WeakFloorRoom extends SpecialRoom {
 
@@ -66,22 +67,23 @@ public class WeakFloorRoom extends SpecialRoom {
 		}
 		
 		Painter.set(level, well, Terrain.CHASM);
-		CustomTiledVisual vis = new HiddenWell();
+		CustomTilemap vis = new HiddenWell();
 		vis.pos(well.x, well.y);
 		level.customTiles.add(vis);
 	}
 
-	public static class HiddenWell extends CustomTiledVisual {
+	public static class HiddenWell extends CustomTilemap {
 
-		public HiddenWell(){
-			super(Assets.WEAK_FLOOR);
+		{
+			texture = Assets.WEAK_FLOOR;
+			tileW = tileH = 1;
 		}
 
 		@Override
-		public CustomTiledVisual create() {
-			tileW = tileH = 1;
-			map( new int[]{Dungeon.depth/5}, 1);
-			return super.create();
+		public Tilemap create() {
+			Tilemap v = super.create();
+			v.map( new int[]{Dungeon.depth/5}, 1);
+			return v;
 		}
 
 		@Override

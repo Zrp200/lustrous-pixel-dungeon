@@ -77,7 +77,7 @@ import com.zrp200.lustrouspixeldungeon.plants.Plant;
 import com.zrp200.lustrouspixeldungeon.plants.Swiftthistle;
 import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSprite;
-import com.zrp200.lustrouspixeldungeon.tiles.CustomTiledVisual;
+import com.zrp200.lustrouspixeldungeon.tiles.CustomTilemap;
 import com.zrp200.lustrouspixeldungeon.utils.BArray;
 import com.zrp200.lustrouspixeldungeon.utils.GLog;
 
@@ -124,8 +124,8 @@ public abstract class Level implements Bundlable {
 	public HashMap<Class<? extends Blob>,Blob> blobs;
 	public SparseArray<Plant> plants;
 	public SparseArray<Trap> traps;
-	public HashSet<CustomTiledVisual> customTiles;
-	public HashSet<CustomTiledVisual> customWalls;
+	public HashSet<CustomTilemap> customTiles;
+	public HashSet<CustomTilemap> customWalls;
 	
 	protected ArrayList<Item> itemsToSpawn = new ArrayList<>();
 
@@ -341,13 +341,13 @@ public abstract class Level implements Bundlable {
 
 		collection = bundle.getCollection( CUSTOM_TILES );
 		for (Bundlable p : collection) {
-			CustomTiledVisual vis = (CustomTiledVisual)p;
+			CustomTilemap vis = (CustomTilemap)p;
 			customTiles.add(vis);
 		}
 
 		collection = bundle.getCollection( CUSTOM_WALLS );
 		for (Bundlable p : collection) {
-			CustomTiledVisual vis = (CustomTiledVisual)p;
+			CustomTilemap vis = (CustomTilemap)p;
 			customWalls.add(vis);
 		}
 		

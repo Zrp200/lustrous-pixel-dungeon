@@ -43,6 +43,7 @@ import com.zrp200.lustrouspixeldungeon.items.wands.WandOfCorrosion;
 import com.zrp200.lustrouspixeldungeon.items.wands.WandOfCorruption;
 import com.zrp200.lustrouspixeldungeon.items.wands.WandOfDisintegration;
 import com.zrp200.lustrouspixeldungeon.items.wands.WandOfRegrowth;
+import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
@@ -82,6 +83,12 @@ public class MagesStaff extends MeleeWeapon.Uncommon {
 
 	public MagesStaff(Wand wand){
 		this();
+		wand.identify();
+		wand.cursed = false;
+		this.wand = wand;
+		updateWand(false);
+		wand.curCharges = wand.maxCharges;
+		trueName = Messages.get(wand, "staff_name");
 	}
 
 	@Override
@@ -116,6 +123,8 @@ public class MagesStaff extends MeleeWeapon.Uncommon {
 				return;
 			}
 
+			if (cursed || hasCurseEnchant()) wand.cursed = true;
+			else                             wand.cursed = false;
 			wand.execute(hero, AC_ZAP);
 		}
 	}
@@ -170,29 +179,17 @@ public class MagesStaff extends MeleeWeapon.Uncommon {
 
 	public MagesStaff imbueWand(Wand wand) {
 
-		wand.cursed = false;
 		this.wand = null;
 
 		//syncs the level of the two items.
-		int targetLevel = Math.max(this.level(), wand.level());
+		int targetLevel = Math.max(this.level() - (curseInfusionBonus ? 1 : 0), wand.level());
 
 		//if the staff's level is being overridden by the wand, preserve 1 upgrade
-		if (wand.level() >= this.level() && this.level() > 0) targetLevel++;
-
-		int staffLevelDiff = targetLevel - this.level();
-		if (staffLevelDiff > 0)
-			this.upgrade(staffLevelDiff);
-		else if (staffLevelDiff < 0)
-			this.degrade(Math.abs(staffLevelDiff));
-
-		int wandLevelDiff = targetLevel - wand.level();
-		if (wandLevelDiff > 0)
-			wand.upgrade(wandLevelDiff);
-		else if (wandLevelDiff < 0)
-			wand.degrade(Math.abs(wandLevelDiff));
-
+		if (wand.level() >= this.level() && this.level() > (curseInfusionBonus ? 1 : 0)) targetLevel++;
+		
+		level(targetLevel);
 		this.wand = wand;
-		wand.maxCharges = Math.min(wand.maxCharges + 1, 10);
+		updateWand(false);
 		wand.curCharges = wand.maxCharges;
 		wand.identify();
 
@@ -227,14 +224,7 @@ public class MagesStaff extends MeleeWeapon.Uncommon {
 	public Item upgrade(boolean enchant) {
 		super.upgrade( enchant );
 
-		if (wand != null) {
-			int curCharges = wand.curCharges;
-			wand.upgrade();
-			//gives the wand one additional charge
-			wand.maxCharges = Math.min(wand.maxCharges + 1, 10);
-			wand.curCharges = Math.min(wand.curCharges + 1, 10);
-			updateQuickslot();
-		}
+		updateWand(true);
 
 		return this;
 	}
@@ -243,16 +233,20 @@ public class MagesStaff extends MeleeWeapon.Uncommon {
 	public Item degrade() {
 		super.degrade();
 
-		if (wand != null) {
-			int curCharges = wand.curCharges;
-			wand.degrade();
-			//gives the wand one additional charge
-			wand.maxCharges = Math.min(wand.maxCharges + 1, 10);
-			wand.curCharges = curCharges-1;
-			updateQuickslot();
-		}
+		updateWand(false);
 
 		return this;
+	}
+	
+	public void updateWand(boolean levelled){
+		if (wand != null) {
+			int curCharges = wand.curCharges;
+			wand.level(level());
+			//gives the wand one additional max charge
+			wand.maxCharges = Math.min(wand.maxCharges + 1, 10);
+			wand.curCharges = Math.min(curCharges + (levelled ? 1 : 0), wand.maxCharges);
+			updateQuickslot();
+		}
 	}
 
 	@Override
@@ -303,6 +297,21 @@ public class MagesStaff extends MeleeWeapon.Uncommon {
 			trueName = Messages.get(wand, "staff_name");
 		}
 	}
+
+	@Override
+	public int price() {
+		return 0;
+	}
+
+	@Override
+	public Weapon enchant(Enchantment ench, boolean visible) {
+		if (curseInfusionBonus && (ench == null || !ench.curse())){
+			curseInfusionBonus = false;
+			updateWand(false);
+		}
+		return super.enchant(ench, visible);
+	}
+
 
 	private final WndBag.Listener itemSelector = new WndBag.Listener() {
 		@Override

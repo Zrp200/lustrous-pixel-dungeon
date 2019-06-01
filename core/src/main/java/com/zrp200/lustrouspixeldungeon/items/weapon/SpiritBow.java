@@ -129,10 +129,14 @@ public class SpiritBow extends Weapon {
 		//strength req decreases at +1,+3,+6,+10,etc.
 		return 10 - (int)(Math.sqrt(8 * lvl + 1) - 1)/2;
 	}
-	
+
+	public int min() {
+		return Math.max( 0, min(level() + RingOfSharpshooting.levelDamageBonus(Dungeon.hero) ) );
+	}
+
 	@Override
-	public int min(int lvl) {
-		return Math.max(0,minBase() + Dungeon.hero.lvl/5 + RingOfSharpshooting.levelDamageBonus(Dungeon.hero)*minScale());
+	public int max() {
+		return max(RingOfSharpshooting.levelDamageBonus(Dungeon.hero)) + (int)(maxScale()*trueLevel());
 	}
 
 	@Override
@@ -143,7 +147,6 @@ public class SpiritBow extends Weapon {
 		return 6;
 	}
 
-	// Sharpshooting scaling
 	public int minScale() {
 		return 1;
 	}
@@ -151,12 +154,6 @@ public class SpiritBow extends Weapon {
 		return 2;
 	}
 
-	@Override
-	public int max(int lvl) {
-		return Math.max(0,maxBase() + (int)(Dungeon.hero.lvl/2.5f)
-				+ RingOfSharpshooting.levelDamageBonus(Dungeon.hero)*maxScale());
-	}
-	
 	private int targetPos;
 	
 	@Override
@@ -199,19 +196,18 @@ public class SpiritBow extends Weapon {
 	
 	@Override
 	public int level() {
-		//need to check if hero is null for loading an upgraded bow from pre-0.7.0
-		return Dungeon.hero == null ? 0 : Dungeon.hero.lvl/5;
+		// don't care about halves.
+		return (int) trueLevel();
+	}
+
+	private double trueLevel() { // for max calcs, rounds to nearest 0.5
+		return Math.round((Dungeon.hero == null ? 0 : Dungeon.hero.lvl/5d)*2)/2d
+				+ super.level();
 	}
 	
-	@Override
-	public int visiblyUpgraded() {
-		return level();
-	}
-	
-	//for fetching upgrades from a boomerang from pre-0.7.0
-	//TODO implement on this
+	//for fetching upgrades from a boomerang from pre-0.7.1
 	public int spentUpgrades() {
-		return super.level();
+		return super.level() - (curseInfusionBonus ? 1 : 0);
 	}
 	
 	@Override
@@ -232,7 +228,7 @@ public class SpiritBow extends Weapon {
 			enchantKnown = true; // for fun visual effects
 		}
 		boolean hit = false;
-		
+
 		@Override
 		public int damageRoll(Char owner) {
 			return SpiritBow.this.damageRoll(owner);

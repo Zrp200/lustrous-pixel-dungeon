@@ -29,38 +29,14 @@ import com.zrp200.lustrouspixeldungeon.items.food.MeatPie;
 import com.zrp200.lustrouspixeldungeon.items.food.StewedMeat;
 import com.zrp200.lustrouspixeldungeon.items.potions.AlchemicalCatalyst;
 import com.zrp200.lustrouspixeldungeon.items.potions.Potion;
-import com.zrp200.lustrouspixeldungeon.items.potions.brews.BlizzardBrew;
-import com.zrp200.lustrouspixeldungeon.items.potions.brews.CausticBrew;
-import com.zrp200.lustrouspixeldungeon.items.potions.brews.FrigidBrew;
-import com.zrp200.lustrouspixeldungeon.items.potions.brews.FrostfireBrew;
-import com.zrp200.lustrouspixeldungeon.items.potions.brews.InfernalBrew;
-import com.zrp200.lustrouspixeldungeon.items.potions.brews.ShockingBrew;
-import com.zrp200.lustrouspixeldungeon.items.potions.brews.WickedBrew;
-import com.zrp200.lustrouspixeldungeon.items.potions.elixirs.ElixirOfAquaticRejuvenation;
-import com.zrp200.lustrouspixeldungeon.items.potions.elixirs.ElixirOfDragonsBlood;
-import com.zrp200.lustrouspixeldungeon.items.potions.elixirs.ElixirOfHoneyedHealing;
-import com.zrp200.lustrouspixeldungeon.items.potions.elixirs.ElixirOfIcyTouch;
-import com.zrp200.lustrouspixeldungeon.items.potions.elixirs.ElixirOfMight;
-import com.zrp200.lustrouspixeldungeon.items.potions.elixirs.ElixirOfRestoration;
-import com.zrp200.lustrouspixeldungeon.items.potions.elixirs.ElixirOfToxicEssence;
-import com.zrp200.lustrouspixeldungeon.items.potions.elixirs.ElixirOfVitality;
+import com.zrp200.lustrouspixeldungeon.items.potions.brews.*;
+import com.zrp200.lustrouspixeldungeon.items.potions.elixirs.*;
 import com.zrp200.lustrouspixeldungeon.items.potions.exotic.ExoticPotion;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.Scroll;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.exotic.ExoticScroll;
-import com.zrp200.lustrouspixeldungeon.items.spells.Alchemize;
-import com.zrp200.lustrouspixeldungeon.items.spells.AquaBlast;
-import com.zrp200.lustrouspixeldungeon.items.spells.ArcaneCatalyst;
-import com.zrp200.lustrouspixeldungeon.items.spells.BeaconOfReturning;
-import com.zrp200.lustrouspixeldungeon.items.spells.CurseInfusion;
-import com.zrp200.lustrouspixeldungeon.items.spells.FeatherFall;
-import com.zrp200.lustrouspixeldungeon.items.spells.MagicalInfusion;
-import com.zrp200.lustrouspixeldungeon.items.spells.MagicalPorter;
-import com.zrp200.lustrouspixeldungeon.items.spells.PhaseShift;
-import com.zrp200.lustrouspixeldungeon.items.spells.ReclaimTrap;
-import com.zrp200.lustrouspixeldungeon.items.spells.Recycle;
+import com.zrp200.lustrouspixeldungeon.items.spells.*;
 import com.zrp200.lustrouspixeldungeon.items.wands.Wand;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.darts.Dart;
-import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.darts.TippedDart;
 
 import java.util.ArrayList;
 
@@ -178,17 +154,15 @@ public abstract class Recipe {
 	private static Recipe[] oneIngredientRecipes = new Recipe[]{
 		new AlchemistsToolkit.upgradeKit(),
 		new Scroll.ScrollToStone(),
-		new StewedMeat.oneMeat(),
-		new TippedDart.UntipDart()
+		new StewedMeat.oneMeat()
 	};
 	
 	private static Recipe[] twoIngredientRecipes = new Recipe[]{
 		new Blandfruit.CookFruit(),
-		new TippedDart.TipDart(),
-		new TippedDart.UntipDart(),
 		new Bomb.EnhanceBomb(),
 		new AlchemicalCatalyst.Recipe(),
 		new ArcaneCatalyst.Recipe(),
+		new ElixirOfArcaneArmor.Recipe(),
 		new ElixirOfAquaticRejuvenation.Recipe(),
 		new ElixirOfDragonsBlood.Recipe(),
 		new ElixirOfIcyTouch.Recipe(),
@@ -209,6 +183,7 @@ public abstract class Recipe {
 		new PhaseShift.Recipe(),
 		new ReclaimTrap.Recipe(),
 		new Recycle.Recipe(),
+		new WildEnergy.Recipe(),
 		new StewedMeat.twoMeat()
 	};
 	
@@ -217,7 +192,6 @@ public abstract class Recipe {
 		new ExoticPotion.PotionToExotic(),
 		new ExoticScroll.ScrollToExotic(),
 		new StewedMeat.threeMeat(),
-		new TippedDart.UntipDart(),
 		new MeatPie.Recipe()
 	};
 	

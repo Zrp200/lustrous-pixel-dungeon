@@ -43,7 +43,7 @@ import com.zrp200.lustrouspixeldungeon.levels.traps.GrimTrap;
 import java.util.HashSet;
 
 public class RingOfElements extends Ring {
-	private static final float BONUS_SCALING = 0.84f;
+	private static final float BONUS_SCALING = 0.8f;
 
 	@Override
 	protected RingBuff buff() {
@@ -61,7 +61,8 @@ public class RingOfElements extends Ring {
 
 			add(ToxicGas.class);	add(Electricity.class);
 
-			add(Shaman.class);	add(Warlock.class);	add(Eye.class);	add(Yog.BurningFist.class);
+			add(Shaman.MagicAttack.class);	add(Warlock.DarkBolt.class);	add(Eye.DeathGaze.class);
+			add(Yog.BurningFist.DarkBolt.class);
 		}
 	};
 

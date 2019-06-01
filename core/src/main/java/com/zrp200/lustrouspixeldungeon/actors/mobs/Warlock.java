@@ -95,7 +95,10 @@ public class Warlock extends Mob implements Callback {
 		}
 	}
 	
-	public void zap() {
+	//used so resistances can differentiate between melee and magical attacks
+	public static class DarkBolt{}
+
+	private void zap() {
 		spend( TIME_TO_ZAP );
 		
 		if (hit( this, enemy, true )) {
@@ -105,8 +108,8 @@ public class Warlock extends Mob implements Callback {
 				Buff.prolong( enemy, Weakness.class, Random.Float( Math.max(existingDuration, 6), Weakness.DURATION) );
 			}
 			
-			int dmg = Random.NormalIntRange( 12, 18 );
-			enemy.damage( dmg, this, true );
+			int dmg = Random.Int( 12, 18 );
+			enemy.damage( dmg, new DarkBolt() );
 			
 			if (!enemy.isAlive() && enemy == Dungeon.hero) {
 				Dungeon.fail( getClass() );

@@ -119,7 +119,10 @@ public class Armor extends EquipableItem {
 	}
 	
 	public Augment augment = Augment.NONE;
+
 	public Glyph glyph;
+	public boolean curseInfusionBonus = false;
+
 	private BrokenSeal seal;
 	
 	public int tier;
@@ -140,12 +143,15 @@ public class Armor extends EquipableItem {
 			AUGMENT			= "augment",
 			GLYPH_KNOWN 	= "glyph known";
 
-	@Override
+    private static final String CURSE_INFUSION_BONUS = "curse_infusion_bonus";
+
+    @Override
 	public void storeInBundle( Bundle bundle ) {
 		super.storeInBundle( bundle );
 		bundle.put( USES_LEFT_TO_ID, usesLeftToID );
 		bundle.put( AVAILABLE_USES, availableUsesToID );
 		bundle.put( GLYPH, glyph );
+		bundle.put( CURSE_INFUSION_BONUS, curseInfusionBonus );
 		bundle.put( SEAL, seal);
 		bundle.put( AUGMENT, augment);
 		bundle.put( GLYPH_KNOWN,glyphKnown);
@@ -157,6 +163,7 @@ public class Armor extends EquipableItem {
 		usesLeftToID = bundle.getInt( USES_LEFT_TO_ID );
 		availableUsesToID = bundle.getInt( AVAILABLE_USES );
 		inscribe((Glyph) bundle.get(GLYPH));
+		curseInfusionBonus = bundle.getBoolean( CURSE_INFUSION_BONUS );
 		seal = (BrokenSeal)bundle.get(SEAL);
 		glyphKnown=bundle.getBoolean(GLYPH_KNOWN);
 
@@ -166,8 +173,7 @@ public class Armor extends EquipableItem {
 			availableUsesToID = USES_TO_ID/2f;
 		}
 
-		//pre-0.6.5 saves
-		if (bundle.contains(AUGMENT)) augment = bundle.getEnum(AUGMENT, Augment.class);
+		augment = bundle.getEnum(AUGMENT, Augment.class);
 	}
 
 	@Override
@@ -381,6 +387,11 @@ public class Armor extends EquipableItem {
 	}
 
 	@Override
+	public int level() {
+		return super.level() + (curseInfusionBonus ? 1 : 0);
+	}
+
+	@Override
 	public Item upgrade() {
 		return upgrade( false );
 	}
@@ -550,6 +561,7 @@ public class Armor extends EquipableItem {
 	}
 
 	public Armor inscribe( Glyph glyph, boolean visible) {
+		if (glyph == null || !glyph.curse()) curseInfusionBonus = false;
 		this.glyph = glyph;
 		if(visible) revealGlyph();
 		return this;

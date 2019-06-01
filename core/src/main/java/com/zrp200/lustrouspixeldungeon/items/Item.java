@@ -33,7 +33,6 @@ import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
-import com.zrp200.lustrouspixeldungeon.actors.buffs.Combo;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.effects.Speck;
 import com.zrp200.lustrouspixeldungeon.items.bags.Bag;
@@ -76,7 +75,7 @@ public class Item implements Bundlable, Cloneable {
 	public ItemSprite sprite() {
 		return new ItemSprite(this);
 	}
-	
+
 	public boolean stackable = false;
 	protected int quantity = 1;
 	
@@ -94,7 +93,7 @@ public class Item implements Bundlable, Cloneable {
 	public boolean bones = false;
 
 	public Item() { reset(); }
-	
+
 	private static Comparator<Item> itemComparator = new Comparator<Item>() {
 		@Override
 		public int compare( Item lhs, Item rhs ) {
@@ -141,9 +140,6 @@ public class Item implements Bundlable, Cloneable {
 		
 		curUser = hero;
 		curItem = this;
-
-		Combo combo = hero.buff(Combo.class);
-		if (combo != null) combo.detach();
 		
 		if (action.equals( AC_DROP )) {
 			
@@ -377,7 +373,7 @@ public class Item implements Bundlable, Cloneable {
 	}
 	
 	public int visiblyUpgraded() {
-		return levelKnown ? level : 0;
+		return levelKnown ? level() : 0;
 	}
 	
 	public boolean visiblyCursed() {
@@ -525,7 +521,7 @@ public class Item implements Bundlable, Cloneable {
 	private static final String CURSED_KNOWN	= "cursedKnown";
 	private static final String QUICKSLOT		= "quickslotpos";
 	private static final String NAME			= "name";
-	
+
 	@Override
 	public void storeInBundle( Bundle bundle ) {
 		bundle.put( NAME, name);
@@ -545,7 +541,7 @@ public class Item implements Bundlable, Cloneable {
 		levelKnown	= bundle.getBoolean( LEVEL_KNOWN );
 		cursedKnown	= bundle.getBoolean( CURSED_KNOWN );
 		if(bundle.contains(NAME)) name = bundle.getString(NAME);
-		
+
 		int level = bundle.getInt( LEVEL );
 		if (level > 0) {
 			upgrade( level );

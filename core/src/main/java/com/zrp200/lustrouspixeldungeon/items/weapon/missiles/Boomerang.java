@@ -56,7 +56,7 @@ public class Boomerang extends MissileWeapon {
 	{
 		image = ItemSpriteSheet.BOOMERANG;
 
-		tier = 3;
+		tier = 4; // to match shattered
 		sticky = false;
 
 		baseUses = 7.5f;

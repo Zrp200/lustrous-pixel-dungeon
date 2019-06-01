@@ -29,7 +29,6 @@ import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
 import com.zrp200.lustrouspixeldungeon.messages.Languages;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.scenes.PixelScene;
-import com.zrp200.lustrouspixeldungeon.scenes.TitleScene;
 import com.zrp200.lustrouspixeldungeon.ui.RedButton;
 import com.zrp200.lustrouspixeldungeon.ui.RenderedTextMultiline;
 import com.zrp200.lustrouspixeldungeon.ui.Window;
@@ -69,7 +68,7 @@ public class WndLangs extends Window {
 				protected void onClick() {
 					super.onClick();
 					Messages.setup(langs.get(langIndex));
-					LustrousPixelDungeon.switchNoFade(TitleScene.class, new Game.SceneChangeCallback() {
+					LustrousPixelDungeon.seamlessResetScene(new Game.SceneChangeCallback() {
 						@Override
 						public void beforeCreate() {
 							LustSettings.language(langs.get(langIndex));
@@ -77,7 +76,7 @@ public class WndLangs extends Window {
 						}
 						@Override
 						public void afterCreate() {
-							Game.scene().add(new WndLangs());
+							//do nothing
 						}
 					});
 				}

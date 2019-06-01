@@ -39,7 +39,6 @@ import com.zrp200.lustrouspixeldungeon.items.bags.Bag;
 import com.zrp200.lustrouspixeldungeon.items.bags.MagicalHolster;
 import com.zrp200.lustrouspixeldungeon.items.rings.RingOfSharpshooting;
 import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
-import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Swift;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.darts.TippedDart;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.utils.GLog;
@@ -271,12 +270,6 @@ abstract public class MissileWeapon extends Weapon {
 	
 	@Override
 	public float castDelay(Char user, int dst) {
-		if (Actor.findChar( dst ) != null
-				&& user.buff(Swift.SwiftAttack.class) != null
-				&& user.buff(Swift.SwiftAttack.class).boostsRanged()) {
-			user.buff(Swift.SwiftAttack.class).detach();
-			return 0;
-		}
 		return speedFactor( user );
 	}
 

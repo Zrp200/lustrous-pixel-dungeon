@@ -21,6 +21,10 @@
 
 package com.zrp200.lustrouspixeldungeon.sprites;
 
+import com.zrp200.lustrouspixeldungeon.Assets;
+import com.zrp200.lustrouspixeldungeon.Dungeon;
+import com.zrp200.lustrouspixeldungeon.items.Item;
+import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
 import com.watabou.noosa.TextureFilm;
 import com.watabou.utils.Callback;
 import com.zrp200.lustrouspixeldungeon.Assets;
@@ -84,14 +88,11 @@ public class TenguSprite extends MobSprite {
 	public void attack( int cell ) {
 		if (!Dungeon.level.adjacent( cell, ch.pos )) {
 
-			final Char enemy = Actor.findChar(cell);
-
 			((MissileSprite)parent.recycle( MissileSprite.class )).
-				reset( ch.pos, cell, new Shuriken(), new Callback() {
+				reset( ch.pos, cell, new TenguShuriken(), new Callback() {
 					@Override
 					public void call() {
-						ch.next();
-						if (enemy != null) ch.attack(enemy);
+						ch.onAttackComplete();
 					}
 				} );
 			
@@ -116,6 +117,12 @@ public class TenguSprite extends MobSprite {
 			}
 		} else {
 			super.onComplete( anim );
+		}
+	}
+	
+	public static class TenguShuriken extends Item {
+		{
+			image = ItemSpriteSheet.SHURIKEN;
 		}
 	}
 }

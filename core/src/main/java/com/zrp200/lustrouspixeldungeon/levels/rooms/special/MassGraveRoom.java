@@ -22,6 +22,7 @@
 package com.zrp200.lustrouspixeldungeon.levels.rooms.special;
 
 import com.watabou.noosa.Image;
+import com.watabou.noosa.Tilemap;
 import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.Skeleton;
@@ -35,7 +36,7 @@ import com.zrp200.lustrouspixeldungeon.levels.Level;
 import com.zrp200.lustrouspixeldungeon.levels.Terrain;
 import com.zrp200.lustrouspixeldungeon.levels.painters.Painter;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
-import com.zrp200.lustrouspixeldungeon.tiles.CustomTiledVisual;
+import com.zrp200.lustrouspixeldungeon.tiles.CustomTilemap;
 
 import java.util.ArrayList;
 
@@ -94,24 +95,25 @@ public class MassGraveRoom extends SpecialRoom {
 		}
 	}
 
-	public static class Bones extends CustomTiledVisual {
+	public static class Bones extends CustomTilemap {
 
 		private static final int WALL_OVERLAP   = 3;
 		private static final int FLOOR          = 7;
 
-		public Bones(){
-			super(Assets.PRISON_QUEST);
+		{
+			texture = Assets.PRISON_QUEST;
 		}
 
 		@Override
-		public CustomTiledVisual create() {
-			int data[] = new int[tileW*tileH];
+		public Tilemap create() {
+			Tilemap v = super.create();
+			int[] data = new int[tileW*tileH];
 			for (int i = 0; i < data.length; i++){
 				if (i < tileW)  data[i] = WALL_OVERLAP;
 				else            data[i] = FLOOR;
 			}
-			map( data, tileW );
-			return super.create();
+			v.map( data, tileW );
+			return v;
 		}
 
 		@Override
