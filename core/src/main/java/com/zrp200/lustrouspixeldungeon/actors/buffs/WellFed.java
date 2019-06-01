@@ -43,7 +43,7 @@ public class WellFed extends ActiveBuff {
 
 	public void reset(){
 		//heals one HP every 10 turns for 450 turns
-		set(Hunger.STARVING);
+		prolong(Hunger.STARVING);
 	}
 	
 	@Override

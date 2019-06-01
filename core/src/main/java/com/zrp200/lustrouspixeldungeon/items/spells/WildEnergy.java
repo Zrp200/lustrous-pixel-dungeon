@@ -53,7 +53,7 @@ public class WildEnergy extends TargetedSpell {
 				ScrollOfRecharging.charge(hero);
 				
 				Buff.affect(hero, Recharging.class, 10f);
-				Buff.affect(hero, ArtifactRecharge.class).prolong( 10 );
+				Buff.affect(hero, ArtifactRecharge.class,10 );
 				
 				detach( curUser.belongings.backpack );
 				updateQuickslot();

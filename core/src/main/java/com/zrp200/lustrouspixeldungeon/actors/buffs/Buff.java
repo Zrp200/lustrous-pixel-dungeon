@@ -191,7 +191,7 @@ public class Buff extends Actor implements Hero.Doom {
 		if(buff instanceof FlavourBuff)  {
 			buff.postpone( duration );
 		} else if(buff instanceof ActiveBuff) {
-			((ActiveBuff) buff).set(duration);
+			((ActiveBuff) buff).prolong(duration);
 		}
 		return buff;
 	}

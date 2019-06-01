@@ -22,7 +22,6 @@
 package com.zrp200.lustrouspixeldungeon.actors.buffs;
 
 import com.watabou.noosa.Image;
-import com.watabou.utils.Bundle;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Belongings;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.items.artifacts.Artifact;
@@ -30,14 +29,13 @@ import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.ui.BuffIndicator;
 
 //TODO this may be very powerful, consider balancing
-public class ArtifactRecharge extends Buff {
+public class ArtifactRecharge extends ActiveBuff {
 	
 	{
 		type = buffType.POSITIVE;
+		startGrey = 0; // interferes with tinting for some reason
 	}
-	
-	private int left;
-	
+
 	@Override
 	public boolean act() {
 		
@@ -51,23 +49,8 @@ public class ArtifactRecharge extends Buff {
 				((Artifact)b.misc2).charge((Hero)target);
 			}
 		}
-		
-		left--;
-		if (left <= 0){
-			detach();
-		} else {
-			spend(TICK);
-		}
-		
-		return true;
-	}
-	
-	public void set( int amount ){
-		left = amount;
-	}
-	
-	public void prolong( int amount ){
-		left += amount;
+
+		return super.act();
 	}
 	
 	@Override
@@ -84,23 +67,9 @@ public class ArtifactRecharge extends Buff {
 	public String toString() {
 		return Messages.get(this, "name");
 	}
-	
-	@Override
-	public String desc() {
-		return Messages.get(this, "desc", dispTurns(left+1));
-	}
-	
-	private static final String LEFT = "left";
-	
-	@Override
-	public void storeInBundle(Bundle bundle) {
-		super.storeInBundle(bundle);
-		bundle.put( LEFT, left );
-	}
-	
-	@Override
-	public void restoreFromBundle(Bundle bundle) {
-		super.restoreFromBundle(bundle);
-		left = bundle.getInt(LEFT);
-	}
+
+    @Override
+    protected String dispTurns(float input) {
+        return super.dispTurns(input+1);
+    }
 }

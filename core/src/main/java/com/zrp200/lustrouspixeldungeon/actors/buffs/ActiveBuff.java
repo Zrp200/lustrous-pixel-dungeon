@@ -25,9 +25,13 @@ public class ActiveBuff extends Buff { // this uses an internal counter so it ca
         return left;
     }
 
-    void set( float duration ) {
+    void prolong( float duration ) {
         left = Math.max(left, duration);
         initial = Math.max(initial, left);
+    }
+
+    void set( float duration ) {
+        left = initial = duration;
     }
 
     void extend( float duration ) {

@@ -27,8 +27,6 @@ import com.zrp200.lustrouspixeldungeon.actors.buffs.ArtifactRecharge;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Invisibility;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Recharging;
-import com.zrp200.lustrouspixeldungeon.effects.SpellSprite;
-import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfRecharging;
 
 public class ScrollOfMysticalEnergy extends ExoticScroll {
 	
@@ -40,7 +38,7 @@ public class ScrollOfMysticalEnergy extends ExoticScroll {
 	public void doRead() {
 		
 		//append buff
-		Buff.affect(curUser, ArtifactRecharge.class).set( 30 );
+		Buff.prolong(curUser, ArtifactRecharge.class, 30);
 		
 		Sample.INSTANCE.play( Assets.SND_READ );
 		Invisibility.dispel();
