@@ -110,7 +110,7 @@ public abstract class Mob extends Char {
 		return enemy;
 	}
 
-	private static final float TIME_TO_WAKE_UP = 1f;
+	protected static final float TIME_TO_WAKE_UP = 1f;
 	
 	private static final String STATE	= "state";
 	private static final String SEEN	= "seen";
@@ -161,6 +161,7 @@ public abstract class Mob extends Char {
 		}
 
 		enemySeen = bundle.getBoolean( SEEN );
+
 		target = bundle.getInt( TARGET );
 	}
 	
@@ -811,6 +812,7 @@ public abstract class Mob extends Char {
 				spend( TIME_TO_WAKE_UP );
 
 			} else {
+				enemySeen = false;
 				spend( TICK );
 			}
 			return true;
@@ -841,6 +843,7 @@ public abstract class Mob extends Char {
 				}
 
 			} else {
+				enemySeen = false;
 				int oldPos = pos;
 				if (target != -1 && getCloser( target )) {
 					spend( 1 / speed() );

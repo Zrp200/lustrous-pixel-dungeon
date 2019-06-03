@@ -68,6 +68,7 @@ public class ChangesButton extends Button {
 
 	@Override
 	protected void onClick() {
+		//ChangesScene.changesSelected = 0;
 		LustrousPixelDungeon.switchNoFade(ChangesScene.class);
 	}
 }

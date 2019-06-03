@@ -23,6 +23,7 @@ package com.zrp200.lustrouspixeldungeon.items.armor.curses;
 
 import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Hunger;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.effects.Speck;
@@ -51,7 +52,7 @@ public class Metabolism extends Glyph {
 
 			if (healing > 0) {
 				
-				Hunger hunger = hero.buff( Hunger.class );
+				Hunger hunger = Buff.affect(hero, Hunger.class);
 				
 				if (hunger != null && !hunger.isStarving()) {
 					

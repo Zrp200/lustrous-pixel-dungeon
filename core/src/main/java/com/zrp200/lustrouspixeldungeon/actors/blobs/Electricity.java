@@ -35,6 +35,8 @@ import com.zrp200.lustrouspixeldungeon.items.Heap;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.wands.Wand;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.MagesStaff;
+import com.zrp200.lustrouspixeldungeon.messages.Messages;
+import com.zrp200.lustrouspixeldungeon.utils.GLog;
 
 public class Electricity extends Blob {
 	private static final float CHARGE_BONUS = 1/3f;
@@ -73,6 +75,10 @@ public class Electricity extends Blob {
 					Buff.prolong( ch, Paralysis.class, 1f);
 					if (cur[cell] % 2 == 1) {
 						ch.damage(Math.round(Random.Float(2 + Dungeon.depth / 5f)), this);
+						if (!ch.isAlive() && ch == Dungeon.hero) {
+							Dungeon.fail(getClass());
+							GLog.n(Messages.get(this, "ondeath"));
+						}
 					}
 					if(ch instanceof Hero) ((Hero) ch).belongings.charge(Wand.Charger.CHARGE_BUFF_BONUS);
 				}

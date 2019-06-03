@@ -94,6 +94,14 @@ public class Bee extends Mob {
 			this.potHolder = potHolder.id();
 	}
 	
+	public int potPos(){
+		return potPos;
+	}
+
+	public int potHolderID(){
+		return potHolder;
+	}
+
 	@Override
 	public int attackSkill( Char target ) {
 		return defenseSkill;
@@ -116,15 +124,15 @@ public class Bee extends Mob {
 	@Override
 	protected Char chooseEnemy(boolean newEnemy) {
 		//if the pot is no longer present, default to regular AI behaviour
-		if (alignment == Alignment.ALLY || (potHolder == -1 && potPos == -1))
+		if (alignment == Alignment.ALLY || (potHolder == -1 && potPos == -1)){
 			return super.chooseEnemy(newEnemy);
 
 		//if something is holding the pot, target that
-		else if (Actor.findById(potHolder) != null)
-			return (Char)Actor.findById(potHolder);
+		}else if (Actor.findById(potHolder) != null){
+			return (Char) Actor.findById(potHolder);
 
 		//if the pot is on the ground
-		else {
+		}else {
 
 			//try to find a new enemy in these circumstances
 			if (enemy == null || !enemy.isAlive() || state == WANDERING

@@ -32,7 +32,6 @@ import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.effects.Speck;
 import com.zrp200.lustrouspixeldungeon.effects.SpellSprite;
 import com.zrp200.lustrouspixeldungeon.items.Item;
-import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfRecharging;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
 import com.zrp200.lustrouspixeldungeon.utils.GLog;
@@ -91,7 +90,7 @@ public class Food extends Item {
 	}
 	
 	protected void satisfy( Hero hero ){
-		(hero.buff( Hunger.class )).satisfy( energy );
+		Buff.affect(hero, Hunger.class).satisfy( energy );
 	}
 	
 	public static void foodProc( Hero hero ){

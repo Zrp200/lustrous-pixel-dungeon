@@ -173,7 +173,7 @@ public class Hero extends Char {
             lvl     = 1,
             exp     = 0,
             HTBoost = 0;
-	
+
 	private ArrayList<Mob> visibleEnemies;
 
 	//This list is maintained so that some logic checks can be skipped
@@ -234,7 +234,7 @@ public class Hero extends Char {
 		
 		heroClass.storeInBundle( bundle );
 		subClass.storeInBundle( bundle );
-		
+
 		bundle.put( STRENGTH, STR );
 		
 		bundle.put( LEVEL, lvl );
@@ -251,7 +251,7 @@ public class Hero extends Char {
 		
 		heroClass = HeroClass.restoreInBundle( bundle );
 		subClass = HeroSubClass.restoreInBundle( bundle );
-		
+
 		STR = bundle.getInt( STRENGTH );
 		
 		lvl = bundle.getInt( LEVEL );
@@ -445,7 +445,7 @@ public class Hero extends Char {
 		if (belongings.weapon != null) {
 			
 			return belongings.weapon.speedFactor( this );
-						
+
 		} else {
 			//Normally putting furor speed on unarmed attacks would be unnecessary
 			//But there's going to be that one guy who gets a furor+force ring combo
@@ -617,7 +617,7 @@ public class Hero extends Char {
 			? actMove  ( ( HeroAction.Move ) trueAction)
 			: actPickUp( (HeroAction.PickUp) trueAction);
 	}
-	
+
 	private boolean actInteract( HeroAction.Interact action ) {
 		
 		NPC npc = action.npc;
@@ -942,7 +942,7 @@ public class Hero extends Char {
 		KindOfWeapon wep = belongings.weapon;
 
 		if (wep != null) damage = wep.proc( this, enemy, damage );
-			
+
 		switch (subClass) {
 		case SNIPER:
 			if (wep instanceof MissileWeapon && !(wep instanceof SpiritBow.SpiritArrow)) {
@@ -1227,7 +1227,7 @@ public class Hero extends Char {
 					return true;
 				}
 			}
-			
+
 			if (!Dungeon.level.visited[cell] && !Dungeon.level.mapped[cell]
 					&& Dungeon.level.traps.get(cell) != null && Dungeon.level.traps.get(cell).isVisible()) {
 				walkingToVisibleTrapInFog = true;
@@ -1309,7 +1309,7 @@ public class Hero extends Char {
 	}
 	
 	public boolean isStarving() {
-		return buff(Hunger.class) != null && buff( Hunger.class ).isStarving();
+		return Buff.affect(this, Hunger.class).isStarving();
 	}
 	
 	@Override
@@ -1641,9 +1641,9 @@ public class Hero extends Char {
 			if (!level.locked) {
 				if (cursed) {
 					GLog.n(Messages.get(this, "search_distracted"));
-					buff(Hunger.class).reduceHunger(TIME_TO_SEARCH - (2 * HUNGER_FOR_SEARCH));
+					Buff.affect(this, Hunger.class).reduceHunger(TIME_TO_SEARCH - (2 * HUNGER_FOR_SEARCH));
 				} else {
-					buff(Hunger.class).reduceHunger(TIME_TO_SEARCH - HUNGER_FOR_SEARCH);
+					Buff.affect(this, Hunger.class).reduceHunger(TIME_TO_SEARCH - HUNGER_FOR_SEARCH);
 				}
 			}
 			spendAndNext(TIME_TO_SEARCH);

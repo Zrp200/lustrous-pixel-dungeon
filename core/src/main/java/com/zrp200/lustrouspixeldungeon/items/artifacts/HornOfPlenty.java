@@ -27,6 +27,7 @@ import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.Badges;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.Statistics;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Hunger;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.effects.SpellSprite;
@@ -84,9 +85,10 @@ public class HornOfPlenty extends Artifact {
 			else if (charge == 0)  GLog.i( Messages.get(this, "no_food") );
 			else {
 				//consume as much food as it takes to be full, to a minimum of 1
-				int chargesToUse = Math.max( 1, hero.buff(Hunger.class).hunger() / (int)(Hunger.STARVING/10));
+				Hunger hunger = Buff.affect(Dungeon.hero, Hunger.class);
+				int chargesToUse = Math.max( 1, hunger.hunger() / (int)(Hunger.STARVING/10));
 				if (chargesToUse > charge) chargesToUse = charge;
-				hero.buff(Hunger.class).satisfy((Hunger.STARVING/10) * chargesToUse);
+				hunger.satisfy((Hunger.STARVING/10) * chargesToUse);
 
 				Food.foodProc( hero );
 
