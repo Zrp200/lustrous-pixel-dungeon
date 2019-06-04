@@ -318,10 +318,15 @@ public class ItemSpriteSheet {
 	public static final int HOLY_DART       = TIPPED_DARTS+9;
 	public static final int DISPLACING_DART = TIPPED_DARTS+10;
 	public static final int BLINDING_DART   = TIPPED_DARTS+11;
+
 	static {
 		for (int i = TIPPED_DARTS; i < TIPPED_DARTS+16; i++)
 			assignItemRect(i, 15, 15);
 	}
+
+	// I haven't removed this weapon from the code, so it still needs a sprite
+	public static final int OBSIDIAN_KNIFE = TIPPED_DARTS+13;
+	static { assignItemRect(OBSIDIAN_KNIFE, 12, 12); }
 	
 	private static final int ARMOR          =                               xy(1, 12);  //16 slots
 	public static final int ARMOR_CLOTH     = ARMOR+0;

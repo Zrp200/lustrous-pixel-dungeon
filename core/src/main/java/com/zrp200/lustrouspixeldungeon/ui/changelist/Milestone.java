@@ -486,7 +486,7 @@ public enum Milestone {
                                     "Can hit enemies while returning, does not benefit from subclass perks or missile weapon-specific accuracy modifiers while doing so.\n",
                                     "Can be caught early by intercepting its flight path.\n",
                                     "Original Idea Credit: _00-Evan_"),
-                    new ChangeButton(new ItemSprite(ItemSpriteSheet.MISSILE_HOLDER, null),"Obsidian Knife").appendList(
+                    new ChangeButton(new ItemSprite(ItemSpriteSheet.OBSIDIAN_KNIFE, null),"Obsidian Knife").appendList(
                             "Tier-4 missile weapon",
                             "6-18 damage @ +2/+4 scaling",
                             "When surprise attacking, deals at least 50% of max-min to max (this is identical to Assassin's Blade mechanics).",
