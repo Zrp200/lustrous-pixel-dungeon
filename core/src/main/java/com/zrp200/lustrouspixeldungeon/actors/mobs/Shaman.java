@@ -47,7 +47,6 @@ import com.zrp200.lustrouspixeldungeon.items.wands.WandOfMagicMissile;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Blazing;
 import com.zrp200.lustrouspixeldungeon.mechanics.Ballistica;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
-import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
 import com.zrp200.lustrouspixeldungeon.sprites.CharSprite;
 import com.zrp200.lustrouspixeldungeon.sprites.ShamanSprite;
 import com.zrp200.lustrouspixeldungeon.utils.GLog;
@@ -166,21 +165,22 @@ public abstract class Shaman extends Mob {
 			enemy.sprite.flash();
 			if(enemy == Dungeon.hero)
 				Camera.main.shake( 2, 0.3f );
-			applyZap(damage, new Bolt());
+			applyZap(damage, new LightningBolt());
 		}
-		public static class Bolt extends MagicAttack {}
+
+		public static class LightningBolt extends MagicAttack {}
 	}
 	public static class MagicMissile extends Shaman {
 		{
 			spriteClass = ShamanSprite.MM.class;
 			wandLoot = WandOfMagicMissile.class;
 		}
-		public static class Bolt extends MagicAttack { }
+		public static class MagicBolt extends MagicAttack { }
 
 		private boolean zapping;
 		protected void applyZap() {
 			enemy.sprite.burst(0xFFFFFFFF,2);
-			applyZap( NormalIntRange(4,10), new Bolt());
+			applyZap( NormalIntRange(4,10), new MagicBolt());
 		}
 
 		public void onZapComplete(boolean next) {
@@ -205,17 +205,17 @@ public abstract class Shaman extends Mob {
             wandLoot 	= WandOfFireblast.class;
             potionLoot 	= PotionOfLiquidFlame.class;
         }
-        public static class Bolt extends MagicAttack {}
+        public static class BoltOfFire extends MagicAttack {}
 
 		@Override
 		public void onZapComplete(boolean next) {
-			GameScene.add( Blob.seed( enemy.pos , 1, Fire.class ) );
+			Blob.seed(enemy.pos, 0, Fire.class); // this only ignites flammable tiles.
         	super.onZapComplete(next);
 		}
 
 		protected void applyZap() {
             enemy.sprite.centerEmitter().burst(FlameParticle.FACTORY, 3);
-            applyZap( NormalIntRange(4,12), new Bolt() );
+            applyZap( NormalIntRange(4,12), new BoltOfFire() );
 			Burning.reignite(enemy,6);
         }
 
@@ -223,7 +223,7 @@ public abstract class Shaman extends Mob {
 			resistances.add(Burning.class);
 			resistances.add(Blazing.class);
 			resistances.add(WandOfFireblast.class);
-			resistances.add(Bolt.class);
+			resistances.add(BoltOfFire.class);
 		}
 	}
     public static class Frost extends Shaman {
@@ -233,21 +233,21 @@ public abstract class Shaman extends Mob {
 			wandLoot = WandOfFrost.class;
 			potionLoot = PotionOfFrost.class;
 		}
-		public static class Bolt extends MagicAttack {}
+		public static class FrostBolt extends MagicAttack {}
 		protected void applyZap() {
 			enemy.sprite.burst( 0xFF99CCFF, 3 );
-			applyZap( NormalIntRange(4,10), new Bolt() );
+			applyZap( NormalIntRange(4,10), new FrostBolt() );
 			Chill chill = enemy.buff(Chill.class);
-			float extension = Random.Float(1,2);
-			if(chill != null && chill.cooldown() + extension > 6) extension = 6-chill.cooldown();
-			Buff.affect(enemy,Chill.class,extension);
+			float extension = Random.Float(1.5f,2.5f);
+			if(chill != null && chill.cooldown() + extension > 6) 	Buff.prolong(enemy, Chill.class, 6);
+			else 													Buff.affect(enemy,Chill.class, extension);
 			Heap heap = Dungeon.level.heaps.get(enemy.pos);
 			if(heap != null) heap.freeze();
 		}
     }
 	{
 		resistances.add(Chill.class);
-		resistances.add(Frost.Bolt.class);
+		resistances.add(Frost.FrostBolt.class);
 		resistances.add(WandOfFrost.class);
 		resistances.add(com.zrp200.lustrouspixeldungeon.actors.buffs.Frost.class);
 	}

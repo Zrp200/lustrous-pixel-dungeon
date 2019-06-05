@@ -23,6 +23,7 @@ package com.zrp200.lustrouspixeldungeon.items.weapon.missiles;
 
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
 
+@SuppressWarnings("unused")
 public class ObsidianKnife extends ThrowingKnife {
     {
         image = ItemSpriteSheet.OBSIDIAN_KNIFE;
