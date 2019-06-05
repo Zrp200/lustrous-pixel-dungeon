@@ -122,13 +122,8 @@ public class ChangeButton extends Component {
 		    for(String message : messages) appendLine(message);
 		    return this;
         }
-        public ChangeButton appendLines(int lines) {
-			for(int line=0; line<lines; line++) {
-				appendLine();
-			}
-			return this;
-		}
-		public ChangeButton append(String message) {
+
+	public ChangeButton append(String message) {
 		    this.message += message;
 		    return this;
 	}

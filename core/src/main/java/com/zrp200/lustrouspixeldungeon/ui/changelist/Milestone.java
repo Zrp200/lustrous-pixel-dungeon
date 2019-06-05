@@ -425,8 +425,7 @@ public enum Milestone {
                             "Zaps now do 4-12 damage (down from 6-12)",
                             "Zaps get a +50% boost against targets in water, up from +25%",
                             "Can now drop wands of lightning with a 1.65% chance",
-                            "Lightning shaman spawnrate boosted by about 11% (30% --> 33%)."
-                    ),
+                            "Lightning shaman spawnrate boosted by about 11% (30% --> 33%)."),
                     new ChangeButton(new ShamanSprite.Firebolt(),"Firebolt Shamans").appendList("Firebolt shaman spawnrate reduced by about 23% (10% -> 7.6%).",
                             "Firebolts now do 4-12 damage, down from 6-12",
                             "Now drops wands of fireblast with a 1.65% chance",
@@ -782,8 +781,7 @@ public enum Milestone {
                                     "have a vfx effect signaling that the item you just equipped was actually enchanted. " +
                                     "There's no need to check your inventory to check for their existance.\n",
                             "_-_ chance weapon is enchanted boosted by 50% (10% -> 15%)",
-                            "_-_ chance armor is enchanted boosted by 33%  (15% -> 20%)"
-                    ),
+                            "_-_ chance armor is enchanted boosted by 33%  (15% -> 20%)"),
                     new ChangeButton(
                             new StatueSprite(),
                             "Mob Changes",
@@ -801,8 +799,7 @@ public enum Milestone {
                             "_-_ Acidic enemies now resist poison, and fiery enemies now resist blazing instead of being immune",
                             "_-_ Fire Elementals can no longer be crippled\n\n",
                             "_-_ Allies and pirahnas should now ignore each other unless provoked",
-                            "_-_ reduced the likelyhood of certain rare mobs spawning"
-                    ),
+                            "_-_ reduced the likelyhood of certain rare mobs spawning"),
                     ChangeButton.misc(
                             "Arcane Styli can now be transmuted into stones of enchantment",
                             "Shopkeeper now offers different prices for cursed items depending on their other attributes",
@@ -811,8 +808,7 @@ public enum Milestone {
                             "More buffs now grey when about to expire.",
                             "Berserk now gives a death message if you die while berserking",
                             "Magic from shamans now deal damage distributed randomly rather than normally",
-                            "Enemy spawn logic adjusted slightly."
-                    ),
+                            "Enemy spawn logic adjusted slightly."),
                     ChangeButton.bugfix(
                             "Berserker rage weakening his attacks",
                             "Unblessed ankhs giving a 'Groundhog Day'-like effect",
@@ -820,17 +816,10 @@ public enum Milestone {
                             "Magical Holster duplicate getting sold to huntress",
                             "Various bugs with prismatic image and mirror image caused by tinkering",
                             "Formatting bug with blocking weapons",
-                            "Terror getting visually broken on fatal attacks"
-                    )
-            );
+                            "Terror getting visually broken on fatal attacks"));
             new ChangeInfo(ChangeInfo.Template.NERFS).addButton(
-                    new ChangeButton(
-                            new WarlockSprite(),
-                            new Warlock().name,
-                            "_-_ Warlock weaken duration is now random.",
-                            "_-_ Weaken lasts 0-40 turns, rather than 40 turns"
-                    )
-            );
+                    new ChangeButton(new WarlockSprite(), new Warlock().name)
+                            .appendList("Weaken duration is now random.", "Weaken lasts 0-40 turns, rather than 40 turns"));
         }
     },
     LUST000b("Lustrous v0.0.0b",		    12,6 ,2018),
@@ -843,254 +832,186 @@ public enum Milestone {
                     new ChangeButton(new WandOfCorruption(),
                             "It's extremely obvious that giving wands of corruption the ability to " +
                                     "inflict vertigo was the wrong decision. Terror + Vertigo is extremely " +
-                                    "powerful, and the wand of corruption was already an amazing wand.\n\n" +
-                                    "_-_ Reverted cripple --> vertigo change"),
-                    new ChangeButton(new ItemSprite(new Longsword().image(), new Elastic().glowing()),"Eldritch",
-                            "_-_ Now inflicts brief vertigo on targets immune to terror (4+level)\n" +
-                                    "_-_ Base Terror duration halved (10 -> 5)\n" +
-                                    "_-_ Terror duration now scales with level (+2.5/level)"
-                    ),
-                    new ChangeButton(
-                            new Terror(), "Terrified enemies now recover faster when cornered."
-                    ),
+                                    "powerful, and the wand of corruption was already an amazing wand.\n")
+                            .appendList("Reverted cripple --> vertigo change"),
+                    new ChangeButton(new ItemSprite(new Longsword().image(), new Elastic().glowing()),"Eldritch")
+                            .appendList(
+                                    "Now inflicts brief vertigo on targets immune to terror (4+level)",
+                                    "Base Terror duration halved (10 -> 5)",
+                                    "Terror duration now scales with level (+2.5/level)"),
+                    new ChangeButton(new Terror(), "Terrified enemies now recover faster when cornered."),
                     ChangeButton.bugfix(
                             "More changelog mistakes",
                             "In-text typo with blocking weapons",
-                            "Attacks not surprise attacking when they should"
-                    )
-            );
+                            "Attacks not surprise attacking when they should"));
             new ChangeInfo("v0.0.0a",false).addButtons(
-                    new ChangeButton(
-                            new MagicalHolster(),
-                            "_-_ Missile weapon durability boost buffed (1/5 -> 1/3)\n" +
-                                    "\nThis should make its integration with huntress a bit more " +
+                    new ChangeButton( new MagicalHolster() )
+                            .appendList("Missile weapon durability boost buffed (1/5 -> 1/3)")
+                            .appendLine("\nThis should make its integration with huntress a bit more " +
                                     "intuitive; with the change the huntress effectively gets double " +
-                                    "durability on missile weapons."
-                    ),
-                    new ChangeButton(
-                            new WandOfCorruption(),
-                            "_-_ Can no longer inflict cripple\n" +
-                                    "_-_ Instead inflicts vertigo at a reduced chance\n" +
-                                    "_-_ Minor debuffs now have weights:\n" +
+                                    "durability on missile weapons."),
+                    new ChangeButton( new WandOfCorruption() ).appendList("Can no longer inflict cripple",
+                            "Instead inflicts vertigo at a reduced chance",
+                            "Minor debuffs now have weights:\n" +
                                     "    _*_ Weaken   : 4\n" +
                                     "    _*_ Blindness: 3\n" +
                                     "    _*_ Terror   : 2\n" +
-                                    "    _*_ Vertigo  : 1"
-                    ),
-                    new ChangeButton(new ItemSprite(new Longsword().enchant(new Chilling())), "Enchantments",
-                            "_-_ Chilling now stacks chill\n" +
-                                    "_-_ Venomous now scales a bit better with levels."
-                    ),
-                    new ChangeButton(
-                            new ShieldedSprite(),
-                            new Shielded().name,
-                            "_-_ Now also gains rage.\n" +
-                                    "_-_ Gets up to 6 shielding just like a warrior with plate."
-                    ),
+                                    "    _*_ Vertigo  : 1"),
+                    new ChangeButton(new ItemSprite(new Longsword().enchant(new Chilling())), "Enchantments")
+                            .appendList("Chilling now stacks chill", "Venomous now scales a bit better with levels."),
+                    new ChangeButton(new ShieldedSprite(), new Shielded().name).appendList(
+                            "Now also gains rage.", "Gets up to 6 shielding just like a warrior with plate."),
                     ChangeButton.bugfix(
                             "Paralytic Darts potentially breaking paralysis",
                             "Fatal attacks visually breaking paralysis",
                             "Slow and Chill not stacking",
                             "Taking 0 damage weakening charm and terror and breaking magical sleep and frost",
-                            "Changelog typos"
-                    )
-            );
+                            "Changelog typos"));
             new ChangeInfo(ChangeInfo.Template.NEW_CONTENT).addButtons(
-                    ChangeButton.devCommentary(
-                            Milestone.LUST000,
+                    ChangeButton.devCommentary(Milestone.LUST000,
                             "I'm honestly just happy to have figured this out. As of this moment, " +
                                     "I'm waiting on Shattered 0.7.1 to be released so I can implement it.",
-                            Milestone.SHPD070
-                    ),
+                            Milestone.SHPD070),
                     new ChangeButton(
                             HeroSprite.avatar(HeroClass.HUNTRESS,0),
                             "Huntress (Base)",
                             "The Huntress's potential is being wasted by the Boomerang. " +
                                     "By dumping into the Boomerang, the player wastes the majority of her natural versatility, " +
-                                    "so much so that she is turned into a class that tends to have very repetitive gameplay.\n" +
-                                    "\nTo address this, I have made the following changes:\n\n" +
-                                    "_-_ _Boomerang_ removed from the game.\n" +
-                                    "_-_ Huntress now starts with _two darts_ and a _tier-1 whip_ (a Cord) instead of a _knuckleduster._\n" +
-                                    "_-_ Huntress now starts with the _magical holster_ instead of the _seed pouch._ \n" +
-                                    //		"    _-_ The Darts illustrate her ability to benefit from having bonus strength when throwing missile weapons.\n" +
-                                    //		"    _-_ The Cord gives her semi-reliable range throughout sewers.\n" +
-                                    //		"    _-_ The Cord also illustrates her x-ray vision by allowing otherwise impossible attacks.\n" +
-                                    "\n" +
-                                    "The idea is for the player to use the Huntress's natural perks, which naturally incentivize the player to adopt " +
-                                    "a ranged build, whether it be through missile weapons, wands, or weapons with reach. The bonus durability perk further " +
-                                    "makes missile weapons viable by causing them to last longer and thus have a more defined presence in a run."
-                    ),
+                                    "so much so that she is turned into a class that tends to have very repetitive gameplay.",
+                                    "\nTo address this, I have made the following changes:\n")
+                            .appendList("_Boomerang_ removed from the game.", "Huntress now starts " +
+                                    "with _two darts_ and a _tier-1 whip_ (a Cord) instead of a _knuckleduster._",
+                                    "Huntress now starts with the _magical holster_ instead of the _seed pouch._")
+                            .appendLine("\nThe idea is for the player to use the Huntress's natural perks, " +
+                                    "which naturally incentivize the player to adopt a ranged build, " +
+                                    "whether it be through missile weapons, wands, or weapons with reach. " +
+                                    "The bonus durability perk further makes missile weapons viable " +
+                                    "by causing them to last longer and thus have a more defined presence in a run."),
                     new ChangeButton(
-                            HeroSprite.avatar(HeroClass.HUNTRESS,6), //Assets.HUNTRESS, 0, 90, 12, 15),
+                            HeroSprite.avatar(HeroClass.HUNTRESS,6),
                             "Huntress (Mastery)",
                             "Because the Huntress subclasses contributed so much to make this class " +
-                                    "one-dimensional, they have been _removed_ for the time being.\n" +
-                                    "Instead, " +
-                                    "the Huntress now has access to the _Freerunner_ and _Warlock_ subclasses!\n" +
-                                    "\n[challenge users rejoice now]\n\n" +
+                                    "one-dimensional, they have been _removed_ for the time being.",
+                                    "Instead, the Huntress now has access to the _Freerunner_ and _Warlock_ subclasses!",
+                                    "\n[challenge users rejoice now]\n",
                                     "These subclasses were chosen to further illustrate the contrast between her and the Warrior. " +
                                     "I realize that this may feel wrong in the beginning, but I think that ultimately these " +
                                     "subclasses will at the very least put on display the Huntress's natural versatility. " +
                                     "I may yet reintroduce them at a later date if Evan impresses me with v0.7.1. Alternatively, " +
-                                    "I may simply dream up brand new subclasses for our ranged friend."
-                    ),
+                                    "I may simply dream up brand new subclasses for our ranged friend."),
                     new ChangeButton(
-                            new ShamanSprite.MM(),
-                            "Gnoll Shamans",
+                            new ShamanSprite.MM(), "Gnoll Shamans",
                             "Shamans now have variants! The default variant now shoots magic missiles " +
-                                    "instead of lightning.\n" +
-                                    "_-_ Makes up most shamans\n" +
-                                    "_-_ 3x accuracy on zaps, up from the standard 2x\n" +
-                                    "_-_ zaps do 4-12 damage, up from 4-10"
-                    ),
+                                    "instead of lightning.").appendList("Makes up most shamans",
+                            "3x accuracy on zaps, up from the standard 2x", "zaps do 4-12 damage, up from 4-10"),
+                    new ChangeButton( new ShamanSprite.Lightning(), "Lightning Shaman")
+                            .appendList("Second most common shamans",
+                                    "Zaps now do 6-12 right off the bat to compensate for new rarity.",
+                                    "Zaps now do +25% bonus damage in water, down from +50%"),
+                    new ChangeButton(new ShamanSprite.Firebolt(), "Firebolt Shaman").appendList(
+                            "1/8 of all shamans", "bolts do 6-12 damage and inflict burning",
+                            "bolts will reignite the tile they are targeted at whether or not they hit their target",
+                            "Firebolt Shamans resist fire-based attacks and effects.",
+                            "You probably shouldn't be letting these shoot at you."),
+                    new ChangeButton(new ShamanSprite.Frost(), "Frost Shaman").appendList(
+                            "1/8 of all shamans",
+                            "bolts do 6-10 damage and inflict 1-5 turns of chilling",
+                            "They resist appropriate sources.",
+                            "Bolts will freeze items if they happen to land on them."),
                     new ChangeButton(
-                            new ShamanSprite.Lightning(),
-                            "Lightning Shaman",
-                            "_-_ second most common shamans\n" +
-                                    "_-_ zaps now do 6-12 right off the bat to compensate for new rarity.\n" +
-                                    "_-_ zaps now do +25% bonus damage in water, down from +50%"
-                    ),
-                    new ChangeButton(
-                            new ShamanSprite.Firebolt(),
-                            "Firebolt Shaman",
-                            "_-_ 1/8 of all shamans\n" +
-                                    "_-_ bolts do 6-12 damage and inflict burning\n" +
-                                    "_-_ bolts will reignite the tile they are targeted at whether or not they hit their target\n" +
-                                    "_-_ Firebolt Shamans resist fire-based attacks and effects.\n" +
-                                    "_-_ You probably shouldn't be letting these shoot at you."
-                    ),
-                    new ChangeButton(
-                            new ShamanSprite.Frost(),
-                            "Frost Shaman",
-                            "_-_ 1/8 of all shamans\n" +
-                                    "_-_ bolts do 6-10 damage and inflict 1-5 turns of chilling\n" +
-                                    "_-_ They resist appropriate sources.\n" +
-                                    "_-_ Bolts will freeze items if they happen to land on them."
-                    ),
-                    new ChangeButton(
-                            new ItemSprite(
-                                    ItemSpriteSheet.ARMOR_LEATHER,
-                                    new Volatility().glowing()
-                            ),
-                            "Volatility",
-                            "Inspired from the ideas of MarshalldotEXE\n" +
-                                    "_-_ 5% chance to explode on hit.\n" +
-                                    "_-_ unupgraded armor MAAAY not withstand the explosion ;)"
-                    ),
+                            new ItemSprite(new LeatherArmor().inscribe( new Volatility() )), "Volatility",
+                            "Inspired from the ideas of MarshalldotEXE").appendList(
+                                    "5% chance to explode on hit.", "unupgraded armor miight not withstand the explosion ;)"),
                     new ChangeButton(
                             new ItemSprite(new TeleportationBomb().image(), null),
-                            "Teleportation Bomb",
-                            "_-_ Made with Bomb + Scroll of Teleportation (5 energy)\n" +
-                                    "_-_ Instead of exploding, teleports everything in a 5x5 radius, including items\n" +
-                                    "_-_ Useful for clearing things from a room; for example, from a piranha room or a trap room."
-                    )
-            );
+                            "Teleportation Bomb").appendList(
+                                    "Made with Bomb + Scroll of Teleportation (5 energy)",
+                                    "Instead of exploding, teleports everything in a 5x5 radius, including items",
+                                    "Useful for clearing things from a room; for example, from a piranha room or a trap room."));
             new ChangeInfo(ChangeInfo.Template.BUFFS).addButtons(
                     new ChangeButton(
-                            new Image(Assets.WARRIOR, 0, 90, 12, 15),
-                            "Berserker",
-                            "_-_ A recovering Berserker can now gain Rage up to the extent recovered\n" +
-                                    "_-_ Berserk now decays 15% slower\n" +
-                                    "_-_ Damage boost while berserking is now 1.75x\n" +
-                                    "_-_ Being at low health now speeds up Rage building by up to 1/3."
-                    ),
+                            HeroSprite.avatar(HeroClass.WARRIOR, 6), "Berserker").appendList(
+                                    "A recovering Berserker can now gain Rage up to the extent recovered\n" +
+                                    "Berserk now decays 15% slower\n" +
+                                    "Damage boost while berserking is now 1.75x\n" +
+                                    "Being at low health now speeds up Rage building by up to 1/3."),
                     new ChangeButton(
                             new Ankh(),
-                            "More items are now preserved through resurrection! In addition, they can no longer be sold to a shop, " +
-                                    "disintegrated, destroyed by explosions, or stolen by crazy thieves.\n\n" +
-                                    "_-_ Scrolls of Upgrade and Enchantment\n" +
-                                    "_-_ Scrolls of Transmutation and Polymorph\n" +
-                                    "_-_ Potions of Strength and Adrenaline Surge\n" +
-                                    "_-_ Elixir of Might\n" +
-                                    "_-_ Magical Infusion\n" +
-                                    "_-_ Darts\n" +
-                                    "_-_ Ankhs"
-                    ),
+                            "More items are now preserved through resurrection! In addition, " +
+                                    "they can no longer be sold to a shop, disintegrated, destroyed by " +
+                                    "explosions, or stolen by crazy thieves.")
+                            .appendList("Scrolls of Upgrade and Enchantment", "Scrolls of Transmutation and Polymorph",
+                                    "Potions of Strength and Adrenaline Surge", "Elixir of Might",
+                                    "Magical Infusion", "Darts", "Ankhs"),
                     new ChangeButton(
                             new ItemSprite(ItemSpriteSheet.RING_AMETHYST, null),
                             new RingOfWealth().trueName(),
                             "I've always liked the idea of Sprouted Pixel Dungeon, and Rings of Wealth " +
-                                    "were always so underpowered in Shattered..... So I've changed that!\n" +
-                                    "_-_ Drops are now more varied, and can now include equipment, runestones, " +
-                                    "food, dew, and even Stones of Enchantment!\n" +
-                                    "_-_ 20% of the Scrolls and Potions that are dropped as a result of " +
-                                    "a rare drop will now be exotic!\n" +
-                                    "_-_ Passive drop rate boost boosted by ~4.3% (1.15 --> 1.2)"
+                                    "were always so underpowered in Shattered..... So I've changed that!")
+                            .appendList("Drops are now more varied, and can now include equipment, runestones, " +
+                                            "food, dew, and even Stones of Enchantment!",
+                                    "20% of the scrolls and potions that are dropped as a result of " +
+                                            "a rare drop will now be exotic!",
+                                    "Passive drop rate boost boosted by ~4.3% (1.15 --> 1.2)"
                     ),
-                    new ChangeButton( new Quarterstaff(),
-                            "_-_ Quarterstaff's block now scales by +0/+1\n" +
-                                    "_-_ Base block reduced by 1/3 (3 -- > 2)"
-                    ),
+                    new ChangeButton( new Quarterstaff() ).appendList("Quarterstaff's block now scales by +0/+1",
+                            "Base block reduced by 1/3 (3 -- > 2)"),
                     new ChangeButton( new Gloves(),
                             "While no heroes now start with the knuckleduster now, that does not mean it is no longer in the game!\n" +
                                     "_-_ Transmuting any tier-1 weapon (aside from Mage's Staff) will yield a Knuckleduster.\n" +
                                     "_-_ Transmuting a Knuckleduster will yield a random non-Knuckleduster tier-1 weapon like normal.\n" +
-                                    "_-_ The Knuckleduster now blocks up to 1 point of damage!"
-                    ),
+                                    "_-_ The Knuckleduster now blocks up to 1 point of damage!"),
                     new ChangeButton(new ItemSprite(ItemSpriteSheet.WAND_TRANSFUSION), "Wands")
                             .appendLine("Wand of Transfusion:")
                             .appendList(
                                     "Charm now scales by 2 (was 1)",
-                                    "Battlemage effect's proc rate boosted by 25% (1/10 -> 1/8)\n"
-                            ).appendLine("Wand of Fireblast:")
+                                    "Battlemage effect's proc rate boosted by 25% (1/10 -> 1/8)\n")
+                            .appendLine("Wand of Fireblast:")
                             .appendList("When consuming 3 charges at once, now applies both paralysis and cripple"),
                     new ChangeButton(
                             new Charm().getLargeIcon(), "Charm",
                             "_-_ Charm now only recovers if hit by whoever applied it.\n" +
-                                    "\nThis is both a buff to charm in general and a nerf to viscosity."
-                    ),
+                                    "\nThis is both a buff to charm in general and a nerf to viscosity."),
                     new ChangeButton(
-                            new ItemSprite(
-                                    ItemSpriteSheet.SHORTSWORD,
-                                    WeaponCurse.GLOWING
-                            ),
-                            "Elastic",
-                            "Elastic can easily be a run-ender if the hero doesn't have any " +
-                                    "alternatives to do damage.\nThis change should make these situations " +
-                                    "less unfair and run-ending:\n" +
-                                    "_-_ Elastic weapons now deal 1/6 damage, instead of 0.\n\n" +
-                                    "With this, bosses should now be beatable with only an Elastic weapon (given enough time)"
-                    )
-            );
+                            new ItemSprite(ItemSpriteSheet.SHORTSWORD, WeaponCurse.GLOWING), "Elastic",
+                            "Elastic can easily be a run-ender if the hero doesn't have any alternatives to do damage.",
+                            "This change should make these situations less unfair and run-ending:")
+                            .appendList("Elastic weapons now deal 1/6 damage, instead of 0.")
+                            .appendLine("With this, bosses should now be beatable with only an " +
+                                    "Elastic weapon (given enough time)"));
             new ChangeInfo(ChangeInfo.Template.CHANGES).addButtons(
                     new ChangeButton(
-                            new ItemSprite(ItemSpriteSheet.STONE_HOLDER),
-                            "Stone generation changes",
-                            "_-_ Runestone generation is now weighted based on its base scroll "
-                                    + "rarity and its alchemical scroll-stone ratio",
-                            "_-_ Stones of Augmentation and Enchantment can now drop as rare stones."
-                    ),
-                    new ChangeButton(
                             get(Icons.DEPTH),
-                            "Mob Spawn Changes",
-                            "_-_ Shamans now spawn on floors 11 and 12 (0 -> 1) \n",
-                            "Rare Mob spawns adjusted:",
-                            "_-_ MM shamans now spawn on floor 4 (0 -> .05)",
-                            "_-_ MM shaman spawn rate 10x more than normal on floor 6",
-                            "_-_ Fire Elementals now also spawn on floor 12 (0 -> .02)",
-                            "_-_ Dwarf Warlocks now spawn on floors 13 and 14 (0 -> 0.01)",
-                            "_-_ Monk spawn rate halved on floor 14 (.01 -> .005)",
-                            "_-_ Monks now spawn on floor 16 (0 -> .2)",
-                            "_-_ Golems now spawn on floor 17 (0 -> .2)",
-                            "_-_ Succubus now spawn on floor 18 (0 -> .02)",
-                            "_-_ Evil Eyes now spawn on floor 19 (0 -> .01)"
-                    ),
-                    new ChangeButton(
-                            get(Icons.PREFS),
-                            "Misc Changes",
-                            "_-_ There's now a post-halls tier generation table, so crypt rooms in " +
-                                    "floors 22-24 are even less likely to give low tier armor now.\n",
-                            "_-_ Adjusted rare mobs. They will now spawn earlier and have a bit more variety.\n",
-                            "_-_ Huntress, Journal Pages, and Challenges are now enabled by default.",
-                            "_-_ Food, Arcane Styli, and Tomes of Mastery can now be quickslotted. (idea credit s0i)",
+                            "Mob Spawn Changes")
+                            .appendList("Shamans now spawn on floors 11 and 12 (0 -> 1) \n")
+                            .appendLine("Rare Mob spawns adjusted:")
+                            .appendList(
+                                    "MM shamans now spawn on floor 4 (0 -> .05)",
+                                    "MM shaman spawn rate 10x more than normal on f6",
+                                    "Elementals now also spawn on f12 (0 -> .02)",
+                                    "Dwarf Warlocks now spawn on f13 and f14 (0 -> 0.01)",
+                                    "Monk spawn rate halved on f14 (.01 -> .005)",
+                                    "Monks now spawn on f16 (0 -> .2)",
+                                    "Golems now spawn on f17 (0 -> .2)",
+                                    "Succubus now spawn on f18 (0 -> .02)",
+                                    "Evil Eyes now spawn on f19 (0 -> .01)"),
+                    ChangeButton.misc(
+                            "There's now a post-halls tier generation table, so crypt rooms in " +
+                                    "floors 22-24 are even less likely to give low tier armor now.",
+                            "Runestone generation is now weighted based on its base scroll rarity and " +
+                                    "its alchemical scroll-stone ratio",
+                            "Stones of Augmentation and Enchantment can now drop as rare stones.\n",
 
-                            "_-_ Cursed wands can now spawn Inferno and Blizzard\n",
+                            "Adjusted rare mobs. They will now spawn earlier and have a bit more variety.\n",
 
-                            "_-_ Weapons that block damage now say how much damage they can block.",
-                            "_-_ Transmutation and Recycle now have a VFX effect!",
-                            "_-_ Darts and Shurikens now have a faster throw animation.",
-                            "_-_ Some descriptions reworded."
-                    ),
+                            "Huntress, Journal Pages, and Challenges are now enabled by default.",
+                            "Food, Arcane Styli, and Tomes of Mastery can now be quickslotted. (idea credit s0i)",
+                            "Cursed wands can now spawn Inferno and Blizzard\n",
+
+                            "Weapons that block damage now say how much damage they can block.",
+                            "Transmutation and Recycle now have a VFX effect!",
+                            "Darts and Shurikens now have a faster throw animation.",
+                            "Some descriptions reworded."),
                     ChangeButton.bugfix("Attacks by Stunning weapons potentially instantly breaking paralysis"),
                     new ChangeButton(
                             get(Icons.LANGS),
@@ -1103,7 +1024,7 @@ public enum Milestone {
         }
     },
 
-    // everything past this point is not displayed.
+    // everything past this point is not displayed; these are mostly just used for reference
     SHPD072 ("Shattered v0.7.2", 	 	    3 ,18,2019),
     SHPD071d("Shattered v0.7.1d",	 	    1 ,18,2019),
     SHPD071b("Shattered v0.7.1b", 	    12,30,2018),
@@ -1226,13 +1147,12 @@ public enum Milestone {
                             "The ring of force's equipped weapon bonus was always meant as a small boost so it wasn't useless if the player already had a better weapon. It wasn't intended to be used to both replace melee and then boost thrown weapons.\n" +
                                     "_-_ The ring of force no longer gives bonus damage to thrown weapons."),
                     new ChangeButton( new Gauntlet(),
-                            "As furor now works much better with fast weapons, I've taken the oppourtunity to very slightly nerf sai and gauntlets\n\n" +
+                            "As furor now works much better with fast weapons, I've taken " +
+                                    "the oppourtunity to very slightly nerf sai and gauntlets\n" +
                                     "_-_ Sai blocking down to 0-2 from 0-3\n" +
                                     "_-_ Gauntlet blocking down to 0-4 from 0-5"),
-                    new ChangeButton( new Shuriken(),
-                            "Shuriken have been adjusted due to the new upgrade system:\n\n" +
-                                    "_-_ Base damage increased to 4-8 from 4-6\n" +
-                                    "_-_ Durability reduced to 5 from 10"));
+                    new ChangeButton( new Shuriken(), "Shuriken have been adjusted due to the new upgrade system:\n")
+                            .appendList("Base damage increased to 4-8 from 4-6", "Durability reduced to 5 from 10"));
         }
     },
     SHPD070 ("Shattered v0.7.0",		10,18,2018);

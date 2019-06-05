@@ -21,12 +21,9 @@
 
 package com.zrp200.lustrouspixeldungeon.scenes;
 
-import com.watabou.input.Touchscreen;
 import com.watabou.noosa.Camera;
-import com.watabou.noosa.Image;
 import com.watabou.noosa.NinePatch;
 import com.watabou.noosa.RenderedText;
-import com.watabou.noosa.TouchArea;
 import com.watabou.noosa.ui.Component;
 import com.zrp200.lustrouspixeldungeon.Chrome;
 import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
@@ -37,7 +34,6 @@ import com.zrp200.lustrouspixeldungeon.ui.ScrollPane;
 import com.zrp200.lustrouspixeldungeon.ui.Window;
 import com.zrp200.lustrouspixeldungeon.ui.changelist.ChangeInfo;
 import com.zrp200.lustrouspixeldungeon.ui.changelist.Milestone;
-import com.zrp200.lustrouspixeldungeon.windows.WndTitledMessage;
 
 import java.util.ArrayList;
 
@@ -87,7 +83,7 @@ public class ChangesScene extends PixelScene {
 
 		};
 		add(list);
-		Milestone.addAllChanges(); // addAllChanges the actual changes
+		Milestone.addAllChanges(); // add the actual changes
 		Component content = list.content();
 		content.clear();
 
@@ -104,6 +100,9 @@ public class ChangesScene extends PixelScene {
 					info.setRect(0, posY, panel.innerWidth()/2f, 0);
 					content.add(info);
 					nextPosY = info.bottom();
+					if(infos.indexOf(info)+1 == infos.size()) { // got'em.
+						posY = nextPosY;
+					}
 				} else {
 					second = false;
 					info.setRect(panel.innerWidth()/2f, posY, panel.innerWidth()/2f, 0);
@@ -177,19 +176,4 @@ public class ChangesScene extends PixelScene {
 		LustrousPixelDungeon.switchNoFade(TitleScene.class);
 	}
 
-	private static class ChangesWindow extends WndTitledMessage {
-	
-		ChangesWindow( Image icon, String title, String message ) {
-			super( icon, title, message);
-			
-			add( new TouchArea( chrome ) {
-				@Override
-				protected void onClick( Touchscreen.Touch touch ) {
-					hide();
-				}
-			} );
-			
-		}
-		
-	}
 }
