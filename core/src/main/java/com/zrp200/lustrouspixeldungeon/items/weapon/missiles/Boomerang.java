@@ -26,6 +26,7 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.tweeners.Tweener;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
+import com.watabou.utils.PathFinder;
 import com.watabou.utils.PointF;
 import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
@@ -38,6 +39,7 @@ import com.zrp200.lustrouspixeldungeon.actors.hero.HeroSubClass;
 import com.zrp200.lustrouspixeldungeon.items.Heap;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.bags.Bag;
+import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Projecting;
 import com.zrp200.lustrouspixeldungeon.levels.traps.DisarmingTrap;
 import com.zrp200.lustrouspixeldungeon.levels.traps.DisintegrationTrap;
 import com.zrp200.lustrouspixeldungeon.levels.traps.ExplosiveTrap;
@@ -46,6 +48,7 @@ import com.zrp200.lustrouspixeldungeon.levels.traps.Trap;
 import com.zrp200.lustrouspixeldungeon.mechanics.Ballistica;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
 import com.zrp200.lustrouspixeldungeon.sprites.MissileSprite;
+import com.zrp200.lustrouspixeldungeon.utils.BArray;
 
 import java.util.ArrayList;
 
@@ -159,7 +162,31 @@ public class Boomerang extends MissileWeapon {
 			pos = newPos;
 		}
 
-		ArrayList<Integer> path;
+
+		private static final int PATH_PARAMS = Ballistica.STOP_TARGET | Ballistica.STOP_TERRAIN;
+		private int returnDist; // this affects speed of boomerang
+		private ArrayList<Integer> path;
+
+		// this finds the return path.
+		// if the path is valid in and of itself, returns that. otherwise, tries to autoaim in a 5x5 radius while prioritizing the true target cell
+		@SuppressWarnings("UnusedReturnValue")
+		private ArrayList<Integer> findPath(int from, int to) {
+			// because I hate myself and figure that this is more efficient than looping.
+			path = null;
+			PathFinder.buildDistanceMap(to, BArray.not(new boolean[PathFinder.distance.length],null), 2);
+			pathFinding:
+			for( ArrayList<Integer> distance : PathFinder.sortedMap() ) for(int cell : distance) {
+				Ballistica trajectory = new Ballistica(from, cell,
+						!boomerang.hasEnchant(Projecting.class,Dungeon.hero) ? PATH_PARAMS : Ballistica.STOP_TARGET);
+				if(path == null // this makes sure that we don't return null if we don't find anything
+						|| trajectory.collisionPos == to) { // this resets the path if there is indeed a better option.
+					returnDist = trajectory.dist;
+					path = new ArrayList<>( trajectory.subPath(0, returnDist) );
+				}
+				if(trajectory.collisionPos == to) break pathFinding;
+			}
+			return path;
+		}
 
 		private static final float
 				MIN_SPEED = 1,
@@ -168,14 +195,14 @@ public class Boomerang extends MissileWeapon {
 		float distancePerTurn;
 		private Sprite sprite;
 		public Boomerang boomerang;
-		boolean moving;
+		boolean willHover;
 
 		Returning set(Boomerang boomerang, int from) { // use this to set up stuff
 			this.boomerang = boomerang;
-			Ballistica trajectory = new Ballistica(from,target.pos,Ballistica.STOP_TARGET);
-			distancePerTurn = Math.max(MIN_SPEED, trajectory.dist/TURNS_TO_RETURN);
-			path = new ArrayList<>(trajectory.subPath(0,trajectory.path.indexOf(trajectory.collisionPos)));
-			path.add(path.get(path.size()-1)); // should create a short "hover" I think.
+			findPath(from, target.pos);
+			distancePerTurn = Math.max(MIN_SPEED, Dungeon.level.trueDistance(from, hero.pos)/TURNS_TO_RETURN); // don't care if we stop early in the case of speed.
+			dest = path.get(path.size()-1);
+			willHover = path.size()-1 == returnDist;
 			pos = lastPos = path.remove(0);
 			moving = true;
 			sprite();
@@ -184,7 +211,7 @@ public class Boomerang extends MissileWeapon {
 
 		@Override
 		public void detach() {
-			moving = false;
+			willHover = false;
 			boomerang.returning = null;
 			super.detach();
 		}
@@ -231,9 +258,9 @@ public class Boomerang extends MissileWeapon {
 				return true;
 			}
 			if( path.isEmpty() ) {
-				if(moving) {
-					spend(TICK); // hover for a bit
-					moving = false;
+				if(willHover) {
+					spend(TICK*1.5f); // hover for a bit
+					willHover = false;
 				} else boomerang.drop(pos);
 				return true;
 			}

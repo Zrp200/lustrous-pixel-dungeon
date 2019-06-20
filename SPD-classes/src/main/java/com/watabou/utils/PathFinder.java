@@ -21,6 +21,7 @@
 
 package com.watabou.utils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 
@@ -70,6 +71,25 @@ public class PathFinder {
 
 		CIRCLE4 = new int[]{-width, +1, +width, -1};
 		CIRCLE8 = new int[]{-width-1, -width, -width+1, +1, +width+1, +width, +width-1, -1};
+	}
+
+	public static ArrayList<Integer>[] sortedMap() {
+		int maxDistance = 0;
+		for(int i=0;i < distance.length; i++) if( insideDistanceMap(i) )
+			maxDistance = Math.max(maxDistance, distance[i]);
+		@SuppressWarnings("unchecked") ArrayList<Integer>[] priorities = new ArrayList[maxDistance+1];
+		for(int i=0; i < priorities.length; i++) priorities[i] = new ArrayList<>();
+
+		for(int i=0; i<PathFinder.distance.length;i++)
+			for(int validDist=0; validDist<priorities.length; validDist++)
+				if(PathFinder.distance[i] == validDist)
+					priorities[validDist].add(i);
+		return priorities;
+	}
+
+	@SuppressWarnings("WeakerAccess")
+	public static boolean insideDistanceMap(int cell) {
+		return distance[cell] < Integer.MAX_VALUE;
 	}
 
 	public static Path find( int from, int to, boolean[] passable ) {
