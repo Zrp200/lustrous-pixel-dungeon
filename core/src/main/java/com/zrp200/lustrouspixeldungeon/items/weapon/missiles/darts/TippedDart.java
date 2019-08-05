@@ -123,16 +123,16 @@ public abstract class TippedDart extends Dart {
 	}
 
 	@Override
-	protected void onRangedHit(Char enemy, int cell) {
-		super.onRangedHit( enemy, cell);
-
+	public int proc(Char attacker, Char defender, int damage) {
+		damage = super.proc(attacker, defender, damage);
 		//need to spawn a dart
 		if (durability <= 0){
 			//attempt to stick the dart to the enemy, just drop it if we can't.
 			Dart d = untip();
 			d.quantity(1);
-			if( !d.stickTo(enemy) ) d.drop(cell);
+			if( !d.stickTo(defender) ) d.drop(defender.pos);
 		}
+		return damage;
 	}
 
 	private static HashMap<Class<?extends Plant.Seed>, Class<?extends TippedDart>> types = new HashMap<>();

@@ -80,10 +80,11 @@ public class Shocking extends Weapon.Enchantment {
 		defender.sprite.flash();
 		
 		PathFinder.buildDistanceMap( defender.pos, BArray.not( Dungeon.level.solid, null ), dist );
-		for (int i = 0; i < PathFinder.distance.length; i++) {
-			if (PathFinder.distance[i] < Integer.MAX_VALUE) {
-				Char n = Actor.findChar(i);
-				if (n != null && n != attacker && !affected.contains(n)) {
+		for (ArrayList<Integer> range : PathFinder.sortedMap()) {
+			Random.shuffle(range);
+			for (int cell : range) {
+				Char n = Actor.findChar(cell);
+				if (n != null && n.alignment != attacker.alignment && n.alignment != Char.Alignment.NEUTRAL && !affected.contains(n) ) {
 					arcs.add(new Lightning.Arc(defender.sprite.center(), n.sprite.center()));
 					arc(attacker, n, (Dungeon.level.water[n.pos] && !n.flying) ? 2 : 1);
 				}

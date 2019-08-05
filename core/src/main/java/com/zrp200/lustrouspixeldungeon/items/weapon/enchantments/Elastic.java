@@ -25,6 +25,8 @@ import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.items.wands.WandOfBlastWave;
 import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Boomerang;
+import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.ForceCube;
+import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.ThrowingGlaive;
 import com.zrp200.lustrouspixeldungeon.mechanics.Ballistica;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSprite;
 import com.watabou.utils.Random;
@@ -43,10 +45,18 @@ public class Elastic extends Weapon.Enchantment {
 		if (Random.Int( level + 5 ) >= 4) {
 			//trace a ballistica to our target (which will also extend past them)
 			int origin = attacker.pos;
+
 			if(weapon instanceof Boomerang) {
 				Boomerang boomerang = (Boomerang) weapon;
 				if(boomerang.isReturning()) origin = boomerang.returning().lastPos();
+				else if(weapon instanceof ThrowingGlaive && ( (ThrowingGlaive) weapon ).isRichoceting() )
+					origin = ((ThrowingGlaive) weapon).getLastPos();
 			}
+			if(weapon instanceof ForceCube) {
+				ForceCube cube = (ForceCube) weapon;
+				if(cube.pos != defender.pos) origin = cube.pos;
+			}
+
 			Ballistica trajectory = new Ballistica(origin, defender.pos, Ballistica.STOP_TARGET);
 			//trim it to just be the part that goes past them
 			trajectory = new Ballistica(trajectory.collisionPos, trajectory.path.get(trajectory.path.size()-1), Ballistica.PROJECTILE);

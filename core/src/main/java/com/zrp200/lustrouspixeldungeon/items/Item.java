@@ -165,6 +165,7 @@ public class Item implements Bundlable, Cloneable {
 	}
 	protected void onThrowComplete(int cell) {
 		drop(cell);
+		curUser.spendAndNext( castDelay );
 	}
 	
 	//takes two items and merges them (if possible)
@@ -560,15 +561,18 @@ public class Item implements Bundlable, Cloneable {
 	}
 
 	//FIXME: this is currently very expensive, should either optimize Ballistica or this, or both
-	public int throwPos( Hero user, int dst, boolean assist){
-		int collisionPos = new Ballistica( user.pos, dst, Ballistica.PROJECTILE ).collisionPos; //first try to directly target
+	public static int throwPos( int src, int dst, boolean assist){
+		int collisionPos = new Ballistica( src, dst, Ballistica.PROJECTILE ).collisionPos; //first try to directly target
 		if(collisionPos != dst && assist) for (int i = 0; i < PathFinder.distance.length; i++) 	//Otherwise pick nearby tiles to try and 'angle' the shot, auto-aim basically.
 			if (PathFinder.distance[i] < Integer.MAX_VALUE
-					&& throwPos(Dungeon.hero, i, false) == dst)
+					&& throwPos(src, i, false) == dst)
 				return dst;
 		return collisionPos;
 	}
 
+	public int throwPos( Hero hero, int dst, boolean assist) {
+	    return throwPos(hero.pos,dst,assist);
+    }
 	public int throwPos(Hero user, int dst) {
 		return throwPos(user,dst,true);
 	}
@@ -583,31 +587,27 @@ public class Item implements Bundlable, Cloneable {
 
 		Char enemy = Actor.findChar( cell );
 		QuickSlotButton.target(enemy);
-		
-		final float delay = castDelay(user, dst);
 
-		Callback callback = new Callback() {
+		Callback onCastComplete = new Callback() {
 			@Override
 			public void call() {
 				curUser = user;
-				onCastComplete(cell);
-				user.spendAndNext(delay);
+				Item thrown = detach(curUser.belongings.backpack);
+				thrown.castDelay = castDelay(curUser, dst);
+				thrown.onThrow( cell );
 			}
 		};
 
 		MissileSprite projectile = (MissileSprite) user.sprite.parent.recycle(MissileSprite.class);
 
 		if (enemy != null) {
-			projectile.reset(user.sprite, enemy.pos, this, callback);
+			projectile.reset(user.sprite, enemy.pos, this, onCastComplete);
 		} else {
-			projectile.reset(user.sprite, cell, this, callback);
+			projectile.reset(user.sprite, cell, this, onCastComplete);
 		}
 	}
 
-	protected void onCastComplete(int cell) {
-		detach(curUser.belongings.backpack).onThrow(cell);
-	}
-	
+	protected float castDelay;
 	public float castDelay( Char user, int dst ){
 		return TIME_TO_THROW;
 	}

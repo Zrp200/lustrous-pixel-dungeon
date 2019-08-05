@@ -47,7 +47,9 @@ import com.zrp200.lustrouspixeldungeon.ui.BuffIndicator;
 import com.zrp200.lustrouspixeldungeon.utils.GLog;
 
 public class Combo extends Buff implements ActionIndicator.Action {
-	
+
+	public static final float COMBO_TIME = 4f;
+
 	private int count = 0;
 	private float comboTime = 0f;
 	private int misses = 0;
@@ -74,7 +76,7 @@ public class Combo extends Buff implements ActionIndicator.Action {
 	public void hit( Char enemy ) {
 		
 		count++;
-		comboTime = 4f;
+		comboTime = COMBO_TIME;
 		misses = 0;
 		BuffIndicator.refreshHero();
 		
@@ -91,7 +93,7 @@ public class Combo extends Buff implements ActionIndicator.Action {
 
 	public void miss( Char enemy ){
 		misses++;
-		comboTime = 4f;
+		comboTime = COMBO_TIME;
 		if (misses >= 2){
 			detach();
 		}
@@ -297,7 +299,7 @@ public class Combo extends Buff implements ActionIndicator.Action {
 					if (!enemy.isAlive()) {
 						//combo isn't reset, but rather increments with a cleave kill, and grants more time.
 						hit( enemy );
-						comboTime = 12f;
+						comboTime = COMBO_TIME*3f;
 					} else {
 						detach();
 						ActionIndicator.clearAction(Combo.this);

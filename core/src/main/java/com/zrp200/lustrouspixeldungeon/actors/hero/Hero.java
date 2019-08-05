@@ -295,11 +295,10 @@ public class Hero extends Char {
 	}
 	
 	public boolean shoot( Char enemy, Weapon wep ) {
-
 		//temporarily set the hero's weapon to the missile weapon being used
 		KindOfWeapon equipped = belongings.weapon;
 		boolean hit;
-		Char trueEnemy = this.enemy;
+		Char trueEnemy = this.enemy; // situationally useful.
 		try {
 			this.enemy = enemy;
 			belongings.weapon = wep;
@@ -318,6 +317,10 @@ public class Hero extends Char {
 				Combo combo = buff(Combo.class);
 				if (combo != null) combo.miss( enemy );
 			}
+		}
+
+		if(!hit && wep instanceof MissileWeapon) {
+			((MissileWeapon) wep).onMiss(enemy);
 		}
 
 		return hit;

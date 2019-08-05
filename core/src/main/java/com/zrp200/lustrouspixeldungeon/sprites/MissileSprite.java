@@ -36,6 +36,7 @@ import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.FishingSpear;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Javelin;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Kunai;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Shuriken;
+import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.ThrowingGlaive;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.ThrowingKnife;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.ThrowingSpear;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Trident;
@@ -97,7 +98,9 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 		
 		ANGULAR_SPEEDS.put(Boomerang.class,     1440);
 		ANGULAR_SPEEDS.put(Bolas.class,         1440);
-		
+
+		ANGULAR_SPEEDS.put(ThrowingGlaive.class, 1800);
+
 		ANGULAR_SPEEDS.put(Shuriken.class,      2160);
 
 		ANGULAR_SPEEDS.put(TenguSprite.TenguShuriken.class,      2160);
@@ -119,6 +122,10 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 		if(item instanceof SpiritBow.SpiritArrow || item instanceof ScorpioSprite.ScorpioShot || item instanceof TenguSprite.TenguShuriken){
 			speed *= 1.5f;
 		}
+		if( item instanceof ThrowingGlaive && ((ThrowingGlaive) item).isRichoceting() )
+			speed *= ThrowingGlaive.RICOCHET_VELOCITY;
+		if( item instanceof Boomerang && ((Boomerang) item).isReturning() )
+			speed *= Boomerang.Returning.VELOCITY;
 		try {
 			PosTweener tweener = new PosTweener(this, to, PointF.diff(to,from).length() / speed);
 			tweener.listener = this;

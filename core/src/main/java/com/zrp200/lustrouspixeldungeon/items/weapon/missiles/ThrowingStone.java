@@ -24,7 +24,6 @@ package com.zrp200.lustrouspixeldungeon.items.weapon.missiles;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
 
 public class ThrowingStone extends MissileWeapon {
-	
 	{
 		image = ItemSpriteSheet.THROWING_STONE;
 		
@@ -35,10 +34,5 @@ public class ThrowingStone extends MissileWeapon {
 		sticky = false;
 
 		value /= 2; // half normal value
-	}
-	
-	@Override
-	public int price() {
-		return super.price()/2; //half normal value
 	}
 }

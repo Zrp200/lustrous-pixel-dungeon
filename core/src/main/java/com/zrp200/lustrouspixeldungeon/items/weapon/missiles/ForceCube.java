@@ -21,6 +21,7 @@
 
 package com.zrp200.lustrouspixeldungeon.items.weapon.missiles;
 
+import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Actor;
@@ -44,18 +45,28 @@ public class ForceCube extends MissileWeapon {
 		
 		sticky = false;
 	}
-	
+
+	public final ArrayList<Char> targets = new ArrayList<Char>() {
+		@Override
+		public boolean add(Char ch) {
+			if(ch == null) return false; // this prevents null values.
+			return super.add(ch);
+		}
+	};
+	public int pos;
 	@Override
 	protected void onThrow(int cell) {
 		Dungeon.level.press(cell, null, true);
-		
-		ArrayList<Char> targets = new ArrayList<>();
-		if (Actor.findChar(cell) != null) targets.add(Actor.findChar(cell));
+
+		targets.clear();
+		pos = cell; // this is useful exclusively for elastic procs.
 		
 		for (int i : PathFinder.NEIGHBOURS8){
 			Dungeon.level.press(cell + i, null, true);
-			if (Actor.findChar(cell + i) != null) targets.add(Actor.findChar(cell + i));
+			targets.add(Actor.findChar(cell + i));
 		}
+		Random.shuffle(targets); // this enforces a randomized order
+		targets.add( Actor.findChar(cell) ); // last one is always in center, for elastic logic.
 		
 		for (Char target : targets){
 			curUser.shoot(target, this);

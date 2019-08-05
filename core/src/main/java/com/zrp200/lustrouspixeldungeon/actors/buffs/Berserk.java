@@ -24,6 +24,7 @@ package com.zrp200.lustrouspixeldungeon.actors.buffs;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.GameMath;
 import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.effects.SpellSprite;
@@ -31,7 +32,6 @@ import com.zrp200.lustrouspixeldungeon.items.BrokenSeal.WarriorShield;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
 import com.zrp200.lustrouspixeldungeon.ui.BuffIndicator;
-import com.watabou.utils.GameMath;
 
 public class Berserk extends Buff {
 
@@ -39,8 +39,11 @@ public class Berserk extends Buff {
 	private State state = State.NORMAL;
 
 	private static final float
-			LEVEL_RECOVER_START	= 3f,	// levels required to regain berserk
-			BERSERK_BONUS 		= 2f;	// damage multiplier while berserking
+			LEVEL_RECOVER_START	= 3f,		// levels required to regain berserk
+			BERSERK_BONUS 		= 1.75f,	// damage multiplier while berserking
+			MAX_RAGE_BONUS		= 1.5f,		// damage multiplier at 100% power
+			MAX_DECAY_RATE 		= 0.067f,	// the highest rate at which power (and berserk shield) can decay.
+			MAX_POWER 			= 1.1f; 	// highest rage attainable
 
 	private float levelRecovery;
 
@@ -76,7 +79,7 @@ public class Berserk extends Buff {
 		if (berserking()){
 			ShieldBuff buff = target.buff(WarriorShield.class);
 			if (target.HP <= 0) {
-			    int damage = (int) Math.ceil(target.shielding() * .05f); // 20 turns max, up from 10
+			    int damage = (int) Math.ceil(target.shielding() * MAX_DECAY_RATE); // 15 turns max, up from 10
 				if (buff != null && buff.shielding() > 0) {
                     buff.absorbDamage(damage);
 				} else {
@@ -95,7 +98,8 @@ public class Berserk extends Buff {
 				power = 0f;
 			}
 		} else {
-			power -= GameMath.gate(0.1f, power, 1f) * 0.05f * Math.pow( ( target.HP / (float) target.HT ), 2); // -10% rage per turn at full hp
+			power -= GameMath.gate( MAX_POWER - 1,power, 1) * MAX_DECAY_RATE
+					* Math.pow( ( target.HP / (float) target.HT ), 2);
 
 			if (power <= 0)
 				if (state == State.RECOVERING)
@@ -109,9 +113,8 @@ public class Berserk extends Buff {
 	}
 
 	public int damageFactor(int dmg) {
-		float bonus = Math.min(1+0.5f*power,1.5f);
-		if (state == State.BERSERK)
-			bonus = BERSERK_BONUS; // gotta kill those enemies before you're basically helpless. Also insurance for power-based bugs
+		float bonus = state == State.BERSERK ? BERSERK_BONUS // gotta kill those enemies before you're basically helpless.
+				: Math.min( 1+(MAX_RAGE_BONUS-1)*power, MAX_RAGE_BONUS);
 		return Math.round(dmg * bonus);
 	}
 
@@ -136,12 +139,11 @@ public class Berserk extends Buff {
 	public float maxPower() {
 		return state == State.RECOVERING
 				? 1f - ( levelRecovery / LEVEL_RECOVER_START ) // a little more generous than Shattered's 0.
-				: 1.1f;
+				: MAX_POWER;
 	}
 	public void damage(int damage){
-		power = Math.min(
-				maxPower(),
-				power + ( damage)/(float)(target.HT*2+target.HP) ); // The Hero's current HP is factored in now, making it a bit easier to get the power.
+		power += damage/(float)(target.HT*2+target.HP); // The Hero's current HP is factored in now, making it a bit easier to get the power.
+		power = Math.min(maxPower(), power);
 		BuffIndicator.refreshHero();
 	}
 

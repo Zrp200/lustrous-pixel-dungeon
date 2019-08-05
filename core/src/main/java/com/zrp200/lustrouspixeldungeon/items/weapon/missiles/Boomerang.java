@@ -33,9 +33,7 @@ import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
-import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.actors.hero.HeroAction;
-import com.zrp200.lustrouspixeldungeon.actors.hero.HeroSubClass;
 import com.zrp200.lustrouspixeldungeon.items.Heap;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.bags.Bag;
@@ -53,18 +51,17 @@ import com.zrp200.lustrouspixeldungeon.utils.BArray;
 import java.util.ArrayList;
 
 import static com.zrp200.lustrouspixeldungeon.Dungeon.depth;
+import static com.zrp200.lustrouspixeldungeon.Dungeon.hero;
 
 public class Boomerang extends MissileWeapon {
 
 	{
 		image = ItemSpriteSheet.BOOMERANG;
 
-		tier = 4; // to match shattered
+		tier = 4;
 		sticky = false;
 
 		baseUses = 7.5f;
-
-		value = 7;
 	}
 
 	private Boomerang.Returning returning;
@@ -75,6 +72,11 @@ public class Boomerang extends MissileWeapon {
 		return returning != null && returning.isActive();
 	}
 
+	private void findParent() {
+		if(hero != null) {
+			parent = (MissileWeapon) hero.belongings.getSimilar(this);
+		}
+	}
 
 	@Override
 	public boolean collect(Bag container) {
@@ -91,43 +93,37 @@ public class Boomerang extends MissileWeapon {
 		return super.drop(pos);
 	}
 
-	private void terminateFlight() {
-		if(returning != null) {
+	protected void terminateFlight() {
+		if( isReturning() ) {
 			returning.detach();
 		}
 	}
 
 	@Override
-	public int min(int lvl) {
-		int min;
-		try {
-			tier--; // one tier lower
-			min = super.min(lvl);
-		} finally {
-			tier++;
-		}
-		return min;
+	public int maxBase() { // 16 base, down from 20
+		return Math.round(super.maxBase()*.8f);
 	}
 
 	@Override
-	public int max(int lvl) { // 10 base, scaling by 2 each level.
-		int value;
-		try {
-			tier--;
-			value = super.max(lvl);
-		} finally {
-			tier++;
-		}
-		return value;
+	public int maxScale() { // +2/+3 instead of +2/+4
+		return Math.max(1,super.maxScale()-1);
 	}
 
 	@Override
+    public int proc(Char attacker, Char defender, int damage) {
+        findParent();
+		damage = super.proc(attacker, defender, damage);
+        if( isBreaking() ) terminateFlight();
+        return damage;
+    }
+
+    @Override
 	public boolean canSurpriseAttack() {
 		return !isReturning();
 	}
 
 	protected void onThrowComplete(final int cell) {
-		if(cell == curUser.pos) {
+		if( cell == curUser.pos || isReturning() || isBreaking() ) {
 			super.onThrowComplete(cell);
 			return;
 		}
@@ -141,21 +137,52 @@ public class Boomerang extends MissileWeapon {
 				super.onThrowComplete(cell);
 				return; // it's not coming back.
 			} else Dungeon.level.press(cell, null, true);
-		returning = Buff.append(curUser,Returning.class).set(this,cell);
-
-		parent = null;
+		returnFrom(cell);
+		// leaving a reference to the parent.
 		rangedHit = false;
+		curUser.spendAndNext(castDelay);
 	}
 
+	@Override
+	public String info() {
+		if( isReturning() ) findParent();
+		return super.info();
+	}
+
+	public Returning returnFrom(int cell) {
+	    terminateFlight();
+	    detachEmbed();
+	    return returning = Buff.append(curUser, Returning.class).set(this,cell);
+    }
+
+	@SuppressWarnings("WeakerAccess")
+    protected static float returningAcc = .95f;
+    @Override
+    public float accuracyFactor(Char owner) {
+        if( isReturning() ) {
+            float rangeBoost = this.rangeBoost, adjacentPenalty = this.adjacentPenalty;
+            this.rangeBoost = this.adjacentPenalty = returningAcc; // we don't care about range.
+
+			float accuracyFactor = super.accuracyFactor(owner);
+
+			this.rangeBoost = rangeBoost;
+            this.adjacentPenalty = adjacentPenalty;
+            return accuracyFactor;
+        }
+        return super.accuracyFactor(owner);
+    }
+
 	public static class Returning extends Buff {
-		{
+
+    	public static final double VELOCITY = 0.6;
+
+    	{
 			actPriority = BLOB_PRIO; // between hero and mob
 		}
 
 		int depthOfOrigin = depth;
 		public int pos;
-		private int lastPos;
-		public int lastPos() { return lastPos; }
+		private int lastPos; public int lastPos() { return lastPos; }
 
 		protected void setPosTo(int newPos) {
 			lastPos = pos;
@@ -196,6 +223,7 @@ public class Boomerang extends MissileWeapon {
 		private Sprite sprite;
 		public Boomerang boomerang;
 		boolean willHover;
+		boolean hasMoved = true;
 
 		Returning set(Boomerang boomerang, int from) { // use this to set up stuff
 			this.boomerang = boomerang;
@@ -204,30 +232,38 @@ public class Boomerang extends MissileWeapon {
 			dest = path.get(path.size()-1);
 			willHover = path.size()-1 == returnDist;
 			pos = lastPos = path.remove(0);
-			moving = true;
-			sprite();
+			hasMoved = false;
+			refreshSprite();
 			return this;
+		}
+
+		public Sprite sprite() {
+			if(sprite == null) sprite = new Sprite(); // you'll never get a null from this
+			try { target.sprite.parent.add(sprite); } catch (NullPointerException ignored) { /* just give up and move on. it'll get added eventually. */}
+			return sprite;
+		}
+		public void refreshSprite() {
+			sprite().reset(pos,pos,boomerang,null);
+		}
+
+		private int dest;
+
+		public boolean atDest() {
+			return dest == pos;
 		}
 
 		@Override
 		public void detach() {
 			willHover = false;
 			boomerang.returning = null;
+			sprite().killAndErase();
 			super.detach();
+			next();
 		}
 
 		public int nextPos() {
 			if(path != null && !path.isEmpty()) return path.get(0);
 			else return pos;
-		}
-
-		public Sprite sprite() {
-			if(sprite == null) sprite = new Sprite(); // you'll never get a null from this
-			try { target.sprite.parent.add(sprite); } catch (NullPointerException ignored) { /* just give up and move on. */}
-			return sprite;
-		}
-		public void refreshSprite() {
-			sprite().reset(pos,pos,boomerang,null);
 		}
 
 		void instantPickUp() {
@@ -244,10 +280,6 @@ public class Boomerang extends MissileWeapon {
 			return new Chase();
 		}
 
-		@Override
-		protected void onRemove() {
-			sprite().killAndErase();
-		}
 		public boolean isActive() {
 			return depth == depthOfOrigin;
 		}
@@ -276,11 +308,13 @@ public class Boomerang extends MissileWeapon {
 			}
 			if( killIfNeeded() ) return true;
 			spend(1f/distancePerTurn);
-			final Char ch1;
-			if(pos != lastPos) // don't wanna hit the guy we just attacked.
-				onCharCollision(ch1=findChar(pos));
+
+			final Char ch1=findChar(pos);
+			if(hasMoved)
+				onCharCollision(ch1);
 			else
-				ch1 = null;
+				hasMoved = true;
+
 			final int dest = path.remove(0);
 			sprite().reset(dest, new Callback() {
 				@Override
@@ -295,34 +329,14 @@ public class Boomerang extends MissileWeapon {
 			return false;
 		}
 		public void onCharCollision(Char ch) {
-			if (ch == null || killIfNeeded()) {
-				return;
-			}
-
-			float 	rangeBoost      = boomerang.rangeBoost,
-					adjacentPenalty = boomerang.adjacentPenalty;
-
-			HeroSubClass subClass = ((Hero)target).subClass;
-			try {
-				((Hero) target).subClass = HeroSubClass.NONE; // nope.
-				boomerang.rangeBoost = boomerang.adjacentPenalty = 0.95f; // nullify these, and apply an additional 5% penalty
-
-				if (curUser.shoot(ch, boomerang)) {
-					boomerang.useDurability();
-					if (boomerang.durability <= 0) Returning.this.detach();
-				}
-
-			} finally {
-				boomerang.rangeBoost      = rangeBoost;
-				boomerang.adjacentPenalty = adjacentPenalty;
-				((Hero)target).subClass   = subClass;
-			}
+			if ( ch != null && !killIfNeeded() )
+				curUser.shoot(ch, boomerang);
 		}
 
 		private static String
 				POS = "pos", LAST_POS = "LASTPOS",
 				DPT = "distancePerTurn", PATH = "path",
-				RANG = "boomerang", DOO = "depthOfOrigin";
+				RANG = "boomerang", DOO = "depthOfOrigin", HOVER="willHover";
 
 		@Override
 		public void storeInBundle(Bundle bundle) {
@@ -338,6 +352,7 @@ public class Boomerang extends MissileWeapon {
 
 			bundle.put(RANG,boomerang);
 			bundle.put(DOO,depthOfOrigin);
+			bundle.put(HOVER, willHover);
 		}
 
 		@Override
@@ -351,7 +366,9 @@ public class Boomerang extends MissileWeapon {
 			lastPos = bundle.contains(LAST_POS) ? bundle.getInt(LAST_POS) : pos;
 			distancePerTurn = bundle.getInt(DPT);
 			boomerang = (Boomerang) bundle.get(RANG);
+			if(boomerang != null) boomerang.returning = this;
 			depthOfOrigin = bundle.getInt(DOO);
+			willHover = bundle.getBoolean(HOVER);
 		}
 
 		class Sprite extends MissileSprite { // yay multiple inheritance
@@ -375,13 +392,13 @@ public class Boomerang extends MissileWeapon {
 			@Override
 			protected void setup(PointF from, PointF to, Item item, Callback listener) {
 				super.setup(from, to, item, listener);
-				angularSpeed *= 0.75;
+				angularSpeed *= VELOCITY;
 			}
 
 			@Override
 			public synchronized void onComplete(Tweener tweener) {
 				super.onComplete(tweener);
-				revive();
+				revive(); // this unkills the sprite.
 			}
 		}
 		public class Chase extends HeroAction { // this allows it to be stored.

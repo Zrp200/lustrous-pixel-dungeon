@@ -56,6 +56,8 @@ import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Bolas;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Boomerang;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Shuriken;
+import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.ThrowingGlaive;
+import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Tomahawk;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.darts.TippedDart;
 import com.zrp200.lustrouspixeldungeon.levels.traps.ArmageddonTrap;
 import com.zrp200.lustrouspixeldungeon.levels.traps.InfernalTrap;
@@ -86,30 +88,85 @@ public enum Milestone {
         @Override
         public void addChanges() {
             new ChangeInfo(Version.v012.name, true);
+            new ChangeInfo(ChangeInfo.Template.NEW_CONTENT).addButtons(
+                    new ChangeButton(new ThrowingGlaive())
+            );
+            new ChangeInfo("From Shattered",false,Window.SHPX_COLOR).addButtons(
+                    new ChangeButton(HeroSprite.avatar(HeroClass.WARRIOR,6),"Class Changes").appendList(
+                            "Broken Seal shield regeneration rate no longer scales with missing shield and is instead locked to 1 shield / 30 turns.\n",
+                            "Using items no longer breaks gladiator's combo, and ranged weapons can build it",
+                            "Slam now uses armor roll to deal boosted damage instead of previous mechanic",
+                            "Berserker damage decay rate adjusted proportionally to previous changes, " +
+                                    "reduced to 6.7% max instead of v0.1.1 5%, but down from previous shattered 10%."),
+                    new ChangeButton(new ItemSprite( ItemSpriteSheet.MISSILE_HOLDER ), "Missile Weapons, Darts, and Alchemy").appendList(
+                            "Dart tipping and untipping now done directly through inventory.",
+                            "Tipped darts price reduced by 33%.\n",
+                            "Added throwing club, force cube, kunai.",
+                            "Boomerang is now t4, obsidian knife unobtainable.",
+                            "Throwing stone damage and durability boosted to 2-5 and 5 respectively.\n",
+                            "The alchemy guide now has 9 pages (down from 10), order of pages adjusted",
+                            "Added catalysts, recipes changed accordingly. Ring of wealth matches shattered implementation.",
+                            "Added wild energy and elixir of arcane armor.",
+                            "Caustic brew now affects a 7x7 area and its energy cost is reduced to 4.",
+                            "Implemented elixir of aquatic rejuvenation changes. now heals faster, doesn't waste healing, and has reduced total healing",
+                            "Curse Infusion now grants a single upgrade to upgradable items in addition to cursing that is bound to the curse.",
+                            "Reclaim trap no longer grants recharging, now stores the trap instead."),
+                    new ChangeButton(new ItemSprite(new Tomahawk()), "Implemented Shattered Nerfs").appendList(
+                            "Chilling enchant only stacks up to 6 turns",
+                            "Thorns damage completely reliant on level",
+                            "Tomahawk scaling boosted to +2/+4, but bleed reduced to 60% damage"),
+                    ChangeButton.misc(
+                            "Shattered honeypots are now stackable, and can be sold for a small amount of gold.\n",
+                            "The changes list has been split into three separate groups, so that the game's entire change history isn't loaded all at once.\n",
+                            "Tengu now throws his shurikens one at a time, just like other ranged enemies. The speed of the shurikens has been increased to compensate, so that the player doesn't need to keep waiting while Tengu's attacks are in flight.\n",
+                            "After the tengu boss battle, any extra items now drop in tengu's cell, instead of a random prison cell.\n",
+                            "The hero will no longer step onto visible traps if that trap wasn't discovered when movement started.\n",
+                            "When the mage's staff is cursed, the wand within the staff will now also be cursed.",
+                            "Improved the coloration of crystal keys. They should now be more distinct from iron keys."),
+                    ChangeButton.bugfix(
+                            "Prismatic images causing errors when falling into pits",
+                            "Secret rooms never spawning in the earlier parts of a region",
+                            "Curse of multiplicity not working correctly on boss floors",
+                            "Curse of multiplicity closing doors when it shouldn't",
+                            "Ring of wealth rarely generating items which are blocked by challenges",
+                            "Windows rarely appearing in places they shouldn't",
+                            "Odd behaviour when the player is killed by electricity or a grim weapon",
+                            "Explosions destroying armor with the warrior's seal on it",
+                            "Various minor visual bugs",
+                            "Various rare crash bugs"));
             new ChangeInfo(ChangeInfo.Template.BUFFS).addButtons(
                     new ChangeButton(new ArmageddonTrap().getImage(), "Armageddon Trap",
                             "Look, it's your fault for activating this.\n").appendList(
                             "Regrowth seeded up to 30 units from 24",
                             "The game now tries twice as hard to surround the hero with grass",
                             "The game now tries twice as hard to place enemies on grass tiles",
-                            "Passive mobs are no longer teleported, but active statues can be teleported now."
-                    ),
+                            "Passive mobs are no longer teleported, but active statues can be teleported now."),
                     new ChangeButton(new WarlockSprite(), "Warlock").appendList(
                             "Warlocks will now always extend existing weaken duration if applicable",
                             "Warlock weaken will still always result in a debuff lasting at least 6 turns but less than 40 turns",
-                            "Weaken can last partial turns"
-                    )
-            );
+                            "Weaken can last partial turns"));
             new ChangeInfo(ChangeInfo.Template.CHANGES).addButtons(
+                    new ChangeButton(new ItemSprite(new Longsword().image, Dazzling.COLOR), "Enchant Changes")
+                            .appendList(
+                                    "Precise and swift have been removed to match shattered changes.",
+                                    "Blazing reverted to common to replace precise, and kinetic implemented.",
+                                    "Dazzling has been removed in favor of Corrupting, as I'm much more satisfied with " +
+                                            "corrupting than the current dazzling, despite my persistant efforts to make" +
+                                            "dazzling work as a rare enchant in the previous update.\n",
+                                    "Shattered blooming implemented. Blooming is now uncommon, but can spawn more than " +
+                                            "one grass at a time. In addition, I'm leaving the ability to root, but it'll " +
+                                            "only affect enemies.",
+                                    "Shattered affection implemented, now static 8-12 turn charm."),
                     ChangeButton.misc(
                             "Only transmuting the original starting weapon will result in a cord; a warrior transmuting a dagger will not get a cord guarenteed, though it is still a chance.",
                             "Result from transmuting tier-1 weapons is now weighted where Gloves > Dagger = Cord > Worn Shortsword; " +
                                     "you are more likely to get gloves and less likely to get worn shortsword than before",
-                            "Reverted blazing description to pre-0.7.2"
-                    ),
-                    ChangeButton.bugfix("Issues with guaranteed scroll of transmutation drop",
-                            "Distortion traps destroying important items", "Warping trap not hiding level")
-            );
+                            "Reverted blazing description to pre-0.7.2",
+                            "Shocking and Lightning now arc randomly with a priority on closer targets"),
+                    ChangeButton.bugfix(
+                            "Issues with guaranteed scroll of transmutation drop",
+                            "Distortion traps destroying important items",
+                            "Warping trap not hiding level"));
         }
     },
     LUST011 (Version.v011, 4, 4 ,2019) {
@@ -130,8 +187,7 @@ public enum Milestone {
                             "Certain types of terrain will always burn for a specific amount of time; mostly " +
                                     "flammable things will burn for 4 turns, but tall grass, barricades, " +
                                     "and bookshelves will burn for 5, and grass will burn for 2.",
-                            "Blazing burning duration now matches shattered exactly; 4, down from 6."
-                    ),
+                            "Blazing burning duration now matches shattered exactly; 4, down from 6."),
                     ChangeButton.misc(
                             "Hunting mobs will now cluster around their target even if some can't actually reach.",
                             "Mobs now avoid returning boomerangs if not amok",
@@ -142,8 +198,7 @@ public enum Milestone {
                             "Scroll of Upgrade's enchant nullification chance now starts at +3, down from +4, and is guarenteed at +7, down from +8.",
                             "Adjusted swift description to better indicate wand option, and added a proc vfx",
                             "Shaman resistances should be a bit more sensical",
-                            "Readded key-bug code that will prevent future key bugs from destroying games"
-                    ),
+                            "Readded key-bug code that will prevent future key bugs from destroying games"),
                     ChangeButton.bugfix(
                             "Quest sad ghost always moving at 1x speed",
                             "Various bugs that result in losing items",
@@ -162,8 +217,7 @@ public enum Milestone {
                                     "Dried rose rarely being usable before completing ghost quest",
                                     "Corrupted thieves being able to steal from the hero",
                                     "Rare crashes involving rankings window",
-                                    "Crashes and other odd behavior when a berserking hero is affected by shielding buffs")
-            );
+                                    "Crashes and other odd behavior when a berserking hero is affected by shielding buffs"));
             new ChangeInfo("v0.1.1a",false).addButtons(
                     new ChangeButton(new ItemSprite(new Glaive().enchant(new Dazzling())), "Dazzling",
                             "Adding slow turned out to be more powerful than I thought, so I'm reducing " +
@@ -563,7 +617,7 @@ public enum Milestone {
                             .appendLine()
                             .appendLine("_Bleeding, Caustic Ooze_").appendList(
                             "Now can stack, albeit inconsistently.",
-                            "They can addAllChanges up to 2/3 of their intended duration onto durations."),
+                            "They can add up to 2/3 of their intended duration onto durations."),
                     new ChangeButton(
                             new ItemSprite(ItemSpriteSheet.SCROLL_YNGVI),
                             "Scroll of Transmutation").appendList(

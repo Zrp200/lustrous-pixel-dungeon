@@ -24,6 +24,7 @@ package com.zrp200.lustrouspixeldungeon.sprites;
 import com.watabou.noosa.TextureFilm;
 import com.zrp200.lustrouspixeldungeon.Assets;
 
+@SuppressWarnings("PointlessArithmeticExpression")
 public class ItemSpriteSheet {
 
 	private static final int WIDTH = 16;
@@ -272,15 +273,16 @@ public class ItemSpriteSheet {
 	public static final int THROWING_CLUB   = MISSILE_WEP+6;
 
 	public static final int THROWING_SPEAR  = MISSILE_WEP+7;
-	public static final int BOLAS           = MISSILE_WEP+8;
-	public static final int KUNAI           = MISSILE_WEP+9;
+    public static final int BOOMERANG       = MISSILE_WEP+8;
+    public static final int KUNAI           = MISSILE_WEP+9;
+
 	public static final int JAVELIN         = MISSILE_WEP+10;
 	public static final int TOMAHAWK        = MISSILE_WEP+11;
-	public static final int BOOMERANG       = MISSILE_WEP+12;
+    public static final int BOLAS           = MISSILE_WEP+12;
 
 	public static final int TRIDENT         = MISSILE_WEP+13;
-	public static final int THROWING_HAMMER = MISSILE_WEP+14;
-	public static final int FORCE_CUBE      = MISSILE_WEP+15;
+	public static final int FORCE_CUBE      = MISSILE_WEP+14;
+	public static final int THROWING_GLAIVE = MISSILE_WEP+15;
 
 	static{
 		assignItemRect(SPIRIT_BOW,      16, 16);
@@ -294,15 +296,16 @@ public class ItemSpriteSheet {
 		assignItemRect(THROWING_CLUB,   12, 12);
 
 		assignItemRect(THROWING_SPEAR,  13, 13);
-		assignItemRect(BOLAS,           15, 14);
-		assignItemRect(KUNAI,           15, 15);
-		assignItemRect(JAVELIN,         16, 16);
+        assignItemRect(BOOMERANG,       14, 14);
+        assignItemRect(KUNAI,           15, 15);
+
+        assignItemRect(JAVELIN,         16, 16);
 		assignItemRect(TOMAHAWK,        13, 13);
-		assignItemRect(BOOMERANG,       14, 14);
+        assignItemRect(BOLAS,           15, 14);
 
 		assignItemRect(TRIDENT,         16, 16);
-		assignItemRect(THROWING_HAMMER, 12, 12);
 		assignItemRect(FORCE_CUBE,      11, 12);
+		assignItemRect(THROWING_GLAIVE, 16, 16);
 	}
 	
 	public static final int TIPPED_DARTS    =                               xy(1, 11);  //16 slots
@@ -326,7 +329,11 @@ public class ItemSpriteSheet {
 
 	// I haven't removed this weapon from the code, so it still needs a sprite
 	public static final int OBSIDIAN_KNIFE = TIPPED_DARTS+13;
-	static { assignItemRect(OBSIDIAN_KNIFE, 12, 12); }
+	public static final int THROWING_HAMMER = TIPPED_DARTS+14;
+	static {
+	    assignItemRect(OBSIDIAN_KNIFE, 12, 12);
+        assignItemRect(THROWING_HAMMER, 12, 12);
+	}
 	
 	private static final int ARMOR          =                               xy(1, 12);  //16 slots
 	public static final int ARMOR_CLOTH     = ARMOR+0;

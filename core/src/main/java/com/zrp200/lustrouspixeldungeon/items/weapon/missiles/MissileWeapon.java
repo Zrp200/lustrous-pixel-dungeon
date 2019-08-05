@@ -209,14 +209,6 @@ abstract public class MissileWeapon extends Weapon {
 		detach();
 		return super.collect(container);
 	}
-	
-	@Override
-	public int proc(Char attacker, Char defender, int damage) {
-		rangedHit = true;
-		onRangedHit(defender,defender.pos);
-		if( hasHiddenEnchant() ) revealEnchant();
-		return super.proc(attacker, defender, damage);
-	}
 
 	private PinCushion embed = null;
 	public boolean stickTo(Char enemy) {
@@ -234,22 +226,29 @@ abstract public class MissileWeapon extends Weapon {
 		}
 		return false;
 	}
-
+	public boolean isBreaking() {
+		return durability <= 0;
+	}
 
 	public boolean detach() {
-		Char holder;
-		if(embed != null) { // mutually exclusive
-			holder = embed.target;
-			embed = null;
-		} else if(Dungeon.hero != null && Dungeon.hero.belongings.contains(this)) {
+		Char holder = detachEmbed();
+		if(Dungeon.hero != null && Dungeon.hero.belongings.contains(this)) {
 			detachAll(Dungeon.hero.belongings.backpack);
 			holder = Dungeon.hero;
-		} else return false;
+		} else if(holder == null) return false;
 		drop(holder.pos);
 		return true;
 	}
 
+	protected Char detachEmbed() {
+	    if(embed == null) return null;
+	    Char holder = embed.target;
+	    embed = null;
+	    return holder;
+    }
+
 	public boolean attachedTo(PinCushion p) { return embed != null && embed.equals(p); }
+	public boolean isStuck() { return embed != null; }
 	
 	@Override
 	public Item random() {
@@ -274,19 +273,15 @@ abstract public class MissileWeapon extends Weapon {
 	}
 
 	protected void useDurability() {
-		if (parent != null){
-			if ( ( parent.durability -= parent.durabilityPerUse() ) <= 0) {
-                durability = 0;
-                parent.durability = MAX_DURABILITY;
-            }
-		} else {
-			durability -= durabilityPerUse();
-			if (durability > 0 && durability <= durabilityPerUse()){
-				if (level() <= 0)GLog.w(Messages.get(this, "about_to_break"));
-				else             GLog.n(Messages.get(this, "about_to_break"));
-			}
-		}
+		// this deducts durability from the correct source
 		MissileWeapon weapon = parent == null ? this : parent;
+		weapon.durability -= weapon.durabilityPerUse();
+		if (parent != null && parent.isBreaking() ){
+			durability = 0;
+			parent.durability = MAX_DURABILITY;
+		}
+
+		// this alerts the player if a weapon is about to break
 		boolean willBreak = weapon.durability > 0 && weapon.durability <= weapon.durabilityPerUse();
 		if(willBreak) {
 			if (level() <= 0) GLog.w(Messages.get(this, "about_to_break"));
@@ -368,11 +363,12 @@ abstract public class MissileWeapon extends Weapon {
 		info += "\n\n" + Messages.get(MissileWeapon.class, "distance");
 		
 		info += "\n\n" + Messages.get(this, "durability");
-		
-		if (durabilityPerUse() > 0){
+
+		MissileWeapon wep = parent != null ? parent : this;
+		if (wep.durabilityPerUse() > 0){
 			info += " " + Messages.get(this, "uses_left",
-					(int)Math.ceil(durability/durabilityPerUse()),
-					(int)Math.ceil(MAX_DURABILITY/durabilityPerUse()));
+					(int)Math.ceil(wep.durability/wep.durabilityPerUse()),
+					(int)Math.ceil(MAX_DURABILITY/wep.durabilityPerUse()));
 		} else {
 			info += " " + Messages.get(this, "unlimited_uses");
 		}
@@ -405,15 +401,27 @@ abstract public class MissileWeapon extends Weapon {
 		}
 	}
 	protected boolean rangedHit = false;
+    @Override
+    public int proc(Char attacker, Char defender, int damage) {
+        rangedHit = true;
+        useDurability();
+        if(hasHiddenEnchant()) revealEnchant();
+        stickTo(defender);
+        return super.proc(attacker, defender, damage);
+    }
+
 	@Override
 	protected void onThrow(int cell) {
 		Char enemy = Actor.findChar(cell);
-		if(enemy != null && enemy != curUser) curUser.shoot(enemy, this); // this runs if the enemy was hit
+		if(enemy != null && enemy != curUser) curUser.shoot(enemy, this);
 		super.onThrow(cell);
 	}
-	protected void onRangedHit(Char enemy, int cell) { // called after the hit is done processing
-		useDurability();
-		stickTo(enemy);
+    public void onMiss(Char enemy) { }
+
+	@Override
+	protected void onThrowComplete(int cell) {
+		rangedHit = false;
+		super.onThrowComplete(cell);
 	}
 
 	@Override
@@ -422,13 +430,7 @@ abstract public class MissileWeapon extends Weapon {
 			return Dungeon.level.drop(null,pos);
 		}
 		embed = null;
-		return super.drop(pos);
-	}
-
-	@Override
-	protected void onThrowComplete(int cell) {
 		parent = null;
-		rangedHit = false;
-		super.onThrowComplete(cell);
+		return super.drop(pos);
 	}
 }

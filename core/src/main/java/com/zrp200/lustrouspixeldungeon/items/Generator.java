@@ -152,7 +152,7 @@ import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Kunai;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Shuriken;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.ThrowingClub;
-import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.ThrowingHammer;
+import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.ThrowingGlaive;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.ThrowingKnife;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.ThrowingSpear;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.ThrowingStone;
@@ -414,8 +414,8 @@ public class Generator {
 			
 			MIS_T5.classes = new Class<?>[]{
 					Trident.class,
-					ThrowingHammer.class,
-					ForceCube.class
+					ForceCube.class,
+					ThrowingGlaive.class
 			};
 			MIS_T5.probs = new float[]{ 6, 5, 4 };
 			
