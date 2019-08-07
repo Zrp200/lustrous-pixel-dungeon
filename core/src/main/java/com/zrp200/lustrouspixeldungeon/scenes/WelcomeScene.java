@@ -37,6 +37,7 @@ import com.zrp200.lustrouspixeldungeon.effects.Fireball;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.ui.RedButton;
 import com.zrp200.lustrouspixeldungeon.ui.RenderedTextMultiline;
+import com.zrp200.lustrouspixeldungeon.ui.changelist.Milestone;
 import com.zrp200.lustrouspixeldungeon.windows.WndStartGame;
 
 public class WelcomeScene extends PixelScene {
@@ -135,7 +136,7 @@ public class WelcomeScene extends PixelScene {
 		} else if (previousVersion <= LustrousPixelDungeon.versionCode) {
 			if (previousVersion < LATEST_UPDATE ){
 				message = Messages.get(this, "update_intro");
-				message += "\n\n" + Messages.get(this, "update_msg");
+				message += "\n\n" + Messages.get(Milestone.class, "012" /*this, "update_msg"*/);
 			} else {
 				//TODO: change the messages here in accordance with the type of patch.
 				message = Messages.get(this, "patch_intro");

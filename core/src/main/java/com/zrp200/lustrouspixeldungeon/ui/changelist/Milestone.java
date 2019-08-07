@@ -41,7 +41,6 @@ import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Necromantic;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.WeaponCurse;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Blazing;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Chilling;
-import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Dazzling;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Elastic;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Vampiric;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Gauntlet;
@@ -84,13 +83,17 @@ import java.util.GregorianCalendar;
 import static com.zrp200.lustrouspixeldungeon.ui.Icons.get;
 
 public enum Milestone {
-    LUST012 (Version.v012, 5, 20,2019) {
+    LUST012 (Version.v012, 8, 7,2019) {
         @Override
         public void addChanges() {
             new ChangeInfo(Version.v012.name, true);
             new ChangeInfo(ChangeInfo.Template.NEW_CONTENT).addButtons(
-                    new ChangeButton(new ThrowingGlaive())
-            );
+                    ChangeButton.devCommentary(this, Messages.get(Milestone.class, "012"), LUST011, SHPD073),
+                    new ChangeButton( new ThrowingGlaive() ).append(
+                            "Added a new t5 weapon that returns just like a boomerang, but has the fun effect of " +
+                                    "bouncing between enemies prior to doing so. Think bloons.")
+                            .appendLines("\nThis replaces the throwing hammer, which means throwing cube is now more common.",
+                                    "\nSpecial thanks to _videogamer1002#9027_ for sprite."));
             new ChangeInfo("From Shattered",false,Window.SHPX_COLOR).addButtons(
                     new ChangeButton(HeroSprite.avatar(HeroClass.WARRIOR,6),"Class Changes").appendList(
                             "Broken Seal shield regeneration rate no longer scales with missing shield and is instead locked to 1 shield / 30 turns.\n",
@@ -146,7 +149,7 @@ public enum Milestone {
                             "Warlock weaken will still always result in a debuff lasting at least 6 turns but less than 40 turns",
                             "Weaken can last partial turns"));
             new ChangeInfo(ChangeInfo.Template.CHANGES).addButtons(
-                    new ChangeButton(new ItemSprite(new Longsword().image, Dazzling.COLOR), "Enchant Changes")
+                    new ChangeButton(new ItemSprite(new Glaive().image, new ItemSprite.Glowing(0xFFFF66)), "Enchant Changes")
                             .appendList(
                                     "Precise and swift have been removed to match shattered changes.",
                                     "Blazing reverted to common to replace precise, and kinetic implemented.",
@@ -156,8 +159,10 @@ public enum Milestone {
                                     "Shattered blooming implemented. Blooming is now uncommon, but can spawn more than " +
                                             "one grass at a time. In addition, I'm leaving the ability to root, but it'll " +
                                             "only affect enemies.",
-                                    "Shattered affection implemented, now static 8-12 turn charm."),
+                                    "Shattered affection implemented, now static 8-12 turn charm.",
+                                    "Shattered entanglement implemented, no longer roots, removed from chaotic"),
                     ChangeButton.misc(
+                            "Crypts can now drop weapons",
                             "Only transmuting the original starting weapon will result in a cord; a warrior transmuting a dagger will not get a cord guarenteed, though it is still a chance.",
                             "Result from transmuting tier-1 weapons is now weighted where Gloves > Dagger = Cord > Worn Shortsword; " +
                                     "you are more likely to get gloves and less likely to get worn shortsword than before",
@@ -166,6 +171,8 @@ public enum Milestone {
                     ChangeButton.bugfix(
                             "Issues with guaranteed scroll of transmutation drop",
                             "Distortion traps destroying important items",
+                            "Issues with tipped darts",
+                            "Returning boomerangs not saving parent stack",
                             "Warping trap not hiding level"));
         }
     },
@@ -219,7 +226,7 @@ public enum Milestone {
                                     "Rare crashes involving rankings window",
                                     "Crashes and other odd behavior when a berserking hero is affected by shielding buffs"));
             new ChangeInfo("v0.1.1a",false).addButtons(
-                    new ChangeButton(new ItemSprite(new Glaive().enchant(new Dazzling())), "Dazzling",
+                    new ChangeButton(new ItemSprite(new Glaive().image, new ItemSprite.Glowing(0xFFFF66)), "Dazzling",
                             "Adding slow turned out to be more powerful than I thought, so I'm reducing " +
                                     "the potency of the enchant somewhat. I like slow, though, so " +
                                     "I'm not getting rid of it.")
@@ -372,7 +379,7 @@ public enum Milestone {
                                     "Initial ignition is not accompanied by damage",
                                     "Procs on a burning target do slightly reduced blazing damage, "
                                             + "but set the target's burn duration to 4 if that would extend it."),
-                    new ChangeButton(new ItemSprite(new Glaive().enchant(new Dazzling())), "Dazzling",
+                    new ChangeButton(new ItemSprite(new Glaive().image, new ItemSprite.Glowing(0xFFFF66)), "Dazzling",
                             "Instead of removing dazzling, I've decided instead to double down on its mechanics. " +
                                     "Dazzling was sometimes considered to be a better stunning already, " +
                                     "so I think these changes should fit well.")
@@ -1079,6 +1086,7 @@ public enum Milestone {
     },
 
     // everything past this point is not displayed; these are mostly just used for reference
+    SHPD073 ("Shattered v0.7.3",          5 ,25,2019),
     SHPD072 ("Shattered v0.7.2", 	 	    3 ,18,2019),
     SHPD071d("Shattered v0.7.1d",	 	    1 ,18,2019),
     SHPD071b("Shattered v0.7.1b", 	    12,30,2018),

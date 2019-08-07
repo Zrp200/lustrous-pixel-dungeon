@@ -34,7 +34,7 @@ import static com.zrp200.lustrouspixeldungeon.Dungeon.level;
 
 public class Blazing extends Weapon.Enchantment {
 
-	private static ItemSprite.Glowing GLOW = new ItemSprite.Glowing( 0xFF4400 ); // Orange
+	public static ItemSprite.Glowing GLOW = new ItemSprite.Glowing( 0xFF4400 ); // Orange
 	
 	@Override
 	public int proc( Weapon weapon, Char attacker, Char defender, int damage ) {

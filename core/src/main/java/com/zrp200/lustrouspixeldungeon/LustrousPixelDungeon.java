@@ -32,24 +32,15 @@ import com.watabou.noosa.RenderedText;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.DeviceCompat;
-import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.HolyProvidence;
-import com.zrp200.lustrouspixeldungeon.items.stones.StoneOfDisarming;
-import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Chaotic;
-import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Chilling;
-import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Dazzling;
-import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Elastic;
-import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Gloves;
 import com.zrp200.lustrouspixeldungeon.scenes.PixelScene;
 import com.zrp200.lustrouspixeldungeon.scenes.WelcomeScene;
 
 import javax.microedition.khronos.opengles.GL10;
 
-import static com.watabou.utils.Bundle.addAlias;
-
 public class LustrousPixelDungeon extends Game {
 
 	public enum Version {
-		v012("0.1.2",422),
+		v012("0.1.2",423),
 		v011("0.1.1",418),
 		v010("0.1.0",416),
 		v001("0.0.1",407);
@@ -65,43 +56,6 @@ public class LustrousPixelDungeon extends Game {
 	
 	public LustrousPixelDungeon() {
 		super(WelcomeScene.class);
-		addAlias(
-				Chaotic.class, "com.zrp200.lustrouspixeldungeon.items.weapon.curses.Malevolent" );
-        addAlias(
-        		Gloves.class, "com.zrp200.lustrouspixeldungeon.items.weapon.melee.Knuckles" );
-
-        addAlias(
-				HolyProvidence.class,
-				"com.zrp200.lustrouspixeldungeon.items.armor.glyphs.AntiMagic"
-		);
-		//v0.7.2
-		addAlias(
-				StoneOfDisarming.class,
-				"com.zrp200.lustrouspixeldungeon.items.stones.StoneOfDetectCurse" );
-
-		addAlias(
-				Elastic.class,
-				"com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.curses.Elastic" );
-		addAlias(
-				Elastic.class,
-				"com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Eldritch" );
-		addAlias(
-				Dazzling.class,
-				"com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Stunning" );
-		addAlias(
-				Chilling.class,
-				"com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Venomous" );
-		addAlias(
-				com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Kinetic.class,
-				"com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Vorpal" );
-
-		//0.1.2
-		com.watabou.utils.Bundle.addAlias(
-				com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Kinetic.class,
-				"com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Precise" );
-		com.watabou.utils.Bundle.addAlias(
-				com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Kinetic.class,
-				"com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Swift" );
 	}
 
 	

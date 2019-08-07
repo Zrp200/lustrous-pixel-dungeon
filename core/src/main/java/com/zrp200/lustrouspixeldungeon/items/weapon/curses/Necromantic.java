@@ -5,7 +5,7 @@ import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.FlavourBuff;
 import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
 
-// @goto Mob#die
+// @see Mob#die
 public class Necromantic extends WeaponCurse {
     @Override
     public int proc(Weapon weapon, Char attacker, Char defender, int damage) {

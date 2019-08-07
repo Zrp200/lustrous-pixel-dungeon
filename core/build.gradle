@@ -2,11 +2,11 @@ apply plugin: 'com.android.application'
 
 android {
     signingConfigs {
-        config {
-            keyAlias '0.0.0'
-            keyPassword 'powerofdeath1'
-            storeFile file('C:/Users/zrp20/lust000.jks')
-            storePassword 'powerofdeath1'
+        release {
+            keyAlias 'Lustrous Key Store v2'
+            keyPassword '3215987'
+            storeFile file('C:/Users/zrp20/lustrous.jks')
+            storePassword '3215987'
         }
     }
     compileSdkVersion 28
@@ -31,7 +31,7 @@ android {
             shrinkResources false
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.config
+            signingConfig signingConfigs.release
         }
     }
 }

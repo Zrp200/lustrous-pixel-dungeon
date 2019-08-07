@@ -29,7 +29,8 @@ import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
 
 public class Sacrificial extends WeaponCurse {
 	@Override public int proc(Weapon weapon, Char attacker, Char defender, int damage ) {
-		if (Random.Int(12) == 0) Buff.affect(attacker, Bleeding.class,Math.max(1, attacker.HP/6));
+		if (Random.Int(12) == 0)
+			Buff.affect(attacker, Bleeding.class, (float) Math.ceil(attacker.HP/6f));
 		return damage;
 	}
 }

@@ -10,7 +10,6 @@ import com.zrp200.lustrouspixeldungeon.items.armor.curses.Corrosion;
 import com.zrp200.lustrouspixeldungeon.items.armor.curses.Metabolism;
 import com.zrp200.lustrouspixeldungeon.items.armor.curses.Multiplicity;
 import com.zrp200.lustrouspixeldungeon.items.armor.curses.Stench;
-import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.Entanglement;
 import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.Repulsion;
 import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.Viscosity;
 import com.zrp200.lustrouspixeldungeon.items.bombs.Bomb;
@@ -74,12 +73,10 @@ public class Chaotic extends WeaponCurse {
                     add(curseClass.newInstance());
             } catch (Exception e) { LustrousPixelDungeon.reportException(e); }
 
-            Class<?extends Armor.Glyph>[] offensiveCurses = new Class[] {
-                    Stench.class, Corrosion.class, Entanglement.class
-            };
-            Class<? extends Armor.Glyph>[] chaoticArmorCurses = new Class[]{ // these can proc in favor of either side.
-                    AntiEntropy.class, Viscosity.class, Metabolism.class
-            };
+            Class<?extends Armor.Glyph>[] offensiveCurses = new Class[] // these always proc against target.
+                    { Stench.class, Corrosion.class };
+            Class<? extends Armor.Glyph>[] chaoticArmorCurses = new Class[] // these can proc in favor of either side.
+                    { AntiEntropy.class, Viscosity.class, Metabolism.class };
 
             for(Class<?extends Armor.Glyph> glyphClass : offensiveCurses)
                 add(glyphToOffensiveCurse(glyphClass));
@@ -88,7 +85,6 @@ public class Chaotic extends WeaponCurse {
 
             // "Special" cases
             add(new WeaponCurse() {
-                @SuppressWarnings("ConstantConditions")
                 @Override
                 public int proc(Weapon weapon, Char attacker, Char defender, int damage) { // basically this is displacement and displacing "bundled"
                     if(Random.Int(2) == 0) { // swap
@@ -110,7 +106,7 @@ public class Chaotic extends WeaponCurse {
             add(new WeaponCurse() {
                 @Override
                 public int proc(Weapon weapon, Char attacker, Char defender, int damage) {
-                    return Random.Int(3) >= 1 // a crude way of reducing repulsion proc rate by 1/3
+                    return Random.Int(3) < 2 // a crude way of reducing repulsion proc rate by 1/3
                         ? glyphToOffensiveCurse(Repulsion.class).proc(weapon, attacker, defender, damage)
                         : damage;
                 }
