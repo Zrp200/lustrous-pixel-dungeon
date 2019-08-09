@@ -30,7 +30,6 @@ import com.zrp200.lustrouspixeldungeon.sprites.ItemSprite;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSprite.Glowing;
 
 import static com.zrp200.lustrouspixeldungeon.Dungeon.depth;
-import static com.zrp200.lustrouspixeldungeon.Dungeon.level;
 
 public class Blazing extends Weapon.Enchantment {
 
@@ -50,7 +49,7 @@ public class Blazing extends Weapon.Enchantment {
 	}
 
 	public static void proc(Char target, int damage) {
-		boolean alreadyBurning = target.buff(Burning.class) != null,
+	/*	boolean alreadyBurning = target.buff(Burning.class) != null,
 				onFlamableTile = level.flamable[target.pos];
 
 			float damageMultiplier = !alreadyBurning ? 2/3f : 1/2f; // proportion of burning damage applied, more if not on fire.
@@ -62,12 +61,14 @@ public class Blazing extends Weapon.Enchantment {
 			if(alreadyBurning || Random.Float() < igniteChance) { // always ignites if target is already burning
 				Burning.reignite(target, burnDuration);
 				if(!alreadyBurning) damageMultiplier = 0; // no damage for initial ignition.
-			}
-
-			target.sprite.emitter().burst( FlameParticle.FACTORY, depth/4+1);
-			final int blazeDamage = (int)Math.ceil(Burning.damageRoll() * damageMultiplier); // round up
-			if(blazeDamage > 0 && !target.isImmune( Blazing.class ) && target.HP-damage > 0)
-				target.damage(blazeDamage,Blazing.class);
+			} */
+		if (target.buff(Burning.class) != null)
+			target.damage( Math.round(Burning.damageRoll() * 0.67f), new Blazing() );
+		Burning.reignite(target);
+		target.sprite.emitter().burst( FlameParticle.FACTORY, depth/4+1 );
+	/* 	final int blazeDamage = (int)Math.ceil(Burning.damageRoll() * damageMultiplier); // round up
+		if(blazeDamage > 0 && !target.isImmune( Blazing.class ) && target.HP-damage > 0)
+			target.damage(blazeDamage,Blazing.class);	*/
 	}
 	
 	@Override

@@ -39,11 +39,13 @@ import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.Alchemy;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.AdrenalineSurge;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.Amok;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Awareness;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Barkskin;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Berserk;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Bless;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.Burning;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Combo;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Drowsy;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.FlavourBuff;
@@ -60,7 +62,6 @@ import com.zrp200.lustrouspixeldungeon.actors.buffs.SnipersMark;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Vertigo;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Weakness;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.Mob;
-import com.zrp200.lustrouspixeldungeon.actors.mobs.npcs.NPC;
 import com.zrp200.lustrouspixeldungeon.effects.CellEmitter;
 import com.zrp200.lustrouspixeldungeon.effects.CheckedCell;
 import com.zrp200.lustrouspixeldungeon.effects.Flare;
@@ -73,6 +74,7 @@ import com.zrp200.lustrouspixeldungeon.items.Heap.Type;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.KindOfWeapon;
 import com.zrp200.lustrouspixeldungeon.items.armor.Armor;
+import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.Brimstone;
 import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.Stone;
 import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.Viscosity;
 import com.zrp200.lustrouspixeldungeon.items.artifacts.AlchemistsToolkit;
@@ -102,6 +104,8 @@ import com.zrp200.lustrouspixeldungeon.items.rings.RingOfTenacity;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.Scroll;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfMagicMapping;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfUpgrade;
+import com.zrp200.lustrouspixeldungeon.items.wands.WandOfLivingEarth;
+import com.zrp200.lustrouspixeldungeon.items.wands.WandOfWarding;
 import com.zrp200.lustrouspixeldungeon.items.weapon.SpiritBow;
 import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Blocking;
@@ -623,17 +627,17 @@ public class Hero extends Char {
 
 	private boolean actInteract( HeroAction.Interact action ) {
 		
-		NPC npc = action.npc;
+		Char ch = action.ch;
 
-		if (level.adjacent( pos, npc.pos )) {
+		if (ch.canInteract(this)) {
 			
 			ready();
-			sprite.turnTo( pos, npc.pos );
-			return npc.interact();
+			sprite.turnTo( pos, ch.pos );
+			return ch.interact();
 			
 		} else {
 			
-			if (fieldOfView[npc.pos] && getCloser( npc.pos )) {
+			if (fieldOfView[ch.pos] && getCloser( ch.pos )) {
 
 				return true;
 
@@ -989,7 +993,12 @@ public class Hero extends Char {
 		if (armor != null) {
 			damage = armor.absorb( damage );
 		}
-		
+
+		WandOfLivingEarth.RockArmor rockArmor = buff(WandOfLivingEarth.RockArmor.class);
+		if (rockArmor != null) {
+			damage = rockArmor.absorb(damage);
+		}
+
 		return damage;
 	}
 	
@@ -1046,9 +1055,11 @@ public class Hero extends Char {
 			}
 		}
 
-		if (target != null && (QuickSlotButton.lastTarget == null ||
-							!QuickSlotButton.lastTarget.isAlive() ||
-							!fieldOfView[QuickSlotButton.lastTarget.pos])){
+		Char lastTarget = QuickSlotButton.lastTarget;
+		if (target != null && (lastTarget == null ||
+							!lastTarget.isAlive() ||
+							!fieldOfView[lastTarget.pos]) ||
+							(lastTarget instanceof WandOfWarding.Ward && mindVisionEnemies.contains(lastTarget))){
 			QuickSlotButton.target(target);
 		}
 		
@@ -1186,8 +1197,8 @@ public class Hero extends Char {
 			
 		} else if (fieldOfView[cell] && (ch = Actor.findChar( cell )) instanceof Mob) {
 
-			if (ch instanceof NPC) {
-				curAction = new HeroAction.Interact((NPC) ch);
+			if (ch.alignment != Alignment.ENEMY && ch.buff(Amok.class) == null) {
+				curAction = new HeroAction.Interact( ch );
 			} else {
 				curAction = new HeroAction.Attack(ch);
 			}
@@ -1388,6 +1399,13 @@ public class Hero extends Char {
 			GLog.w( Messages.get(this, "revive") );
 			Statistics.ankhsUsed++;
 
+			for (Char ch : Actor.chars()){
+				if (ch instanceof DriedRose.GhostHero){
+					((DriedRose.GhostHero) ch).sayAnhk();
+					return;
+				}
+			}
+
 			return;
 		}
 		
@@ -1557,7 +1575,17 @@ public class Hero extends Char {
 
 		super.onOperateComplete();
 	}
-	
+
+	@Override
+	public boolean isImmune(Class effect) {
+		if (effect == Burning.class
+				&& belongings.armor != null
+				&& belongings.armor.hasGlyph(Brimstone.class, this)){
+			return true;
+		}
+		return super.isImmune(effect);
+	}
+
 	public boolean search( boolean intentional ) {
 		
 		if (!isAlive()) return false;

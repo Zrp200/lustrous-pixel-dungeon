@@ -23,8 +23,12 @@ package com.zrp200.lustrouspixeldungeon.items.bombs;
 
 import com.watabou.utils.PathFinder;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
+import com.zrp200.lustrouspixeldungeon.actors.Actor;
+import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.Blob;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.Freezing;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
+import com.zrp200.lustrouspixeldungeon.actors.buffs.Frost;
 import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
 import com.zrp200.lustrouspixeldungeon.utils.BArray;
@@ -42,6 +46,10 @@ public class FrostBomb extends Bomb {
 		for (int i = 0; i < PathFinder.distance.length; i++) {
 			if (PathFinder.distance[i] < Integer.MAX_VALUE) {
 				GameScene.add(Blob.seed(i, 10, Freezing.class));
+				Char ch = Actor.findChar(i);
+				if (ch != null){
+					Buff.affect(ch, Frost.class, 2f);
+				}
 			}
 		}
 	}

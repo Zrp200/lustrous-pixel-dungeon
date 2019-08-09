@@ -28,10 +28,8 @@ import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.items.Generator;
-import com.zrp200.lustrouspixeldungeon.items.Heap;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.KindofMisc;
-import com.zrp200.lustrouspixeldungeon.items.bags.Bag;
 import com.zrp200.lustrouspixeldungeon.items.rings.RingOfEnergy;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.utils.GLog;
@@ -170,7 +168,6 @@ public class Artifact extends KindofMisc {
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
 	public Artifact transmute(boolean dry) {
 		Artifact artifact = Generator.randomArtifact(!dry); // this makes it so that testing this method won't hurt anything
 		return artifact == null ? null : (Artifact)artifact.emulate(this);
@@ -187,7 +184,7 @@ public class Artifact extends KindofMisc {
 		return className;
 	}
 
-    @Override
+	@Override
 	public Item random() {
 		//always +0
 		
@@ -250,7 +247,6 @@ public class Artifact extends KindofMisc {
 
 	}
 
-	private static final String IMAGE = "image";
 	private static final String EXP = "exp";
 	private static final String CHARGE = "charge";
 	private static final String PARTIALCHARGE = "partialcharge";

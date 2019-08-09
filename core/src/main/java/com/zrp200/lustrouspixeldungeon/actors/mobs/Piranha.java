@@ -21,21 +21,16 @@
 
 package com.zrp200.lustrouspixeldungeon.actors.mobs;
 
+import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Badges;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.Statistics;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
-import com.zrp200.lustrouspixeldungeon.actors.blobs.Electricity;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Burning;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Vertigo;
 import com.zrp200.lustrouspixeldungeon.items.food.MysteryMeat;
-import com.zrp200.lustrouspixeldungeon.levels.RegularLevel;
-import com.zrp200.lustrouspixeldungeon.levels.rooms.Room;
-import com.zrp200.lustrouspixeldungeon.levels.rooms.special.PoolRoom;
 import com.zrp200.lustrouspixeldungeon.sprites.PiranhaSprite;
-
-import java.util.HashSet;
 
 public class Piranha extends Mob {
 	
@@ -48,7 +43,6 @@ public class Piranha extends Mob {
 		
 		loot = MysteryMeat.class;
 		lootChance = 1f;
-		
 		properties.add(Property.BLOB_IMMUNE);
 	}
 	
@@ -72,18 +66,6 @@ public class Piranha extends Mob {
 	}
 
 	@Override
-	protected HashSet<Char> findEnemies() {
-		HashSet<Char> enemies = super.findEnemies();
-		if(state == HUNTING) return enemies;
-		for(Char enemy : enemies) {
-			if(enemy.alignment == Alignment.ALLY && enemy != Dungeon.hero ) {
-				enemies.remove(enemy);
-			}
-		}
-		return enemies;
-	}
-
-	@Override
 	public int damageRoll() {
 		return Random.NormalIntRange( Dungeon.depth, 4 + Dungeon.depth * 2 );
 	}
@@ -98,6 +80,16 @@ public class Piranha extends Mob {
 		return Random.NormalIntRange(0, Dungeon.depth);
 	}
 	
+	@Override
+	public int defenseSkill( Char enemy ) {
+		enemySeen = state != SLEEPING
+				&& this.enemy != null
+				&& fieldOfView != null
+				&& fieldOfView[this.enemy.pos]
+				&& this.enemy.invisible == 0;
+		return super.defenseSkill( enemy );
+	}
+
 	@Override
 	public void die( Object cause ) {
 		super.die( cause );
@@ -148,23 +140,8 @@ public class Piranha extends Mob {
 	}
 
 	@Override
-	public boolean isImmune(Class effect) {
-		if(effect == Electricity.class) return false; // dirty way of reverting this.
-		return super.isImmune(effect);
-	}
-
-	{ // AI
-		HUNTING = new Hunting() {
-			@Override
-			public boolean act(boolean justAlerted) {
-				boolean result = super.act(justAlerted);
-				//this causes piranha to move away when a door is closed on them in a pool room.
-				if (state == WANDERING && Dungeon.level instanceof RegularLevel){
-					Room curRoom = ((RegularLevel)Dungeon.level).room(pos);
-					if (curRoom instanceof PoolRoom) target = Dungeon.level.pointToCell(curRoom.random(1));
-				}
-				return result;
-			}
-		};
-	}
+	protected boolean canReachEnemy() { // only thing that overrides this method; piranhas can't leave water.
+        PathFinder.buildDistanceMap(enemy.pos, Dungeon.level.water, viewDistance);
+        return PathFinder.distance[pos] != Integer.MAX_VALUE;
+    }
 }

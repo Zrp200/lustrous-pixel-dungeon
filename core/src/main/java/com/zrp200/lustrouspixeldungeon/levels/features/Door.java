@@ -24,6 +24,8 @@ package com.zrp200.lustrouspixeldungeon.levels.features;
 import com.watabou.noosa.audio.Sample;
 import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
+import com.zrp200.lustrouspixeldungeon.actors.Actor;
+import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.levels.Level;
 import com.zrp200.lustrouspixeldungeon.levels.Terrain;
 import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
@@ -41,7 +43,14 @@ public class Door {
 	}
 
 	public static void leave( int pos ) {
-		if (Dungeon.level.heaps.get( pos ) == null) {
+		int chars = 0;
+
+		for (Char ch : Actor.chars()){
+			if (ch.pos == pos) chars++;
+		}
+
+		//door does not shut if anything else is also on it
+		if (Dungeon.level.heaps.get( pos ) == null && chars <= 1) {
 			Level.set( pos, Terrain.DOOR );
 			GameScene.updateMap( pos );
 			if (Dungeon.level.heroFOV[pos])

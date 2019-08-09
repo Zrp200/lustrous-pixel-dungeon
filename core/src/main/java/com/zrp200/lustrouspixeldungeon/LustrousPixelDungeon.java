@@ -55,7 +55,7 @@ public class LustrousPixelDungeon extends Game {
 	}
 	
 	public LustrousPixelDungeon() {
-		super(WelcomeScene.class);
+		super( sceneClass == null ? WelcomeScene.class : sceneClass );
 	}
 
 	
@@ -91,7 +91,6 @@ public class LustrousPixelDungeon extends Game {
 		);
 
 		RenderedText.setFont( LustSettings.systemFont() ? null : "pixelfont.ttf");
-		
 	}
 
 	@Override
@@ -109,7 +108,6 @@ public class LustrousPixelDungeon extends Game {
 	}
 
 	@Override
-	@SuppressWarnings("deprecation")
 	public void onMultiWindowModeChanged(boolean isInMultiWindowMode) {
 		super.onMultiWindowModeChanged(isInMultiWindowMode);
 		updateSystemUI();
@@ -144,7 +142,7 @@ public class LustrousPixelDungeon extends Game {
 			((PixelScene) scene).restoreWindows();
 		}
 	}
-
+	
 	@Override
 	public void onSurfaceChanged( GL10 gl, int width, int height ) {
 
@@ -161,16 +159,9 @@ public class LustrousPixelDungeon extends Game {
 
 	public void updateDisplaySize(){
 		boolean landscape = LustSettings.landscape();
-
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
-				instance.setRequestedOrientation(landscape ?
-						ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE :
-						ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
-			} else {
-				instance.setRequestedOrientation(landscape ?
-						ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE :
-						ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-			}
+		instance.setRequestedOrientation(landscape ?
+				ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE :
+				ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
 		
 		if (view.getMeasuredWidth() == 0 || view.getMeasuredHeight() == 0)
 			return;

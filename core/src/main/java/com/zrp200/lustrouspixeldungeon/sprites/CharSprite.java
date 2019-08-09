@@ -93,7 +93,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 	
 	protected Callback animCallback;
 	
-	protected Tweener motion;
+	protected PosTweener motion;
 	
 	protected Emitter burning;
 	protected Emitter chilled;
@@ -135,7 +135,10 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 		}
 	}
 	
+	//intended to be used for placing a character in the game world
 	public void link( Char ch ) {
+		linkVisuals( ch );
+
 		this.ch = ch;
 		ch.sprite = this;
 		
@@ -154,6 +157,11 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 		ch.updateSpriteState();
 	}
 	
+	//used for just updating a sprite based on a given character, not linking them or placing in the game
+	public void linkVisuals( Char ch ){
+		//do nothin by default
+	}
+
 	public PointF worldToCamera( int cell ) {
 		
 		final int csize = DungeonTilemap.SIZE;
@@ -202,6 +210,15 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 
 	}
 	
+	//returns where the center of this sprite will be after it completes any motion in progress
+	public PointF destinationCenter(){
+		if (motion != null){
+			return new PointF(motion.end.x + width()/2f, motion.end.y + height()/2f);
+		} else {
+			return center();
+		}
+	}
+
 	public void interruptMotion() {
 		if (motion != null) {
 			motion.stop(false);

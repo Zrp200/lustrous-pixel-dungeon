@@ -44,6 +44,7 @@ import com.zrp200.lustrouspixeldungeon.actors.buffs.Terror;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Vertigo;
 import com.zrp200.lustrouspixeldungeon.effects.Pushing;
 import com.zrp200.lustrouspixeldungeon.effects.particles.ShadowParticle;
+import com.zrp200.lustrouspixeldungeon.items.artifacts.DriedRose;
 import com.zrp200.lustrouspixeldungeon.items.keys.SkeletonKey;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfRetribution;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
@@ -177,8 +178,16 @@ public class Yog extends Mob {
 	@Override
 	public void notice() {
 		super.notice();
-		BossHealthBar.assignBoss(this);
-		yell( Messages.get(this, "notice") );
+		if (!BossHealthBar.isAssigned()) {
+			BossHealthBar.assignBoss(this);
+			yell(Messages.get(this, "notice"));
+			for (Char ch : Actor.chars()){
+				if (ch instanceof DriedRose.GhostHero){
+					GLog.n("\n");
+					((DriedRose.GhostHero) ch).sayBoss();
+				}
+			}
+		}
 	}
 	
 	{

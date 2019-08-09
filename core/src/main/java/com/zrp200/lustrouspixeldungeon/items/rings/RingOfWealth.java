@@ -57,14 +57,14 @@ public class RingOfWealth extends Ring {
 	protected String effect2Bonus() {
 		return visualMultiplier(BONUS_SCALING);
 	}
-	
+
 	public static float dropChanceMultiplier( Char target ){
 		return (float)Math.pow(BONUS_SCALING,getBonus(target, Wealth.class)); // +4.3% compared to shattered
 	}
 
 	private static final String TRIES_TO_DROP = "tries_to_drop";
 	private static final String DROPS_TO_RARE = "drops_to_rare";
-	
+
 	public static ArrayList<Item> tryForBonusDrop(Char target, int tries ){
 		if (getBonus(target, Wealth.class) <= 0) return null;
 		
@@ -233,7 +233,7 @@ public class RingOfWealth extends Ring {
 	}
 
 	public class Wealth extends RingBuff {
-		
+
 		private float triesToDrop(){
 			return triesToDrop;
 		}

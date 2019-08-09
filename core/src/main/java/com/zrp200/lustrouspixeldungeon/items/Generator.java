@@ -110,10 +110,12 @@ import com.zrp200.lustrouspixeldungeon.items.wands.WandOfDisintegration;
 import com.zrp200.lustrouspixeldungeon.items.wands.WandOfFireblast;
 import com.zrp200.lustrouspixeldungeon.items.wands.WandOfFrost;
 import com.zrp200.lustrouspixeldungeon.items.wands.WandOfLightning;
+import com.zrp200.lustrouspixeldungeon.items.wands.WandOfLivingEarth;
 import com.zrp200.lustrouspixeldungeon.items.wands.WandOfMagicMissile;
 import com.zrp200.lustrouspixeldungeon.items.wands.WandOfPrismaticLight;
 import com.zrp200.lustrouspixeldungeon.items.wands.WandOfRegrowth;
 import com.zrp200.lustrouspixeldungeon.items.wands.WandOfTransfusion;
+import com.zrp200.lustrouspixeldungeon.items.wands.WandOfWarding;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.AssassinsBlade;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.BattleAxe;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Cord;
@@ -300,8 +302,6 @@ public class Generator {
 					StoneOfShock.class
 			};
 			STONE.probs = new float[]{ 1, 2, 18, 6, 6, 4, 6, 4, 6, 8, 9, 6 }; // lol that random 18
-			
-			//TODO: add last ones when implemented
 			WAND.classes = new Class<?>[]{
 					WandOfMagicMissile.class,
 					WandOfLightning.class,
@@ -309,14 +309,14 @@ public class Generator {
 					WandOfFireblast.class,
 					WandOfCorrosion.class,
 					WandOfBlastWave.class,
-					//WandOfLivingEarth.class,
+					WandOfLivingEarth.class,
 					WandOfFrost.class,
 					WandOfPrismaticLight.class,
-					//WandOfWarding.class,
+					WandOfWarding.class,
 					WandOfTransfusion.class,
 					WandOfCorruption.class,
 					WandOfRegrowth.class };
-			WAND.probs = new float[]{ 5, 4, 4, 4, 4, 3, /*3,*/ 3, 3, /*3,*/ 3, 3, 3 };
+			WAND.probs = new float[]{ 4, 4, 4, 4, 4, 3, 3, 3, 3, 3, 3, 3, 3 };
 			
 			//see generator.randomWeapon
 			WEAPON.classes = new Class<?>[]{};

@@ -7,3 +7,25 @@ buildscript {
         classpath 'com.android.tools.build:gradle:3.4.2'
     }
 }
+
+allprojects {
+
+    ext {
+        appName = 'Lustrous Pixel Dungeon'
+        appPackageName = 'com.zrp200.lustrouspixeldungeon'
+
+        appVersionCode = 423
+        appVersionName = '0.1.2'
+
+        appAndroidCompileSDK = 28
+        appAndroidMinSDK = 9
+        appAndroidTargetSDK = 28
+    }
+    version = appVersionName
+
+    repositories {
+        google()
+        jcenter()
+    }
+
+}

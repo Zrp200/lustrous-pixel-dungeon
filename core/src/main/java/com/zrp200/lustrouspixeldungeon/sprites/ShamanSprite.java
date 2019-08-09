@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2018 Evan Debenham
+ * Copyright (C) 2014-2019 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -77,7 +77,7 @@ public class ShamanSprite extends MobSprite {
 		public void zapEnemy() {
 			Shaman shaman = (Shaman) ch;
 			Char enemy = shaman.getEnemy();
-			parent.add(new com.zrp200.lustrouspixeldungeon.effects.Lightning(shaman.pos, enemy.pos, new Callback() {
+			parent.add(new com.zrp200.lustrouspixeldungeon.effects.Lightning(shaman.pos, enemy.sprite.destinationCenter(), new Callback() {
 				@Override
 				public void call() {
 					ch.next();
@@ -91,7 +91,7 @@ public class ShamanSprite extends MobSprite {
 	public static class Firebolt extends ShamanSprite {
 		public Firebolt(){
 			super(Assets.FIRESHAMAN);
-			boltType = MagicMissile.FIRE;
+			this.boltType = MagicMissile.FIRE;
 		}
 	}
 	public static class MM extends ShamanSprite {

@@ -37,6 +37,16 @@ import com.zrp200.lustrouspixeldungeon.actors.mobs.Eye;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.Shaman;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.Warlock;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.Yog;
+import com.zrp200.lustrouspixeldungeon.items.wands.WandOfBlastWave;
+import com.zrp200.lustrouspixeldungeon.items.wands.WandOfDisintegration;
+import com.zrp200.lustrouspixeldungeon.items.wands.WandOfFireblast;
+import com.zrp200.lustrouspixeldungeon.items.wands.WandOfFrost;
+import com.zrp200.lustrouspixeldungeon.items.wands.WandOfLightning;
+import com.zrp200.lustrouspixeldungeon.items.wands.WandOfLivingEarth;
+import com.zrp200.lustrouspixeldungeon.items.wands.WandOfMagicMissile;
+import com.zrp200.lustrouspixeldungeon.items.wands.WandOfPrismaticLight;
+import com.zrp200.lustrouspixeldungeon.items.wands.WandOfTransfusion;
+import com.zrp200.lustrouspixeldungeon.items.wands.WandOfWarding;
 import com.zrp200.lustrouspixeldungeon.levels.traps.DisintegrationTrap;
 import com.zrp200.lustrouspixeldungeon.levels.traps.GrimTrap;
 
@@ -60,6 +70,17 @@ public class RingOfElements extends Ring {
 			add(DisintegrationTrap.class);	add(GrimTrap.class);
 
 			add(ToxicGas.class);	add(Electricity.class);
+
+			add( WandOfBlastWave.class );
+			add( WandOfDisintegration.class );
+			add( WandOfFireblast.class );
+			add( WandOfFrost.class );
+			add( WandOfLightning.class );
+			add( WandOfLivingEarth.class );
+			add( WandOfMagicMissile.class );
+			add( WandOfPrismaticLight.class );
+			add( WandOfTransfusion.class );
+			add( WandOfWarding.Ward.class );
 
 			add(Shaman.MagicAttack.class);	add(Warlock.DarkBolt.class);	add(Eye.DeathGaze.class);
 			add(Yog.BurningFist.DarkBolt.class);

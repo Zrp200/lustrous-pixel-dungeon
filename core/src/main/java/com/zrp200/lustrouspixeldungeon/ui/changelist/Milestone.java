@@ -514,7 +514,7 @@ public enum Milestone {
                             "Mystery meat being worth more than it should.",
                             "Darts not being considered unique.",
                             "!!!NO TEXT FOUND!!! being found when inspecting blobs of regrowth."),
-                    new ChangeButton(Icons.get(Icons.NOTES),"Changelog omissions","Amended v0.1.0 changelog to include another new mechanic I forgot to mention and also fixed some formatting issues.")
+                    new ChangeButton(Icons.get(Icons.CHANGES),"Changelog omissions","Amended v0.1.0 changelog to include another new mechanic I forgot to mention and also fixed some formatting issues.")
             );
             new ChangeInfo(ChangeInfo.Template.NEW_CONTENT).addButtons(
                     ChangeButton.devCommentary(
@@ -1170,7 +1170,7 @@ public enum Milestone {
                     new ChangeButton(BadgeBanner.image(Badges.Badge.UNLOCK_MAGE.image), "Hero Class changes",
                             "All heroes except the warrior now need to be unlocked via new badges. The requirements are quite simple, with the goal of giving new players some early goals. Players who have already unlocked characters will not need to re-unlock them.\n\n" +
                                     "To help accelerate item identification for alchemy, all heroes now start with 3 identified items: The scroll of identify, a potion, and another scroll."),
-                    new ChangeButton(Icons.get(Icons.PREFS), Messages.get(this, "misc"),
+                    ChangeButton.misc().append(
                             "Added a partial turn indicator to the game interface, which occupies the same spot as the busy icon. This should make it much easier to plan actions that take more or less than 1 turn.\n\n" +
                                     "Rings now have better descriptions for their stats! All rings now show exactly how they affect you in a similar way to how other equipment gives direct stats.\n\n" +
                                     "Precise descriptions have been added for weapons which block damage.\n\n" +

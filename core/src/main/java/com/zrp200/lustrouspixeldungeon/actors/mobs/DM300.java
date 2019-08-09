@@ -40,6 +40,7 @@ import com.zrp200.lustrouspixeldungeon.actors.buffs.Terror;
 import com.zrp200.lustrouspixeldungeon.effects.CellEmitter;
 import com.zrp200.lustrouspixeldungeon.effects.Speck;
 import com.zrp200.lustrouspixeldungeon.effects.particles.ElmoParticle;
+import com.zrp200.lustrouspixeldungeon.items.artifacts.DriedRose;
 import com.zrp200.lustrouspixeldungeon.items.artifacts.LloydsBeacon;
 import com.zrp200.lustrouspixeldungeon.items.keys.SkeletonKey;
 import com.zrp200.lustrouspixeldungeon.items.quest.MetalShard;
@@ -168,8 +169,16 @@ public class DM300 extends Mob {
 	@Override
 	public void notice() {
 		super.notice();
-		BossHealthBar.assignBoss(this);
-		yell( Messages.get(this, "notice") );
+		if (!BossHealthBar.isAssigned()) {
+			BossHealthBar.assignBoss(this);
+			yell(Messages.get(this, "notice"));
+			for (Char ch : Actor.chars()){
+				if (ch instanceof DriedRose.GhostHero){
+					GLog.n("\n");
+					((DriedRose.GhostHero) ch).sayBoss();
+				}
+			}
+		}
 	}
 	
 	{

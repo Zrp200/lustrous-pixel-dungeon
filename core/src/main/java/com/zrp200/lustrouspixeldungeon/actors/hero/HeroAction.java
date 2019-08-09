@@ -22,7 +22,6 @@
 package com.zrp200.lustrouspixeldungeon.actors.hero;
 
 import com.zrp200.lustrouspixeldungeon.actors.Char;
-import com.zrp200.lustrouspixeldungeon.actors.mobs.npcs.NPC;
 
 public class HeroAction {
 	
@@ -53,9 +52,9 @@ public class HeroAction {
 	}
 	
 	public static class Interact extends HeroAction {
-		public NPC npc;
-		public Interact( NPC npc ) {
-			this.npc = npc;
+		public Char ch;
+		public Interact( Char ch ) {
+			this.ch = ch;
 		}
 	}
 	

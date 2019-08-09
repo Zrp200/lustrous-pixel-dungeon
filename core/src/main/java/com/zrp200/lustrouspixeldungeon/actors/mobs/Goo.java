@@ -29,6 +29,7 @@ import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.Badges;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
+import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.Blob;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.GooWarn;
@@ -38,6 +39,7 @@ import com.zrp200.lustrouspixeldungeon.actors.buffs.Ooze;
 import com.zrp200.lustrouspixeldungeon.effects.CellEmitter;
 import com.zrp200.lustrouspixeldungeon.effects.Speck;
 import com.zrp200.lustrouspixeldungeon.effects.particles.ElmoParticle;
+import com.zrp200.lustrouspixeldungeon.items.artifacts.DriedRose;
 import com.zrp200.lustrouspixeldungeon.items.keys.SkeletonKey;
 import com.zrp200.lustrouspixeldungeon.items.quest.GooBlob;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
@@ -109,6 +111,10 @@ public class Goo extends Mob {
 				((GooSprite)sprite).spray(false);
 			}
 			HP++;
+		}
+
+		if (state != SLEEPING){
+			Dungeon.level.seal();
 		}
 
 		return super.act();
@@ -204,12 +210,6 @@ public class Goo extends Mob {
 		pumpedUp = 0;
 		return super.getCloser( target );
 	}
-	
-	@Override
-	public void move( int step ) {
-		Dungeon.level.seal();
-		super.move( step );
-	}
 
 	@Override
 	public void damage(int dmg, Object src) {
@@ -253,8 +253,16 @@ public class Goo extends Mob {
 	@Override
 	public void notice() {
 		super.notice();
-		BossHealthBar.assignBoss(this);
-		yell( Messages.get(this, "notice") );
+		if (!BossHealthBar.isAssigned()) {
+			BossHealthBar.assignBoss(this);
+			yell(Messages.get(this, "notice"));
+			for (Char ch : Actor.chars()){
+				if (ch instanceof DriedRose.GhostHero){
+					GLog.n("\n");
+					((DriedRose.GhostHero) ch).sayBoss();
+				}
+			}
+		}
 	}
 
 	private final String PUMPEDUP = "pumpedup";

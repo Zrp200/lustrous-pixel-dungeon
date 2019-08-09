@@ -58,7 +58,7 @@ public class Wandmaker extends Noncombatant {
 		throwItem();
 		return super.act();
 	}
-	
+
 	@Override
 	public boolean interact() {
 		

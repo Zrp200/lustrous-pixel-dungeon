@@ -129,7 +129,7 @@ public class ChangesScene extends PixelScene {
 				super.onClick();
 				if (changesSelected != 0) {
 					changesSelected = 0;
-					ShatteredPixelDungeon.seamlessResetScene();
+					LustrousPixelDungeon.seamlessResetScene();
 				}
 			}
 		};
@@ -143,7 +143,7 @@ public class ChangesScene extends PixelScene {
 				super.onClick();
 				if (changesSelected != 1) {
 					changesSelected = 1;
-					ShatteredPixelDungeon.seamlessResetScene();
+					LustrousPixelDungeon.seamlessResetScene();
 				}
 			}
 		};
@@ -157,7 +157,7 @@ public class ChangesScene extends PixelScene {
 				super.onClick();
 				if (changesSelected != 2) {
 					changesSelected = 2;
-					ShatteredPixelDungeon.seamlessResetScene();
+					LustrousPixelDungeon.seamlessResetScene();
 				}
 			}
 		};

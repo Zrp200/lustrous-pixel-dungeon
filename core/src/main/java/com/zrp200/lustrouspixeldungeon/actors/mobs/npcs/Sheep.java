@@ -23,7 +23,8 @@ package com.zrp200.lustrouspixeldungeon.actors.mobs.npcs;
 
 import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
-import com.zrp200.lustrouspixeldungeon.actors.Char;
+import com.zrp200.lustrouspixeldungeon.LustSettings;
+import com.zrp200.lustrouspixeldungeon.messages.Languages;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.sprites.CharSprite;
 import com.zrp200.lustrouspixeldungeon.sprites.SheepSprite;
@@ -54,10 +55,14 @@ public class Sheep extends Noncombatant {
 		}
 		return true;
 	}
-
+	//FIXME translate this
 	@Override
-	public int defenseSkill(Char enemy) {
-		return 0; // wouldn't make much sense if they somehow were aware enough to dodge things.
+	public String defenseVerb() {
+		if (LustSettings.language() == Languages.ENGLISH){
+			return "Absorbed";
+		} else {
+			return super.defenseVerb();
+		}
 	}
 
 	@Override

@@ -40,6 +40,7 @@ import com.zrp200.lustrouspixeldungeon.actors.mobs.Tengu;
 import com.zrp200.lustrouspixeldungeon.items.Heap;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.keys.IronKey;
+import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Boomerang;
 import com.zrp200.lustrouspixeldungeon.levels.rooms.MazeRoom;
 import com.zrp200.lustrouspixeldungeon.levels.rooms.Room;
 import com.zrp200.lustrouspixeldungeon.levels.rooms.standard.EmptyRoom;
@@ -149,7 +150,7 @@ public class PrisonBossLevel extends Level {
 	public Mob createMob() {
 		return null;
 	}
-	
+
 	@Override
 	protected void createMobs() {
 		tengu = new Tengu(); //We want to keep track of tengu independently of other mobs, he's not always in the level.
@@ -212,7 +213,12 @@ public class PrisonBossLevel extends Level {
 
 	@Override
 	public int randomRespawnCell() {
-		return 5+2*32 + PathFinder.NEIGHBOURS8[Random.Int(8)]; //random cell adjacent to the entrance.
+		int pos = 5+2*32; //random cell adjacent to the entrance.
+		int cell;
+		do {
+			cell = pos + PathFinder.NEIGHBOURS8[Random.Int(8)];
+		} while (!passable[cell] || Actor.findChar(cell) != null);
+		return cell;
 	}
 	
 	@Override
@@ -279,12 +285,19 @@ public class PrisonBossLevel extends Level {
 	private void clearEntities(Room safeArea){
 		for (Heap heap : heaps.values()){
 			if (safeArea == null || !safeArea.inside(cellToPoint(heap.pos))){
-				for (Item item : heap.items)
-					storedItems.add(item);
+				storedItems.addAll(heap.items);
 				heap.destroy();
 			}
 		}
-		for (Mob mob : Dungeon.level.mobs.toArray(new Mob[Dungeon.level.mobs.size()])){
+
+		for ( Boomerang.Returning returning : Dungeon.boomerangsThisDepth() ){
+			if (safeArea == null){
+				returning.detach();
+				storedItems.add(returning.boomerang);
+			}
+		}
+
+		for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
 			if (mob != tengu && (safeArea == null || !safeArea.inside(cellToPoint(mob.pos)))){
 				mob.destroy();
 				if (mob.sprite != null)
@@ -314,7 +327,7 @@ public class PrisonBossLevel extends Level {
 
 				for (Mob m : mobs){
 					//bring the first ally with you
-					if (m.alignment == Char.Alignment.ALLY){
+					if (m.alignment == Char.Alignment.ALLY && !m.properties().contains(Char.Property.IMMOVABLE)){
 						m.pos = ARENA_DOOR; //they should immediately walk out of the door
 						m.sprite.place(m.pos);
 						break;
@@ -411,7 +424,7 @@ public class PrisonBossLevel extends Level {
 				//remove all mobs, but preserve allies
 				ArrayList<Mob> allies = new ArrayList<>();
 				for(Mob m : mobs.toArray(new Mob[0])){
-					if (m.alignment == Char.Alignment.ALLY){
+					if (m.alignment == Char.Alignment.ALLY && !m.properties().contains(Char.Property.IMMOVABLE)){
 						allies.add(m);
 						mobs.remove(m);
 					}

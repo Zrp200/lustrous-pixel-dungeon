@@ -179,10 +179,10 @@ public class CityBossLevel extends Level {
 	
 	@Override
 	public int randomRespawnCell() {
-		int cell = entrance + PathFinder.NEIGHBOURS8[Random.Int(8)];
-		while (!passable[cell]){
+		int cell;
+		do {
 			cell = entrance + PathFinder.NEIGHBOURS8[Random.Int(8)];
-		}
+		} while (!passable[cell] || Actor.findChar(cell) != null);
 		return cell;
 	}
 	
@@ -195,7 +195,7 @@ public class CityBossLevel extends Level {
 			
 			for (Mob m : mobs){
 				//bring the first ally with you
-				if (m.alignment == Char.Alignment.ALLY){
+				if (m.alignment == Char.Alignment.ALLY && !m.properties().contains(Char.Property.IMMOVABLE)){
 					m.pos = Dungeon.hero.pos + (Random.Int(2) == 0 ? +1 : -1);
 					m.sprite.place(m.pos);
 					break;

@@ -37,7 +37,7 @@ public class RatKing extends Noncombatant {
 	public float speed() {
 		return 2f;
 	}
-	
+
 	@Override
 	public boolean interact() {
 		sprite.turnTo( pos, Dungeon.hero.pos );

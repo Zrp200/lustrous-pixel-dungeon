@@ -28,6 +28,7 @@ import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.effects.particles.ShadowParticle;
 import com.zrp200.lustrouspixeldungeon.items.Item;
+import com.zrp200.lustrouspixeldungeon.items.wands.WandOfLivingEarth;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.plants.Earthroot;
 import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
@@ -90,6 +91,11 @@ public class ChaliceOfBlood extends Artifact {
 		Earthroot.Armor armor = hero.buff(Earthroot.Armor.class);
 		if (armor != null) {
 			damage = armor.absorb(damage);
+		}
+
+		WandOfLivingEarth.RockArmor rockArmor = hero.buff(WandOfLivingEarth.RockArmor.class);
+		if (rockArmor != null) {
+			damage = rockArmor.absorb(damage);
 		}
 
 		damage -= hero.drRoll();

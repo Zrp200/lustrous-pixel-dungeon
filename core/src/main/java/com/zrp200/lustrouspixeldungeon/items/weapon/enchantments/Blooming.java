@@ -49,8 +49,8 @@ public class Blooming extends Weapon.Enchantment {
 		// lvl 1 - 50%
 		// lvl 2 - 60%
 		int level = Math.max( 0, weapon.level() );
-		
-		if (Random.Int( level + 3 ) >= 2 && !plantGrass(defender.pos)) {
+        boolean secondPlant = level > Random.Int(10);
+		if (Random.Int( level + 3 ) >= 2 && (!plantGrass(defender.pos) || secondPlant)) {
 			ArrayList<Integer> positions = new ArrayList<>();
 			for (int i : PathFinder.NEIGHBOURS8) {
 				positions.add(i);

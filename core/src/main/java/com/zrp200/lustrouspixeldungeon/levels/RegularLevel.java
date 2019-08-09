@@ -181,7 +181,7 @@ public abstract class RegularLevel extends Level {
 			return null;
 		}
 	}
-	
+
 	@Override
 	protected void createMobs() {
 		//on floor 1, 10 rats are created so the player can get level 2.

@@ -66,6 +66,7 @@ import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfTransmutation;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.zrp200.lustrouspixeldungeon.items.stones.StoneOfEnchantment;
 import com.zrp200.lustrouspixeldungeon.items.stones.StoneOfIntuition;
+import com.zrp200.lustrouspixeldungeon.items.wands.WandOfWarding;
 import com.zrp200.lustrouspixeldungeon.levels.features.Chasm;
 import com.zrp200.lustrouspixeldungeon.levels.features.Door;
 import com.zrp200.lustrouspixeldungeon.levels.features.HighGrass;
@@ -967,6 +968,22 @@ public abstract class Level implements Bundlable {
 					int p = heap.pos;
 					for (int i : PathFinder.NEIGHBOURS9)
 						fieldOfView[p+i] = true;
+				}
+			}
+
+			for (Mob ward : mobs){
+				if (ward instanceof WandOfWarding.Ward){
+					if (ward.fieldOfView == null || ward.fieldOfView.length != length()){
+						ward.fieldOfView = new boolean[length()];
+						Dungeon.level.updateFieldOfView( ward, ward.fieldOfView );
+					}
+					for (Mob m : mobs){
+						if (ward.fieldOfView[m.pos] && !fieldOfView[m.pos] &&
+								!Dungeon.hero.mindVisionEnemies.contains(m)){
+							Dungeon.hero.mindVisionEnemies.add(m);
+						}
+					}
+					BArray.or(fieldOfView, ward.fieldOfView, fieldOfView);
 				}
 			}
 		}

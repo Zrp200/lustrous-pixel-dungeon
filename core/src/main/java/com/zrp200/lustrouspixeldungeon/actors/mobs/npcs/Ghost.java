@@ -310,7 +310,7 @@ public class Ghost extends Noncombatant {
 
 			return questBoss;
 		}
-		
+
 		public static void process() {
 			if (spawned && given && !processed && (depth == Dungeon.depth)) {
 				GLog.n( Messages.get(Ghost.class, "find_me") );

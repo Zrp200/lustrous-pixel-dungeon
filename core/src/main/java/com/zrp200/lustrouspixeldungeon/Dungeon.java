@@ -47,7 +47,6 @@ import com.zrp200.lustrouspixeldungeon.items.Generator;
 import com.zrp200.lustrouspixeldungeon.items.Heap;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.TomeOfMastery;
-import com.zrp200.lustrouspixeldungeon.items.artifacts.DriedRose;
 import com.zrp200.lustrouspixeldungeon.items.potions.Potion;
 import com.zrp200.lustrouspixeldungeon.items.rings.Ring;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.Scroll;
@@ -337,7 +336,7 @@ public class Dungeon {
 	public static boolean bossLevel( int depth ) {
 		return depth == 5 || depth == 10 || depth == 15 || depth == 20 || depth == 25;
 	}
-	
+
 	public static void switchLevel( final Level level, int pos ) {
 		
 		if (pos == -2){
@@ -349,7 +348,7 @@ public class Dungeon {
 		PathFinder.setMapSize(level.width(), level.height());
 		
 		Dungeon.level = level;
-		DriedRose.restoreGhostHero( level, pos );
+		Mob.restoreAllies( level, pos );
 		Actor.init();
 		
 		Actor respawner = level.respawner();
@@ -716,7 +715,7 @@ public class Dungeon {
 		}
 		return boomerangs;
 	}
-	
+
 	public static void win( Class cause ) {
 
 		hero.belongings.identify();
@@ -841,7 +840,7 @@ public class Dungeon {
 	public static PathFinder.Path findPath(Char ch, int from, int to, boolean[] pass, boolean[] visible ) {
 		return PathFinder.find( from, to, getPassable(ch, pass, visible) );
 	}
-	
+
 	public static int findStep(Char ch, int from, int to, boolean[] pass, boolean[] visible ) {
 		getPassable(ch, pass, visible);
 		if (Dungeon.level.adjacent( from, to ))

@@ -25,18 +25,18 @@ import com.watabou.glwrap.Blending;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
-import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.FileUtils;
-import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.Badges;
+import com.zrp200.lustrouspixeldungeon.Chrome;
 import com.zrp200.lustrouspixeldungeon.LustSettings;
 import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
 import com.zrp200.lustrouspixeldungeon.Rankings;
 import com.zrp200.lustrouspixeldungeon.effects.BannerSprites;
 import com.zrp200.lustrouspixeldungeon.effects.Fireball;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
-import com.zrp200.lustrouspixeldungeon.ui.RedButton;
+import com.zrp200.lustrouspixeldungeon.ui.Icons;
 import com.zrp200.lustrouspixeldungeon.ui.RenderedTextMultiline;
+import com.zrp200.lustrouspixeldungeon.ui.StyledButton;
 import com.zrp200.lustrouspixeldungeon.ui.changelist.Milestone;
 import com.zrp200.lustrouspixeldungeon.windows.WndStartGame;
 
@@ -64,13 +64,14 @@ public class WelcomeScene extends PixelScene {
 		title.brightness(0.6f);
 		add( title );
 
-		float topRegion = Math.max(95f, h*0.45f);
+		float topRegion = Math.max(title.height, h*0.45f);
 
 		title.x = (w - title.width()) / 2f;
-		if (LustSettings.landscape())
+		if (LustSettings.landscape()) {
 			title.y = (topRegion - title.height()) / 2f;
-		else
-			title.y = 16 + (topRegion - title.height() - 16) / 2f;
+		} else {
+			title.y = 20 + (topRegion - title.height() - 20) / 2f;
+		}
 
 		align(title);
 
@@ -93,7 +94,7 @@ public class WelcomeScene extends PixelScene {
 		signs.y = title.y;
 		add( signs );
 
-		DarkRedButton okay = new DarkRedButton(Messages.get(this, "continue")){
+		StyledButton okay = new StyledButton(Chrome.Type.GREY_BUTTON_TR, Messages.get(this, "continue")){
 			@Override
 			protected void onClick() {
 				super.onClick();
@@ -107,8 +108,9 @@ public class WelcomeScene extends PixelScene {
 			}
 		};
 
+		//FIXME these buttons are very low on 18:9 devices
 		if (previousVersion != 0){
-			DarkRedButton changes = new DarkRedButton(Messages.get(this, "changelist")){
+			StyledButton changes = new StyledButton(Chrome.Type.GREY_BUTTON_TR, Messages.get(TitleScene.class, "changes")){
 				@Override
 				protected void onClick() {
 					super.onClick();
@@ -116,16 +118,16 @@ public class WelcomeScene extends PixelScene {
 					LustrousPixelDungeon.switchScene(ChangesScene.class);
 				}
 			};
-			okay.setRect(title.x, h-20, (title.width()/2)-2, 16);
-			okay.textColor(0xBBBB33);
+			okay.setRect(title.x, h-25, (title.width()/2)-2, 21);
 			add(okay);
 
-			changes.setRect(okay.right()+2, h-20, (title.width()/2)-2, 16);
-			changes.textColor(0xBBBB33);
+			changes.setRect(okay.right()+2, h-25, (title.width()/2)-2, 21);
+			changes.icon(Icons.get(Icons.CHANGES));
 			add(changes);
 		} else {
-			okay.setRect(title.x, h-20, title.width(), 16);
-			okay.textColor(0xBBBB33);
+			okay.text(Messages.get(TitleScene.class, "enter"));
+			okay.setRect(title.x, h-25, title.width(), 21);
+			okay.icon(Icons.get(Icons.ENTER));
 			add(okay);
 		}
 
@@ -188,25 +190,4 @@ public class WelcomeScene extends PixelScene {
 		add( fb );
 	}
 
-	private class DarkRedButton extends RedButton{
-		{
-			bg.brightness(0.4f);
-		}
-
-		DarkRedButton(String text){
-			super(text);
-		}
-
-		@Override
-		protected void onTouchDown() {
-			bg.brightness(0.5f);
-			Sample.INSTANCE.play( Assets.SND_CLICK );
-		}
-
-		@Override
-		protected void onTouchUp() {
-			super.onTouchUp();
-			bg.brightness(0.4f);
-		}
-	}
 }

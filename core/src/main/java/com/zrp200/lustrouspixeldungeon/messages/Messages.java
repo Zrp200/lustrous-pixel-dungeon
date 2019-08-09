@@ -21,7 +21,6 @@
 
 package com.zrp200.lustrouspixeldungeon.messages;
 
-import com.watabou.utils.DeviceCompat;
 import com.zrp200.lustrouspixeldungeon.LustSettings;
 import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
 
@@ -89,14 +88,6 @@ public class Messages {
 			while (keys.hasMoreElements()) {
 				String key = keys.nextElement();
 				String value = bundle.getString(key);
-				
-				if (DeviceCompat.usesISO_8859_1()) {
-					try {
-						value = new String(value.getBytes("ISO-8859-1"), "UTF-8");
-					} catch (Exception e) {
-						LustrousPixelDungeon.reportException(e);
-					}
-				}
 
 				strings.put(key, value);
 			}

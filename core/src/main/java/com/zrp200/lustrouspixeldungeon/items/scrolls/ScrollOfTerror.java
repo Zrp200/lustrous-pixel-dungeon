@@ -24,6 +24,7 @@ package com.zrp200.lustrouspixeldungeon.items.scrolls;
 import com.watabou.noosa.audio.Sample;
 import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
+import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Invisibility;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Paralysis;
@@ -49,7 +50,7 @@ public class ScrollOfTerror extends Scroll {
 		int count = 0;
 		Mob affected = null;
 		for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
-			if (Dungeon.level.heroFOV[mob.pos]) {
+			if (mob.alignment != Char.Alignment.ALLY && Dungeon.level.heroFOV[mob.pos]) {
 				Buff.affect( mob, Terror.class, 20f ).object = curUser.id();
 
 				if (mob.buff(Terror.class) != null){

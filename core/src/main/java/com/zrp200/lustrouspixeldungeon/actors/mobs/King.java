@@ -41,6 +41,7 @@ import com.zrp200.lustrouspixeldungeon.actors.buffs.Vertigo;
 import com.zrp200.lustrouspixeldungeon.effects.Flare;
 import com.zrp200.lustrouspixeldungeon.effects.Speck;
 import com.zrp200.lustrouspixeldungeon.items.ArmorKit;
+import com.zrp200.lustrouspixeldungeon.items.artifacts.DriedRose;
 import com.zrp200.lustrouspixeldungeon.items.artifacts.LloydsBeacon;
 import com.zrp200.lustrouspixeldungeon.items.keys.SkeletonKey;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfTeleportation;
@@ -50,6 +51,7 @@ import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
 import com.zrp200.lustrouspixeldungeon.sprites.KingSprite;
 import com.zrp200.lustrouspixeldungeon.sprites.UndeadSprite;
 import com.zrp200.lustrouspixeldungeon.ui.BossHealthBar;
+import com.zrp200.lustrouspixeldungeon.utils.GLog;
 
 public class King extends Mob {
 	
@@ -220,8 +222,16 @@ public class King extends Mob {
 	@Override
 	public void notice() {
 		super.notice();
-		BossHealthBar.assignBoss(this);
-		yell( Messages.get(this, "notice") );
+		if (!BossHealthBar.isAssigned()) {
+			BossHealthBar.assignBoss(this);
+			yell(Messages.get(this, "notice"));
+			for (Char ch : Actor.chars()){
+				if (ch instanceof DriedRose.GhostHero){
+					GLog.n("\n");
+					((DriedRose.GhostHero) ch).sayBoss();
+				}
+			}
+		}
 	}
 	
 	{ // standard resists, of which he has basically none.

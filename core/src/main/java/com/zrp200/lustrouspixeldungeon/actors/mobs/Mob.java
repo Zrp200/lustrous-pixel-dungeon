@@ -23,6 +23,7 @@ package com.zrp200.lustrouspixeldungeon.actors.mobs;
 
 import com.watabou.utils.Bundle;
 import com.watabou.utils.GameMath;
+import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Badges;
 import com.zrp200.lustrouspixeldungeon.Challenges;
@@ -62,6 +63,7 @@ import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Necromantic;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Lucky;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.MissileWeapon;
+import com.zrp200.lustrouspixeldungeon.levels.Level;
 import com.zrp200.lustrouspixeldungeon.levels.features.Chasm;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.plants.Swiftthistle;
@@ -69,6 +71,7 @@ import com.zrp200.lustrouspixeldungeon.sprites.CharSprite;
 import com.zrp200.lustrouspixeldungeon.utils.GLog;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 
 import static com.zrp200.lustrouspixeldungeon.Dungeon.getTempBlock;
@@ -94,7 +97,7 @@ public abstract class Mob extends Char {
 	
 	protected int target = -1;
 	public boolean isIgnoringBlockages; // an inelegant way to tell the game to ignore temporary blockages while pathfinding.
-	
+
 	protected int defenseSkill = 0;
 	protected int attackSkill = 0;
 	protected int armor=0;
@@ -208,6 +211,8 @@ public abstract class Mob extends Char {
 		updateFieldOfView();
 		return enemy != null && enemy.isAlive() && fieldOfView[enemy.pos] && enemy.invisible <= 0;
 	}
+	//FIXME this is sort of a band-aid correction for allies needing more intelligent behaviour
+	protected boolean intelligentAlly = false;
 
 	protected boolean needsNewEnemy() {
 		//find a new enemy if..
@@ -296,12 +301,14 @@ public abstract class Mob extends Char {
 
 			//if the mob is an ally...
 		} else if ( alignment == Alignment.ALLY ) {
-			//look for hostile mobs that are not passive to attack
-			for (Mob mob : level.mobs)
-				if (mob.alignment == Alignment.ENEMY
-						&& fieldOfView[mob.pos]
-						&& mob.state != mob.PASSIVE && (buff(Corruption.class) != null || !(mob instanceof Piranha)) )
-					enemies.add(mob);
+				//look for hostile mobs to attack
+				for (Mob mob : Dungeon.level.mobs)
+					if (mob.alignment == Alignment.ENEMY && fieldOfView[mob.pos])
+						//intelligent allies do not target mobs which are passive, wandering, or asleep
+						if (!intelligentAlly ||
+								(mob.state != mob.SLEEPING && mob.state != mob.PASSIVE && mob.state != mob.WANDERING)) {
+							enemies.add(mob);
+						}
 
 			//if the mob is an enemy...
 		} else if (alignment == Alignment.ENEMY) {
@@ -496,7 +503,7 @@ public abstract class Mob extends Char {
 	
 	protected boolean doAttack( Char enemy ) {
 		
-		boolean visible = level.heroFOV[pos];
+		boolean visible = Dungeon.level.heroFOV[pos];
 		
 		if (visible) {
 			sprite.attack( enemy.pos );
@@ -530,11 +537,7 @@ public abstract class Mob extends Char {
 
 	@Override
 	public int defenseSkill( Char enemy ) {
-		if (surprisedBy(enemy) || paralysed > 0) {
-			return 0;
-		} else {
-			return this.defenseSkill;
-		}
+		return (surprisedBy(enemy) || paralysed > 0) ? 0 : this.defenseSkill;
 	}
 
 	@Override
@@ -542,7 +545,7 @@ public abstract class Mob extends Char {
 		return this.attackSkill;
 	}
 
-	private boolean hitWithRanged = false;
+	protected boolean hitWithRanged = false;
 
 	@Override
 	public int defenseProc( Char enemy, int damage ) {
@@ -570,14 +573,15 @@ public abstract class Mob extends Char {
 
 		if (buff(SoulMark.class) != null) {
 			int restoration = Math.min(damage, HP);
-			if(restoration/2 > 0) {
-				Dungeon.hero.buff(Hunger.class).satisfy(restoration);
-				Integer toHeal=Math.min(HT-HP, Math.round(restoration*0.33f));
-				HP += toHeal;
-				if(toHeal > 0) Dungeon.hero.sprite.showStatus( CharSprite.POSITIVE,toHeal.toString() );
+			//physical damage that doesn't come from the hero is less effective
+			if (enemy != Dungeon.hero){
+				restoration = Math.round(restoration * 0.4f);
+			}
+
+			Buff.affect(Dungeon.hero, Hunger.class).satisfy(restoration);
+			Dungeon.hero.HP = (int)Math.ceil(Math.min(Dungeon.hero.HT, Dungeon.hero.HP+(restoration*0.4f)));
 				Dungeon.hero.sprite.emitter().burst( Speck.factory(Speck.HEALING), 1 );
 			}
-		}
 
 		return damage;
 	}
@@ -777,12 +781,19 @@ public abstract class Mob extends Char {
 		return enemySeen && (target == Dungeon.hero.pos);
 	}
 
+	// whether or not the enemy can be put into attack range by the mob if it had infinite time to do so.
+	// enemies that cannot be reached are ignored.
+	// TODO consider whether or not to externalize this beyond piranhas.
+	protected boolean canReachEnemy() {
+		return true;
+	}
+
 	class AiState {
 		boolean act( boolean justAlerted ) {
 			return enemySeen = hasNoticedEnemy();
 		}
 		boolean hasNoticedEnemy() {
-			return enemyInFOV();
+			return enemyInFOV() && canReachEnemy();
 		}
 	}
 
@@ -949,5 +960,56 @@ public abstract class Mob extends Char {
 			return true;
 		}
 	}
-}
 
+
+	private static ArrayList<Mob> heldAllies = new ArrayList<>();
+
+	public static void holdAllies( Level level ){
+		heldAllies.clear();
+		for (Mob mob : level.mobs.toArray( new Mob[0] )) {
+			//preserve the ghost no matter where they are
+			if (mob instanceof DriedRose.GhostHero) {
+				((DriedRose.GhostHero) mob).clearDefensingPos();
+				level.mobs.remove( mob );
+				heldAllies.add(mob);
+
+				//preserve intelligent allies if they are near the hero
+			} else if (mob.alignment == Alignment.ALLY
+					&& mob.intelligentAlly
+					&& Dungeon.level.distance(Dungeon.hero.pos, mob.pos) <= 3){
+				level.mobs.remove( mob );
+				heldAllies.add(mob);
+			}
+		}
+	}
+
+	public static void restoreAllies( Level level, int pos ){
+		if (!heldAllies.isEmpty()){
+
+			ArrayList<Integer> candidatePositions = new ArrayList<>();
+			for (int i : PathFinder.NEIGHBOURS8) {
+				if (!Dungeon.level.solid[i+pos] && level.findMob(i+pos) == null){
+					candidatePositions.add(i+pos);
+				}
+			}
+			Collections.shuffle(candidatePositions);
+
+			for (Mob ally : heldAllies) {
+				level.mobs.add(ally);
+				ally.state = ally.WANDERING;
+
+				if (!candidatePositions.isEmpty()){
+					ally.pos = candidatePositions.remove(0);
+				} else {
+					ally.pos = pos;
+				}
+
+			}
+		}
+		heldAllies.clear();
+	}
+
+	public static void clearHeldAllies(){
+		heldAllies.clear();
+	}
+}

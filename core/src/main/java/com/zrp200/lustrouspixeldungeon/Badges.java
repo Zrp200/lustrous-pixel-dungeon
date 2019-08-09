@@ -22,7 +22,6 @@
 package com.zrp200.lustrouspixeldungeon;
 
 import com.watabou.utils.Bundle;
-import com.watabou.utils.Callback;
 import com.watabou.utils.FileUtils;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.artifacts.Artifact;

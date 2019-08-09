@@ -24,6 +24,7 @@ package com.zrp200.lustrouspixeldungeon;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.FileUtils;
+import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Belongings;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.actors.hero.HeroClass;
@@ -161,6 +162,7 @@ public enum Rankings {
 	public void loadGameData(Record rec){
 		Bundle data = rec.gameData;
 
+		Actor.clear();
 		Dungeon.hero = null;
 		Dungeon.level = null;
 		Generator.reset();

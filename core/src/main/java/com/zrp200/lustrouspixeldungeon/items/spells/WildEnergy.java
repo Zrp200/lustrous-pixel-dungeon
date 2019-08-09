@@ -21,17 +21,18 @@
 
 package com.zrp200.lustrouspixeldungeon.items.spells;
 
+import com.watabou.utils.Callback;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.ArtifactRecharge;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Recharging;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
+import com.zrp200.lustrouspixeldungeon.items.artifacts.Artifact;
 import com.zrp200.lustrouspixeldungeon.items.quest.MetalShard;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfRecharging;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.exotic.ScrollOfMysticalEnergy;
 import com.zrp200.lustrouspixeldungeon.items.wands.CursedWand;
 import com.zrp200.lustrouspixeldungeon.mechanics.Ballistica;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
-import com.watabou.utils.Callback;
 
 public class WildEnergy extends TargetedSpell {
 	
@@ -51,9 +52,15 @@ public class WildEnergy extends TargetedSpell {
 			@Override
 			public void call() {
 				ScrollOfRecharging.charge(hero);
-				
-				Buff.affect(hero, Recharging.class, 10f);
-				Buff.affect(hero, ArtifactRecharge.class,10 );
+
+				hero.belongings.charge(1f);
+				for (int i = 0; i < 4; i++){
+					if (hero.belongings.misc1 instanceof Artifact) ((Artifact) hero.belongings.misc1).charge(hero);
+					if (hero.belongings.misc2 instanceof Artifact) ((Artifact) hero.belongings.misc2).charge(hero);
+				}
+
+				Buff.affect(hero, Recharging.class, 8f);
+				Buff.affect(hero, ArtifactRecharge.class, 8 );
 				
 				detach( curUser.belongings.backpack );
 				updateQuickslot();

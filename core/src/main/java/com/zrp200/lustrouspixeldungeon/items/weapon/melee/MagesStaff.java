@@ -42,6 +42,7 @@ import com.zrp200.lustrouspixeldungeon.items.wands.Wand;
 import com.zrp200.lustrouspixeldungeon.items.wands.WandOfCorrosion;
 import com.zrp200.lustrouspixeldungeon.items.wands.WandOfCorruption;
 import com.zrp200.lustrouspixeldungeon.items.wands.WandOfDisintegration;
+import com.zrp200.lustrouspixeldungeon.items.wands.WandOfLivingEarth;
 import com.zrp200.lustrouspixeldungeon.items.wands.WandOfRegrowth;
 import com.zrp200.lustrouspixeldungeon.items.weapon.Weapon;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
@@ -387,7 +388,8 @@ public class MagesStaff extends MeleeWeapon.Uncommon {
 			return !((wand instanceof WandOfDisintegration)
 					|| (wand instanceof WandOfCorruption)
 					|| (wand instanceof WandOfCorrosion)
-					|| (wand instanceof WandOfRegrowth));
+					|| (wand instanceof WandOfRegrowth)
+					|| (wand instanceof WandOfLivingEarth));
 		}
 	};
 

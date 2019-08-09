@@ -87,7 +87,7 @@ public class Blacksmith extends Noncombatant {
 					}
 				}
 			} );
-			
+
 		} else if (!Quest.completed) {
 			if (Quest.alternative) {
 				

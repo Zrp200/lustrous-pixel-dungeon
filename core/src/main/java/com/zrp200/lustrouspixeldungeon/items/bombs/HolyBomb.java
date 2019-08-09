@@ -28,8 +28,6 @@ import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
-import com.zrp200.lustrouspixeldungeon.actors.buffs.Blindness;
-import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.effects.Flare;
 import com.zrp200.lustrouspixeldungeon.effects.particles.ShadowParticle;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
@@ -66,7 +64,6 @@ public class HolyBomb extends Bomb {
 		}
 		
 		for (Char ch : affected){
-			Buff.prolong(ch, Blindness.class, 1f);
 			if (ch.properties().contains(Char.Property.UNDEAD) || ch.properties().contains(Char.Property.DEMONIC)){
 				ch.sprite.emitter().start( ShadowParticle.UP, 0.05f, 10 );
 				

@@ -60,10 +60,10 @@ public class Imp extends Noncombatant {
 		} else {
 			seenBefore = false;
 		}
-		
+
 		return super.act();
 	}
-	
+
 	@Override
 	public boolean interact() {
 		

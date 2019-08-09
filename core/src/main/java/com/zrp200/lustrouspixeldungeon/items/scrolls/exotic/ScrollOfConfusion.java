@@ -24,6 +24,7 @@ package com.zrp200.lustrouspixeldungeon.items.scrolls.exotic;
 import com.watabou.noosa.audio.Sample;
 import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
+import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Blindness;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Invisibility;
@@ -40,7 +41,7 @@ public class ScrollOfConfusion extends ExoticScroll {
 	@Override
 	public void doRead() {
 		for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
-			if (Dungeon.level.heroFOV[mob.pos]) {
+			if (mob.alignment != Char.Alignment.ALLY && Dungeon.level.heroFOV[mob.pos]) {
 				Buff.prolong(mob, Vertigo.class, 10f);
 				Buff.prolong(mob, Blindness.class, 10f);
 			}

@@ -36,6 +36,7 @@ import com.zrp200.lustrouspixeldungeon.actors.hero.HeroSubClass;
 import com.zrp200.lustrouspixeldungeon.effects.CellEmitter;
 import com.zrp200.lustrouspixeldungeon.effects.Speck;
 import com.zrp200.lustrouspixeldungeon.items.TomeOfMastery;
+import com.zrp200.lustrouspixeldungeon.items.artifacts.DriedRose;
 import com.zrp200.lustrouspixeldungeon.items.artifacts.LloydsBeacon;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfMagicMapping;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.MissileWeapon;
@@ -48,6 +49,7 @@ import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
 import com.zrp200.lustrouspixeldungeon.sprites.TenguSprite;
 import com.zrp200.lustrouspixeldungeon.ui.BossHealthBar;
+import com.zrp200.lustrouspixeldungeon.utils.GLog;
 
 public class Tengu extends Mob {
 	
@@ -262,12 +264,20 @@ public class Tengu extends Mob {
 	@Override
 	public void notice() {
 		super.notice();
-		BossHealthBar.assignBoss(this);
-		if (HP <= HT/2) BossHealthBar.bleed(true);
-		if (HP == HT) {
-			yell(Messages.get(this, "notice_mine", Dungeon.hero.givenName()));
-		} else {
-			yell(Messages.get(this, "notice_face", Dungeon.hero.givenName()));
+		if (!BossHealthBar.isAssigned()) {
+			BossHealthBar.assignBoss(this);
+			if (HP <= HT/2) BossHealthBar.bleed(true);
+			if (HP == HT) {
+				yell(Messages.get(this, "notice_mine", Dungeon.hero.givenName()));
+				for (Char ch : Actor.chars()){
+					if (ch instanceof DriedRose.GhostHero){
+						GLog.n("\n");
+						((DriedRose.GhostHero) ch).sayBoss();
+					}
+				}
+			} else {
+				yell(Messages.get(this, "notice_face", Dungeon.hero.givenName()));
+			}
 		}
 	}
 
