@@ -31,6 +31,7 @@ import com.watabou.utils.GameMath;
 import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
 import com.zrp200.lustrouspixeldungeon.Rankings;
+import com.zrp200.lustrouspixeldungeon.actors.hero.HeroClass;
 import com.zrp200.lustrouspixeldungeon.effects.Flare;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSprite;
@@ -225,6 +226,10 @@ public class RankingsScene extends PixelScene {
 			}
 			
 			classIcon.copy( Icons.get( rec.heroClass ) );
+			if (rec.heroClass == HeroClass.ROGUE){
+				//cloak of shadows needs to be brightened a bit
+				classIcon.brightness(2f);
+			}
 		}
 		
 		@Override
@@ -268,15 +273,17 @@ public class RankingsScene extends PixelScene {
 				flare.point( shield.center() );
 			}
 
-			classIcon.x = x + width - classIcon.width;
-			classIcon.y = shield.y;
+			classIcon.x = x + width - 16 + (16 - classIcon.width())/2f;
+			classIcon.y = shield.y + (16 - classIcon.height())/2f;
+			align(classIcon);
 
 			level.x = classIcon.x + (classIcon.width - level.width()) / 2f;
 			level.y = classIcon.y + (classIcon.height - level.height()) / 2f + 1;
 			align(level);
 
-			steps.x = x + width - steps.width - classIcon.width;
-			steps.y = shield.y;
+			steps.x = x + width - 32 + (16 - steps.width())/2f;
+			steps.y = shield.y + (16 - steps.height())/2f;
+			align(steps);
 
 			depth.x = steps.x + (steps.width - depth.width()) / 2f;
 			depth.y = steps.y + (steps.height - depth.height()) / 2f + 1;

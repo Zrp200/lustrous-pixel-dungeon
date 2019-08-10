@@ -43,7 +43,7 @@ public class ChangesButton extends Button {
 	protected void createChildren() {
 		super.createChildren();
 
-		image = Icons.NOTES.get();
+		image = Icons.CHANGES.get();
 		add( image );
 	}
 
@@ -56,13 +56,13 @@ public class ChangesButton extends Button {
 	}
 
 	@Override
-	protected void onTouchDown() {
+	protected void onPointerDown() {
 		image.brightness( 1.5f );
 		Sample.INSTANCE.play( Assets.SND_CLICK );
 	}
 
 	@Override
-	protected void onTouchUp() {
+	protected void onPointerUp() {
 		image.resetColor();
 	}
 

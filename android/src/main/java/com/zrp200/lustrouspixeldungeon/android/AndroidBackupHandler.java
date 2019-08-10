@@ -28,13 +28,12 @@ import android.app.backup.BackupDataOutput;
 import android.app.backup.FullBackupDataOutput;
 import android.os.ParcelFileDescriptor;
 
-import com.watabou.utils.FileUtils;
 import com.zrp200.lustrouspixeldungeon.journal.Journal;
 
 import java.io.File;
 
 //a handler for android backup requests
-public class BackupHandler extends BackupAgent {
+public class AndroidBackupHandler extends BackupAgent {
 	
 	//Both of these do nothing. This handler is here to support use of android 4.0+ ADB backup
 	//and android 6.0+ auto-backup. It does not support android 2.2+ key-value backup
@@ -49,12 +48,29 @@ public class BackupHandler extends BackupAgent {
 		//does not backup runs in progress, to prevent cheating.
 		
 		//store shared preferences
-		fullBackupFile(new File(getFilesDir().getParent() + "/shared_prefs/"+ LustrousPixelDungeon.class.getCanonicalName() + ".xml"), data);
-		
+		fullBackupFile(new File(getFilesDir().getParent() + "/shared_prefs/LustrousPixelDungeon.xml"), data);
+
 		//store game data
-		fullBackupFile(FileUtils.getFile( getFilesDir(), Rankings.RANKINGS_FILE ), data);
-		fullBackupFile(FileUtils.getFile( getFilesDir(), Badges.BADGES_FILE ), data);
-		fullBackupFile(FileUtils.getFile( getFilesDir(), Journal.JOURNAL_FILE ), data);
+		File file = getFile( getFilesDir(), Rankings.RANKINGS_FILE );
+		if (file != null){
+			fullBackupFile( file , data);
+		}
+		file = getFile( getFilesDir(), Badges.BADGES_FILE );
+		if (file != null){
+			fullBackupFile( file , data);
+		}
+		file = getFile( getFilesDir(), Journal.JOURNAL_FILE );
+		if (file != null){
+			fullBackupFile( file , data);
+		}
+	}
+	
+	private static File getFile( File base, String name ){
+		File file = new File(base, name);
+		if (!file.exists() || !file.isDirectory()){
+			return file;
+		}
+		return null;
 	}
 	
 }

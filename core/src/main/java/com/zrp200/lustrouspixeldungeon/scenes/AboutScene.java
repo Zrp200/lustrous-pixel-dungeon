@@ -21,15 +21,12 @@
 
 package com.zrp200.lustrouspixeldungeon.scenes;
 
-import android.content.Intent;
-import android.net.Uri;
-
-import com.watabou.input.Touchscreen.Touch;
+import com.watabou.input.PointerEvent;
 import com.watabou.noosa.Camera;
-import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
+import com.watabou.noosa.PointerArea;
 import com.watabou.noosa.RenderedText;
-import com.watabou.noosa.TouchArea;
+import com.watabou.utils.DeviceCompat;
 import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.LustSettings;
 import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
@@ -112,11 +109,10 @@ public class AboutScene extends PixelScene {
 		shpxtitle.y = shpx.y + shpx.height + 5;
 		align(shpxtitle);
 
-		TouchArea shpxhotArea = new TouchArea( shpxtitle.x, shpxtitle.y, shpxtitle.width(), shpxtitle.height() ) {
+		PointerArea shpxhotArea = new PointerArea( shpxtitle.x, shpxtitle.y, shpxtitle.width(), shpxtitle.height() ) {
 			@Override
-			protected void onClick( Touch touch ) {
-				Intent intent = new Intent( Intent.ACTION_VIEW, Uri.parse( "http://" + LNK_SHPX ) );
-				Game.instance.startActivity( intent );
+			protected void onClick( PointerEvent touch ) {
+				DeviceCompat.openURI( "https://" + LNK_SHPX );
 			}
 		};
 		add(shpxhotArea);
@@ -146,11 +142,10 @@ public class AboutScene extends PixelScene {
 		wataTitle.y = wata.y + wata.height() + 10;
 		align(wataTitle);
 
-		TouchArea hotArea = new TouchArea( wataTitle.x, wataTitle.y, wataTitle.width(), wataTitle.height() ) {
+		PointerArea hotArea = new PointerArea( wataTitle.x, wataTitle.y, wataTitle.width(), wataTitle.height() ) {
 			@Override
-			protected void onClick( Touch touch ) {
-				Intent intent = new Intent( Intent.ACTION_VIEW, Uri.parse( "http://" + LNK_WATA ) );
-				Game.instance.startActivity( intent );
+			protected void onClick( PointerEvent touch ) {
+				DeviceCompat.openURI( "https://" + LNK_WATA );
 			}
 		};
 		add( hotArea );

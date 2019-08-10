@@ -28,6 +28,7 @@ import com.watabou.utils.ColorMath;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Assets;
+import com.zrp200.lustrouspixeldungeon.Challenges;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
@@ -189,12 +190,14 @@ public class WandOfLivingEarth extends DamageWand {
 			}
 		}
 
+		int armor = Math.round(damage*0.25f);
+
 		if (guardian != null){
 			guardian.sprite.centerEmitter().burst(MagicMissile.EarthParticle.ATTRACT, 8 + level() / 2);
-			guardian.setInfo(Dungeon.hero, level(), damage);
+			guardian.setInfo(Dungeon.hero, level(), armor);
 		} else {
 			attacker.sprite.centerEmitter().burst(MagicMissile.EarthParticle.ATTRACT, 8 + level() / 2);
-			Buff.affect(attacker, RockArmor.class).addArmor(level(), damage);
+			Buff.affect(attacker, RockArmor.class).addArmor(level(), armor);
 		}
 	}
 	
@@ -219,9 +222,10 @@ public class WandOfLivingEarth extends DamageWand {
 		private int wandLevel;
 		private int armor;
 
-		private void addArmor( int wandLevel, int armor ){
+		private void addArmor( int wandLevel, int toAdd ){
 			this.wandLevel = Math.max(this.wandLevel, wandLevel);
-			this.armor += armor;
+			armor += toAdd;
+			armor = Math.min(armor, 2*armorToGuardian());
 		}
 
 		private int armorToGuardian(){
@@ -320,12 +324,21 @@ public class WandOfLivingEarth extends DamageWand {
 
 		@Override
 		public int drRoll() {
-			return Random.NormalIntRange(wandLevel, 3 + 3*wandLevel);
+			if (Dungeon.isChallenged(Challenges.NO_ARMOR)){
+				return Random.NormalIntRange(wandLevel, 2 + wandLevel);
+			} else {
+				return Random.NormalIntRange(wandLevel, 3 + 3 * wandLevel);
+			}
 		}
 
 		@Override
 		public String description() {
-			return Messages.get(this, "desc", wandLevel, 3 + 3*wandLevel);
+			if (Dungeon.isChallenged(Challenges.NO_ARMOR)){
+				return Messages.get(this, "desc", wandLevel, 2 + wandLevel);
+			} else {
+				return Messages.get(this, "desc", wandLevel, 3 + 3*wandLevel);
+			}
+
 		}
 
 		private static final String DEFENSE = "defense";

@@ -21,9 +21,9 @@
 
 package com.zrp200.lustrouspixeldungeon.windows;
 
-import com.watabou.input.Touchscreen.Touch;
+import com.watabou.input.PointerEvent;
 import com.watabou.noosa.Game;
-import com.watabou.noosa.TouchArea;
+import com.watabou.noosa.PointerArea;
 import com.watabou.utils.SparseArray;
 import com.zrp200.lustrouspixeldungeon.Chrome;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
@@ -74,9 +74,9 @@ public class WndStory extends Window {
 		tf.setPos(MARGIN, 0);
 		add( tf );
 		
-		add( new TouchArea( chrome ) {
+		add( new PointerArea( chrome ) {
 			@Override
-			protected void onClick( Touch touch ) {
+			protected void onClick( PointerEvent event ) {
 				hide();
 			}
 		} );

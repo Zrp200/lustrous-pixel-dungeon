@@ -385,9 +385,9 @@ public abstract class Level implements Bundlable {
 		bundle.put( ENTRANCE, entrance );
 		bundle.put( EXIT, exit );
 		bundle.put( LOCKED, locked );
-		bundle.put( HEAPS, heaps.values() );
-		bundle.put( PLANTS, plants.values() );
-		bundle.put( TRAPS, traps.values() );
+		bundle.put( HEAPS, heaps.toList() );
+		bundle.put( PLANTS, plants.toList() );
+		bundle.put( TRAPS, traps.toList() );
 		bundle.put( CUSTOM_TILES, customTiles );
 		bundle.put( CUSTOM_WALLS, customWalls );
 		bundle.put( MOBS, mobs );
@@ -445,6 +445,7 @@ public abstract class Level implements Bundlable {
 			visuals = new Group();
 		} else {
 			visuals.clear();
+			visuals.camera = null;
 		}
 		for (int i=0; i < length(); i++) {
 			if (pit[i]) {

@@ -21,21 +21,13 @@
 
 package com.zrp200.lustrouspixeldungeon;
 
-import android.content.pm.ActivityInfo;
-import android.os.Build;
-import android.os.Bundle;
-import android.view.View;
-import android.view.WindowManager;
-
 import com.watabou.noosa.Game;
 import com.watabou.noosa.RenderedText;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.DeviceCompat;
+import com.watabou.utils.PlatformSupport;
 import com.zrp200.lustrouspixeldungeon.scenes.PixelScene;
 import com.zrp200.lustrouspixeldungeon.scenes.WelcomeScene;
-
-import javax.microedition.khronos.opengles.GL10;
 
 public class LustrousPixelDungeon extends Game {
 
@@ -54,24 +46,20 @@ public class LustrousPixelDungeon extends Game {
 		}
 	}
 	
-	public LustrousPixelDungeon() {
-		super( sceneClass == null ? WelcomeScene.class : sceneClass );
+	public LustrousPixelDungeon( PlatformSupport platform ) {
+		super( sceneClass == null ? WelcomeScene.class : sceneClass, platform );
 	}
-
 	
 	@Override
-	protected void onCreate( Bundle savedInstanceState ) {
-		super.onCreate(savedInstanceState);
+	public void create() {
+		super.create();
 
 		updateSystemUI();
-		LustSettings.landscape ( LustSettings.landscape() );
 		
 		Music.INSTANCE.enable( LustSettings.music() );
 		Music.INSTANCE.volume( LustSettings.musicVol()/10f );
 		Sample.INSTANCE.enable( LustSettings.soundFx() );
 		Sample.INSTANCE.volume( LustSettings.SFXVol()/10f );
-		
-		Music.setMuteListener();
 
 		Sample.INSTANCE.load(
 				Assets.SND_CLICK,	Assets.SND_BADGE,	Assets.SND_GOLD,
@@ -91,26 +79,6 @@ public class LustrousPixelDungeon extends Game {
 		);
 
 		RenderedText.setFont( LustSettings.systemFont() ? null : "pixelfont.ttf");
-	}
-
-	@Override
-	protected void onSaveInstanceState(Bundle outState) {
-		if (scene instanceof PixelScene){
-			((PixelScene) scene).saveWindows();
-		}
-		super.onSaveInstanceState(outState);
-	}
-
-	@Override
-	public void onWindowFocusChanged( boolean hasFocus ) {
-		super.onWindowFocusChanged( hasFocus );
-		if (hasFocus) updateSystemUI();
-	}
-
-	@Override
-	public void onMultiWindowModeChanged(boolean isInMultiWindowMode) {
-		super.onMultiWindowModeChanged(isInMultiWindowMode);
-		updateSystemUI();
 	}
 
 	public static void switchNoFade(Class<? extends PixelScene> c){
@@ -144,101 +112,23 @@ public class LustrousPixelDungeon extends Game {
 	}
 	
 	@Override
-	public void onSurfaceChanged( GL10 gl, int width, int height ) {
-
+	public void resize( int width, int height ) {
 		if (scene instanceof PixelScene &&
 				(height != Game.height || width != Game.width)) {
 			((PixelScene) scene).saveWindows();
 		}
 
-		super.onSurfaceChanged( gl, width, height );
+		super.resize( width, height );
 
 		updateDisplaySize();
 
 	}
 
 	public void updateDisplaySize(){
-		boolean landscape = LustSettings.landscape();
-		instance.setRequestedOrientation(landscape ?
-				ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE :
-				ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
-		
-		if (view.getMeasuredWidth() == 0 || view.getMeasuredHeight() == 0)
-			return;
-
-		dispWidth = view.getMeasuredWidth();
-		dispHeight = view.getMeasuredHeight();
-
-		float dispRatio = dispWidth / (float)dispHeight;
-
-		float renderWidth = dispRatio > 1 ? PixelScene.MIN_WIDTH_L : PixelScene.MIN_WIDTH_P;
-		float renderHeight = dispRatio > 1 ? PixelScene.MIN_HEIGHT_L : PixelScene.MIN_HEIGHT_P;
-
-		//force power saver in this case as all devices must run at at least 2x scale.
-		if (dispWidth < renderWidth*2 || dispHeight < renderHeight*2)
-			LustSettings.put( LustSettings.KEY_POWER_SAVER, true );
-
-		if (LustSettings.powerSaver()){
-
-			int maxZoom = (int)Math.min(dispWidth/renderWidth, dispHeight/renderHeight);
-
-			renderWidth *= Math.max( 2, Math.round(1f + maxZoom*0.4f));
-			renderHeight *= Math.max( 2, Math.round(1f + maxZoom*0.4f));
-
-			if (dispRatio > renderWidth / renderHeight){
-				renderWidth = renderHeight * dispRatio;
-			} else {
-				renderHeight = renderWidth / dispRatio;
-			}
-
-			final int finalW = Math.round(renderWidth);
-			final int finalH = Math.round(renderHeight);
-			if (finalW != width || finalH != height){
-
-				runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						view.getHolder().setFixedSize(finalW, finalH);
-					}
-				});
-
-			}
-		} else {
-			runOnUiThread(new Runnable() {
-				@Override
-				public void run() {
-					view.getHolder().setSizeFromLayout();
-				}
-			});
-		}
+		platform.updateDisplaySize();
 	}
 
 	public static void updateSystemUI() {
-
-		boolean fullscreen = Build.VERSION.SDK_INT < Build.VERSION_CODES.N
-								|| !instance.isInMultiWindowMode();
-
-		if (fullscreen){
-			instance.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-					WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
-		} else {
-			instance.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN,
-					WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
-		}
-
-		if (DeviceCompat.supportsFullScreen()){
-			if (fullscreen && LustSettings.fullscreen()) {
-				instance.getWindow().getDecorView().setSystemUiVisibility(
-						View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
-						View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
-						View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
-						View.SYSTEM_UI_FLAG_HIDE_NAVIGATION );
-			} else {
-				instance.getWindow().getDecorView().setSystemUiVisibility(
-						View.SYSTEM_UI_FLAG_LAYOUT_STABLE );
-			}
-		}
-
+		platform.updateSystemUI();
 	}
-	
 }

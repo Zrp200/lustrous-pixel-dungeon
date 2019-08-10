@@ -22,6 +22,7 @@
 package com.zrp200.lustrouspixeldungeon.items.artifacts;
 
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Bundle;
 import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Awareness;
@@ -124,8 +125,23 @@ public class TalismanOfForesight extends Artifact {
 		return desc;
 	}
 
+	private static final String WARN = "warn";
+
+	@Override
+	public void storeInBundle(Bundle bundle) {
+		super.storeInBundle(bundle);
+		bundle.put(WARN, warn);
+	}
+
+	@Override
+	public void restoreFromBundle(Bundle bundle) {
+		super.restoreFromBundle(bundle);
+		warn = bundle.getInt(WARN);
+	}
+
+	private int warn = 0;
+
 	public class Foresight extends ArtifactBuff{
-		private int warn = 0;
 
 		@Override
 		public boolean act() {

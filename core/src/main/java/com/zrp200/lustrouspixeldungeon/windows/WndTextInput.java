@@ -34,6 +34,8 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.RenderedText;
 import com.zrp200.lustrouspixeldungeon.LustSettings;
@@ -80,7 +82,7 @@ public class WndTextInput extends Window {
 			width = WIDTH;
 		}
 
-		LustrousPixelDungeon.instance.runOnUiThread(new Runnable() {
+		((AndroidApplication)Gdx.app).runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
 				RenderedTextMultiline txtTitle = PixelScene.renderMultiline( title, 9 );
@@ -91,7 +93,7 @@ public class WndTextInput extends Window {
 
 				float pos = txtTitle.bottom() + MARGIN;
 
-				textInput = new EditText(LustrousPixelDungeon.instance);
+				textInput = new EditText((AndroidApplication) Gdx.app);
 				textInput.setText( initialValue );
 				textInput.setTypeface( RenderedText.getFont() );
 				textInput.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxLength)});
@@ -175,7 +177,7 @@ public class WndTextInput extends Window {
 						(int)(inputHeight * scaledZoom),
 						Gravity.CENTER_HORIZONTAL);
 				layout.setMargins(0, inputTop, 0, 0);
-				LustrousPixelDungeon.instance.addContentView(textInput, layout);
+				((AndroidApplication)Gdx.app).addContentView(textInput, layout);
 			}
 		});
 	}
@@ -190,14 +192,13 @@ public class WndTextInput extends Window {
 	public void destroy() {
 		super.destroy();
 		if (textInput != null){
-			LustrousPixelDungeon.instance.runOnUiThread(new Runnable() {
+			((AndroidApplication)Gdx.app).runOnUiThread(new Runnable() {
 				@Override
 				public void run() {
 					//make sure we remove the edit text and soft keyboard
 					((ViewGroup) textInput.getParent()).removeView(textInput);
 
-					InputMethodManager imm = (InputMethodManager)LustrousPixelDungeon
-									.instance.getSystemService(Activity.INPUT_METHOD_SERVICE);
+					InputMethodManager imm = (InputMethodManager)((AndroidApplication)Gdx.app).getSystemService(Activity.INPUT_METHOD_SERVICE);
 					imm.hideSoftInputFromWindow(textInput.getWindowToken(), 0);
 
 					//Soft keyboard sometimes triggers software buttons, so make sure to reassert immersive

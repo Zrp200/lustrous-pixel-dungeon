@@ -22,7 +22,7 @@
 package com.zrp200.lustrouspixeldungeon.scenes;
 
 import com.watabou.glwrap.Blending;
-import com.watabou.input.Touchscreen;
+import com.watabou.input.PointerEvent;
 import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.BitmapText.Font;
 import com.watabou.noosa.BitmapTextMultiline;
@@ -164,7 +164,7 @@ private static Class<?extends PixelScene> savedClass = null;
 	@Override
 	public void destroy() {
 		super.destroy();
-		Touchscreen.event.removeAll();
+		PointerEvent.clearListeners();
 	}
 
 	public static BitmapText.Font font;
