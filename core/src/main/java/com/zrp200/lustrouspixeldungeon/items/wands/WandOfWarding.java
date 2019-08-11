@@ -10,7 +10,6 @@ import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
-import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.npcs.NPC;
 import com.zrp200.lustrouspixeldungeon.effects.MagicMissile;
@@ -26,14 +25,27 @@ import com.zrp200.lustrouspixeldungeon.windows.WndOptions;
 
 public class WandOfWarding extends Wand {
 
+	private static int MAX_TIER = 6;
+
 	{
 		collisionProperties = Ballistica.STOP_TARGET;
 
 		image = ItemSpriteSheet.WAND_WARDING;
+		usesTargeting = false;
 	}
 	
 	private boolean wardAvailable = true;
-	
+
+	private boolean isValidLocation(int pos) { // checks to see if a ward is here or if we can place one here.
+		boolean isValid = curUser.fieldOfView[pos] && Dungeon.level.passable[pos];
+		Char ch = Actor.findChar(pos);
+		isValid = isValid && (ch == null && canPlaceWard(pos) || ch instanceof Ward);
+		if(!isValid) {
+			GLog.w( Messages.get(this, "bad_location"));
+			return false;
+		}
+		return true;
+	}
 	@Override
 	public boolean tryToZap(Hero owner, int target) {
 		
@@ -45,60 +57,50 @@ public class WandOfWarding extends Wand {
 		}
 		
 		int maxWardEnergy = 0;
-		for (Buff buff : curUser.buffs()){
-			if (buff instanceof Wand.Charger){
-				if (((Charger) buff).wand() instanceof WandOfWarding){
-					maxWardEnergy += 3 + ((Charger) buff).wand().level();
-				}
+		for (Wand.Charger charger : curUser.buffs(Wand.Charger.class)){
+			if (charger.wand() instanceof WandOfWarding){
+				maxWardEnergy += 3 + charger.wand().level();
 			}
 		}
 		
 		wardAvailable = (currentWardEnergy < maxWardEnergy);
 		
 		Char ch = Actor.findChar(target);
-		if (ch instanceof Ward){
-			if (!wardAvailable && ((Ward) ch).tier <= 3){
-				GLog.w( Messages.get(this, "no_more_wards"));
-				return false;
-			}
-		} else {
-			if ((currentWardEnergy + 2) > maxWardEnergy){
-				GLog.w( Messages.get(this, "no_more_wards"));
-				return false;
-			}
+		if ( ( ch instanceof Ward && ( (Ward) ch ).isSentry() || wardAvailable )
+				|| currentWardEnergy+2 <= maxWardEnergy) {
+			return isValidLocation(target) && super.tryToZap(owner, target);
 		}
-		
-		return super.tryToZap(owner, target);
+		GLog.w( Messages.get(this, "no_more_wards"));
+		return false;
 	}
-	
 	@Override
 	protected void onZap(Ballistica bolt) {
-		
+		// location checking logic already handled.
 		Char ch = Actor.findChar(bolt.collisionPos);
-		if (!curUser.fieldOfView[bolt.collisionPos] || !Dungeon.level.passable[bolt.collisionPos]){
-			GLog.w( Messages.get(this, "bad_location"));
-			
-		} else if (ch != null){
-			if (ch instanceof Ward){
-				if (wardAvailable) {
-					((Ward) ch).upgrade(level());
-				} else {
-					((Ward) ch).wandHeal( level() );
-				}
-				ch.sprite.emitter().burst(MagicMissile.WardParticle.UP, ((Ward) ch).tier);
-			} else {
-				GLog.w( Messages.get(this, "bad_location"));
-			}
-		} else if (canPlaceWard(bolt.collisionPos)){
+		if (ch instanceof Ward){
+			enhanceWard((Ward) ch);
+		} else { // if there's no ward here, then place a ward.
 			Ward ward = new Ward();
 			ward.pos = bolt.collisionPos;
 			ward.wandLevel = level();
-			GameScene.add(ward, 1f);
+			GameScene.add(ward, Actor.TICK);
 			Dungeon.level.press(ward.pos, ward);
 			ward.sprite.emitter().burst(MagicMissile.WardParticle.UP, ward.tier);
-		} else {
-			GLog.w( Messages.get(this, "bad_location"));
 		}
+	}
+
+	private void enhanceWard(Ward ward) {
+		if (ward.wandLevel < level()){
+			ward.wandLevel = level();
+		}
+		int wardTier = ward.tier, wardHP = ward.HP;
+		if (wardAvailable && wardTier < MAX_TIER) { // greater sentries cannot be upgraded
+			ward.upgrade();
+		} else {
+			ward.wandHeal();
+		}
+		if(ward.HP > wardHP || ward.tier > wardTier) // if something happened
+			ward.sprite.emitter().burst(MagicMissile.WardParticle.UP, ward.tier);
 	}
 
 	@Override
@@ -121,9 +123,11 @@ public class WandOfWarding extends Wand {
 		// lvl 2 - 43%
 		if (Random.Int( level + 5 ) >= 4) {
 			for (Char ch : Actor.chars()){
-				if (ch instanceof Ward){
-					((Ward) ch).wandHeal(staff.level());
-					ch.sprite.emitter().burst(MagicMissile.WardParticle.UP, ((Ward) ch).tier);
+				if (ch instanceof Ward && ch.HP < ch.HT){
+					boolean wardAvailable = this.wardAvailable; // can't be accidentally upgrading them.
+					this.wardAvailable = false;
+					enhanceWard( (Ward) ch ); // heal the ward.
+					this.wardAvailable = wardAvailable; // resetting to proper value
 				}
 			}
 		}
@@ -179,54 +183,51 @@ public class WandOfWarding extends Wand {
 			name = Messages.get(this, "name_" + tier );
 		}
 
-		public void upgrade( int wandLevel ){
-			if (this.wandLevel < wandLevel){
-				this.wandLevel = wandLevel;
-			}
-
-			wandHeal(0);
-
-			switch (tier){
-				case 1: case 2: default:
-					break; //do nothing
-				case 3:
-					HP = HT = 30;
-					break;
-				case 4:
-					HT = 48;
-					HP = Math.round(48*(HP/30f));
-					break;
-				case 5:
-					HT = 70;
-					HP = Math.round(70*(HP/48f));
-					break;
-			}
-
-			if (tier < 6){
-				tier++;
-				viewDistance++;
-				name = Messages.get(this, "name_" + tier );
-				updateSpriteState();
-			}
+		public boolean isSentry() {
+			return tier > 3;
 		}
 
-		private void wandHeal( int wandLevel ){
-			if (this.wandLevel < wandLevel){
-				this.wandLevel = wandLevel;
+		public boolean isUpgradable() {
+			return tier < MAX_TIER;
+		}
+
+		private static final int[] SENTRY_HT = new int[] {30, 48, 70};
+		public void upgrade() {
+			if( !isUpgradable() ) { // just heal it and stop.
+				wandHeal();
+				return;
 			}
 
-			switch(tier){
-				default:
-					break;
-				case 4:
-					HP = Math.min(HT, HP+6);
-					break;
-				case 5:
-					HP = Math.min(HT, HP+8);
-					break;
-				case 6:
-					HP = Math.min(HT, HP+12);
-					break;
+			int healAmount = healAmount();
+			tier++; // increase tier now, allowing us to determine if it is now a sentry.
+			if( isSentry() ) {
+				HP += healAmount;
+				int newHT = SENTRY_HT[tier-4];
+				int newHP = newHT * HP/HT;
+				healAmount += newHP - HP; // updating to match additional HP healed.
+				HP = newHP;
+				HT = newHT;
+				if(healAmount > 0) sprite.showStatus( CharSprite.POSITIVE, String.valueOf(healAmount) );
+			}
+
+			viewDistance++;
+			name = Messages.get(this, "name_" + tier );
+			updateSpriteState();
+
+
+		}
+
+		private int healAmount() {
+			int healAmount = 2*(tier-1); // 6 for lesser sentries, 8 for regular sentries
+			if(tier == 6) healAmount +=2; // 12 for greater sentries
+			return isSentry() ? Math.max(HT-HP, healAmount) : 0;
+		}
+
+		private void wandHeal(){
+			int healAmount = healAmount();
+			if( healAmount > 0 ) {
+				HP += healAmount;
+				sprite.showStatus(CharSprite.POSITIVE, String.valueOf(healAmount));
 			}
 		}
 
@@ -240,7 +241,7 @@ public class WandOfWarding extends Wand {
 
 		@Override
 		public int drRoll() {
-			if (tier > 3){
+			if ( isSentry() ){
 				return Math.round(Random.NormalIntRange(0, 3 + Dungeon.depth/2) / (7f - tier));
 			} else {
 				return 0;
@@ -276,11 +277,18 @@ public class WandOfWarding extends Wand {
 			return !visible;
 		}
 
+		int minDamage() {
+			return 2+wandLevel;
+		}
+		int maxDamage() {
+			return 4*( minDamage() );
+		}
+
 		private void zap() {
-			spend( 1f );
+			spend( TICK );
 
 			//always hits
-			int dmg = Random.NormalIntRange( 2 + wandLevel, 8 + 4*wandLevel );
+			int dmg = Random.NormalIntRange( minDamage(), maxDamage() );
 			enemy.damage( dmg, WandOfWarding.class );
 			if (enemy.isAlive()){
 				Wand.processSoulMark(enemy, wandLevel, 1);
@@ -289,28 +297,11 @@ public class WandOfWarding extends Wand {
 			if (!enemy.isAlive() && enemy == Dungeon.hero) {
 				Dungeon.fail( getClass() );
 			}
-
-			totalZaps++;
-			switch(tier){
-				case 1: default:
-					if (totalZaps >= tier){
-						die(this);
-					}
-					break;
-				case 2: case 3:
-					if (totalZaps > tier){
-						die(this);
-					}
-					break;
-				case 4:
-					damage(5, this);
-					break;
-				case 5:
-					damage(6, this);
-					break;
-				case 6:
-					damage(7, this);
-					break;
+			if(!isSentry() && ++totalZaps > (tier-1)*2) // goes 1 -> 3 -> 5
+				die(this);
+			else {
+				HP -= tier+1; // silent damage.
+				if(HP <= 0) die(this);
 			}
 		}
 
@@ -373,7 +364,7 @@ public class WandOfWarding extends Wand {
 
 		@Override
 		public String description() {
-			return Messages.get(this, "desc_" + tier, 2+wandLevel, 8 + 4*wandLevel );
+			return Messages.get(this, "desc_" + tier, minDamage(), maxDamage() );
 		}
 
 		private static final String TIER = "tier";
