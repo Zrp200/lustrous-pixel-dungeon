@@ -101,7 +101,11 @@ public class Fire extends Blob {
 		if (ch != null && !ch.isImmune(Fire.class)) {
 			Burning.reignite(ch);
 		}
-		
+
+		burnTerrain(pos);
+	}
+
+	public static void burnTerrain(int pos) {
 		Heap heap = level.heaps.get( pos );
 		if (heap != null) {
 			heap.burn();
@@ -128,11 +132,17 @@ public class Fire extends Blob {
 		public Integer get(Object key) {
 			if(!(key instanceof Integer)) return null;
 			int pos = (Integer) key;
-			Integer amount = super.get(level.map[pos]);
+			Integer amount = super.get( level.map[pos] );
 			return amount != null ? amount : level.flamable[pos] ? 4 : 0;
 		}
 	};
 	public static final Set<Integer> flammableTerrain = igniteAmounts.keySet();
+
+	public static void ignite(int cell) {
+		burnTerrain(cell); // someone really should fireproof these scrolls.
+		if(flammableTerrain.contains(cell))
+			GameScene.add( seed(cell, 0, Fire.class) );
+	}
 
 	@SuppressWarnings("ConstantConditions")
 	@Override

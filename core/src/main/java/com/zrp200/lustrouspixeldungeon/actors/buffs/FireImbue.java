@@ -24,34 +24,43 @@ package com.zrp200.lustrouspixeldungeon.actors.buffs;
 import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
+import com.zrp200.lustrouspixeldungeon.actors.blobs.Blob;
+import com.zrp200.lustrouspixeldungeon.actors.blobs.Fire;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Blazing;
 import com.zrp200.lustrouspixeldungeon.levels.Level;
 import com.zrp200.lustrouspixeldungeon.levels.Terrain;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
+import com.zrp200.lustrouspixeldungeon.sprites.CharSprite;
 import com.zrp200.lustrouspixeldungeon.ui.BuffIndicator;
 
 public class FireImbue extends ActiveBuff {
 	
 	{
 		type = buffType.POSITIVE;
+		fx = CharSprite.State.FIRE_IMBUE;
+		startGrey = 7.5f;
 	}
 
 	public static final float DURATION	= 50f;
 
     @Override
 	public boolean act() {
-		if (Dungeon.level.map[target.pos] == Terrain.GRASS) {
-			Level.set(target.pos, Terrain.EMBERS);
-			GameScene.updateMap(target.pos);
-		}
+    	int pos = target.pos;
+    	int terrain = Dungeon.level.map[pos];
 
+    	if(!target.flying) { // why else do fire elementals not set everything aflame?
+			if ((terrain == Terrain.GRASS || terrain == Terrain.FURROWED_GRASS) && Blob.volumeAt(pos, Fire.class) == 0) { // setting grass afire by moving is ridiculously overpowered.
+				Level.set(pos, Terrain.EMBERS);
+				GameScene.updateMap(pos);
+			} else Fire.ignite(pos); // doors, tall grass are fine.
+		}
 		return super.act();
 	}
 
 	public void proc(Char enemy){
-		if (Random.Int(2) == 0) {
-			Blazing.proc(enemy, 0); // because blazing is good and fun. 0 damage because it happens after damage calculation.
+		if (Random.Float(3+Dungeon.depth/4f) > 2) { // essentially blazing with weapon level depth/4. +0 at depth 1-3, +6 at depth 26
+			Blazing.proc(enemy); // because blazing is good and fun.
 		}
     }
 
@@ -66,6 +75,7 @@ public class FireImbue extends ActiveBuff {
 	}
 
 	{
-		immunities.add( Burning.class );
+		resistances.addAll( Char.Property.FIERY.resistances() );
+		immunities.addAll( Char.Property.FIERY.immunities() );
 	}
 }

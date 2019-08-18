@@ -41,34 +41,18 @@ public class Blazing extends Weapon.Enchantment {
 		// lvl 1 - 33% (17% reignite)
 		// lvl 2 - 50% (25% reignite)
 
-		if (Random.Int( weapon.level() + 5 ) >= 4) {
-			proc(defender, damage);
+		if (Random.Int( weapon.level() + 3 ) >= 2) {
+			proc(defender);
 		}
 
 		return damage;
 	}
 
-	public static void proc(Char target, int damage) {
-	/*	boolean alreadyBurning = target.buff(Burning.class) != null,
-				onFlamableTile = level.flamable[target.pos];
-
-			float damageMultiplier = !alreadyBurning ? 2/3f : 1/2f; // proportion of burning damage applied, more if not on fire.
-			float igniteChance = 3/(onFlamableTile ? 4f : 5f); // 75% ignite on flamable tiles, 60% on not.
-
-			float burnDuration = Burning.DURATION;
-			if(!onFlamableTile) burnDuration /= 2;
-
-			if(alreadyBurning || Random.Float() < igniteChance) { // always ignites if target is already burning
-				Burning.reignite(target, burnDuration);
-				if(!alreadyBurning) damageMultiplier = 0; // no damage for initial ignition.
-			} */
-		if (target.buff(Burning.class) != null)
+	public static void proc(Char target) {
+		if ( (target.buff(Burning.class) != null || target.isImmune(Burning.class) ) && !target.isImmune(Blazing.class))
 			target.damage( Math.round(Burning.damageRoll() * 0.67f), new Blazing() );
 		Burning.reignite(target);
 		target.sprite.emitter().burst( FlameParticle.FACTORY, depth/4+1 );
-	/* 	final int blazeDamage = (int)Math.ceil(Burning.damageRoll() * damageMultiplier); // round up
-		if(blazeDamage > 0 && !target.isImmune( Blazing.class ) && target.HP-damage > 0)
-			target.damage(blazeDamage,Blazing.class);	*/
 	}
 	
 	@Override

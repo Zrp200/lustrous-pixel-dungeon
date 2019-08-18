@@ -79,7 +79,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 	protected float shadowOffset    = 0.25f;
 
 	public enum State {
-		BURNING, LEVITATING, INVISIBLE, PARALYSED, FROZEN, ILLUMINATED, CHILLED, DARKENED, MARKED, HEALING, SHIELDED
+		BURNING, FIRE_IMBUE, LEVITATING, INVISIBLE, PARALYSED, FROZEN, ILLUMINATED, CHILLED, DARKENED, MARKED, HEALING, SHIELDED
 	}
 
 	protected String textureFile; //perhaps this can save a few lines in the future
@@ -334,9 +334,9 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 	
 	public void add( State state ) {
 		switch (state) {
-			case BURNING:
+			case BURNING: case FIRE_IMBUE:
 				burning = emitter();
-				burning.pour( FlameParticle.FACTORY, 0.06f );
+				burning.pour( FlameParticle.FACTORY, state == State.BURNING ? 0.06f : 0.09f );
 				if (visible) {
 					Sample.INSTANCE.play( Assets.SND_BURNING );
 				}
@@ -388,7 +388,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 	
 	public void remove( State state ) {
 		switch (state) {
-			case BURNING:
+			case BURNING: case FIRE_IMBUE:
 				if (burning != null) {
 					burning.on = false;
 					burning = null;
