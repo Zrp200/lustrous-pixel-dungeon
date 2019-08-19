@@ -209,9 +209,10 @@ public abstract class Shaman extends Mob {
 
 		@Override
 		public void onZapComplete(boolean next) {
-			Blob.seed(enemy.pos, 0, Fire.class); // this only ignites flammable tiles.
         	super.onZapComplete(next);
-		}
+			Fire.ignite(enemy.pos); // firebolts start fires. Flammable tiles catch fire and scrolls get annihilated.
+            Fire.burnTerrain(enemy.pos);
+        }
 
 		protected void applyZap() {
             enemy.sprite.centerEmitter().burst(FlameParticle.FACTORY, 3);

@@ -53,7 +53,7 @@ public class Inferno extends Blob {
 
 					Fire.burn(cell);
 
-				} else if ((Dungeon.level.flamable[cell] || volumeAt(cell, Regrowth.class) > 0)
+				} else if ( Fire.canIgnite(cell)
 						&& (cur[cell-1] > 0
 						|| cur[cell+1] > 0
 						|| cur[cell-Dungeon.level.width()] > 0

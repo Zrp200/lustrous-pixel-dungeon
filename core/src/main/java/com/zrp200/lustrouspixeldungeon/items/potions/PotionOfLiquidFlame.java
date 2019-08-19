@@ -25,9 +25,7 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.PathFinder;
 import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
-import com.zrp200.lustrouspixeldungeon.actors.blobs.Blob;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.Fire;
-import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
 
 public class PotionOfLiquidFlame extends Potion {
 
@@ -47,8 +45,7 @@ public class PotionOfLiquidFlame extends Potion {
 
 		for (int offset : PathFinder.NEIGHBOURS9){
 			if (!Dungeon.level.solid[cell+offset]) {
-
-				GameScene.add(Blob.seed(cell + offset, 2, Fire.class));
+				Fire.ignite(cell + offset, 2);
 
 			}
 		}

@@ -21,6 +21,8 @@
 
 package com.zrp200.lustrouspixeldungeon.actors.blobs;
 
+import android.util.SparseIntArray;
+
 import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Burning;
@@ -32,9 +34,6 @@ import com.zrp200.lustrouspixeldungeon.levels.Terrain;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.plants.Plant;
 import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
-
-import java.util.HashMap;
-import java.util.Set;
 
 import static com.zrp200.lustrouspixeldungeon.Dungeon.level;
 
@@ -49,7 +48,7 @@ public class Fire extends Blob {
 				int fire;
 
 				final Freezing freeze = (Freezing) level.blobs.get( Freezing.class );
-				boolean cellFlammable = level.flamable[cell] || volumeAt(cell, Regrowth.class) > 0;
+				boolean cellFlammable = canIgnite(cell);
 				if (cur[cell] > 0) { // tile is already on fire; do fire things
 					if (volumeAt(cell, Freezing.class) > 0){
 						//noinspection ConstantConditions
@@ -60,7 +59,7 @@ public class Fire extends Blob {
 					burn( cell );
 					fire = cur[cell] - 1;
 
-					if (fire <= 0 && level.flamable[cell]) {
+					if ( fire <= 0 && cellFlammable ) { // TODO make destruction independent from actual fire duration
 						if (volumeAt(cell,Regrowth.class) <= 0) {
 							level.destroy(cell);
 							observe = true;
@@ -71,7 +70,7 @@ public class Fire extends Blob {
 							regrowth.clear(cell,1);
 						}
 					}
-					else if(fire <= igniteAmounts.get(Terrain.GRASS) && (level.map[cell] == Terrain.HIGH_GRASS || level.map[cell] == Terrain.FURROWED_GRASS)) {
+					else if(fire <= terrainIgniteAmounts.get(Terrain.GRASS) && (level.map[cell] == Terrain.HIGH_GRASS || level.map[cell] == Terrain.FURROWED_GRASS)) {
 						Level.set(cell,Terrain.GRASS);
 						observe = true;
 						GameScene.updateMap(cell);
@@ -117,9 +116,10 @@ public class Fire extends Blob {
 		}
 	}
 
-	private static final HashMap<Integer, Integer> igniteAmounts = new HashMap<Integer, Integer>() {
-		{ // this is a fun way to use a hash map.
-			put(Terrain.GRASS,2);
+	private static final SparseIntArray terrainIgniteAmounts = new SparseIntArray() {
+		{
+		    // these are flammable terrains.
+			put(Terrain.GRASS,2); // amusingly identical to its actual value
 			put(Terrain.FURROWED_GRASS, 5);
 			put(Terrain.HIGH_GRASS, 5);
 			put(Terrain.OPEN_DOOR, 4);
@@ -127,29 +127,27 @@ public class Fire extends Blob {
 			put(Terrain.BARRICADE, 5);
 			put(Terrain.BOOKSHELF, 5);
 		}
-
-		@Override
-		public Integer get(Object key) {
-			if(!(key instanceof Integer)) return null;
-			int pos = (Integer) key;
-			Integer amount = super.get( level.map[pos] );
-			return amount != null ? amount : level.flamable[pos] ? 4 : 0;
-		}
 	};
-	public static final Set<Integer> flammableTerrain = igniteAmounts.keySet();
 
-	public static void ignite(int cell) {
-		burnTerrain(cell); // someone really should fireproof these scrolls.
-		if(flammableTerrain.contains(cell))
-			GameScene.add( seed(cell, 0, Fire.class) );
-	}
-
-	@SuppressWarnings("ConstantConditions")
+	public static boolean canIgnite(int pos) {
+	    return terrainIgniteAmounts.get( level.map[pos] ) > 0 || level.flamable[pos] || volumeAt(pos, Regrowth.class) > 0;
+    }
 	@Override
 	public void seed(Level level, int cell, int amount) {
-		amount = Math.max(amount, igniteAmounts.get(cell));
-		super.seed(level, cell, amount);
+		if(volumeAt(cell, Fire.class) <= 0)
+			amount = Math.max(terrainIgniteAmounts.get( level.map[cell], canIgnite(cell) ? 4 : 0), amount);
+
+		if( amount > 0 ) // you can't seed 0 units of fire, sorry.
+			super.seed(level, cell, amount);
 	}
+
+	// I like shortcuts.
+	public static Fire ignite(int cell, int amount) {
+		return seed(cell,amount,Fire.class);
+	}
+	public static void ignite(int cell) {
+	    ignite(cell, 0);
+    }
 
 	@Override
 	public void use( BlobEmitter emitter ) {

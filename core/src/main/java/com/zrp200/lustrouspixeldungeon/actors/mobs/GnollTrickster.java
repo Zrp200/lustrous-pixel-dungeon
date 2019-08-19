@@ -25,7 +25,6 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
-import com.zrp200.lustrouspixeldungeon.actors.blobs.Blob;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.Fire;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Burning;
@@ -35,7 +34,6 @@ import com.zrp200.lustrouspixeldungeon.actors.mobs.npcs.Ghost;
 import com.zrp200.lustrouspixeldungeon.items.Generator;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.MissileWeapon;
-import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
 import com.zrp200.lustrouspixeldungeon.sprites.GnollTricksterSprite;
 
 public class GnollTrickster extends RangeExclusiveMob {
@@ -73,8 +71,7 @@ public class GnollTrickster extends RangeExclusiveMob {
 		int effect = Random.Int(4) + combo;
 		if (effect > 3) {
 			if (effect >= 6 && enemy.buff(Burning.class) == null) {
-				if (Dungeon.level.flamable[enemy.pos])
-					GameScene.add(Blob.seed(enemy.pos, 4, Fire.class));
+				Fire.ignite(enemy.pos);
 				Burning.reignite(enemy);
 			} else if(effect <= 6 && enemy.buff(Chill.class) == null && enemy.buff(Burning.class) == null) {
 				Buff.affect(enemy, Chill.class, effect/2f);

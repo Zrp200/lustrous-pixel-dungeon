@@ -27,7 +27,6 @@ import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
-import com.zrp200.lustrouspixeldungeon.actors.blobs.Blob;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.Fire;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.ToxicGas;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Amok;
@@ -369,7 +368,7 @@ public class Yog extends Mob {
 		public boolean act() {
 			
 			for (int i=0; i < PathFinder.NEIGHBOURS9.length; i++) {
-				GameScene.add( Blob.seed( pos + PathFinder.NEIGHBOURS9[i], 2, Fire.class ) );
+				Fire.ignite(pos + PathFinder.NEIGHBOURS9[i], 2);
 			}
 			
 			return super.act();

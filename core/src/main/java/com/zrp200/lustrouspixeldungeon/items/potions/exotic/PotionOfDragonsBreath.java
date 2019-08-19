@@ -28,7 +28,6 @@ import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
-import com.zrp200.lustrouspixeldungeon.actors.blobs.Blob;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.Fire;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Burning;
@@ -137,7 +136,7 @@ public class PotionOfDragonsBreath extends ExoticPotion {
 												continue;
 											}
 											
-											GameScene.add( Blob.seed( cell, 5, Fire.class ) );
+											Fire.ignite(cell, 5);
 											
 											Char ch = Actor.findChar( cell );
 											if (ch != null) {

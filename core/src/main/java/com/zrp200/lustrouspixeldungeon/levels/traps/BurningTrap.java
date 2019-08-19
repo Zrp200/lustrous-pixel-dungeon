@@ -23,11 +23,9 @@ package com.zrp200.lustrouspixeldungeon.levels.traps;
 
 import com.watabou.utils.PathFinder;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
-import com.zrp200.lustrouspixeldungeon.actors.blobs.Blob;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.Fire;
 import com.zrp200.lustrouspixeldungeon.effects.CellEmitter;
 import com.zrp200.lustrouspixeldungeon.effects.particles.FlameParticle;
-import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
 
 public class BurningTrap extends Trap {
 
@@ -41,7 +39,7 @@ public class BurningTrap extends Trap {
 		
 		for( int i : PathFinder.NEIGHBOURS9) {
 			if (!Dungeon.level.solid[pos + i]) {
-				GameScene.add( Blob.seed( pos+i, 2, Fire.class ) );
+				Fire.ignite(pos+i,2);
 				CellEmitter.get( pos+i ).burst( FlameParticle.FACTORY, 5 );
 			}
 		}

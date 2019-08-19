@@ -25,11 +25,9 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.PathFinder;
 import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
-import com.zrp200.lustrouspixeldungeon.actors.blobs.Blob;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.Fire;
 import com.zrp200.lustrouspixeldungeon.effects.CellEmitter;
 import com.zrp200.lustrouspixeldungeon.effects.particles.FlameParticle;
-import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
 import com.zrp200.lustrouspixeldungeon.utils.BArray;
 
 public class BlazingTrap extends Trap {
@@ -45,10 +43,7 @@ public class BlazingTrap extends Trap {
 		PathFinder.buildDistanceMap( pos, BArray.not( Dungeon.level.solid, null ), 2 );
 		for (int i = 0; i < PathFinder.distance.length; i++) {
 			if (PathFinder.distance[i] < Integer.MAX_VALUE) {
-				if (Dungeon.level.pit[i] || Dungeon.level.water[i])
-					GameScene.add(Blob.seed(i, 2, Fire.class));
-				else
-					GameScene.add(Blob.seed(i, 10, Fire.class));
+				Fire.ignite(i, Dungeon.level.pit[i] || Dungeon.level.water[i] ? 2 : 10);
 				CellEmitter.get(i).burst(FlameParticle.FACTORY, 5);
 			}
 		}

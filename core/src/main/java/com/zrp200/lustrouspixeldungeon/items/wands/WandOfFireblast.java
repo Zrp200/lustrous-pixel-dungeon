@@ -28,7 +28,6 @@ import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
-import com.zrp200.lustrouspixeldungeon.actors.blobs.Blob;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.Fire;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Burning;
@@ -39,7 +38,6 @@ import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Blazing;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.MagesStaff;
 import com.zrp200.lustrouspixeldungeon.mechanics.Ballistica;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
-import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
 
 import java.util.ArrayList;
@@ -83,7 +81,7 @@ public class WandOfFireblast extends DamageWand {
 			//only reignite cells directly near caster if they are flammable
 			if (!Dungeon.level.adjacent(bolt.sourcePos, cell)
 					|| Dungeon.level.flamable[cell]){
-				GameScene.add( Blob.seed( cell, 1+chargesPerCast(), Fire.class ) );
+				Fire.ignite( cell, 1+chargesPerCast() );
 			}
 			
 			Char ch = Actor.findChar( cell );

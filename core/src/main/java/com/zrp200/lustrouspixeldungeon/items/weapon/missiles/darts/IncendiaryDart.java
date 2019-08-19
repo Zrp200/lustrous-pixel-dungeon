@@ -21,12 +21,9 @@
 
 package com.zrp200.lustrouspixeldungeon.items.weapon.missiles.darts;
 
-import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
-import com.zrp200.lustrouspixeldungeon.actors.blobs.Blob;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.Fire;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Burning;
-import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
 
 public class IncendiaryDart extends TippedDart {
@@ -37,8 +34,8 @@ public class IncendiaryDart extends TippedDart {
 	
 	@Override
 	protected void onThrowComplete( int cell ) {
-		if ( curUser.pos != cell && !rangedHit && Dungeon.level.flamable[cell] ) {
-			GameScene.add( Blob.seed(cell, 1, Fire.class) );
+		if ( curUser.pos != cell && !rangedHit && Fire.canIgnite(cell) ) {
+			Fire.ignite(cell);
 			useDurability();
 		}
 		super.onThrowComplete(cell); // TippedDart#drop handles untipping.

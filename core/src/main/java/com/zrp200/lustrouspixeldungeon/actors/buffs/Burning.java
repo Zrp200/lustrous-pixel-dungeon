@@ -26,7 +26,6 @@ import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Badges;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
-import com.zrp200.lustrouspixeldungeon.actors.blobs.Blob;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.Fire;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.Thief;
@@ -37,7 +36,6 @@ import com.zrp200.lustrouspixeldungeon.items.food.ChargrilledMeat;
 import com.zrp200.lustrouspixeldungeon.items.food.MysteryMeat;
 import com.zrp200.lustrouspixeldungeon.items.scrolls.Scroll;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
-import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
 import com.zrp200.lustrouspixeldungeon.sprites.CharSprite;
 import com.zrp200.lustrouspixeldungeon.ui.BuffIndicator;
 import com.zrp200.lustrouspixeldungeon.utils.GLog;
@@ -151,10 +149,8 @@ public class Burning extends ActiveBuff implements Hero.Doom {
 
 			detach();
 		}
-		
-		if (Dungeon.level.flamable[target.pos] && Blob.volumeAt(target.pos, Fire.class) == 0) {
-			GameScene.add( Blob.seed( target.pos, 4, Fire.class ) );
-		}
+
+		Fire.ignite(target.pos);
 		
 		super.act();
 		

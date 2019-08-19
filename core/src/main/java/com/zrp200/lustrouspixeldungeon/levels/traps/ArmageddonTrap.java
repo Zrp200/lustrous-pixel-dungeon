@@ -86,7 +86,7 @@ public class ArmageddonTrap extends Trap {
                         && Actor.findChar(i) instanceof Hero) {
                     continue arson;
                 }
-            GameScene.add(Blob.seed(seed, 4, Fire.class));
+            Fire.ignite(seed, 4);
             fire++;
         } while (fire < 3 || Random.Int(3) != 0);
 

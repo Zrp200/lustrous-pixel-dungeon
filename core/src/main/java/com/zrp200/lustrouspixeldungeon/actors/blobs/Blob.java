@@ -30,6 +30,7 @@ import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.effects.BlobEmitter;
 import com.zrp200.lustrouspixeldungeon.levels.Level;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
+import com.zrp200.lustrouspixeldungeon.scenes.GameScene;
 
 import static com.zrp200.lustrouspixeldungeon.Dungeon.level;
 
@@ -262,6 +263,7 @@ public class Blob extends Actor {
 			if (gas == null) {
 				gas = type.newInstance();
 				level.blobs.put( type, gas );
+				GameScene.add(gas);
 			}
 			
 			gas.seed( level, cell, amount );
