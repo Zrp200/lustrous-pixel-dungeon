@@ -45,6 +45,8 @@ public class MagicMissile extends Emitter {
 	
 	private Callback callback;
 	
+	private PointF to;
+
 	private float sx;
 	private float sy;
 	private float time;
@@ -86,11 +88,13 @@ public class MagicMissile extends Emitter {
 				callback);
 	}
 
-	public synchronized void reset( int type, PointF from, PointF to, Callback callback ) {
+	public void reset( int type, PointF from, PointF to, Callback callback ) {
 		this.callback = callback;
 		
 		revive();
 		
+		this.to = to;
+
 		x = from.x;
 		y = from.y;
 		width = 0;
@@ -162,8 +166,16 @@ public class MagicMissile extends Emitter {
 		width = height = size;
 	}
 
+	public void setSpeed( float newSpeed ){
+		PointF d = PointF.diff( to, new PointF(x, y) );
+		PointF speed = new PointF( d ).normalize().scale( newSpeed );
+		sx = speed.x;
+		sy = speed.y;
+		time = d.length() / newSpeed;
+	}
+
 	//convenience method for the common case of a bolt going from a character to a tile or enemy
-	public synchronized static void boltFromChar(Group group, int type, Visual sprite, int to, Callback callback){
+	public synchronized static MagicMissile boltFromChar(Group group, int type, Visual sprite, int to, Callback callback){
 		MagicMissile missile = ((MagicMissile)group.recycle( MagicMissile.class ));
 		Char target = Actor.findChar(to);
 		if (target != null){
@@ -171,6 +183,7 @@ public class MagicMissile extends Emitter {
 		} else {
 			missile.reset(type, sprite, to, callback);
 		}
+		return missile;
 	}
 	public synchronized static void boltFromChar(Group group, int type, Visual sprite, Visual to, Callback callback) {
 		MagicMissile missile = ((MagicMissile)group.recycle( MagicMissile.class ));

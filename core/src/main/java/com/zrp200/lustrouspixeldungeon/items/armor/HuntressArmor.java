@@ -23,6 +23,7 @@ package com.zrp200.lustrouspixeldungeon.items.armor;
 
 import com.watabou.utils.Callback;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
+import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.Mob;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Shuriken;
@@ -40,7 +41,7 @@ public class HuntressArmor extends ClassArmor {
 		image = ItemSpriteSheet.ARMOR_HUNTRESS;
 	}
 	
-	private HashMap<Callback, Mob> targets = new HashMap<Callback, Mob>();
+	private HashMap<Callback, Mob> targets = new HashMap<>();
 	
 	@Override
 	public void doSpecial() {
@@ -49,7 +50,8 @@ public class HuntressArmor extends ClassArmor {
 		
 		for (Mob mob : Dungeon.level.mobs) {
 			if (Dungeon.level.distance(curUser.pos, mob.pos) <= 12
-				&& Dungeon.level.heroFOV[mob.pos]) {
+				&& Dungeon.level.heroFOV[mob.pos]
+				&& mob.alignment != Char.Alignment.ALLY) {
 				
 				Callback callback = new Callback() {
 					@Override

@@ -25,6 +25,7 @@ import com.watabou.noosa.audio.Sample;
 import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Actor;
+import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Burning;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Roots;
@@ -42,7 +43,8 @@ public class MageArmor extends ClassArmor {
 	public void doSpecial() {
 		
 		for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-			if (Dungeon.level.heroFOV[mob.pos]) {
+			if (Dungeon.level.heroFOV[mob.pos]
+				&& mob.alignment != Char.Alignment.ALLY) {
 				Burning.reignite(mob);
 				Buff.prolong( mob, Roots.class, 3 );
 			}

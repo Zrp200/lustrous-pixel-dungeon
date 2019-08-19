@@ -105,11 +105,15 @@ public class WandOfWarding extends Wand {
 
 	@Override
 	protected void fx(Ballistica bolt, Callback callback) {
-		MagicMissile.boltFromChar(curUser.sprite.parent,
+		MagicMissile m = MagicMissile.boltFromChar(curUser.sprite.parent,
 				MagicMissile.WARD,
 				curUser.sprite,
 				bolt.collisionPos,
 				callback);
+
+		if (bolt.dist > 10){
+			m.setSpeed(bolt.dist*20);
+		}
 		Sample.INSTANCE.play(Assets.SND_ZAP);
 	}
 
@@ -211,10 +215,9 @@ public class WandOfWarding extends Wand {
 			}
 
 			viewDistance++;
-			name = Messages.get(this, "name_" + tier );
+            name = Messages.get(this, "name_" + tier );
 			updateSpriteState();
-
-
+            GameScene.updateFog(pos, viewDistance+1);
 		}
 
 		private int healAmount() {
@@ -338,6 +341,7 @@ public class WandOfWarding extends Wand {
 		public void destroy() {
 			super.destroy();
 			Dungeon.observe();
+			GameScene.updateFog(pos, viewDistance+1);
 		}
 		
 		@Override
@@ -355,7 +359,6 @@ public class WandOfWarding extends Wand {
 				protected void onSelect(int index) {
 					if (index == 0){
 						die(null);
-						Dungeon.observe();
 					}
 				}
 			});

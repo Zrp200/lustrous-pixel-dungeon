@@ -26,6 +26,7 @@ import com.watabou.utils.PathFinder;
 import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Actor;
+import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Blindness;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.Mob;
@@ -68,8 +69,8 @@ public class RogueArmor extends ClassArmor {
 
 				curUser.HP -= (curUser.HP / 3);
 				
-				for (Mob mob : Dungeon.level.mobs.toArray(new Mob[Dungeon.level.mobs.size()])) {
-					if (Dungeon.level.heroFOV[mob.pos]) {
+				for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+					if (Dungeon.level.heroFOV[mob.pos] && mob.alignment != Char.Alignment.ALLY) {
 						Buff.prolong( mob, Blindness.class, 2 );
 						if (mob.state == mob.HUNTING) mob.state = mob.WANDERING;
 						mob.sprite.emitter().burst( Speck.factory( Speck.LIGHT ), 4 );

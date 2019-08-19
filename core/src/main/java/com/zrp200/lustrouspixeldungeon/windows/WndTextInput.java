@@ -36,6 +36,7 @@ import android.widget.TextView;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
+import com.badlogic.gdx.backends.android.AndroidGraphics;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.RenderedText;
 import com.zrp200.lustrouspixeldungeon.LustSettings;
@@ -199,7 +200,7 @@ public class WndTextInput extends Window {
 					((ViewGroup) textInput.getParent()).removeView(textInput);
 
 					InputMethodManager imm = (InputMethodManager)((AndroidApplication)Gdx.app).getSystemService(Activity.INPUT_METHOD_SERVICE);
-					imm.hideSoftInputFromWindow(textInput.getWindowToken(), 0);
+					imm.hideSoftInputFromWindow(((AndroidGraphics)Gdx.app.getGraphics()).getView().getWindowToken(), 0);
 
 					//Soft keyboard sometimes triggers software buttons, so make sure to reassert immersive
 					LustrousPixelDungeon.updateSystemUI();
