@@ -32,8 +32,6 @@ import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.Blob;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.Electricity;
-import com.zrp200.lustrouspixeldungeon.actors.blobs.Fire;
-import com.zrp200.lustrouspixeldungeon.actors.blobs.Inferno;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.ToxicGas;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Adrenaline;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Amok;
@@ -655,12 +653,12 @@ public abstract class Char extends Actor {
 		BLOB_IMMUNE ( new HashSet<Class>(),
 				new HashSet<Class>( Arrays.asList(Blob.class) )),
 		FIERY (
-				new HashSet<Class>( Arrays.asList( WandOfFireblast.class, Blazing.class, Shaman.Firebolt.class) ),
-				new HashSet<Class>( Arrays.asList( Burning.class, Fire.class, Inferno.class) )
+				new HashSet<Class>( Arrays.asList( WandOfFireblast.class, Shaman.Firebolt.BoltOfFire.class) ),
+				new HashSet<Class>( Arrays.asList( Burning.class, Blazing.class) )
 		),
 		ACIDIC ( new HashSet<Class>( Arrays.asList(Corrosion.class, Poison.class)),
 				new HashSet<Class>( Arrays.asList(Ooze.class))),
-		ELECTRIC ( new HashSet<Class>( Arrays.asList(WandOfLightning.class, Shocking.class, Potential.class, Electricity.class, ShockingDart.class)),
+		ELECTRIC ( new HashSet<Class>( Arrays.asList(WandOfLightning.class, Shocking.class, Potential.class, Electricity.class, ShockingDart.class, Shaman.Lightning.LightningBolt.class)),
 				new HashSet<Class>()),
 		IMMOVABLE (new HashSet<Class>(),new HashSet<Class>(Arrays.asList(Roots.class)));
 		

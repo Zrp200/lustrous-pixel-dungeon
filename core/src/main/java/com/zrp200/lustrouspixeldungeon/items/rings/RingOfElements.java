@@ -82,7 +82,7 @@ public class RingOfElements extends Ring {
 			add( WandOfTransfusion.class );
 			add( WandOfWarding.Ward.class );
 
-			add(Shaman.MagicAttack.class);	add(Warlock.DarkBolt.class);	add(Eye.DeathGaze.class);
+			add(Shaman.Magic.class);	add(Warlock.DarkBolt.class);	add(Eye.DeathGaze.class);
 			add(Yog.BurningFist.DarkBolt.class);
 		}
 	};

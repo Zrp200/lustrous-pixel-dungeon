@@ -50,11 +50,13 @@ public class FireImbue extends ActiveBuff {
     	int terrain = Dungeon.level.map[pos];
 
     	if(!target.flying) { // why else do fire elementals not set everything aflame?
-			if ((terrain == Terrain.GRASS || terrain == Terrain.FURROWED_GRASS) && Blob.volumeAt(pos, Fire.class) == 0) { // setting grass afire by moving is ridiculously overpowered.
-				Level.set(pos, Terrain.EMBERS);
-				GameScene.updateMap(pos);
-			} else Fire.ignite(pos); // doors, tall grass are fine.
-		}
+			// setting grass afire by moving is both ridiculously overpowered and extremely unfun.
+			// be mindful to not throw scrolls into doors.
+			if ( (terrain == Terrain.GRASS || terrain == Terrain.FURROWED_GRASS) && Blob.volumeAt(pos, Fire.class) <= 0 ) {
+					Level.set(pos, Terrain.EMBERS);
+					GameScene.updateMap(pos);
+			} else Fire.ignite(pos);
+    	}
 		return super.act();
 	}
 

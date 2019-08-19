@@ -24,9 +24,7 @@ package com.zrp200.lustrouspixeldungeon.actors.mobs;
 import com.watabou.noosa.Camera;
 import com.watabou.utils.Random;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
-import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
-import com.zrp200.lustrouspixeldungeon.actors.blobs.Blob;
 import com.zrp200.lustrouspixeldungeon.actors.blobs.Fire;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Burning;
@@ -44,7 +42,6 @@ import com.zrp200.lustrouspixeldungeon.items.wands.WandOfFireblast;
 import com.zrp200.lustrouspixeldungeon.items.wands.WandOfFrost;
 import com.zrp200.lustrouspixeldungeon.items.wands.WandOfLightning;
 import com.zrp200.lustrouspixeldungeon.items.wands.WandOfMagicMissile;
-import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Blazing;
 import com.zrp200.lustrouspixeldungeon.mechanics.Ballistica;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.sprites.CharSprite;
@@ -52,8 +49,6 @@ import com.zrp200.lustrouspixeldungeon.sprites.ShamanSprite;
 import com.zrp200.lustrouspixeldungeon.utils.GLog;
 
 import java.util.HashMap;
-
-import static com.watabou.utils.Random.NormalIntRange;
 
 public abstract class Shaman extends Mob {
     private final static HashMap<Class<?extends Shaman>, Float> probs = new HashMap<Class<? extends Shaman>,Float>() {
@@ -74,33 +69,65 @@ public abstract class Shaman extends Mob {
 		HP = HT = 18;
 		defenseSkill = 8;
 
-		damageRoll[0] = 2;
-		damageRoll[1] = 8;
+		damageRoll[0] = 2; damageRoll[1] = 8; // 2-8 damage.
 
 		EXP = 6;
 		maxLvl = 14;
 		armor = 4;
 
-		loot = Generator.Category.SCROLL; // default
 		lootChance = 0.33f;
 	}
 
 	Class<?extends Wand> wandLoot = null;
 	Class<?extends Potion> potionLoot = null;
 
+	protected Magic magic;
+
+	protected int minZapDmg=4, maxZapDmg=10; // typically zaps do 4-10 damage.
+
+	public static class Magic {} // for distinguishing between magic and not.
+
+	protected void applyZap(int damage) {
+		enemy.damage(damage, magic);
+		if (enemy == Dungeon.hero && !enemy.isAlive()) {
+			Dungeon.fail(getClass());
+			GLog.n(Messages.get(this, "zap_kill"));
+		}
+	}
+
+	private boolean doZap() {
+		boolean visible = fieldOfView[pos] || fieldOfView[enemy.pos];
+		if (visible) {
+			( (ShamanSprite) sprite ).zapEnemy();
+		}
+
+		spend( TIME_TO_ZAP );
+		return !visible;
+	}
+
+	public void onZapComplete(boolean next) {
+		if (hit(this, enemy, true))
+			applyZap( Random.NormalIntRange(minZapDmg, maxZapDmg) );
+		else
+			enemy.sprite.showStatus( CharSprite.NEUTRAL,  enemy.defenseVerb() );
+		if(next) next();
+	}
+	public final void onZapComplete() { // this is just a way to avoid having to pass an argument
+		onZapComplete(true);
+	}
+
+	private final static float // 30% of drops are potions, 5% are wands, and the rest are scrolls.
+            POTION_DROP = .3f,
+            WAND_DROP = .05f;
 	@Override
 	protected Item createLoot() {
-		Item loot = super.createLoot();
-		try {
-			int seed = Random.Int(20);
-			if (seed == 0 && wandLoot != null)
-				loot = wandLoot.newInstance();
-			else if (seed < 8 && potionLoot != null)
-				loot = potionLoot.newInstance();
-		} catch (Exception e) {
-			LustrousPixelDungeon.reportException(e);
-		}
-		return loot;
+	    float seed = Random.Float();
+
+	    if      (seed < WAND_DROP   && wandLoot != null)    loot = wandLoot;
+	    else if (seed < POTION_DROP && potionLoot != null)  loot = potionLoot;
+	    else                                                loot = Generator.Category.SCROLL;
+
+	    return super.createLoot();
 	}
 
 	@Override
@@ -113,74 +140,47 @@ public abstract class Shaman extends Mob {
 		return new Ballistica(pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos == enemy.pos;
 	}
 
-	public static class MagicAttack {} // for distinguishing between magic and not.
-
-	@SuppressWarnings("WeakerAccess")
-	final protected void applyZap(int damage, MagicAttack magicAttack) {
-		enemy.damage(damage, magicAttack);
-		if (enemy == Dungeon.hero && !enemy.isAlive()) {
-			Dungeon.fail(getClass());
-			GLog.n(Messages.get(this, "zap_kill"));
-		}
-	}
-	protected abstract void applyZap();
-
-	private boolean doZap() {
-		boolean visible = fieldOfView[pos] || fieldOfView[enemy.pos];
-		if (visible) {
-			( (ShamanSprite) sprite ).zapEnemy();
-		}
-
-		spend( TIME_TO_ZAP );
-		return !visible;
-	}
 	@Override
 	protected boolean doAttack(Char enemy) {
 		if (Dungeon.level.distance( pos, enemy.pos ) <= 1)
 			return super.doAttack( enemy );
 		else return doZap();
 	}
-	public void onZapComplete(boolean next) {
-		if (hit(this, enemy, true))
-			applyZap();
-		else
-			enemy.sprite.showStatus( CharSprite.NEUTRAL,  enemy.defenseVerb() );
-		if(next) next();
-	}
-	public final void onZapComplete() { // this is just a way to avoid having to pass an argument
-		onZapComplete(true);
-	}
+
 
 	public static class Lightning extends Shaman {
 		{
 			spriteClass = ShamanSprite.Lightning.class;
 			properties.add(Property.ELECTRIC);
 			wandLoot = WandOfLightning.class;
+
+			maxZapDmg = 12; // 4-12, up from 4-10.
+			magic = new LightningBolt();
 		}
-		protected void applyZap() {
-			int damage = NormalIntRange(4, 12);
+		public static class LightningBolt extends Magic {}
+
+		protected void applyZap(int damage) {
 			if (Dungeon.level.water[enemy.pos] && !enemy.flying)
 				damage *= 4/3f;
 			enemy.sprite.centerEmitter().burst( SparkParticle.FACTORY, 3 );
 			enemy.sprite.flash();
 			if(enemy == Dungeon.hero)
 				Camera.main.shake( 2, 0.3f );
-			applyZap(damage, new LightningBolt());
+			super.applyZap(damage);
 		}
-
-		public static class LightningBolt extends MagicAttack {}
 	}
 	public static class MagicMissile extends Shaman {
 		{
 			spriteClass = ShamanSprite.MM.class;
 			wandLoot = WandOfMagicMissile.class;
+			magic = new MagicBolt();
 		}
-		public static class MagicBolt extends MagicAttack { }
+		public static class MagicBolt extends Magic { }
 
 		private boolean zapping;
-		protected void applyZap() {
+		protected void applyZap(int damage) {
 			enemy.sprite.burst(0xFFFFFFFF,2);
-			applyZap( NormalIntRange(4,10), new MagicBolt());
+			super.applyZap(damage);
 		}
 
 		public void onZapComplete(boolean next) {
@@ -204,8 +204,11 @@ public abstract class Shaman extends Mob {
 
             wandLoot 	= WandOfFireblast.class;
             potionLoot 	= PotionOfLiquidFlame.class;
+
+			maxZapDmg = 12; // up from 10
+			magic = new BoltOfFire();
         }
-        public static class BoltOfFire extends MagicAttack {}
+        public static class BoltOfFire extends Magic {}
 
 		@Override
 		public void onZapComplete(boolean next) {
@@ -214,17 +217,16 @@ public abstract class Shaman extends Mob {
             Fire.burnTerrain(enemy.pos);
         }
 
-		protected void applyZap() {
+		protected void applyZap(int damage) {
             enemy.sprite.centerEmitter().burst(FlameParticle.FACTORY, 3);
-            applyZap( NormalIntRange(4,12), new BoltOfFire() );
+            super.applyZap(damage);
 			Burning.reignite(enemy,6);
         }
 
 		{
-			resistances.add(Burning.class);
-			resistances.add(Blazing.class);
-			resistances.add(WandOfFireblast.class);
-			resistances.add(BoltOfFire.class);
+            // very nearly fiery, but not quite.
+            resistances.addAll( Property.FIERY.resistances() );
+            resistances.addAll( Property.FIERY.immunities()  );
 		}
 	}
     public static class Frost extends Shaman {
@@ -233,23 +235,31 @@ public abstract class Shaman extends Mob {
 
 			wandLoot = WandOfFrost.class;
 			potionLoot = PotionOfFrost.class;
+
+			magic = new FrostBolt();
 		}
-		public static class FrostBolt extends MagicAttack {}
-		protected void applyZap() {
-			enemy.sprite.burst( 0xFF99CCFF, 3 );
-			applyZap( NormalIntRange(4,10), new FrostBolt() );
+
+		public static class FrostBolt extends Magic { }
+
+		protected void applyZap(int damage) {
+			enemy.sprite.burst(0xFF99CCFF, 3);
+			super.applyZap(damage);
 			Chill chill = enemy.buff(Chill.class);
-			float extension = Random.Float(1.5f,2.5f);
-			if(chill != null && chill.cooldown() + extension > 6) 	Buff.prolong(enemy, Chill.class, 6);
-			else 													Buff.affect(enemy,Chill.class, extension);
+			float extension = Random.Float(1.5f, 2.5f);
+
+			if (chill != null && chill.cooldown() + extension > 6)
+				Buff.prolong(enemy, Chill.class, 6);
+			else Buff.affect(enemy, Chill.class, extension);
+
 			Heap heap = Dungeon.level.heaps.get(enemy.pos);
-			if(heap != null) heap.freeze();
+			if (heap != null) heap.freeze();
 		}
-    }
-	{
-		resistances.add(Chill.class);
-		resistances.add(Frost.FrostBolt.class);
-		resistances.add(WandOfFrost.class);
-		resistances.add(com.zrp200.lustrouspixeldungeon.actors.buffs.Frost.class);
+
+		{
+			resistances.add(Chill.class);
+			resistances.add(Frost.FrostBolt.class);
+			resistances.add(WandOfFrost.class);
+			resistances.add(com.zrp200.lustrouspixeldungeon.actors.buffs.Frost.class);
+		}
 	}
 }
