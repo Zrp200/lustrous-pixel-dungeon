@@ -34,16 +34,14 @@ public abstract class Runestone extends Item {
 
 		value = 10;
 	}
-	
 	@Override
-	protected void onThrow(int cell) {
-		if (Dungeon.level.pit[cell] || !defaultAction.equals(AC_THROW)){
-			super.onThrow( cell );
-		} else {
+	protected void afterThrow(int cell) {
+		if (!Dungeon.level.pit[cell] && defaultAction.equals(AC_THROW))
 			activate(cell);
-		}
+		else
+			super.afterThrow(cell); // drops.
 	}
-	
+
 	protected abstract void activate(int cell);
 	
 	@Override

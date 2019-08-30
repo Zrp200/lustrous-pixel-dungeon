@@ -61,9 +61,9 @@ public class ThrowingGlaive extends Boomerang {
     }
 
     @Override
-    protected void onThrowComplete(int cell) {
+    protected void afterThrow(int cell) {
         isRichoceting = false;
-        super.onThrowComplete(cell);
+        super.afterThrow(cell);
     }
 
     @Override

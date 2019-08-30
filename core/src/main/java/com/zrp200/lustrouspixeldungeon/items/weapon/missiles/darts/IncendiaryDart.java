@@ -33,12 +33,12 @@ public class IncendiaryDart extends TippedDart {
 	}
 	
 	@Override
-	protected void onThrowComplete( int cell ) {
+	protected void afterThrow( int cell ) {
 		if ( curUser.pos != cell && !rangedHit && Fire.canIgnite(cell) ) {
 			Fire.ignite(cell);
 			useDurability();
 		}
-		super.onThrowComplete(cell); // TippedDart#drop handles untipping.
+		super.afterThrow(cell); // TippedDart#drop handles untipping.
 	}
 	
 	@Override

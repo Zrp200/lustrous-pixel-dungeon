@@ -122,9 +122,10 @@ public class Boomerang extends MissileWeapon {
 		return !isReturning();
 	}
 
-	protected void onThrowComplete(final int cell) {
+	@Override
+	protected void afterThrow(int cell) {
 		if( cell == curUser.pos || isReturning() || isBreaking() ) {
-			super.onThrowComplete(cell);
+			super.afterThrow(cell);
 			return;
 		}
 
@@ -134,13 +135,10 @@ public class Boomerang extends MissileWeapon {
 			if (trapAtCell != null && (trapAtCell instanceof TeleportationTrap || trapAtCell instanceof DisarmingTrap
 					|| (trapAtCell instanceof ExplosiveTrap || trapAtCell instanceof DisintegrationTrap)
 					&& isDestroyable())) {
-				super.onThrowComplete(cell);
+				super.afterThrow(cell);
 				return; // it's not coming back.
 			} else Dungeon.level.press(cell, null, true);
 		returnFrom(cell);
-		// leaving a reference to the parent.
-		rangedHit = false;
-		curUser.spendAndNext(castDelay);
 	}
 
 	@Override

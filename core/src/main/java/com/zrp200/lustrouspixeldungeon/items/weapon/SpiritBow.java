@@ -227,7 +227,7 @@ public class SpiritBow extends Weapon {
 			augment = SpiritBow.this.augment;
 			enchantKnown = true; // for fun visual effects
 		}
-		boolean hit = false;
+		private boolean hit = false;
 
 		@Override
 		public int damageRoll(Char owner) {
@@ -265,9 +265,9 @@ public class SpiritBow extends Weapon {
 		}
 
 		@Override
-		protected void onThrowComplete(int cell) {
+		protected void afterThrow(int cell) {
 			if (sniperSpecial && augment == NONE) sniperSpecial = false;
-			super.onThrowComplete(cell);
+			super.afterThrow(cell);
 		}
 
 		int flurryCount = -1;

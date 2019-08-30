@@ -21,9 +21,7 @@
 
 package com.zrp200.lustrouspixeldungeon.items.stones;
 
-import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.PathFinder;
-import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;

@@ -112,12 +112,12 @@ public abstract class Plant implements Bundlable {
 		}
 		
 		@Override
-		protected void onThrow( int cell ) {
+		protected void afterThrow( int cell ) {
 			if (Dungeon.level.map[cell] == Terrain.ALCHEMY
 					|| Dungeon.level.pit[cell]
 					|| Dungeon.level.traps.get(cell) != null
 					|| Dungeon.isChallenged(Challenges.NO_HERBALISM)) {
-				super.onThrow( cell );
+				super.afterThrow( cell );
 			} else {
 				Dungeon.level.plant( this, cell );
 				if (Dungeon.hero.subClass == HeroSubClass.WARDEN) {

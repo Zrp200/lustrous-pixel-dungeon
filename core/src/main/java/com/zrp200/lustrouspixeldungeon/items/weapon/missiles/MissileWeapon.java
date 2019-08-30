@@ -419,9 +419,9 @@ abstract public class MissileWeapon extends Weapon {
     public void onMiss(Char enemy) { }
 
 	@Override
-	protected void onThrowComplete(int cell) {
+	protected void afterThrow(int cell) { // this should be overridden to do stuff after striking the target.
+		super.afterThrow(cell);
 		rangedHit = false;
-		super.onThrowComplete(cell);
 	}
 
 	@Override

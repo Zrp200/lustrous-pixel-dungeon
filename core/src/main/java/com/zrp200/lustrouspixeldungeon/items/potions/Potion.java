@@ -311,18 +311,13 @@ public class Potion extends Item {
 		
 		hero.sprite.operate( hero.pos );
 	}
-	
 	@Override
-	protected void onThrow( int cell ) {
-		if (Dungeon.level.map[cell] == Terrain.WELL || Dungeon.level.pit[cell]) {
-			
-			super.onThrow( cell );
-			
-		} else  {
-
-			Dungeon.level.press( cell, null, true );
-			shatter( cell );
-			
+	protected void afterThrow(int cell) {
+		if (Dungeon.level.map[cell] != Terrain.WELL && !Dungeon.level.pit[cell]) {
+			Dungeon.level.press(cell,null,true);
+			shatter(cell);
+		} else {
+			super.afterThrow(cell);
 		}
 	}
 	

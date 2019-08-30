@@ -160,15 +160,20 @@ public class Item implements Bundlable, Cloneable {
 		execute( hero, defaultAction );
 	}
 
-	protected void onThrow(int cell) {
-		onThrowComplete(cell);
-	}
-	protected void onThrowComplete(int cell) {
-		drop(cell);
-		curUser.spendAndNext( castDelay );
-	}
-	
-	//takes two items and merges them (if possible)
+	// when overriding, call super.onThrow (or #onThrowComplete) after the method.
+    // This should be overridden when the logic won't affect whether or not it drops.
+	// Calling super.onThrow before logic will cause the logic to run after everything has occurred, including #afterThrow.
+	protected void onThrow(int cell) { onThrowComplete(cell); }
+
+	// this method exists to allow logic after the initial throw logic. notably sidestepping having to drop the item.
+	protected void afterThrow(int cell) { drop(cell); }
+
+	// this prevents the game from getting hung up.
+    protected final void onThrowComplete(int cell) {
+        afterThrow(cell);
+        curUser.spendAndNext(castDelay); // this is so important that I made #afterThrow to ease overriding.
+    }
+    //takes two items and merges them (if possible)
 	public Item merge( Item other ){
 		if (isSimilar( other ) && other != this){
 			quantity += other.quantity;

@@ -108,7 +108,7 @@ public class Bomb extends Item {
 	}
 
 	@Override
-	protected void onThrow( int cell ) {
+	protected void afterThrow( int cell ) {
 		if (!Dungeon.level.pit[ cell ] && lightingFuse) {
 			Actor.addDelayed(fuse = new Fuse().ignite(this), 2);
 		}
@@ -118,9 +118,9 @@ public class Bomb extends Item {
 				if (Dungeon.level.passable[cell + i])
 					candidates.add(cell + i);
 			int newCell = candidates.isEmpty() ? cell : Random.element(candidates);
-			Dungeon.level.drop( this, newCell ).sprite.drop( cell );
+			drop(newCell).sprite.drop( cell );
 		} else
-			super.onThrow( cell );
+			super.afterThrow( cell );
 	}
 
 	@Override
