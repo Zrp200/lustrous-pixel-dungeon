@@ -39,14 +39,13 @@ public class ScrollOfAffection extends ExoticScroll {
 	@Override
 	public void doRead() {
 		
-		curUser.sprite.centerEmitter().start( Speck.factory( Speck.HEART ), 0.2f, 5 );
-		Sample.INSTANCE.play( Assets.SND_CHARMS );
+		Charm.playVFX(curUser);
+		Charm.playSFX();
 		Invisibility.dispel();
 		
 		for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
 			if (Dungeon.level.heroFOV[mob.pos]) {
 				Buff.affect( mob, Charm.class, 20f ).object = curUser.id();
-				mob.sprite.centerEmitter().start( Speck.factory( Speck.HEART ), 0.2f, 5 );
 			}
 		}
 		
