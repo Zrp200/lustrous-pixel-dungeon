@@ -35,16 +35,12 @@ public class Vampiric extends Weapon.Enchantment {
 	
 	@Override
 	public int proc( Weapon weapon, Char attacker, Char defender, int damage ) {
-		
 		//heals for up to 30% of damage dealt, based on missing HP, ultimately normally distributed
 		float 	missingPercent = (attacker.HT - attacker.HP) / (float)attacker.HT,
-				maxHeal = (.025f + missingPercent * .125f) * 2, // min max heal is .025%, consistent with shattered.
-				healPercent = 0;
-		int tries = weapon.level();
-		do {
-			healPercent = Math.max(healPercent, Random.NormalFloat(maxHeal));
-		} while(tries-- > 0);
-		int healAmt = Math.min( Math.round(healPercent*damage), attacker.HT - attacker.HP );
+				maxHeal = (.025f + missingPercent * .125f)*2*damage; // min max heal is .025%, consistent with shattered.
+		float heal = Random.NormalFloat(maxHeal);
+		if(heal % 1 > Random.Float()) heal++; // more likely to round up the closer it is. 1.1 has a 10% chance to round up to 2, lol.
+		int healAmt = Math.min( (int)heal, attacker.HT - attacker.HP );
 
 		if (healAmt > 0 && attacker.isAlive()) {
 			attacker.HP += healAmt;
