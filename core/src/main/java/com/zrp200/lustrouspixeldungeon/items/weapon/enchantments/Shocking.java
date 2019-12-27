@@ -52,7 +52,7 @@ public class Shocking extends Weapon.Enchantment {
 			arc(attacker, defender, 2);
 			affected.remove(defender); //defender isn't hurt by lightning
 			for (Char ch : affected) {
-				ch.damage(Math.round(damage*0.4f), this);
+				ch.damage(Math.round(Random.NormalFloat(0.2f,0.6f)), this); // (2+-1)/5 damage instead of a flat 2/5 damage.
 			}
 
 			attacker.sprite.parent.addToFront( new Lightning( arcs, null ) );
@@ -80,12 +80,12 @@ public class Shocking extends Weapon.Enchantment {
 		defender.sprite.flash();
 		
 		PathFinder.buildDistanceMap( defender.pos, BArray.not( Dungeon.level.solid, null ), dist );
-		for (ArrayList<Integer> range : PathFinder.sortedMap()) {
+		for ( ArrayList<Integer> range : PathFinder.sortedMap() ) {
 			Random.shuffle(range);
 			for (int cell : range) {
 				Char n = Actor.findChar(cell);
-				if (n != null && n.alignment != attacker.alignment && n.alignment != Char.Alignment.NEUTRAL && !affected.contains(n) ) {
-					arcs.add(new Lightning.Arc(defender.sprite.center(), n.sprite.center()));
+				if ( n != null && n.alignment != attacker.alignment && n.alignment != Char.Alignment.NEUTRAL && !affected.contains(n) ) {
+					arcs.add( new Lightning.Arc( defender.sprite.center(), n.sprite.center() ) );
 					arc(attacker, n, (Dungeon.level.water[n.pos] && !n.flying) ? 2 : 1);
 				}
 			}

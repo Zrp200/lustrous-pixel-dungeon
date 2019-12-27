@@ -233,7 +233,7 @@ public class UnstableSpellbook extends Artifact {
 		public boolean act() {
 			LockedFloor lock = target.buff(LockedFloor.class);
 			if (lock == null || lock.regenOn()) {
-				gainCharge(1 / (120f - (chargeCap - charge)*5f));
+				gainCharge(1 / (120f - (chargeCap+(level()%2)/2f - charge)*5f)); // half levels mean something now, #gainCharge prevents charging past cap.
 			}
 
 			spend( TICK );
