@@ -32,6 +32,7 @@ import com.zrp200.lustrouspixeldungeon.scenes.WelcomeScene;
 public class LustrousPixelDungeon extends Game {
 
 	public enum Version {
+		v013("0.1.3",425),
 		v012("0.1.2",423),
 		v011("0.1.1",418),
 		v010("0.1.0",416),

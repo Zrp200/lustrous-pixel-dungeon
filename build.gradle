@@ -14,7 +14,7 @@ allprojects {
         appName = 'Lustrous Pixel Dungeon'
         appPackageName = 'com.zrp200.lustrouspixeldungeon'
 
-        appVersionCode = 423
+        appVersionCode = 425
         appVersionName = '0.1.3'
 
         appAndroidCompileSDK = 28

@@ -27,21 +27,24 @@ import com.zrp200.lustrouspixeldungeon.items.armor.curses.Volatility;
 import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.HolyProvidence;
 import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.Stone;
 import com.zrp200.lustrouspixeldungeon.items.bags.MagicalHolster;
+import com.zrp200.lustrouspixeldungeon.items.bombs.ArcaneBomb;
 import com.zrp200.lustrouspixeldungeon.items.bombs.TeleportationBomb;
 import com.zrp200.lustrouspixeldungeon.items.food.Meat;
+import com.zrp200.lustrouspixeldungeon.items.potions.elixirs.ElixirOfDragonsBlood;
 import com.zrp200.lustrouspixeldungeon.items.rings.RingOfEnergy;
 import com.zrp200.lustrouspixeldungeon.items.rings.RingOfForce;
 import com.zrp200.lustrouspixeldungeon.items.rings.RingOfFuror;
 import com.zrp200.lustrouspixeldungeon.items.rings.RingOfWealth;
-import com.zrp200.lustrouspixeldungeon.items.wands.WandOfCorruption;
+import com.zrp200.lustrouspixeldungeon.items.wands.WandOfLivingEarth;
 import com.zrp200.lustrouspixeldungeon.items.wands.WandOfRegrowth;
 import com.zrp200.lustrouspixeldungeon.items.wands.WandOfTransfusion;
+import com.zrp200.lustrouspixeldungeon.items.wands.WandOfWarding;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Chaotic;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Necromantic;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.WeaponCurse;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Blazing;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Chilling;
-import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Elastic;
+import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Corrupting;
 import com.zrp200.lustrouspixeldungeon.items.weapon.enchantments.Vampiric;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Gauntlet;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Glaive;
@@ -49,6 +52,7 @@ import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Gloves;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Greataxe;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Longsword;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Quarterstaff;
+import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Sai;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Shortsword;
 import com.zrp200.lustrouspixeldungeon.items.weapon.melee.Sword;
 import com.zrp200.lustrouspixeldungeon.items.weapon.missiles.Bolas;
@@ -80,9 +84,85 @@ import com.zrp200.lustrouspixeldungeon.ui.Window;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import static com.zrp200.lustrouspixeldungeon.ui.Icons.DEPTH;
 import static com.zrp200.lustrouspixeldungeon.ui.Icons.get;
 
 public enum Milestone {
+    LUST013 (Version.v013, 12,27,2019) {
+        public void addChanges()
+        {
+            new ChangeInfo(Version.v013.name, true);
+            new ChangeInfo(ChangeInfo.Template.NEW_CONTENT).addButtons(
+                    ChangeButton.devCommentary(LUST013,Messages.get(Milestone.class, "013"),LUST012,SHPD074),
+                    new ChangeButton(new ItemSprite( new WandOfWarding() ), "Wand of Warding implemented with changes")
+                            .appendList(
+                                    "Mechanics adjusted to be more forgiving with charges wasted",
+                                    "Ward self-damage is now silent, and heal amounts are shown",
+                                    "Greater ward max zaps increased by 1"),
+                    new ChangeButton(Icons.get(Icons.TARGET), "Idiot-Proofing")
+                            .append("The following consumables are unable to be used without other characters in sight")
+                            .appendList("Scroll of Terror","Scroll of Petrification","Scroll of Terror",
+                                    "Scroll of Retribution", "Scroll of Psonic Blast"),
+                    ChangeButton.bugfix("game infinitely waiting after various items are thrown",
+                            "Magical Infusion not preserving enchants", "curse glyphs having the same chance to be cleared by SOU as regular glyphs",
+                            "glyphs not using new sou behavior", "Various text bugs"));
+            new ChangeInfo("From Shattered",false).addButtons(
+                    new ChangeButton( new ItemSprite( new WandOfLivingEarth() ), "Implemented new stuff" )
+                            .appendList("Wand of Living Earth added", "New ally AI implemented",
+                                    "Dried rose changes", "Bomb changes"),
+                    new ChangeButton(new ItemSprite(new Glaive().image, new Corrupting().glowing()),
+                            "Item and Enchant Buffs")
+                            .appendList("Blooming enchant proc chance scaling for additional grass doubled (now 10%)",
+                                    "Lucky enchant proc rate doubled",
+                                    "Corrupting enchant base proc rate now 15%, but scaling reduced",
+                                    "Flow now flat 2x speed")
+                            .appendLine().appendList("Wild energy now gives 4 turns of charging instantly, " +
+                                "and 8 turns of recharging over time", "Allies are now healed by magical sleep",
+                                "Clarovoyance AOE increased to 12x12"),
+                    new ChangeButton( new ItemSprite( new ArcaneBomb() ), "Nerfs" )
+                            .appendList("Holy Bomb no longer blinds characters caught in the blast. " +
+                                            "Recipe cost up to 8 (was 6).",
+                                    "Arcane bomb damage now falls off based on distance.",
+                                    "Sharpnel Bomb damage reduced by 5% per tile of distance",
+                                    "Brimstone no longer provides shielding",
+                                    "Thorns upgrade scaling halved, but proc rate increased"),
+                    ChangeButton.misc("Class armor abilities no longer affect allies",
+                            "Implemented shattered visual changes", "Autotargeting no longer targets allies",
+                            "Scrolls with AOE do not target allies in most cases",
+                            "Ring of Elements applies to wands", "Implemented LibGDX move",
+                            "Implemented min android version shift",
+                            "Great crab can only block one enemy at a time."),
+                    ChangeButton.bugfix("Talisman of foresight bugs", "Bugged level visuals",
+                            "Visual errors w/ enemy attacks", "Aquatic Rejuvenation being able to over-heal",
+                            "Prismatic images not being affected by brimstone", "Shattered pots being lost"
+                                    + " with full inv",
+                            "Doors closing when swapping with ally", "minor text errors"));
+            new ChangeInfo(ChangeInfo.Template.BUFFS).addButtons(
+                    new ChangeButton(new Burning().getLargeIcon(), "Fire and stuff").append(
+                            "Messing with fire is fun!\n")
+                            .appendList("Fire duration now independent of terrain type if the terrain in question is already burning",
+                                    "Burning characters and gnoll trickster darts now simply ignite terrain for their default"),
+                    new ChangeButton(new ItemSprite(new ElixirOfDragonsBlood()),"Fire Imbue", "I've always thought fire imbue needed some love.\n")
+                            .appendList("Fire Imbue now ignites terrain, but not short grass",
+                                    "Fire imbue now directly procs blazing, proc rate scaling with depth. Becomes higher by depth 4, and is effectively +6 by depth 26",
+                                    "Fire imbue now has a weak fire vfx"),
+                    new ChangeButton(new ItemSprite(new Sai().enchant(new Blazing())),"Enchants")
+                            .appendList("Blazing ignites terrain if the target is immune",
+                                    "Blazing proc rate increased to match other commons\n",
+                                    "Shocking internally buffed to deal 40% damage, but now really does " +
+                                            "a damage range from 20%-60% of original damage"),
+                    ChangeButton.misc(
+                            "Fiery enemies again immune to blazing damage",
+                            "Electric enemies now resist lightning shaman zaps",
+                            "Fiery enemies and firebolt shamans no longer resist firebolt shaman melee",
+                            "Shamans drop potions slightly less often"));
+            new ChangeInfo(ChangeInfo.Template.NERFS).addButtons(
+                    new ChangeButton(new ItemSprite(new Greataxe().enchant(new Vampiric())), "Vampiric")
+                            .append("Current, when dumped, one can pretty much rely on getting almost double the amount of intended healing\n")
+                            .appendList("Direct upgrade interaction removed. Healing is now based wholly on damage output and user's current health",
+                                    "Internal rounding modified; an internal 3.5 has a 50% chance to round up to 4, instead of 100% to do so"));
+        }
+    },
     LUST012 (Version.v012, 8, 7,2019) {
         @Override
         public void addChanges() {
@@ -180,94 +260,6 @@ public enum Milestone {
         @Override
         public void addChanges() {
             new ChangeInfo(Version.v011.name, true);
-            new ChangeInfo("v0.1.1b",false).addButtons(
-                    new ChangeButton(new ItemSprite(new Longsword().enchant(new Blazing())),"Partially Implemented Shattered v0.7.2b")
-                            .appendList("Swift buff duration increased to 4, from 2 (was increased to 5 in shattered)",
-                                    "Vampiric heal internally now 2.5%-15%, from 0-10%. New variation mechanic remains however.",
-                                    "Lucky base proc rate boosted to 8%",
-                                    "Grim changes implemented to the letter, overwriting previous changes.",
-                                    "Blooming and blazing changes not implemented."),
-                    new ChangeButton(new Burning().getLargeIcon(), "Fire-based mechanics").appendList(
-                            "Blazing now has a 60% chance to ignite when not on flammable tiles, up from 50%",
-                            "Fire imbue now has a 50% chance to proc blazing effect, rather than just inflict burning.",
-                            "Firebolt shaman and fire elementals now inflict 6 turns of burning, down from 8, from their attacks.",
-                            "Certain types of terrain will always burn for a specific amount of time; mostly " +
-                                    "flammable things will burn for 4 turns, but tall grass, barricades, " +
-                                    "and bookshelves will burn for 5, and grass will burn for 2.",
-                            "Blazing burning duration now matches shattered exactly; 4, down from 6."),
-                    ChangeButton.misc(
-                            "Hunting mobs will now cluster around their target even if some can't actually reach.",
-                            "Mobs now avoid returning boomerangs if not amok",
-                            "Returning boomerang can no longer surprise attack and has a 5% accuracy penalty",
-                            "Terror no longer removes amok",
-                            "Spinner now show rage vfx when switching back to hunting their targets",
-                            "Weakness grey starts at 3 turns now",
-                            "Scroll of Upgrade's enchant nullification chance now starts at +3, down from +4, and is guarenteed at +7, down from +8.",
-                            "Adjusted swift description to better indicate wand option, and added a proc vfx",
-                            "Shaman resistances should be a bit more sensical",
-                            "Readded key-bug code that will prevent future key bugs from destroying games"),
-                    ChangeButton.bugfix(
-                            "Quest sad ghost always moving at 1x speed",
-                            "Various bugs that result in losing items",
-                            "Rose sad ghost crashing the game if fighting without a weapon.",
-                            "Various issues with mage's staff when starting a game",
-                            "Blooming rooting non-enemy targets for 2 turns instead of one turn",
-                            "Tipped darts temporarily hiding enchantment when becoming untipped.",
-                            "Guardian traps causing enchant reveal animation to play",
-                            "Resists affecting damaging debuff duration",
-                            "Incorrect pricing of some missile weapons",
-                            "Formatting error with shields and typical blocking")
-                            .appendLine("\nFrom Shattered v0.7.2b")
-                            .appendList(
-                                    "Cloak of Shadows not able to be turned off at 0 charges",
-                                    "Multiplicity curse spawning rats on floor 5",
-                                    "Dried rose rarely being usable before completing ghost quest",
-                                    "Corrupted thieves being able to steal from the hero",
-                                    "Rare crashes involving rankings window",
-                                    "Crashes and other odd behavior when a berserking hero is affected by shielding buffs"));
-            new ChangeInfo("v0.1.1a",false).addButtons(
-                    new ChangeButton(new ItemSprite(new Glaive().image, new ItemSprite.Glowing(0xFFFF66)), "Dazzling",
-                            "Adding slow turned out to be more powerful than I thought, so I'm reducing " +
-                                    "the potency of the enchant somewhat. I like slow, though, so " +
-                                    "I'm not getting rid of it.")
-                            .appendList(
-                                    "Blindness scaling halved (now +0/+.5 instead of +0/+1)",
-                                    "Blindness base duration remains at 1-2 turns, however.",
-                                    "Slow base duration reduced to 1 - 1.33, down from 1 - 1.5",
-                                    "Slow scaling now +0/+.33, down from +0/+.5"),
-                    new ChangeButton(new ItemSprite(new Greataxe().enchant(new Vampiric())),"Vampiric")
-                            .appendList(
-                                    "Life steal is now normally distributed between 0 and double the previous " +
-                                            "rate (which varies according to your health)",
-                                    "This means that the range is now effective 0-20% instead of 0-10%",
-                                    "The rolls are retried for as many times as the weapon has levels, taking " +
-                                            "the highest roll each time, and then applying that roll " +
-                                            "to the damage to determine how much healing is granted.")
-                            .appendLine("\nThese changes should make vampiric feel more powerful, especially early, " +
-                                    "while not really actually boosting its typical life-steal from v0.7.2 levels, at least initially."),
-                    ChangeButton.misc("Blooming root reduced from 2 turns to 1.",
-                            "Grim's min chance increases by .2% per level.",
-                            "Chaotic can no longer roll Overgrowth.",
-                            "Chaotic's max level roll for glyphs is now 12, down (again) from 20.",
-                            "Chaotic now procs displacement and multiplicity twice as often, and repulsing half as often",
-                            "Displacement can now proc for prismatic images, and displacing can now proc " +
-                                    "against the hero when used by an amok mirror image",
-                            "Blazing trap duration doubled",
-                            "Grass will now consistently burn for 4 turns.",
-                            "Swapped positions of buttons in rename window",
-                            "Went back and properly credited people for inspiring various parts of 0.1.1 " +
-                                    "and also changed some icons around for consistency."),
-                    ChangeButton.bugfix(
-                            "Major crash bugs with floor 26",
-                            "Crash bugs with terror",
-                            "Crash bugs with throwing potions",
-                            "Transmuting an artifact into spellbook causing a crash",
-                            "Necromantic being unobtainable",
-                            "Dazzling enchantment being called !!!NO TEXT FOUND!!!",
-                            "Incorrect terror behavior",
-                            "Enchanting missile weapons resulting in you losing them",
-                            "Minor fire bugs",
-                            "Visual visual issues with fire elementals and buffs"));
             new ChangeInfo(ChangeInfo.Template.NEW_CONTENT).addButtons(
                     ChangeButton.devCommentary(LUST011, Messages.get(Milestone.class, "011"), SHPD072),
                     new ChangeButton(new ArmageddonTrap().getImage(), "New Demon Halls Trap!",
@@ -284,6 +276,17 @@ public enum Milestone {
                                     "In addition, door combat is both more necessary and also penalized (especially in the cases of Warrior and Huntress), since if a wraith spawns in a door, you won't be able to use the door against them.")
                             .appendLine("\nWraith spawning, of course, has its uses...")
                             .appendLine("\nIdea credit to _TrustyWay#1377_"),
+                    new ChangeButton(Icons.get(DEPTH), "AI Changes").appendList(
+                            "Hunting mobs will now cluster around their target even if some can't actually reach.",
+                            "Mobs now avoid returning boomerangs if not amok",
+                            "Returning boomerang can no longer surprise attack and has a 5% accuracy penalty",
+                            "Terror no longer removes amok",
+                            "Spinner now show rage vfx when switching back to hunting their targets",
+                            "Weakness grey starts at 3 turns now",
+                            "Scroll of Upgrade's enchant nullification chance now starts at +3, down from +4, and is guarenteed at +7, down from +8.",
+                            "Adjusted swift description to better indicate wand option, and added a proc vfx",
+                            "Shaman resistances should be a bit more sensical",
+                            "Readded key-bug code that will prevent future key bugs from destroying games"),
                     new ChangeButton(Icons.get(Icons.BACKPACK),"Equipment Renaming!")
                             .appendLines("Added a weapon/wand renaming feature. " +
                                             "It's extremely similar to Shattered's donation perk, with the " +
@@ -361,24 +364,40 @@ public enum Milestone {
                             "Screen orientation not always being set when game starts",
                             "Flying characters pushing the ground after teleporting,",
                             "Bombs rarely damaging Tengu multiple times",
-                            "Thrown weapons instantly breaking in rare cases",
+                            "Thrown weapons instantly breaking in rare cases"),
+                    ChangeButton.bugfix(
                             "Dwarf King summoning skeletons while frozen",
                             "Incorrect behaviour when wands recharge very quickly",
                             "Thieves rarely escaping when they are close",
                             "Beacon of returning losing set location when scroll holder is picked up",
                             "Recycle not giving an item if inventory is full",
-                            "Rare cases where the game wouldn't save during alchemy"));
+                            "Rare cases where the game wouldn't save during alchemy",
+                            "Cloak of Shadows not able to be turned off at 0 charges",
+                            "Multiplicity curse spawning rats on floor 5",
+                            "Dried rose rarely being usable before completing ghost quest",
+                            "Corrupted thieves being able to steal from the hero",
+                            "Crashes and other odd behavior when a berserking hero is affected by shielding buffs"));
             new ChangeInfo(ChangeInfo.Template.BUFFS).addButtons(
                     new ChangeButton(new ItemSprite(new Longsword().enchant(new Blazing())),"Blazing")
                             .appendList(
                                     "Now uncommon (was common)",
                                     "Proc rate reduced to (1+L)/(5+L)",
                                     "Old behavior merged with new behavior.",
-                                    "Still has a 50% chance to reignite, but now has 75% chance to reignite on flammable tiles.",
+                                    "60% chance to reignite, but now has 75% chance to reignite on flammable tiles.",
                                     "Damage scales based on depth instead of level",
                                     "Initial ignition is not accompanied by damage",
-                                    "Procs on a burning target do slightly reduced blazing damage, "
-                                            + "but set the target's burn duration to 4 if that would extend it."),
+                                    "Proc burn duration now 4",
+                                    "Procs on a burning target do slightly reduced blazing damage"),
+                    new ChangeButton(new ItemSprite(new Greataxe().enchant(new Vampiric())),"Vampiric")
+                            .appendList(
+                                    "Life steal is now normally distributed between 0 and double the previous " +
+                                            "rate (which varies according to your health)",
+                                    "So instead of healing 2.5-15%, now heals 0-30% at very low health, and 0-5% at full health.",
+                                    "The rolls are retried for as many times as the weapon has levels, taking " +
+                                            "the highest roll each time, and then applying that roll " +
+                                            "to the damage to determine how much healing is granted.")
+                            .appendLine("\nThese changes should make vampiric feel more powerful, especially early, " +
+                                    "while not really actually boosting its typical life-steal from v0.7.2 levels, at least initially."),
                     new ChangeButton(new ItemSprite(new Glaive().image, new ItemSprite.Glowing(0xFFFF66)), "Dazzling",
                             "Instead of removing dazzling, I've decided instead to double down on its mechanics. " +
                                     "Dazzling was sometimes considered to be a better stunning already, " +
@@ -387,14 +406,19 @@ public enum Milestone {
                                     "Now rare (was uncommon), replacing stunning",
                                     "Base Proc rate reduced to (1+L)/(8+L)",
                                     "Color is now light yellow to properly account for the addition of Swift",
-                                    "Inflicts 1-(1.5+0.5L) turns of slow instead of 1-(1+0.5L) turns of cripple",
-                                    "Base blind duration is now 1-2 (up from 1-1), scaling unchanged"),
+                                    "Inflicts a reduced amount of slows instead of crippling target",
+                                    "Blind duration at +0 increased by 50%, but upgrade scaling halved."),
                     ChangeButton.misc(
                             "All upgradeable items spawned in floors 22-24 now get a free upgrade.",
                             "Blooming now applies a brief root if grass was created at the target's location.",
-                            "Swift works with wands now!",
+                            "Swift works with wands now, duration doubled",
                             "Precise is now a common enchant (was uncommon in 0.72), replacing blazing in common",
-                            "Lucky is now uncommon (was rare in 0.7.2)"));
+                            "Lucky is now uncommon (was rare in 0.7.2), base proc rate boosted to 8%",
+                            "Fire imbue now has a 50% chance to proc blazing effect, rather than just inflict burning.",
+                            "Blazing trap duration doubled",
+                            "Certain types of terrain will always burn for a specific amount of time; mostly " +
+                                    "flammable things will burn for 4 turns, but tall grass, barricades, " +
+                                    "and bookshelves will burn for 5, and grass will burn for 2."));
             new ChangeInfo(ChangeInfo.Template.CHANGES).addButtons(
                     new ChangeButton(new ItemSprite(new Shortsword().enchant(new Chaotic())),"Curses")
                             .append("I've realized that there are too many weapon curses for how obscure they are.")
@@ -413,14 +437,39 @@ public enum Milestone {
                     ChangeButton.misc(
                             "Arcane Catalyst and Alchemical Catalyst can now be transmuted into each other.",
                             "Shocking's initial arc (attacker to defender) removed.",
-                            "Charm vfx shouldn't play on immune enemies anymore."),
+                            "Blooming root reduced from 2 turns to 1.",
+                            "Chaotic can no longer roll Overgrowth.",
+                            "Chaotic's max level roll for glyphs is now 12, down (again) from 20.",
+                            "Chaotic now procs displacement and multiplicity twice as often, and repulsing half as often",
+                            "Displacement can now proc for prismatic images, and displacing can now proc " +
+                                    "against the hero when used by an amok mirror image",
+                            "Firebolt shaman and fire elementals now inflict 6 turns of burning, down from 8, from their attacks.",
+                            "Grass will now consistently burn for 4 turns.",
+                            "Swapped positions of buttons in rename window"),
                     ChangeButton.bugfix(
                             "Infinite loop in secret larder room generation resulting in an inability to progress further in the game.",
                             "Crashes with dried rose",
                             "Enchanting a stack of two missile weapons resulting in two stacks, with one containing 0 items.",
-                            "Stewed meat giving mystery meat eat effects."
-                    )
-            );
+                            "Stewed meat giving mystery meat eat effects.",
+                            "Charm VFX playing on immune enemies",
+                            "Major crash bugs with floor 26",
+                            "Crash bugs with terror",
+                            "Crash bugs with throwing potions",
+                            "Transmuting an artifact into spellbook causing a crash",
+                            "Incorrect terror behavior",
+                            "Enchanting missile weapons resulting in you losing them",
+                            "Visual visual issues with fire elementals and buffs"),
+                    ChangeButton.bugfix(
+                            "Quest sad ghost always moving at 1x speed",
+                            "Various bugs that result in losing items",
+                            "Rose sad ghost crashing the game if fighting without a weapon.",
+                            "Various issues with mage's staff when starting a game",
+                            "Blooming rooting non-enemy targets for 2 turns instead of one turn",
+                            "Tipped darts temporarily hiding enchantment when becoming untipped.",
+                            "Guardian traps causing enchant reveal animation to play",
+                            "Resists affecting damaging debuff duration",
+                            "Incorrect pricing of some missile weapons",
+                            "Formatting error with shields and typical blocking"));
         }
     },
     LUST010 (Version.v010, 2, 14,2019) {
@@ -430,100 +479,17 @@ public enum Milestone {
             do {
                 try {
                     enchantedMissile = (MissileWeapon) Random.oneOf(Random.oneOf(Generator.misTiers).classes).newInstance();
-                } catch (Exception invalid) { enchantedMissile = TippedDart.randomTipped(1); } // keep trying until we get something that works
+                } catch (Exception e) { enchantedMissile = TippedDart.randomTipped(1); } // keep trying until we get something that works
             } while(enchantedMissile instanceof Boomerang || enchantedMissile == null);
             //noinspection unchecked
             enchantedMissile.enchantment = MissileWeapon.Enchantment.random();
             enchantedMissile.enchantKnown = true;
 
             new ChangeInfo("v0.1.0",true);
-            new ChangeInfo("v0.1.0b",false).addButtons(
-                    ChangeButton.devCommentary(null,"I've been made aware of a major bug " +
-                            "that prevents the player from entering a floor by any means, but am unable " +
-                            "to reproduce it despite everything. I'd love to fix it... If you get it and " +
-                            "can reproduce it consistently, please let me know ASAP so I can fix it once " +
-                            "and for all.\n\nOn a lighter note, I've put in the code for renaming weapons, " +
-                            "and it'll take effect once I release v0.1.1 within the next week or two."),
-                    new ChangeButton(new ItemSprite(new Shortsword().image, WeaponCurse.GLOWING),"Chaotic").appendList(
-                            "Volatility now procs twice as often when rolled, but will not destroy armor.",
-                            "Volatility will not activate at the attacker's position if the attacker is using a missile weapon.",
-                            "Stench and corrosion now always proc at the enemy's position.",
-                            "Chaotic can now roll Holy Providence... for the enemy. Have fun!",
-                            "Metabolism will now always drain hunger regardless of whether it procced for you.",
-                            "Effects that would normally scale now generate lower random level to pretend to be, now up to +6 (previous max was +19).",
-                            "Fragile can no longer be rolled; will be replaced with, uh, a better curse later."),
-                    ChangeButton.misc(
-                            "You can now enchant two missile weapons at a time if they are in the same stack.",
-                            "Cord is now guaranteed to be the result of transmuting a tier-1 weapon.",
-                            "Cord can now be passed through remains.",
-                            "Exhausting can now proc for mirror images.",
-                            "Forest Fires are much more.... destructive. ;)",
-                            "Fire can now travel on regrowth blobs.",
-                            "Magic Missile wands now gain a phantom charge with each upgrade.",
-                            "Adjusted burning internally, no behavior changes intended but please let me " +
-                                    "know if you notice a difference."
-                    ),
-                    ChangeButton.bugfix(
-                            "Things getting destroyed when they should be immune to getting destroyed",
-                            "Infernal Trap being the wrong color (thanks color-blindness)",
-                            "Odd behavior for elastic boomerang",
-                            "Mirror Images and sad ghost being able to surprise attack when they shouldn't be able to",
-                            "Holy Providence having a 0% proc rate until +3, then an abnormally low proc rate",
-                            "'Frozen' and 'Chilled' message displaying for elementals",
-                            "Charm vfx playing against immune enemies",
-                            "Grim proccing against immune enemies",
-                            "Attacking an enemy directly after loading the game is always a surprise attack",
-                            "Crashes with sad ghost",
-                            "Tome of Mastery spawning every load for those who still have the old subclasses",
-                            "Some text mistakes"));
-            new ChangeInfo("v0.1.0a",false).addButtons(
-                    new ChangeButton(new ShamanSprite.MM(), "Magic Missile Shamans").appendList(
-                            "MM shaman now does 4-10, down from 4-12",
-                            "MM shamans now drop wands of magic missile with a 1.65% chance.",
-                            "MM shaman spawnrate reduced by about 7% (50% --> ~46%)",
-                            "MM shaman now less likely to spawn on floor 4"),
-                    new ChangeButton(new ShamanSprite.Lightning(),"Lightning Shamans").appendList(
-                            "Zaps now do 4-12 damage (down from 6-12)",
-                            "Zaps get a +50% boost against targets in water, up from +25%",
-                            "Can now drop wands of lightning with a 1.65% chance",
-                            "Lightning shaman spawnrate boosted by about 11% (30% --> 33%)."),
-                    new ChangeButton(new ShamanSprite.Firebolt(),"Firebolt Shamans").appendList("Firebolt shaman spawnrate reduced by about 23% (10% -> 7.6%).",
-                            "Firebolts now do 4-12 damage, down from 6-12",
-                            "Now drops wands of fireblast with a 1.65% chance",
-                            "Now also drop potions of liquid flame.",
-                            "Fire-based resistances now consistent with burning fist and fire elemental"),
-                    new ChangeButton(new ShamanSprite.Frost(),"Frost Shamans")
-                            .appendList(
-                                    "Frost shamans now inflict 1-2 turns of frost every zap, stacking up to 6 turns of chill.",
-                                    "Frost shamans can now drop potions of frost.",
-                                    "Frost shamans can now drop wands of frost with a 1.65% chance.",
-                                    "Frost shaman spawnrate boosted by 53% (10% --> 15.3%)"),
-                    ChangeButton.misc(
-                            "Boomerangs now move a minimum of two tiles per turn when returning, up from 1.5",
-                            "Bleeding grey is now based on target's current hp, rather than hero's total hp",
-                            "Scorpios and gnoll tricksters now suffer an accuracy penalty when melee attacking."
-                    ),
-                    ChangeButton.bugfix(
-                            "Rogue not starting with a bag",
-                            "Attempting to upgrade toolkit causing crashes",
-                            "Ring-related crashes.",
-                            "Blessing ankhs causing crashes",
-                            "Activating earthroot with an item causing crashes",
-                            "Enhanced missile weapons not properly seperating from base stack",
-                            "Chargrilled meat having an incorrect name.",
-                            "Mystery meat being worth more than it should.",
-                            "Darts not being considered unique.",
-                            "!!!NO TEXT FOUND!!! being found when inspecting blobs of regrowth."),
-                    new ChangeButton(Icons.get(Icons.CHANGES),"Changelog omissions","Amended v0.1.0 changelog to include another new mechanic I forgot to mention and also fixed some formatting issues.")
-            );
             new ChangeInfo(ChangeInfo.Template.NEW_CONTENT).addButtons(
-                    ChangeButton.devCommentary(
-                            Milestone.LUST010,
+                    ChangeButton.devCommentary( Milestone.LUST010,
                             Messages.get(WelcomeScene.class,"update_msg"),
-                            Milestone.SHPD071d,
-                            Milestone.LUST001,
-                            Milestone.SHPD071
-                    ),
+                            Milestone.SHPD071d, Milestone.LUST001, Milestone.SHPD071),
                     new ChangeButton(new InfernalTrap().getImage(),
                             "Traps",
                             "Added two new traps: the Infernal and Blizzard traps!\n").appendList(
@@ -537,22 +503,23 @@ public enum Milestone {
                                     "New blocking weapon descriptions not implemented",
                                     "Teleportation trap change not implemented"),
                     new ChangeButton(new Boomerang(), "The boomerang returns as a tier-3 missile weapon!\n")
-                            .appendList(
-                                    "4-10 damage @ +2/+2 scaling.",
+                            .appendList("4-10 damage @ +2/+2 scaling.",
                                     "8 durability at base.\n",
                                     "Attempts to return to the position it was thrown from over the course of a few turns.\n",
-                                    "Moves 1.5 tiles per turn when returning, but will speed up if " +
+                                    "Moves 2 tiles per turn when returning, but will speed up if " +
                                             "necessary to return to its original position within three turns.\n",
-                                    "Can hit enemies while returning, does not benefit from subclass perks or missile weapon-specific accuracy modifiers while doing so.\n",
+                                    "Can hit enemies while returning, does not benefit from subclass " +
+                                            "perks or missile weapon-specific accuracy modifiers while doing so.\n",
                                     "Can be caught early by intercepting its flight path.\n",
                                     "Original Idea Credit: _00-Evan_"),
-                    new ChangeButton(new ItemSprite(ItemSpriteSheet.OBSIDIAN_KNIFE, null),"Obsidian Knife").appendList(
-                            "Tier-4 missile weapon",
-                            "6-18 damage @ +2/+4 scaling",
-                            "When surprise attacking, deals at least 50% of max-min to max (this is identical to Assassin's Blade mechanics).",
-                            "5 durability at base.\n",
-                            "Sprite Credit: _ConsideredHamster_")
-                            .appendLine("\nBoth this and the boomerang drop more rarely than their counterparts (1/8 of their respective tiers' drops), and are also worth slightly more."),
+                    new ChangeButton( new ItemSprite( ItemSpriteSheet.OBSIDIAN_KNIFE, null), "Obsidian Knife")
+                            .appendList(
+                                    "Tier-4 missile weapon", "6-18 damage @ +2/+4 scaling",
+                                    "When surprise attacking, deals at least 50% of max-min to max (this is identical to Assassin's Blade mechanics).",
+                                    "5 durability at base.\n",
+                                    "Sprite Credit: _ConsideredHamster_")
+                            .appendLine("\nBoth this and the boomerang drop more rarely than their " +
+                                    "counterparts (1/8 of their respective tiers' drops), and are also worth slightly more."),
                     new ChangeButton(
                             enchantedMissile.sprite(), "Enchantable Missile Weapons!")
                             .appendLine("Missile Weapons can now be enchanted! ")
@@ -566,32 +533,26 @@ public enum Milestone {
                             "once again dropped by remains."),
                     new ChangeButton(new ItemSprite(ItemSpriteSheet.RING_TOPAZ),new RingOfEnergy().trueName()).appendList(
                             "Reduced wand charge multiplier (+25% -> +22.5%)",
-                            "Now also boosts artifact recharge rate."
-                    )
-            );
+                            "Now also boosts artifact recharge rate."));
             new ChangeInfo(ChangeInfo.Template.BUFFS).addButtons(
-                    new ChangeButton(
-                            new ItemSprite( new PlateArmor().inscribe( new HolyProvidence() ) ),
+                    new ChangeButton( new ItemSprite(new PlateArmor().inscribe( new HolyProvidence() ) ),
                             "Glyphs and Enchantments")
                             .append("_Holy Providence_")
-                            .appendList(
-                                    "Proc Rate is now (2+level)/(40+level).",
+                            .appendList("Proc Rate is now (2+level)/(40+level).",
                                     "Successful procs will bestow one of Bless (6-10 turns), Adrenaline (6-8 turns), " +
                                             "or Frost Imbue (6-12 turns) upon the wearer with equal chances for each.",
                                     "Durations are uniformly distributed")
-                            .appendLine("\n_Eldritch_").appendList(
-                            "now applies more terror (now 15 base + 2.5*level) and can stack it like bleeding.",
-                            "vertigo base duration boosted by 2.")
+                            .appendLine("\n_Eldritch_")
+                            .appendList("now applies more terror (now 15 base + 2.5*level) and can stack it like bleeding.",
+                                    "vertigo base duration boosted by 2.")
                             .appendLine("\n_Chaotic_")
-                            .appendList(
-                                    "Displacing and Displacement now occupy the same curse 'slot'.",
+                            .appendList("Displacing and Displacement now occupy the same curse 'slot'.",
                                     "Viscosity now incorporates armor properly"),
                     new ChangeButton(
                             new ItemSprite( new TomeOfMastery() ),
                             "Subclasses")
                             .append("_Sniper_")
-                            .appendList(
-                                    "Now always ignores armor when using missile weapons, even at point-blank range.",
+                            .appendList("Now always ignores armor when using missile weapons, even at point-blank range.",
                                     "Sniper Shot always surprise attacks (visual change).")
                             .appendLine("\n_Gladiator_")
                             .appendList("Each hit of fury now rolls twice.",
@@ -603,53 +564,52 @@ public enum Milestone {
                             "Blast now sells for 20g (up from 10g)",
                             "Affection and aggression now sell for 12.5g (rounded to 13g usually, up from 10g).",
                             "Deepened sleep and stones of clairvoyance now sell for 13.33g (rounded to 13g usually, up from 10g)",
-                            "Detect curse and shock now sell for 15g (up from 10g)."
-                    ),
-                    new ChangeButton(new Meat.PlaceHolder()).appendList(
+                            "Detect curse and shock now sell for 15g (up from 10g)."),
+                    new ChangeButton( new Meat.PlaceHolder() ).appendList(
                             "Frozen carpaccio and chargrilled meat now restore 200 points of satiety, up from 150.\n",
                             "Stewed meat is now worth 6g, up from 5g.",
-                            "Stewed meat can now be frozen and burned."
-                    ),
+                            "Stewed meat can now be frozen and burned."),
                     new ChangeButton(new ElementalSprite(), "Mobs").appendList(
                             "Bosses are now immune to amok.", "Elementals now resist bleeding.",
                             "Tengu now resists burning.", "Fetid rat now considered acidic",
-                            "Rot heart now always produces gas when damaged."
-                    ),
+                            "Rot heart now always produces gas when damaged."),
                     new ChangeButton(
                             new ToxicImbue().getLargeIcon(), "Buffs")
                             .append("_Toxic Imbue_")
-                            .appendList(
-                                    "Less toxic gas is produced the closer the buff is to expiring.",
+                            .appendList( "Less toxic gas is produced the closer the buff is to expiring.",
                                     "Characters imbued with toxicity now resist Corrosion and Caustic Ooze.")
-                            .appendLine()
-                            .appendLine("_Bleeding, Caustic Ooze_").appendList(
-                            "Now can stack, albeit inconsistently.",
-                            "They can add up to 2/3 of their intended duration onto durations."),
+                            .appendLine("\n_Bleeding, Caustic Ooze_")
+                            .appendList("Now can stack, albeit inconsistently.",
+                                    "They can add up to 2/3 of their intended duration onto durations."),
                     new ChangeButton(
                             new ItemSprite(ItemSpriteSheet.SCROLL_YNGVI),
-                            "Scroll of Transmutation").appendList(
-                            "Thrown weapons can now be transmuted into another of the same tier, albeit one at a time.",
-                            "Darts cannot be transmuted in this update",
-                            "Goo blobs and cursed metal shards can be transmuted into each other",
-                            "Scrolls of transmutation are no longer considered unique"),
-                    ChangeButton.misc(
-                            "Tenacity general effectiveness boosted by 6.25% (0.85 --> 0.8)",
+                            "Scroll of Transmutation")
+                            .appendList(
+                                    "Thrown weapons can now be transmuted into another of the same tier, albeit one at a time.",
+                                    "Darts cannot be transmuted in this update",
+                                    "Goo blobs and cursed metal shards can be transmuted into each other",
+                                    "Scrolls of transmutation are no longer considered unique"),
+                    ChangeButton.misc( "Tenacity general effectiveness boosted by 6.25% (0.85 --> 0.8)",
                             "Teleport traps (and bombs) now clear blobs in their teleport radii",
                             "Electricity now recharges wands in inventory passively (identical to recharging)",
                             "Cursed Wand effect \"Shock and Recharge\" now uses storm trap effect rather than shocking trap.",
                             "Warden now gets regular effect from earthroot in addition to unique one.",
                             "Earthroot now roots enemies for 5 turns when trampled.",
-                            "Rot darts now are affected by durability boosts, albeit ~73% less effective than normal"
-                    )
-            );
+                            "Rot darts now are affected by durability boosts, albeit ~73% less effective than normal"));
             new ChangeInfo(ChangeInfo.Template.CHANGES).addButtons(
-                    new ChangeButton(
-                            HeroSprite.avatar(HeroClass.HUNTRESS,0),
+                    new ChangeButton( HeroSprite.avatar(HeroClass.HUNTRESS,0),
                             "Huntress",
                             "_-_ Starts with v0.7.1 studded gloves instead of cord.",
                             "_-_ Starts with v0.7.1 bow instead of darts\n",
-                            "_-_ a buffed cord (+1/+1 -> +1/+2) can be obtained via transmuting a tier-1 weapon"
-                    ),
+                            "_-_ a buffed cord (+1/+1 -> +1/+2) can be obtained via transmuting a tier-1 weapon"),
+                    new ChangeButton(new ItemSprite(new Shortsword().image, WeaponCurse.GLOWING),"Chaotic").appendList(
+                            "Volatility now procs twice as often when rolled, but will not destroy armor.",
+                            "Volatility will not activate at the attacker's position if the attacker is using a missile weapon.",
+                            "Stench and corrosion now always proc at the enemy's position.",
+                            "Chaotic can now roll Holy Providence... for the enemy. Have fun!",
+                            "Metabolism will now always drain hunger regardless of whether it procced for you.",
+                            "Effects that would normally scale now generate lower random level to pretend to be, now up to +6 (previous max was +19).",
+                            "Fragile can no longer be rolled; will be replaced with, uh, a better curse later."),
                     new ChangeButton(get(Icons.DEPTH),"Room Generation")
                             .append("_General_").appendList(
                             "Items cannot spawn on traps.",
@@ -660,23 +620,36 @@ public enum Milestone {
                                     "Frozen Carpaccio and Rations can now be found in the room.")
                             .appendLine("\n_Secret Maze Room_").appendList("Prize is now visibly uncursed")
                             .appendLine("\n_Pixel Mart_")
-                            .appendList(
-                                    "All upgradable items are now identified.",
+                            .appendList("All upgradable items are now identified.",
                                     "Now sells a greater variety of weapons, both thrown and melee."),
                     new ChangeButton(get(Icons.CHALLENGE_ON),"Challenges").appendList(
                             "Blocked items are more likely to be replaced by valid items",
                             "Secret Larder Rooms no longer spawn for On Diet",
                             "Crypt Rooms no longer spawn for Faith is My Armor",
                             "Gardens no longer spawn for Barren Land",
-                            "Pixel Mart now sells torches for Into Darkness"
-                    ),
+                            "Pixel Mart now sells torches for Into Darkness"),
+                    ChangeButton.misc(
+                            "You can now enchant two missile weapons at a time if they are in the same stack.",
+                            "Cord is now guaranteed to be the result of transmuting a tier-1 weapon.",
+                            "Cord can now be passed through remains.",
+                            "Exhausting can now proc for mirror images.",
+                            "Forest Fires are much more.... destructive. ;)",
+                            "Fire can now travel on regrowth blobs.",
+                            "Magic Missile wands now gain a phantom charge with each upgrade.",
+                            "Adjusted burning internally, no behavior changes intended but please let me " +
+                                    "know if you notice a difference."),
                     ChangeButton.misc(
                             "Throwing darts with an unidentified crossbow equipped will now count towards identifying it.",
                             "Throwing items manually should now 'trickshot' as if thrown from a quickslot",
                             "Guards and Skeletons now drop visually unupgraded equipment",
                             "Enemies that drop potions of healing no longer drop them over chasms",
-                            "Fly splitting mechanics adjusted to properly account for lucky",
-                            "Reduced frost shaman spawnrate by half"),
+                            "Fly splitting mechanics adjusted to properly account for lucky\n",
+                            "Bleeding grey is now based on target's current hp, rather than hero's total hp",
+                            "Scorpios and gnoll tricksters now suffer an accuracy penalty when melee attacking.\n",
+                            "MM shamans now drop wands of magic missile with a 1.65% chance.",
+                            "Lightning shamans can now drop wands of lightning with a 1.65% chance",
+                            "Firebolt, Frost shamans can now drop wands of fireblast and frost with a 1.65% chance, respectively",
+                            "Firebolt, Frost shamans can now also drop potions of liquid flame and frost, respectively."),
                     ChangeButton.bugfix(
                             "Crash bugs with wraiths",
                             "Trickster combo not getting reset when melee attacking.",
@@ -689,21 +662,31 @@ public enum Milestone {
                             "Swarm intelligence messing with terror.",
                             "Armor enchants showing their vfx when forcefully identified (eg by well or scroll).",
                             "Incendiary darts instantly losing their tips when thrown on a flammable tile.",
-                            "Ankhs not working as I intended; they are now stackable."
-                    ),
+                            "Ankhs not working as I intended; they are now stackable."),
+                    ChangeButton.bugfix(
+                            "Things getting destroyed when they should be immune to getting destroyed",
+                            "Mirror Images and sad ghost being able to surprise attack when they shouldn't be able to",
+                            "'Frozen' and 'Chilled' message displaying for elementals",
+                            "Charm vfx playing against immune enemies",
+                            "Grim proccing against immune enemies",
+                            "Attacking an enemy directly after loading the game is always a surprise attack",
+                            "Crashes with sad ghost",
+                            "Tome of Mastery spawning every load for those who still have the old subclasses",
+                            "Some text mistakes",
+                            "Rogue not starting with a bag",
+                            "Blessing ankhs causing crashes",
+                            "Darts not being considered unique.",
+                            "!!!NO TEXT FOUND!!! being found when inspecting blobs of regrowth."),
                     new ChangeButton(
                             get(Icons.LANGS),
                             "Text Adjustments",
                             "",
                             "_-_ Ring of Tenacity description now includes current damage reduction",
                             "_-_ Some enemy/weapon descriptions",
-                            "_-_ Alchemist's Toolkit no longer gives hint at +10"
-                    )
-            );
+                            "_-_ Alchemist's Toolkit no longer gives hint at +10"));
             new ChangeInfo(ChangeInfo.Template.NERFS).addButtons(
                     new ChangeButton(new KingSprite(), "Mob Resistances")
-                            .append("_Dwarf King_")
-                            .appendList(
+                            .append("_Dwarf King_").appendList(
                                     "Burning and Toxic Gas are now 0.75x effective (up from 0.5x)",
                                     "Paralysis and Blindness are now 0.25x effective (down from 0.5x)",
                                     "Vertigo is now 0.25x effective (up from 0x)",
@@ -720,13 +703,25 @@ public enum Milestone {
                             .appendList(
                                     "Terror and amok immunities changed to resistances.",
                                     "Golems have a 75% resistance to amok."),
-                    new ChangeButton(
-                            new MagicalHolster(), "Now that missile weapons can be upgraded and thus are more viable, " +
-                            "the 0.0.0a holster buff is a bit over the top (especially for huntress)\n",
+                    new ChangeButton(new ShamanSprite.MM(), "Shamans").appendList(
+                            "Magic Missile zap damage reduced by 12.5%",
+                            "Lightning, Firebolt zap damage reduced by 11.1%.\n",
+
+                            "Lightning zap water bonus now 1.5x, up from 1.25x.",
+                            "Firebolt resistances now consistent with burning fist and fire elemental",
+                            "Frost now inflict 1-2 turns of frost every zap, stacking up to 6 turns of chill.\n",
+
+                            "Magic Missile spawnrate reduced by 7%",
+                            "Lightning spawnrate boosted by 11%",
+                            "Firebolt spawnrate reduced by 23%",
+                            "Frost spawnrate boosted by 53%\n",
+
+                            "Magic Missile shaman less likely to spawn on floor 4"),
+                    new ChangeButton( new MagicalHolster(),
+                            "Now that missile weapons can be upgraded and thus are more viable, " +
+                            "the 0.0.00 holster buff is a bit over the top (especially for huntress)\n",
                             "_-_ Holster durability boost reduced (1.33 -> 1.2)\n",
-                            "Speaking of, the huntress once again starts with the holster."
-                    )
-            );
+                            "Speaking of, the huntress once again starts with the holster."));
             SHPD071.addChanges();
         }
     },
@@ -735,33 +730,24 @@ public enum Milestone {
         public void addChanges() {
             new ChangeInfo("v0.0.1",true);
             new ChangeInfo(ChangeInfo.Template.NEW_CONTENT).addButtons(
-                    ChangeButton.devCommentary(
-                            Milestone.LUST001,
+                    ChangeButton.devCommentary( Milestone.LUST001,
                             "This is the culmination of my tinkering prior to my implementation " +
                                     "of Shattered v0.7.1",
-                            Milestone.SHPD071, Milestone.LUST000b, Milestone.LUST000
-                    ),
+                            Milestone.SHPD071, Milestone.LUST000b, Milestone.LUST000),
                     new ChangeButton(
-                            new SuccubusSprite.Winged(),
-                            new Succubus.Winged().name,
+                            new SuccubusSprite.Winged(), new Succubus.Winged().name,
                             "Added a new succubus variant. It has a little less HP and accuracy " +
-                                    "and deals reduced damage, but moves faster and is more evasive.\n",
-                            "Stats:",
-                            "_-_ 75 HP (down from 80)",
-                            "_-_ 8 armor (down from 10)",
-                            "_-_ 37 accuracy (down from 40)",
-                            "_-_ 28 evasion (up from 25)",
-                            "_-_ 20-28 damage, down from 22-30",
-                            "_-_ 2x movement speed, flying\n",
-                            "_-_ Sprite credit to _hellocoolgame#8751_"
-                    ),
+                                    "and deals reduced damage, but moves faster and is more evasive.\n\nStats:")
+                            .appendList( "75 HP (down from 80)", "8 armor (down from 10)",
+                                    "37 accuracy (down from 40)", "28 evasion (up from 25)",
+                                    "20-28 damage, down from 22-30", "2x movement speed, flying\n",
+                                    "Sprite credit to _hellocoolgame#8751_"),
                     new ChangeButton(
                             new ItemSprite(new PlateArmor().image(), new HolyProvidence().glowing()),
                             "New Rare Glyph: Holy Providence",
                             "Added a new rare glyph that buffs you in combat!\n" +
                                     "_-_ (2+level)/(50+level) chance (4% @ +0) to bless the user for 6-10 turns, normally distributed\n" +
-                                    "_-_ (2+level)/(50+level) chance (4% @ +0) to give 6-8 turns of adrenaline if bless wasn't proc'd first, normally distributed"
-                    ),
+                                    "_-_ (2+level)/(50+level) chance (4% @ +0) to give 6-8 turns of adrenaline if bless wasn't proc'd first, normally distributed"),
                     new ChangeButton(
                             new ItemSprite(new Shortsword().image(), new Chaotic().glowing()),
                             "New Weapon Curse: Chaotic"
@@ -771,9 +757,7 @@ public enum Milestone {
                                     "Annoying", "Displacing", "Elastic", "Exhausting", "Fragile", "Friendly",
                                     "Sacrificial", "Wayward", "Anti-entropy (you or target)", "Corrosion (target)",
                                     "Displacement", "Multiplicity", "Overgrowth (you or target)",
-                                    "Stench (you or target)", "Volatility (you or target)", "Viscosity (you or target)"
-                            )
-            );
+                                    "Stench (you or target)", "Volatility (you or target)", "Viscosity (you or target)"));
             new ChangeInfo(ChangeInfo.Template.BUFFS).addButtons(
                     new ChangeButton(
                             new KingSprite(),
@@ -794,18 +778,13 @@ public enum Milestone {
                             "_-_ Now attacks everything in a 3x3 radius at the same time",
                             "_-_ Resists burning\n",
                             "_Burning Fist:_",
-                            "_-_ Now immune to frost and chill"
-                    ),
+                            "_-_ Now immune to frost and chill"),
                     new ChangeButton(new SuccubusSprite(), new Succubus().name,
                             "Succubus can now stack shield if they already have shielding when attacking charmed enemies, " +
-                                    "but can only heal from enemies that are charmed by them, rather than from any charmed enemy."
-                    ),
+                                    "but can only heal from enemies that are charmed by them, rather than from any charmed enemy."),
                     new ChangeButton(
-                            new GnollTricksterSprite(),
-                            "Gnoll Trickster (and scorpios)",
-                            "Now fight when cornered.\n" +
-                                    "_-_ They won't apply effects in this case."
-                    ),
+                            new GnollTricksterSprite(), "Gnoll Trickster (and scorpios)",
+                            "Now fight when cornered.\n_-_ They won't apply effects in this case."),
                     new ChangeButton(
                             new ItemSprite( new ScaleArmor().inscribe( new Stone() ) ),
                             "Glyphs",
@@ -818,21 +797,15 @@ public enum Milestone {
                             "_-_ No longer applies to all attacks from enemies that can use magic",
                             "_-_ Now blocks up to 1/2 armor from magic damage to (more than) compensate\n",
                             "_Affection:_",
-                            "_-_ More likely to give higher charm durations with higher levels"
-                    ),
+                            "_-_ More likely to give higher charm durations with higher levels"),
                     new ChangeButton(
                             new ItemSprite(ItemSpriteSheet.WEAPON_HOLDER,null),
                             "Unarmed Attacks",
                             "It doesn't make sense for unarmed attacks to be slower than a knuckleduster, " +
                                     "so now you can attack twice per turn if unarmed. Ring of Force adjusted accordingly:\n\n" +
-                                    "_-_ Ring of Force max damage halved. It's now basically a fast weapon of its tier."
-                    ),
-                    new ChangeButton(
-                            new ItemSprite(new LeatherArmor().inscribe(new Metabolism())),
-                            "Metabolism",
-                            "Metabolism healing boosted by 12.5% (4 -> 4.5)"
-                    )
-            );
+                                    "_-_ Ring of Force max damage halved. It's now basically a fast weapon of its tier."),
+                    new ChangeButton( new ItemSprite( new LeatherArmor().inscribe( new Metabolism() ) ),
+                            "Metabolism", "Metabolism healing boosted by 12.5% (4 -> 4.5)"));
             new ChangeInfo(ChangeInfo.Template.CHANGES).addButtons(
                     new ChangeButton(
                             new ItemSprite(Random.Int(2) == 0 ? new MailArmor().inscribe() : new Sword().enchant()),
@@ -889,57 +862,17 @@ public enum Milestone {
         @Override
         public void addChanges() {
             new ChangeInfo("v0.0.0",true);
-            new ChangeInfo("v0.0.0b", false).addButtons(
-                    new ChangeButton(new WandOfCorruption(),
-                            "It's extremely obvious that giving wands of corruption the ability to " +
-                                    "inflict vertigo was the wrong decision. Terror + Vertigo is extremely " +
-                                    "powerful, and the wand of corruption was already an amazing wand.\n")
-                            .appendList("Reverted cripple --> vertigo change"),
-                    new ChangeButton(new ItemSprite(new Longsword().image(), new Elastic().glowing()),"Eldritch")
-                            .appendList(
-                                    "Now inflicts brief vertigo on targets immune to terror (4+level)",
-                                    "Base Terror duration halved (10 -> 5)",
-                                    "Terror duration now scales with level (+2.5/level)"),
-                    new ChangeButton(new Terror(), "Terrified enemies now recover faster when cornered."),
-                    ChangeButton.bugfix(
-                            "More changelog mistakes",
-                            "In-text typo with blocking weapons",
-                            "Attacks not surprise attacking when they should"));
-            new ChangeInfo("v0.0.0a",false).addButtons(
-                    new ChangeButton( new MagicalHolster() )
-                            .appendList("Missile weapon durability boost buffed (1/5 -> 1/3)")
-                            .appendLine("\nThis should make its integration with huntress a bit more " +
-                                    "intuitive; with the change the huntress effectively gets double " +
-                                    "durability on missile weapons."),
-                    new ChangeButton( new WandOfCorruption() ).appendList("Can no longer inflict cripple",
-                            "Instead inflicts vertigo at a reduced chance",
-                            "Minor debuffs now have weights:\n" +
-                                    "    _*_ Weaken   : 4\n" +
-                                    "    _*_ Blindness: 3\n" +
-                                    "    _*_ Terror   : 2\n" +
-                                    "    _*_ Vertigo  : 1"),
-                    new ChangeButton(new ItemSprite(new Longsword().enchant(new Chilling())), "Enchantments")
-                            .appendList("Chilling now stacks chill", "Venomous now scales a bit better with levels."),
-                    new ChangeButton(new ShieldedSprite(), new Shielded().name).appendList(
-                            "Now also gains rage.", "Gets up to 6 shielding just like a warrior with plate."),
-                    ChangeButton.bugfix(
-                            "Paralytic Darts potentially breaking paralysis",
-                            "Fatal attacks visually breaking paralysis",
-                            "Slow and Chill not stacking",
-                            "Taking 0 damage weakening charm and terror and breaking magical sleep and frost",
-                            "Changelog typos"));
             new ChangeInfo(ChangeInfo.Template.NEW_CONTENT).addButtons(
                     ChangeButton.devCommentary(Milestone.LUST000,
-                            "I'm honestly just happy to have figured this out. As of this moment, " +
-                                    "I'm waiting on Shattered 0.7.1 to be released so I can implement it.",
+                            null,
                             Milestone.SHPD070),
-                    new ChangeButton(
-                            HeroSprite.avatar(HeroClass.HUNTRESS,0),
+                    new ChangeButton(HeroSprite.avatar(HeroClass.HUNTRESS,0),
                             "Huntress (Base)",
                             "The Huntress's potential is being wasted by the Boomerang. " +
-                                    "By dumping into the Boomerang, the player wastes the majority of her natural versatility, " +
-                                    "so much so that she is turned into a class that tends to have very repetitive gameplay.",
-                                    "\nTo address this, I have made the following changes:\n")
+                                    "By dumping into the Boomerang, the player wastes the majority of her natural " +
+                                    "versatility, so much so that she is turned into a class that tends to have " +
+                                    "very repetitive gameplay.",
+                            "\nTo address this, I have made the following changes:\n")
                             .appendList("_Boomerang_ removed from the game.", "Huntress now starts " +
                                     "with _two darts_ and a _tier-1 whip_ (a Cord) instead of a _knuckleduster._",
                                     "Huntress now starts with the _magical holster_ instead of the _seed pouch._")
@@ -1013,19 +946,21 @@ public enum Milestone {
                                             "food, dew, and even Stones of Enchantment!",
                                     "20% of the scrolls and potions that are dropped as a result of " +
                                             "a rare drop will now be exotic!",
-                                    "Passive drop rate boost boosted by ~4.3% (1.15 --> 1.2)"
-                    ),
-                    new ChangeButton( new Quarterstaff() ).appendList("Quarterstaff's block now scales by +0/+1",
-                            "Base block reduced by 1/3 (3 -- > 2)"),
+                                    "Passive drop rate boost boosted by ~4.3% (1.15 --> 1.2)"),
                     new ChangeButton( new Gloves(),
                             "While no heroes now start with the knuckleduster now, that does not mean it is no longer in the game!\n" +
                                     "_-_ Transmuting any tier-1 weapon (aside from Mage's Staff) will yield a Knuckleduster.\n" +
                                     "_-_ Transmuting a Knuckleduster will yield a random non-Knuckleduster tier-1 weapon like normal.\n" +
                                     "_-_ The Knuckleduster now blocks up to 1 point of damage!"),
+                    new ChangeButton( new Quarterstaff() ).appendList("Quarterstaff's block now scales by +0/+1",
+                            "Base block reduced by 1/3 (3 -- > 2)"),
+                    new ChangeButton( new MagicalHolster() )
+                            .appendList("Missile weapon durability boost buffed (1/5 -> 1/3)")
+                            .appendLine("\nThis should make its integration with huntress a bit more " +
+                                    "intuitive; with the change the huntress effectively gets double " +
+                                    "durability on missile weapons."),
                     new ChangeButton(new ItemSprite(ItemSpriteSheet.WAND_TRANSFUSION), "Wands")
-                            .appendLine("Wand of Transfusion:")
-                            .appendList(
-                                    "Charm now scales by 2 (was 1)",
+                            .appendLine("Wand of Transfusion:").appendList("Charm now scales by 2 (was 1)",
                                     "Battlemage effect's proc rate boosted by 25% (1/10 -> 1/8)\n")
                             .appendLine("Wand of Fireblast:")
                             .appendList("When consuming 3 charges at once, now applies both paralysis and cripple"),
@@ -1033,13 +968,15 @@ public enum Milestone {
                             new Charm().getLargeIcon(), "Charm",
                             "_-_ Charm now only recovers if hit by whoever applied it.\n" +
                                     "\nThis is both a buff to charm in general and a nerf to viscosity."),
-                    new ChangeButton(
-                            new ItemSprite(ItemSpriteSheet.SHORTSWORD, WeaponCurse.GLOWING), "Elastic",
-                            "Elastic can easily be a run-ender if the hero doesn't have any alternatives to do damage.",
-                            "This change should make these situations less unfair and run-ending:")
-                            .appendList("Elastic weapons now deal 1/6 damage, instead of 0.")
-                            .appendLine("With this, bosses should now be beatable with only an " +
-                                    "Elastic weapon (given enough time)"));
+                    new ChangeButton(new ItemSprite(new Longsword().enchant(new Chilling())), "Enchantments")
+                            .appendList(
+                                    "Eldritch inflicts brief vertigo on targets immune to terror.",
+                                    "Base Eldritch terror duration halved, but terror now scales with level.\n",
+                                    "Chilling now stacks chill",
+                                    "Venomous now scales a bit better with levels.\n\n",
+                                    "Elastic weapons now deal 1/6x damage, up from 0x."),
+                    new ChangeButton(new ShieldedSprite(), new Shielded().name).appendList(
+                            "Now also gains rage.", "Gets up to 6 shielding just like a warrior with plate."));
             new ChangeInfo(ChangeInfo.Template.CHANGES).addButtons(
                     new ChangeButton(
                             get(Icons.DEPTH),
@@ -1069,23 +1006,32 @@ public enum Milestone {
                             "Food, Arcane Styli, and Tomes of Mastery can now be quickslotted. (idea credit s0i)",
                             "Cursed wands can now spawn Inferno and Blizzard\n",
 
+                            "Wand of Corruption is more likely to inflict weaken, more likely to" +
+                                    " inflict blind, less likely to inflict cripple, and less likely to inflict terror",
+
                             "Weapons that block damage now say how much damage they can block.",
                             "Transmutation and Recycle now have a VFX effect!",
                             "Darts and Shurikens now have a faster throw animation.",
                             "Some descriptions reworded."),
-                    ChangeButton.bugfix("Attacks by Stunning weapons potentially instantly breaking paralysis"),
+                    ChangeButton.bugfix(
+                            "Attacks by Stunning weapons potentially instantly breaking paralysis",
+                            "Paralytic Darts potentially breaking paralysis",
+                            "Fatal attacks visually breaking paralysis",
+                            "Slow and Chill not stacking",
+                            "Taking 0 damage weakening charm and terror and breaking magical sleep and frost"),
                     new ChangeButton(
                             get(Icons.LANGS),
                             "Removed Translations",
                             "The ability to play the game in other languages than English has been " +
                                     "removed for the time being. This mod is not on transifex, and thus has no " +
-                                    "way to obtain new translations for any content changes."
-                    )
-            );
+                                    "way to obtain new translations for any content changes."));
+            new ChangeInfo(ChangeInfo.Template.NERFS).addButton( new ChangeButton(
+                    new Terror(), "Terrified enemies now recover faster when cornered.") );
         }
     },
 
     // everything past this point is not displayed; these are mostly just used for reference
+    SHPD074 ("Shattered v0.7.4",          7 ,18,2019),
     SHPD073 ("Shattered v0.7.3",          5 ,25,2019),
     SHPD072 ("Shattered v0.7.2", 	 	    3 ,18,2019),
     SHPD071d("Shattered v0.7.1d",	 	    1 ,18,2019),

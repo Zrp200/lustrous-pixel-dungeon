@@ -75,9 +75,7 @@ public enum HeroClass {
 			stones.identify().quantity(3).collect();
 			Dungeon.quickslot.setSlot(0, stones);
 
-			if (hero.belongings.armor != null){
-				hero.belongings.armor.affixSeal(new BrokenSeal());
-			}
+			if (hero.belongings.armor != null) hero.belongings.armor.affixSeal( new BrokenSeal() );
 		}
 	},
 	MAGE( "mage", Assets.MAGE,
@@ -144,14 +142,9 @@ public enum HeroClass {
 		hero.heroClass = this;
 
 		Item i = new ClothArmor().identify();
-
 		if (!Challenges.isItemBlocked(i)) hero.belongings.armor = (Armor)i;
-		i = new Food();
-		if (!Challenges.isItemBlocked(i)) i.collect();
-
-		if (Dungeon.isChallenged(Challenges.NO_FOOD))
-			new SmallRation().collect();
-
+		i = Dungeon.isChallenged(Challenges.NO_FOOD) ? new SmallRation() : new Food();
+		i.collect();
 		new ScrollOfIdentify().identify();
 
 		try {
@@ -161,7 +154,9 @@ public enum HeroClass {
 			idScroll.newInstance().identify();
 
 			bagClass.newInstance().collect();
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			LustrousPixelDungeon.reportException(e);
 		}
 
@@ -199,8 +194,7 @@ public enum HeroClass {
 	
 	public String[] perks() {
 		String[] result = new String[5];
-		for(int i = 0; i < 5; i++)
-		    result[i] = Messages.get(HeroClass.class, title + "_perk" + (i+1) );
+		for(int i = 0; i < 5; i++) result[i] = Messages.get(HeroClass.class, title + "_perk" + (i+1) );
 		return result;
 	}
 

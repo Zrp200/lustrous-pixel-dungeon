@@ -2,14 +2,6 @@
 apply plugin: 'com.android.library'
 
 android {
-    signingConfigs {
-        release {
-            keyAlias 'Lustrous Key Store v2'
-            keyPassword '3215987'
-            storeFile file('C:/Users/zrp20/lustrous.jks')
-            storePassword '3215987'
-        }
-    }
     compileSdkVersion appAndroidCompileSDK
     defaultConfig {
         //noinspection MinSdkTooLow

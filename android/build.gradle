@@ -38,7 +38,14 @@ android {
         resConfigs "en_US", "cs", "tr", "ca", "ko", "pl", "it",
                 "eo", "ru", "zh_CN", "de", "fr", "es", "pt", "fi", "hu", "in"
     }
-
+    signingConfigs {
+        release {
+            keyAlias 'Lustrous Key Store v2'
+            keyPassword '3215987'
+            storeFile file('C:\\Users\\Zrp200\\OneDrive\\lustrous.jks')
+            storePassword '3215987'
+        }
+    }
     buildTypes {
         debug {
             applicationIdSuffix ".indev"
@@ -50,8 +57,8 @@ android {
             //This makes release APKs smaller and more efficient, but also makes debugging trickier
             //as the information produced in stack traces must be de-obfuscated.
             //See here: https://developer.android.com/studio/build/shrink-code#decode-stack-trace
-            shrinkResources true
-            minifyEnabled true
+            shrinkResources false
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
