@@ -42,9 +42,11 @@ public abstract class TargetedSpell extends Spell {
 	protected void onCast(Hero hero) {
 		GameScene.selectCell(targeter);
 	}
-	
+
 	protected abstract void affectTarget( Ballistica bolt, Hero hero );
-	
+
+	protected boolean isValidTarget(int cell) { return true; }
+
 	protected void fx( Ballistica bolt, Callback callback ) {
 		MagicMissile.boltFromChar( curUser.sprite.parent,
 				MagicMissile.MAGIC_MISSILE,
@@ -53,9 +55,9 @@ public abstract class TargetedSpell extends Spell {
 				callback);
 		Sample.INSTANCE.play( Assets.SND_ZAP );
 	}
-	
-	private  static CellSelector.Listener targeter = new  CellSelector.Listener(){
-		
+
+	private static CellSelector.Listener targeter = new  CellSelector.Listener(){
+
 		@Override
 		public void onSelect( Integer target ) {
 			
@@ -72,7 +74,9 @@ public abstract class TargetedSpell extends Spell {
 				
 				final Ballistica shot = new Ballistica( curUser.pos, target, curSpell.collisionProperties);
 				int cell = shot.collisionPos;
-				
+
+				if( !curSpell.isValidTarget(cell) ) return; // spells are too valuable to be wasted by misclicks.
+
 				curUser.sprite.zap(cell);
 				
 				//attempts to target the cell aimed at if something is there, otherwise targets the collision pos.
@@ -88,7 +92,7 @@ public abstract class TargetedSpell extends Spell {
 					public void call() {
 						curSpell.affectTarget(shot, curUser);
 						curSpell.detach( curUser.belongings.backpack );
-						curSpell.updateQuickslot();
+						updateQuickslot();
 						curUser.spendAndNext( 1f );
 					}
 				});

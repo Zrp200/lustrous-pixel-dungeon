@@ -35,6 +35,7 @@ public class ScrollOfPetrification extends ExoticScroll {
 	
 	{
 		initials = 9;
+		isAOE = true;
 	}
 	
 	@Override

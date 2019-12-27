@@ -37,29 +37,39 @@ import com.zrp200.lustrouspixeldungeon.sprites.ItemSprite;
 import com.zrp200.lustrouspixeldungeon.sprites.ItemSpriteSheet;
 import com.zrp200.lustrouspixeldungeon.utils.GLog;
 
-public class ReclaimTrap extends TargetedSpell {
-	
+public class ReclaimTrap extends TargetedSpell
+{
 	{
 		image = ItemSpriteSheet.RECLAIM_TRAP;
 	}
 	
 	private Class<?extends Trap> storedTrap = null;
-	
+
+	@Override
+	protected boolean isValidTarget(int cell) {
+		if(storedTrap == null)
+		{
+			Trap t = Dungeon.level.traps.get(cell);
+			if( t == null || !t.active || !t.isVisible() )
+			{
+				GLog.w(Messages.get(this, "no_trap"));
+				return false;
+			}
+		}
+		return true;
+	}
+
 	@Override
 	protected void affectTarget(Ballistica bolt, Hero hero) {
 		if (storedTrap == null) {
 			quantity++; //storing a trap doesn't consume the spell
 			Trap t = Dungeon.level.traps.get(bolt.collisionPos);
-			if (t != null && t.active && t.isVisible()) {
-				t.disarm();
+			// #isValidTarget should have checked to make sure this trap is valid already
+			t.disarm();
 
-				Sample.INSTANCE.play(Assets.SND_LIGHTNING);
-				ScrollOfRecharging.charge(hero);
-				storedTrap = t.getClass();
-
-			} else {
-				GLog.w(Messages.get(this, "no_trap"));
-			}
+			Sample.INSTANCE.play(Assets.SND_LIGHTNING);
+			ScrollOfRecharging.charge(hero);
+			storedTrap = t.getClass();
 		} else {
 
 			try {
@@ -140,18 +150,16 @@ public class ReclaimTrap extends TargetedSpell {
 		storedTrap = bundle.getClass(STORED_TRAP);
 	}
 	
-	public static class Recipe extends com.zrp200.lustrouspixeldungeon.items.Recipe.SimpleRecipe {
-		
+	public static class Recipe extends com.zrp200.lustrouspixeldungeon.items.Recipe.SimpleRecipe
+	{
 		{
-			inputs =  new Class[]{ScrollOfMagicMapping.class, MetalShard.class};
+			inputs = new Class[]{ScrollOfMagicMapping.class, MetalShard.class};
 			inQuantity = new int[]{1, 1};
-			
+
 			cost = 6;
-			
+
 			output = ReclaimTrap.class;
 			outQuantity = 3;
 		}
-		
 	}
-	
 }

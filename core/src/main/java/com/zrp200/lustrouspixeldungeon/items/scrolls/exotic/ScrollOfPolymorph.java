@@ -39,6 +39,7 @@ public class ScrollOfPolymorph extends ExoticScroll {
 	
 	{
 		initials = 10;
+		isAOE = true;
 	}
 	
 	@Override

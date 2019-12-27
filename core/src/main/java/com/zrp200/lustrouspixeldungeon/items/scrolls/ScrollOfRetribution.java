@@ -35,6 +35,7 @@ public class ScrollOfRetribution extends Scroll {
 
 	{
 		initials = 4;
+		isAOE = true;
 	}
 	
 	@Override

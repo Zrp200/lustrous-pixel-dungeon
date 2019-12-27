@@ -52,6 +52,16 @@ public class ScrollOfTeleportation extends Scroll {
 	{
 		initials = 8;
 	}
+	// prevents reading on boss floors
+	@Override
+	protected boolean shouldRead(boolean silent) {
+		if( Dungeon.bossLevel() )
+		{
+			if(!silent) GLog.w( Messages.get(ScrollOfTeleportation.class, "no_tele") );
+			return false;
+		}
+		return true;
+	}
 
 	@Override
 	public void doRead() {
@@ -100,13 +110,13 @@ public class ScrollOfTeleportation extends Scroll {
 			return;
 		}
 		
-		appear( hero, pos );
+		appear( hero, pos, true );
 		if (!hero.flying) Dungeon.level.press( pos, hero );
 		Dungeon.observe();
 		GameScene.updateFog();
 		
 	}
-	
+
 	public static void teleportHero( Hero  hero ) {
 
 		int count = 10;
@@ -190,7 +200,6 @@ public class ScrollOfTeleportation extends Scroll {
 					}
 				}
 			}
-			GLog.i( Messages.get(ScrollOfTeleportation.class, "tele") );
 			appear( hero, pos );
 			if (!hero.flying) Dungeon.level.press( pos, hero );
 			if (secretDoor && level.map[doorPos] == Terrain.SECRET_DOOR){
@@ -211,6 +220,8 @@ public class ScrollOfTeleportation extends Scroll {
 	}
 	public static void appear( Char ch, int pos, boolean silent ) {
 
+		if(!silent && ch instanceof Hero ) GLog.i( Messages.get(ScrollOfTeleportation.class, "tele") );
+
 		if(ch.sprite != null) ch.sprite.interruptMotion();
 
 		ch.move( pos );
@@ -220,7 +231,7 @@ public class ScrollOfTeleportation extends Scroll {
 			ch.sprite.alpha( 0 );
 			ch.sprite.parent.add( new AlphaTweener( ch.sprite, 1, 0.4f ) );
 		}
-		if(!silent && (Dungeon.level.heroFOV[pos] || ch instanceof Hero)) {
+		if(ch instanceof Hero || !silent && Dungeon.level.heroFOV[pos]) {
 			ch.sprite.emitter().start( Speck.factory(Speck.LIGHT), 0.2f, 3 );
 			Sample.INSTANCE.play( Assets.SND_TELEPORT );
 		}

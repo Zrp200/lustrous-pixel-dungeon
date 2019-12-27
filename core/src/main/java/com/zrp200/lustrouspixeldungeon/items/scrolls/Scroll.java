@@ -27,6 +27,7 @@ import com.zrp200.lustrouspixeldungeon.LustrousPixelDungeon;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Blindness;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.MagicImmune;
 import com.zrp200.lustrouspixeldungeon.actors.hero.Hero;
+import com.zrp200.lustrouspixeldungeon.actors.mobs.Mob;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.ItemStatusHandler;
 import com.zrp200.lustrouspixeldungeon.items.Recipe;
@@ -171,28 +172,46 @@ public abstract class Scroll extends Item {
 		actions.add( AC_READ );
 		return actions;
 	}
+	protected boolean isAOE = false;
+	// this is called twice, once in this class and once in the specific scroll class (if applicable)
+	// this checks if the scroll will actually do anything useful, warding against uselessly wasting identified scrolls.
+	// "silent" parameter gives a way to silently check without displaying messages. defaults to false.
+	protected boolean shouldRead(boolean silent) {
+		if(!isAOE) return true;
+		for (Mob mob : Dungeon.level.mobs) {
+			if (Dungeon.level.heroFOV[mob.pos]) return true;
+		}
+		GLog.w(Messages.get(this,"does_nothing"));
+		return false;
+	}
+	protected final boolean shouldRead() { return shouldRead(false); }
+	// this method is used to check if the hero is allowed to read it at all.
+	private boolean canRead() {
+		String message = null;
+		if (curUser.buff(MagicImmune.class) != null) 	message = "no_magic";
+		else if (curUser.buff(Blindness.class) != null) message = "blinded";
+		else if (curUser.buff(UnstableSpellbook.bookRecharge.class) != null
+				&& curUser.buff(UnstableSpellbook.bookRecharge.class).isCursed()
+				&& !(this instanceof ScrollOfRemoveCurse || this instanceof ScrollOfAntiMagic)) {
+			message = "cursed";
+		}
+		if( message != null) GLog.w( Messages.get(this, message) );
+		return message == null && ( !isKnown() || shouldRead(false) );
+	}
 	
 	@Override
 	public void execute( Hero hero, String action ) {
 
 		super.execute( hero, action );
 
-		if (action.equals( AC_READ )) {
-			
-			if (hero.buff(MagicImmune.class) != null){
-				GLog.w( Messages.get(this, "no_magic") );
-			} else if (hero.buff( Blindness.class ) != null) {
-				GLog.w( Messages.get(this, "blinded") );
-			} else if (hero.buff(UnstableSpellbook.bookRecharge.class) != null
-					&& hero.buff(UnstableSpellbook.bookRecharge.class).isCursed()
-					&& !(this instanceof ScrollOfRemoveCurse || this instanceof ScrollOfAntiMagic)){
-				GLog.n( Messages.get(this, "cursed") );
-			} else {
-				curUser = hero;
-				curItem = detach( hero.belongings.backpack );
+		if(action.equals( AC_READ ))
+		{
+			curUser = hero;
+			if(canRead())
+			{
+				curItem = detach(hero.belongings.backpack);
 				doRead();
 			}
-			
 		}
 	}
 	

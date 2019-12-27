@@ -36,18 +36,22 @@ public class ScrollOfPassage extends ExoticScroll {
 	{
 		initials = 8;
 	}
-	
+
+	@Override
+	protected boolean shouldRead(boolean silent) {
+		if (Dungeon.bossLevel()) {
+			if(!silent) GLog.w( Messages.get(ScrollOfTeleportation.class, "no_tele") );
+			return false;
+		}
+		return true;
+	}
+
 	@Override
 	public void doRead() {
 		
 		setKnown();
 		
-		if (Dungeon.bossLevel()) {
-			
-			GLog.w( Messages.get(ScrollOfTeleportation.class, "no_tele") );
-			return;
-			
-		}
+		if( !shouldRead() ) return;
 		
 		Buff buff = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
 		if (buff != null) buff.detach();

@@ -38,6 +38,7 @@ public class ScrollOfTerror extends Scroll {
 
 	{
 		initials = 9;
+		isAOE = true;
 	}
 
 	@Override

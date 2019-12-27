@@ -21,6 +21,7 @@
 
 package com.zrp200.lustrouspixeldungeon.items.spells;
 
+import com.watabou.utils.Callback;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.Actor;
 import com.zrp200.lustrouspixeldungeon.actors.Char;
@@ -37,7 +38,20 @@ public class PhaseShift extends TargetedSpell {
 	{
 		image = ItemSpriteSheet.PHASE_SHIFT;
 	}
-	
+
+	@Override
+	protected boolean isValidTarget(int cell) {
+		return Actor.findChar(cell) != null;
+	}
+
+	@Override
+	protected void fx(Ballistica bolt, Callback callback) {
+		if(curUser.pos != bolt.collisionPos)
+			super.fx(bolt, callback);
+		else
+			callback.call();
+	}
+
 	@Override
 	protected void affectTarget(Ballistica bolt, Hero hero) {
 		final Char ch = Actor.findChar(bolt.collisionPos);

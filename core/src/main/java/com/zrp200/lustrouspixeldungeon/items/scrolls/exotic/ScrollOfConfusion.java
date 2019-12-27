@@ -36,6 +36,8 @@ public class ScrollOfConfusion extends ExoticScroll {
 	
 	{
 		initials = 5;
+
+		isAOE = true;
 	}
 	
 	@Override

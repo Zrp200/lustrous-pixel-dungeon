@@ -21,19 +21,17 @@
 
 package com.zrp200.lustrouspixeldungeon.items.scrolls.exotic;
 
-import com.watabou.noosa.audio.Sample;
-import com.zrp200.lustrouspixeldungeon.Assets;
 import com.zrp200.lustrouspixeldungeon.Dungeon;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Buff;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Charm;
 import com.zrp200.lustrouspixeldungeon.actors.buffs.Invisibility;
 import com.zrp200.lustrouspixeldungeon.actors.mobs.Mob;
-import com.zrp200.lustrouspixeldungeon.effects.Speck;
 
 public class ScrollOfAffection extends ExoticScroll {
 	
 	{
 		initials = 1;
+		isAOE = true;
 	}
 	
 	@Override
