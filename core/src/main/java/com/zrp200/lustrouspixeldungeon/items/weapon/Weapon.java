@@ -35,6 +35,7 @@ import com.zrp200.lustrouspixeldungeon.effects.ItemChange;
 import com.zrp200.lustrouspixeldungeon.items.Item;
 import com.zrp200.lustrouspixeldungeon.items.KindOfWeapon;
 import com.zrp200.lustrouspixeldungeon.items.rings.RingOfFuror;
+import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Annoying;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Chaotic;
 import com.zrp200.lustrouspixeldungeon.items.weapon.curses.Displacing;
@@ -363,13 +364,13 @@ abstract public class Weapon extends KindOfWeapon {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Item upgrade(boolean enchant ) {
-		if ( enchant && !hasEnchant() )
-			enchant(Enchantment.random());
-		else if(hasCurseEnchant() && Random.Int(3) == 0)
-		    enchant(null);
-		else if (hasGoodEnchant() && level() >= 3 && Random.Float(10) < Math.pow(2, level()-3))
-			enchant(null);
+	public Item upgrade(boolean safe) {
+		if (!safe)
+		{
+			if (hasCurseEnchant() && Random.Int(3) == 0) enchant(null);
+			else if (hasGoodEnchant() && level() >= ScrollOfUpgrade.ERASE_LVL &&
+					 Random.Float(10) < Math.pow(2, level() - ScrollOfUpgrade.ERASE_LVL)) enchant(null);
+		}
 		
 		cursed = false;
 		

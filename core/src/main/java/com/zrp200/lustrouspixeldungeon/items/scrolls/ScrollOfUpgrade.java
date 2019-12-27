@@ -45,6 +45,7 @@ public class ScrollOfUpgrade extends InventoryScroll {
 
 		value = 50;
 	}
+	public static final byte ERASE_LVL = 3;
 	
 	@Override
 	protected void onItemSelected( Item item ) {

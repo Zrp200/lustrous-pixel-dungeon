@@ -61,6 +61,7 @@ import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.Stone;
 import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.Swiftness;
 import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.Thorns;
 import com.zrp200.lustrouspixeldungeon.items.armor.glyphs.Viscosity;
+import com.zrp200.lustrouspixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.zrp200.lustrouspixeldungeon.levels.Terrain;
 import com.zrp200.lustrouspixeldungeon.messages.Messages;
 import com.zrp200.lustrouspixeldungeon.sprites.HeroSprite;
@@ -396,11 +397,15 @@ public class Armor extends EquipableItem {
 		return upgrade( false );
 	}
 	
-	public Item upgrade( boolean inscribe ) {
-		if (inscribe && glyph == null){
-			inscribe( Glyph.random() );
-		} else if (!inscribe && level() >= 4 && Random.Float(10) < Math.pow(2, level()-4)){
-			inscribe(null,false);
+	public Item upgrade( boolean safe ) {
+		if (!safe)
+		{
+			if (hasGoodGlyph() && level() >= ScrollOfUpgrade.ERASE_LVL &&
+				Random.Float(10) < Math.pow(2, level()-ScrollOfUpgrade.ERASE_LVL))
+			{
+				inscribe(null, false);
+			}
+			else if (hasCurseGlyph() && Random.Int(3) == 0) inscribe(null,false);
 		}
 
 		cursed = false;
