@@ -300,12 +300,11 @@ public class WandOfWarding extends Wand {
 			if (!enemy.isAlive() && enemy == Dungeon.hero) {
 				Dungeon.fail( getClass() );
 			}
-			if(!isSentry() && ++totalZaps > (tier-1)*2) // goes 1 -> 3 -> 5
-				die(this);
-			else {
+			if( isSentry() ) {
 				HP -= tier+1; // silent damage.
 				if(HP <= 0) die(this);
 			}
+			else if(++totalZaps > (tier-1)*2) die(this); // goes 1 -> 3 -> 5
 		}
 
 		public void onZapComplete() {
