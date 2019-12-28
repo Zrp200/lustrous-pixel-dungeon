@@ -69,6 +69,8 @@ public class King extends Mob {
 
 		properties.add(Property.BOSS);
 		properties.add(Property.UNDEAD);
+
+		Buff.affect(this, Immortality.class);
 	}
 	
 	private boolean nextPedestal = true;
@@ -122,7 +124,6 @@ public class King extends Mob {
 	
 	@Override
 	protected boolean act() {
-		if(HP < HT) HP++;
 		if (canTryToSummon() && pos == ((CityBossLevel)Dungeon.level).pedestal( nextPedestal )) {
 			summon();
 			return true;
@@ -243,8 +244,7 @@ public class King extends Mob {
 	public float resist(Class effect) {
 		float effectiveness = super.resist(effect);
 
-		if(effect == Paralysis.class
-				|| effect == Vertigo.class
+		if(effect == Vertigo.class
 				|| effect == Blindness.class)   effectiveness *= 0.25f;
 
 		return effectiveness;
@@ -252,6 +252,16 @@ public class King extends Mob {
 
 	{
 		immunities.add( Terror.class );
+		immunities.add( Paralysis.class );
+	}
+
+	public static class Immortality extends Buff {
+		@Override
+		public boolean act() {
+			if( target.HP != target.HT && target.isAlive() ) target.HP++;
+			spend(2); // turns until next regen
+			return true;
+		}
 	}
 	
 	public static class Undead extends Mob {
