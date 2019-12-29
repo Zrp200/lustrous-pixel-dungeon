@@ -107,8 +107,9 @@ public abstract class TippedDart extends Dart {
 
 
 	private Dart untip() {
-		reset();
-		return (Dart) new Dart().emulate(this);
+		Dart d = (Dart) new Dart().emulate(this);
+		d.reset();
+		return d;
 	}
 
 	@Override

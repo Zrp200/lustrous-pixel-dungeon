@@ -275,7 +275,8 @@ abstract public class MissileWeapon extends Weapon {
 	protected void useDurability() {
 		// this deducts durability from the correct source
 		MissileWeapon weapon = parent == null ? this : parent;
-		weapon.durability -= weapon.durabilityPerUse();
+		float dpu = weapon.durabilityPerUse();
+		weapon.durability -= dpu;
 		if (parent != null && parent.isBreaking() ){
 			durability = 0;
 			parent.durability = MAX_DURABILITY;
@@ -283,7 +284,7 @@ abstract public class MissileWeapon extends Weapon {
 
 		// this alerts the player if a weapon is about to break
 		boolean willBreak = weapon.durability > 0 && weapon.durability <= weapon.durabilityPerUse();
-		if(willBreak) {
+		if(willBreak && dpu < 100) {
 			if (level() <= 0) GLog.w(Messages.get(this, "about_to_break"));
 			else GLog.n(Messages.get(this, "about_to_break"));
 		}
