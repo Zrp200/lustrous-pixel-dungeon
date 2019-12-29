@@ -92,6 +92,20 @@ public enum Milestone {
         public void addChanges()
         {
             new ChangeInfo(Version.v013.name, true);
+            new ChangeInfo("v0.1.3a",false).addButtons(
+                    new ChangeButton(new KingSprite(), "Dwarf King")
+                            .append("I've realized two things: that giving Dwarf King actual " +
+                                    "regeneration makes him just that much harder and that even a " +
+                                    "4x resist to paralyze (2.5 turns of paralyze instead of 10 " +
+                                    "from paralytic gas) doesn't make him any less cheesable by it.\n")
+                            .appendList("Regen rate reduced to 1 HP per 2 turns (was 1 per turn)",
+                                    "Is again immune to paralysis"),
+                    ChangeButton.bugfix()
+                        .append("Caused by v0.1.3:")
+                        .appendList("Wards destroying themselves after 1 zap",
+                            "Boomerang and Bolas having their sprites swapped")
+                        .appendLine("\nExisted prior to v0.1.3:")
+                        .appendList("Various issues with darts"));
             new ChangeInfo(ChangeInfo.Template.NEW_CONTENT).addButtons(
                     ChangeButton.devCommentary(LUST013,Messages.get(Milestone.class, "013"),LUST012,SHPD074),
                     new ChangeButton(new ItemSprite( new WandOfWarding() ), "Wand of Warding implemented with changes")
